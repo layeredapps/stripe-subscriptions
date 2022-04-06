@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/administrator/subscriptions/navbar-coupon.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" /> 
+    <title translate="yes">Unpublish coupon</title>
+    <link href="/public/content.css" rel="stylesheet">
+    <link href="/public/content-additional.css" rel="stylesheet">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">Unpublish coupon</h1>
+      <p translate="yes">The coupon will immediately become unusable by anyone else.</p>
+      <div id="message-container"></div>
+      <form id="submit-form" method="post" class="input-form" action="/administrator/subscriptions/unpublish-coupon?couponid=${coupon.id}" name="submit-form">
+        <button id="submit-button" class="button" type="submit" translate="yes">Unpublish coupon</button>
+      </form>
+    </div>
+    <template id="success">
+      <div class="success message" translate="yes">
+        Success! The coupon has been unpublished
+      </div>
+    </template>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! An error occurred publishing the coupon
+      </div>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/account/subscriptions/navbar.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" /> 
+    <title translate="yes">Plans</title>
+    <link rel="stylesheet" href="/public/content.css">
+    <link rel="stylesheet" href="/public/content-additional.css">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">Plans</h1>
+      <div id="no-plans">
+        <p translate="yes">There are no available plans to subscribe to.</p>
+      </div>
+      <div class="list-table-wrapper">
+        <table id="plans-table" class="list-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th translate="yes">Name</th>
+              <th translate="yes">Price</th>
+              <th translate="yes">Trial</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <ul id="page-links" class="pagination"></ul>
+    </div>
+    <template id="page-link">
+      <li>
+        <a href="/account/subscriptions/plans?offset=${page.offset}" id="page-link-${page.pageNumber}">${page.pageNumber}</a>
+      </li>
+    </template>
+    <template id="plan-row">
+      <tr id="${plan.planid}">
+        <td>
+          <a href="/account/subscriptions/plan?planid=${plan.planid}">${plan.planid}</a>
+        </td>
+        <td>${plan.planid}</td>
+        <td>${plan.price}</td>
+        <td>${plan.trial_period_days}</td>
+      </tr>
+    </template>
+  </body>
+</html>

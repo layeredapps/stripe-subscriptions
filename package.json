@@ -1,0 +1,94 @@
+{
+  "dashboard": {
+    "title": "Stripe Subscriptions module",
+    "modules": [
+      "@layeredapps/maxmind-geoip"
+    ],
+    "server": [
+      "/src/server/stripe-subscriptions/bind-stripekey.js",
+      "/src/server/stripe-subscriptions/require-payment-confirmation.js",
+      "/src/server/stripe-subscriptions/require-payment.js",
+      "/src/server/stripe-subscriptions/require-subscription.js"
+    ]
+  },
+  "dependencies": {
+    "@layeredapps/maxmind-geoip": "latest",
+    "stripe": "^8.127.0"
+  },
+  "peerDependencies": {
+    "@layeredapps/dashboard": "latest"
+  },
+  "devDependencies": {
+    "@layeredapps/dashboard": "latest",
+    "@faker-js/faker": "latest",
+    "mocha": "latest",
+    "ngrok": "latest",
+    "puppeteer": "latest",
+    "standard": "latest"
+  },
+  "peerDependenciesMeta": {
+    "pg": {
+      "optional": true
+    },
+    "pg-hstore": {
+      "optional": true
+    },
+    "mysql2": {
+      "optional": true
+    },
+    "ibm_db": {
+      "optional": true
+    },
+    "odbc": {
+      "optional": true
+    },
+    "snowflake-sdk": {
+      "optional": true
+    },
+    "mariadb": {
+      "optional": true
+    },
+    "sqlite3": {
+      "optional": true
+    },
+    "tedious": {
+      "optional": true
+    }
+  },
+  "description": "Stripe Subscription module for Dashboard",
+  "engine": {
+    "node": ">=16",
+    "npm": ">=8"
+  },
+  "license": "MIT",
+  "main": "index.js",
+  "name": "@layeredapps/stripe-subscriptions",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/layeredapps/stripe-subscriptions.git"
+  },
+  "scripts": {
+    "debug": "node main.js --debug-brk=5858",
+    "start": "node main.js",
+    "test": "npm install sqlite3 --no-save --no-audit --no-fund >/dev/null && NODE_ENV=testing STORAGE=sqlite SQLITE_DATABASE=subscriptions node --expose-gc --max-old-space-size=4096 ./node_modules/.bin/mocha --ignore 'node_modules/**/*' --timeout 240000 --recursive --extension .test.js .",
+    "test-sqlite": "npm install sqlite3 --no-save --no-audit --no-fund >/dev/null && NODE_ENV=testing STORAGE=sqlite SQLITE_DATABASE=subscriptions SQLITE_FILE=`pwd`/db.sqlite node --expose-gc --max-old-space-size=4096 ./node_modules/.bin/mocha --ignore 'node_modules/**/*' --timeout 240000 --recursive --extension .test.js .",
+    "test-sqlite-node-cache": "npm install sqlite3 --no-save --no-audit --no-fund >/dev/null && NODE_ENV=testing CACHE=node STORAGE=sqlite SQLITE_DATABASE=subscriptions SQLITE_FILE=`pwd`/db.sqlite node --expose-gc --max-old-space-size=4096 ./node_modules/.bin/mocha --ignore 'node_modules/**/*' --timeout 240000 --recursive --extension .test.js .",
+    "test-sqlite-redis-cache": "npm install sqlite3 redis --no-save --no-audit --no-fund >/dev/null && NODE_ENV=testing CACHE=redis STORAGE=sqlite SQLITE_DATABASE=subscriptions SQLITE_FILE=`pwd`/db.sqlite node --expose-gc --max-old-space-size=4096 ./node_modules/.bin/mocha --ignore 'node_modules/**/*' --timeout 240000 --recursive --extension .test.js .",
+    "test-postgresql": "npm install pg pg-hstore --no-save --no-audit --no-fund >/dev/null && NODE_ENV=testing LOG_LEVEL=error STORAGE=postgresql POSTGRESQL_DATABASE_URL=postgres:user:password@127.0.0.1:5432/postgres node --expose-gc --max-old-space-size=4096 ./node_modules/.bin/mocha --ignore 'node_modules/**/*' --timeout 240000 --recursive --extension .test.js .",
+    "test-postgresql-node-cache": "npm install pg pg-hstore --no-save --no-audit --no-fund >/dev/null && NODE_ENV=testing CACHE=node STORAGE=postgresql POSTGRESQL_DATABASE_URL=postgres:user:password@127.0.0.1:5432/postgres node --expose-gc --max-old-space-size=4096 ./node_modules/.bin/mocha --ignore 'node_modules/**/*' --timeout 240000 --recursive --extension .test.js .",
+    "test-postgresql-redis-cache": "npm install pg pg-hstore redis --no-save --no-audit --no-fund >/dev/null && NODE_ENV=testing CACHE=redis STORAGE=postgresql POSTGRESQL_DATABASE_URL=postgres:user:password@127.0.0.1:5432/postgres node --expose-gc --max-old-space-size=4096 ./node_modules/.bin/mocha --ignore 'node_modules/**/*' --timeout 240000 --recursive --extension .test.js .",
+    "test-mariadb": "npm install mysql2 --no-save --no-audit --no-fund >/dev/null && NODE_ENV=testing LOG_LEVEL=error STORAGE=mariadb MARIADB_HOST=localhost MARIADB_PORT=3306 MARIADB_PASSWORD=password MARIADB_DATABASE=testdb MARIADB_USERNAME=user node --expose-gc --max-old-space-size=4096 ./node_modules/.bin/mocha --ignore 'node_modules/**/*' --timeout 240000 --recursive --extension .test.js .",
+    "test-mariadb-node-cache": "npm install mysql2 --no-save --no-audit --no-fund >/dev/null && NODE_ENV=testing CACHE=node STORAGE=mariadb MARIADB_HOST=localhost MARIADB_PORT=3306 MARIADB_PASSWORD=password MARIADB_DATABASE=testdb MARIADB_USERNAME=user node --expose-gc --max-old-space-size=4096 ./node_modules/.bin/mocha --ignore 'node_modules/**/*' --timeout 240000 --recursive --extension .test.js .",
+    "test-mariadb-redis-cache": "npm install mysql2 redis --no-save --no-audit --no-fund >/dev/null && NODE_ENV=testing CACHE=redis STORAGE=mariadb MARIADB_HOST=localhost MARIADB_PORT=3306 MARIADB_PASSWORD=password MARIADB_DATABASE=testdb MARIADB_USERNAME=user node --expose-gc --max-old-space-size=4096 ./node_modules/.bin/mocha --ignore 'node_modules/**/*' --timeout 240000 --recursive --extension .test.js .",
+    "test-mysql": "npm install mysql2 --no-save --no-audit --no-fund >/dev/null && NODE_ENV=testing LOG_LEVEL=error STORAGE=mysql MYSQL_HOST=localhost MYSQL_PORT=3306 MYSQL_PASSWORD=password MYSQL_DATABASE=testdb MYSQL_USERNAME=user node --expose-gc --max-old-space-size=4096 ./node_modules/.bin/mocha --ignore 'node_modules/**/*' --timeout 240000 --recursive --extension .test.js .",
+    "test-mysql-node-cache": "npm install mysql2 --no-save --no-audit --no-fund >/dev/null && NODE_ENV=testing CACHE=node STORAGE=mysql MYSQL_HOST=localhost MYSQL_PORT=3306 MYSQL_PASSWORD=password MYSQL_DATABASE=testdb MYSQL_USERNAME=user node --expose-gc --max-old-space-size=4096 ./node_modules/.bin/mocha --ignore 'node_modules/**/*' --timeout 240000 --recursive --extension .test.js .",
+    "test-mysql-redis-cache": "npm install mysql2 redis --no-save --no-audit --no-fund >/dev/null && NODE_ENV=testing CACHE=redis STORAGE=mysql MYSQL_HOST=localhost MYSQL_PORT=3306 MYSQL_PASSWORD=password MYSQL_DATABASE=testdb MYSQL_USERNAME=user node --expose-gc --max-old-space-size=4096 ./node_modules/.bin/mocha --ignore 'node_modules/**/*' --timeout 240000 --recursive --extension .test.js .",
+    "test-db2": "npm install ibm_db --no-save --no-audit --no-fund >/dev/null && NODE_ENV=testing LOG_LEVEL=error STORAGE=db2 DB2_HOST=localhost DB2_DATABASE=testdb DB2_USERNAME=db2inst1 DB2_PASSWORD=password DB2_PORT=50000 node --expose-gc --max-old-space-size=4096 ./node_modules/.bin/mocha --ignore 'node_modules/**/*' --timeout 240000 --recursive --extension .test.js .",
+    "test-db2-node-cache": "npm install ibm_db --no-save --no-audit --no-fund >/dev/null && NODE_ENV=testing CACHE=node STORAGE=db2 DB2_HOST=localhost DB2_DATABASE=testdb DB2_USERNAME=db2inst1 DB2_PASSWORD=password DB2_PORT=50000 node --expose-gc --max-old-space-size=4096 ./node_modules/.bin/mocha --ignore 'node_modules/**/*' --timeout 240000 --recursive --extension .test.js .",
+    "test-db2-redis-cache": "npm install ibm_db redis --no-save --no-audit --no-fund >/dev/null && NODE_ENV=testing CACHE=redis STORAGE=db2 DB2_HOST=localhost DB2_DATABASE=testdb DB2_USERNAME=db2inst1 DB2_PASSWORD=password DB2_PORT=50000 node --expose-gc --max-old-space-size=4096 ./node_modules/.bin/mocha --ignore 'node_modules/**/*' --timeout 240000 --recursive --extension .test.js .",
+    "test-mssql": "npm install tedious --no-save --no-audit --no-fund >/dev/null && NODE_ENV=testing LOG_LEVEL=error STORAGE=mssql MSSQL_HOST=localhost MSSQL_DATABASE=tempdb MSSQL_USERNAME=sa MSSQL_PASSWORD=yourStrong\\(\\!\\)Password MSSQL_PORT=1433 node --expose-gc --max-old-space-size=4096 ./node_modules/.bin/mocha --ignore 'node_modules/**/*' --timeout 240000 --recursive --extension .test.js .",
+    "test-mssql-node-cache": "npm install tedious --no-save --no-audit --no-fund >/dev/null && NODE_ENV=testing CACHE=node STORAGE=mssql MSSQL_HOST=localhost MSSQL_DATABASE=tempdb MSSQL_USERNAME=sa MSSQL_PASSWORD=yourStrong\\(\\!\\)Password MSSQL_PORT=1433 node --expose-gc --max-old-space-size=4096 ./node_modules/.bin/mocha --ignore 'node_modules/**/*' --timeout 240000 --recursive --extension .test.js .",
+    "test-mssql-redis-cache": "npm install tedious redis --no-save --no-audit --no-fund >/dev/null && NODE_ENV=testing CACHE=redis STORAGE=mssql MSSQL_HOST=localhost MSSQL_DATABASE=tempdb MSSQL_USERNAME=sa MSSQL_PASSWORD=yourStrong\\(\\!\\)Password MSSQL_PORT=1433 node --expose-gc --max-old-space-size=4096 ./node_modules/.bin/mocha --ignore 'node_modules/**/*' --timeout 240000 --recursive --extension .test.js ."
+  },
+  "version": "1.0.2"
+}

@@ -1,0 +1,892 @@
+/* eslint-env mocha */
+global.applicationPath = global.applicationPath || __dirname
+global.stripeAPIVersion = '2020-03-02'
+global.maximumStripeRetries = 0
+global.testConfiguration = global.testConfiguration || {}
+global.testConfiguration.requireSubscription = false
+global.testConfiguration.requirePayment = false
+global.testConfiguration.requirePaymentConfirmation = false
+global.testConfiguration.stripeJS = false
+global.testConfiguration.startSubscriptionPath = '/account/subscriptions/start-subscription'
+global.testConfiguration.subscriptionRefundPeriod = 7 * 24 * 60 * 60
+global.testConfiguration.minimumCouponLength = 1
+global.testConfiguration.maximumCouponLength = 100
+global.testConfiguration.minimumPlanIDLength = 1
+global.testConfiguration.maximumPlanIDLength = 100
+global.testConfiguration.minimumProductNameLength = 1
+global.testConfiguration.maximumProductNameLength = 100
+
+process.on('SIGTERM', (p1, p2, p3) => {
+  console.log(`RECEIVED SIGTERM: ${p1}, ${p2}, ${p3}`)
+  console.log(process.memoryUsage())
+  for (const key in global) {
+    console.log(key, '->', global[key])
+  }
+  const fs = require('fs')
+  const path = require('path')
+  const profileLog = fs.readFileSync(path.join(__dirname, 'isolate.log'))
+  console.log('---- profile log')
+  console.log(profileLog.toString())
+})
+
+const enabledEvents = [
+  'setup_intent.canceled',
+  'setup_intent.created',
+  'setup_intent.setup_failed',
+  'setup_intent.succeeded',
+  // 'sigma.scheduled_query_run.created',
+  // 'review.closed',
+  // 'review.opened',
+  // 'sku.created',
+  // 'sku.deleted',
+  // 'sku.updated',
+  'source.canceled',
+  'source.chargeable',
+  'source.failed',
+  'source.mandate_notification',
+  'source.refund_attributes_required',
+  'source.transaction.created',
+  'source.transaction.updated',
+  // 'tax_rate.created',
+  // 'tax_rate.updated',
+  // 'topup.canceled',
+  // 'topup.created',
+  // 'topup.failed',
+  // 'topup.reversed',
+  // 'topup.succeeded',
+  // 'transfer.created',
+  // 'transfer.failed',
+  // 'transfer.paid',
+  // 'transfer.reversed',
+  // 'transfer.updated',
+  // 'reporting.report_run.failed',
+  // 'reporting.report_run.succeeded',
+  // 'reporting.report_type.updated',
+  // 'product.created',
+  // 'product.deleted',
+  // 'product.updated',
+  // 'price.created',
+  // 'price.deleted',
+  // 'price.updated',
+  // 'plan.created',
+  // 'plan.deleted',
+  // 'plan.updated',
+  // 'order_return.created',
+  'payment_intent.amount_capturable_updated',
+  'payment_intent.canceled',
+  'payment_intent.created',
+  'payment_intent.payment_failed',
+  'payment_intent.processing',
+  'payment_intent.succeeded',
+  // 'order.payment_succeeded',
+  'payment_method.attached',
+  'payment_method.card_automatically_updated',
+  'payment_method.detached',
+  'payment_method.updated',
+  // 'payout.canceled',
+  // 'payout.created',
+  // 'payout.failed',
+  // 'payout.paid',
+  // 'payout.updated',
+  // 'mandate.updated',
+  // 'person.created',
+  // 'person.deleted',
+  // 'person.updated',
+  // 'issuing_card.created',
+  // 'issuing_card.updated',
+  // 'order.created',
+  // 'order.payment_failed',
+  // 'order.updated',
+  // 'issuing_dispute.created',
+  // 'issuing_dispute.funds_reinstated',
+  // 'issuing_dispute.updated',
+  // 'issuing_transaction.created',
+  // 'issuing_transaction.updated',
+  // 'issuing_authorization.created',
+  // 'issuing_authorization.request',
+  // 'issuing_authorization.updated',
+  // 'file.created',
+  // 'credit_note.created',
+  // 'credit_note.updated',
+  // 'credit_note.voided',
+  // 'issuing_cardholder.created',
+  // 'issuing_cardholder.updated',
+  // 'invoiceitem.created',
+  // 'invoiceitem.deleted',
+  // 'invoiceitem.updated',
+  'invoice.created',
+  // 'invoice.deleted',
+  'invoice.finalized',
+  'invoice.marked_uncollectible',
+  'invoice.paid',
+  'invoice.payment_action_required',
+  'invoice.payment_failed',
+  'invoice.payment_succeeded',
+  'invoice.sent',
+  'invoice.upcoming',
+  'invoice.updated',
+  'invoice.voided',
+  // 'coupon.created',
+  // 'coupon.deleted',
+  // 'coupon.updated',
+  // 'checkout.session.async_payment_failed',
+  // 'checkout.session.async_payment_succeeded',
+  // 'checkout.session.completed',
+  // 'customer.created',
+  // 'customer.deleted',
+  'customer.updated',
+  'customer.discount.created',
+  // 'customer.discount.deleted',
+  'customer.discount.updated',
+  // 'customer.source.created',
+  // 'customer.source.deleted',
+  'customer.source.expiring',
+  'customer.source.updated',
+  // 'customer.subscription.created',
+  // 'customer.subscription.deleted',
+  'customer.subscription.pending_update_applied',
+  'customer.subscription.pending_update_expired',
+  'customer.subscription.trial_will_end',
+  'customer.subscription.updated',
+  // 'customer.tax_id.created',
+  // 'customer.tax_id.deleted',
+  // 'customer.tax_id.updated',
+  // 'account.external_account.deleted',
+  'charge.captured',
+  'charge.expired',
+  'charge.failed',
+  'charge.pending',
+  'charge.refunded',
+  'charge.succeeded',
+  'charge.updated',
+  'charge.dispute.closed',
+  'charge.dispute.created',
+  'charge.dispute.funds_reinstated',
+  'charge.dispute.funds_withdrawn',
+  'charge.dispute.updated',
+  'charge.refund.updated'
+  // 'capability.updated',
+  // 'balance.available',
+  // 'account.updated',
+  // 'account.external_account.created',
+  // 'account.external_account.updated',
+  // 'subscription_schedule.aborted',
+  // 'subscription_schedule.canceled',
+  // 'subscription_schedule.completed',
+  // 'subscription_schedule.created',
+  // 'subscription_schedule.expiring',
+  // 'subscription_schedule.released',
+  // 'subscription_schedule.updated'
+]
+
+const util = require('util')
+const TestHelper = require('@layeredapps/dashboard/test-helper.js')
+const TestHelperPuppeteer = require('@layeredapps/dashboard/test-helper-puppeteer.js')
+const Log = require('@layeredapps/dashboard/src/log.js')('stripe-subscriptions')
+const ngrok = require('ngrok')
+// const localTunnel = require('localtunnel')
+const packageJSON = require('./package.json')
+const stripe = require('stripe')({
+  apiVersion: global.stripeAPIVersion,
+  telemetry: false,
+  maxNetworkRetries: global.maximumStripeRetries || 0,
+  appInfo: {
+    version: packageJSON.version,
+    name: '@layeredapps/stripe-subscriptions (test suite)',
+    url: 'https://github.com/layeredapps/stripe-subscriptions'
+  }
+})
+
+const stripeKey = {
+  apiKey: process.env.SUBSCRIPTIONS_STRIPE_KEY || process.env.STRIPE_KEY
+}
+const wait = util.promisify((time, callback) => {
+  if (time && !callback) {
+    callback = time
+    time = 100
+  }
+  return setTimeout(callback, time)
+})
+
+const waitForWebhook = util.promisify(async (webhookType, matching, callback) => {
+  Log.info('waitForWebhook', webhookType)
+  if (!webhook) {
+    return callback()
+  }
+  async function wait () {
+    if (global.testEnded) {
+      return
+    }
+    if (!global.webhooks || !global.webhooks.length) {
+      return setTimeout(wait, 10)
+    }
+    for (const received of global.webhooks) {
+      if (received.type !== webhookType) {
+        continue
+      }
+      const match = await matching(received)
+      if (match) {
+        return callback()
+      }
+    }
+    return setTimeout(wait, 10)
+  }
+  return setTimeout(wait, 10)
+})
+
+module.exports = {
+  cancelSubscription,
+  createAmountOwed,
+  createPaymentMethod,
+  createPaymentIntent,
+  createSetupIntent,
+  createCoupon,
+  createCustomer,
+  createCustomerDiscount,
+  createPayout,
+  createPlan,
+  createProduct,
+  createRefund,
+  createUsageRecord,
+  changeSubscription,
+  changeSubscriptionQuantity,
+  createSubscription,
+  createSubscriptionDiscount,
+  deleteCustomerDiscount,
+  deleteOldWebhooks,
+  deleteSubscription,
+  deleteSubscriptionDiscount,
+  denyRefund,
+  flagCharge,
+  forgiveInvoice,
+  toggleRefunds,
+  toggleOverdueInvoiceThreshold,
+  requestRefund,
+  rotateWebhook,
+  waitForWebhook,
+  setupWebhook,
+  setupBefore,
+  setupBeforeEach
+}
+
+for (const x in TestHelper) {
+  module.exports[x] = TestHelper[x]
+}
+
+module.exports.wait = wait
+const createRequest = module.exports.createRequest = (rawURL) => {
+  const req = TestHelper.createRequest(rawURL)
+  req.stripeKey = stripeKey
+  return req
+}
+
+let tunnel, webhook, subscriptions
+
+// direct webhook access is set up before the tests a single time
+async function setupBefore () {
+  subscriptions = require('./index.js')
+  await subscriptions.setup()
+  await deleteOldWebhooks(true)
+  await setupWebhook()
+  const helperRoutes = require('./test-helper-routes.js')
+  global.sitemap['/api/create-fake-payout'] = helperRoutes.createFakePayout
+  global.sitemap['/api/fake-amount-owed'] = helperRoutes.fakeAmountOwed
+  global.sitemap['/api/toggle-refunds'] = helperRoutes.toggleRefunds
+  global.sitemap['/api/toggle-overdue-invoice-threshold'] = helperRoutes.toggleOverdueInvoiceThreshold
+}
+
+let webhookRotation = 0
+
+async function setupBeforeEach () {
+  await subscriptions.Storage.flush()
+  await rotateWebhook()
+}
+
+async function rotateWebhook () {
+  if (!global.webhooks) {
+    global.webhooks = []
+  } else if (global.webhooks && global.webhooks.length > 0) {
+    webhookRotation += global.webhooks.length
+    global.webhooks = []
+    if (webhookRotation >= 20) {
+      webhookRotation = 0
+      await setupWebhook()
+    }
+  }
+}
+
+async function setupWebhook () {
+  if (webhook) {
+    await deleteOldWebhooks()
+    webhook = null
+  }
+  let newAddress
+  await ngrok.kill()
+  tunnel = null
+  while (!tunnel) {
+    try {
+      tunnel = await ngrok.connect({
+        port: global.port,
+        // auth: process.env.NGROK_AUTH,
+        onLogEvent: process.env.LOG_LEVEL && process.env.LOG_LEVEL.indexOf('ngrok') > -1 ? console.log : undefined
+      })
+      newAddress = tunnel
+      webhook = await stripe.webhookEndpoints.create({
+        url: `${newAddress}/webhooks/subscriptions/index-subscription-data`,
+        enabled_events: enabledEvents
+      }, stripeKey)
+      global.subscriptionWebhookEndPointSecret = webhook.secret
+      Log.info('created webhook', webhook)
+    } catch (error) {
+    }
+    if (!webhook) {
+      await wait()
+    }
+  }
+}
+
+before(deleteOldData)
+before(setupBefore)
+beforeEach(setupBeforeEach)
+
+afterEach(async () => {
+  await deleteOldData()
+  await subscriptions.Storage.flush()
+})
+
+after(async () => {
+  await deleteOldData()
+  if (webhook) {
+    await deleteOldWebhooks()
+    webhook = null
+    await ngrok.kill()
+  }
+  await TestHelperPuppeteer.close()
+  delete (global.packageJSON)
+  delete (global.sitemap)
+  delete (global.api)
+  delete (global.testEnded)
+})
+
+async function deleteOldWebhooks (really) {
+  if (!really) {
+    return
+  }
+  webhook = null
+  let webhooks = await stripe.webhookEndpoints.list({ limit: 100 }, stripeKey)
+  let errors = 0
+  while (webhooks.data && webhooks.data.length) {
+    for (const webhook of webhooks.data) {
+      if (webhook === 0) {
+        continue
+      }
+      try {
+        await stripe.webhookEndpoints.del(webhook.id, stripeKey)
+      } catch (error) {
+        Log.error('error deleting old data', error)
+        errors++
+        if (errors > 10) {
+          return process.exit(1)
+        }
+      }
+    }
+    try {
+      webhooks = await stripe.webhookEndpoints.list({ limit: 100 }, stripeKey)
+    } catch (error) {
+      webhooks = { data: [0] }
+    }
+  }
+}
+
+async function deleteOldData () {
+  for (const field of ['subscriptions', 'customers', 'plans', 'products', 'coupons']) {
+    let objects
+    while (true) {
+      try {
+        objects = await stripe[field].list({ limit: 100 }, stripeKey)
+        break
+      } catch (error) {
+        await wait()
+      }
+    }
+    while (objects.data && objects.data.length) {
+      for (const object of objects.data) {
+        if (object === 0) {
+          continue
+        }
+        try {
+          await stripe[field].del(object.id, stripeKey)
+        } catch (error) {
+          await wait()
+        }
+      }
+      try {
+        objects = await stripe[field].list({ limit: 100 }, stripeKey)
+      } catch (error) {
+        objects = { data: [0] }
+      }
+    }
+  }
+}
+
+let productNumber = 0
+async function createProduct (administrator, properties) {
+  productNumber++
+  const req = createRequest('/api/administrator/subscriptions/create-product')
+  req.session = administrator.session
+  req.account = administrator.account
+  req.body = {
+    name: `product${productNumber}_` + new Date().getTime() + '_' + Math.ceil(Math.random() * 1000),
+    statement_descriptor: `product${productNumber} description`,
+    unit_label: 'thing'
+  }
+  if (properties) {
+    for (const property in properties) {
+      req.body[property] = properties[property].toString()
+    }
+  }
+  let product = await req.post()
+  if (properties && properties.unpublishedAt) {
+    const req2 = createRequest(`/api/administrator/subscriptions/set-product-unpublished?productid=${product.productid}`)
+    req2.session = req.session
+    req2.account = req.account
+    product = await req2.patch(req2)
+  }
+  administrator.product = product
+  return product
+}
+
+let planNumber = 0
+async function createPlan (administrator, properties) {
+  planNumber++
+  const req = createRequest('/api/administrator/subscriptions/create-plan')
+  req.session = administrator.session
+  req.account = administrator.account
+  req.body = {
+    planid: `plan${planNumber}_` + new Date().getTime() + '_' + Math.ceil(Math.random() * 100000),
+    currency: 'USD',
+    interval: 'month',
+    interval_count: '1',
+    amount: '0'
+  }
+  if (properties) {
+    for (const property in properties) {
+      req.body[property] = properties[property].toString()
+    }
+  }
+  let plan = await req.post()
+  if (properties && properties.unpublishedAt) {
+    const req2 = createRequest(`/api/administrator/subscriptions/set-plan-unpublished?planid=${plan.planid}`)
+    req2.session = req.session
+    req2.account = req.account
+    plan = await req2.patch(req2)
+  }
+  administrator.plan = plan
+  return plan
+}
+
+let couponNumber = 0
+async function createCoupon (administrator, properties) {
+  couponNumber++
+  const req = createRequest('/api/administrator/subscriptions/create-coupon')
+  req.session = administrator.session
+  req.account = administrator.account
+  req.body = {
+    couponid: `coupon${couponNumber}_` + new Date().getTime() + '_' + Math.ceil(Math.random() * 1000),
+    percent_off: '25',
+    duration: 'repeating',
+    duration_in_months: '3'
+  }
+  if (properties) {
+    for (const property in properties) {
+      req.body[property] = properties[property].toString()
+    }
+  }
+  let coupon = await req.post()
+  if (properties && properties.unpublishedAt) {
+    const req2 = createRequest(`/api/administrator/subscriptions/set-coupon-unpublished?couponid=${coupon.couponid}`)
+    req2.session = req.session
+    req2.account = req.account
+    coupon = await req2.patch(req2)
+  }
+  administrator.coupon = coupon
+  return coupon
+}
+
+async function createRefund (administrator, chargeid) {
+  const req = createRequest(`/api/administrator/subscriptions/charge?chargeid=${chargeid}`)
+  req.session = administrator.session
+  req.account = administrator.account
+  const charge = await req.get()
+  const req2 = createRequest(`/api/administrator/subscriptions/create-refund?chargeid=${charge.chargeid}`)
+  req2.session = req.session
+  req2.account = req.account
+  req2.body = {
+    chargeid: charge.chargeid,
+    amount: charge.stripeObject.amount - (charge.stripeObject.amount_refunded || 0),
+    reason: 'requested_by_customer'
+  }
+  const refund = await req2.post(req2)
+  await waitForWebhook('charge.refunded', (stripeEvent) => {
+    return stripeEvent.data.object.id === chargeid
+  })
+  administrator.refund = refund
+  return administrator.refund
+}
+
+async function createSubscriptionDiscount (administrator, subscription, coupon) {
+  const req = createRequest(`/api/administrator/subscriptions/set-subscription-coupon?subscriptionid=${subscription.subscriptionid}`)
+  req.session = administrator.session
+  req.account = administrator.account
+  req.body = {
+    couponid: coupon.couponid
+  }
+  const subscriptionNow = await req.patch()
+  await waitForWebhook('customer.discount.created', (stripeEvent) => {
+    return stripeEvent.data.object.customer === subscription.stripeObject.customer.customerid ||
+           stripeEvent.data.object.customer === subscription.stripeObject.customer
+  })
+  await waitForWebhook('customer.subscription.updated', (stripeEvent) => {
+    return stripeEvent.data.object.id === subscription.subscriptionid
+  })
+  return subscriptionNow
+}
+
+async function deleteSubscriptionDiscount (administrator, subscription, coupon) {
+  const req = createRequest(`/api/administrator/subscriptions/reset-subscription-coupon?subscriptionid=${subscription.subscriptionid}`)
+  req.session = administrator.session
+  req.account = administrator.account
+  req.body = {
+    couponid: coupon.couponid
+  }
+  const subscriptionNow = await req.patch()
+  return subscriptionNow
+}
+
+async function createCustomerDiscount (administrator, customer, coupon) {
+  const req = createRequest(`/api/administrator/subscriptions/set-customer-coupon?customerid=${customer.customerid}`)
+  req.session = administrator.session
+  req.account = administrator.account
+  req.body = {
+    couponid: coupon.couponid
+  }
+  const customerNow = await req.patch()
+  await waitForWebhook('customer.discount.created', (stripeEvent) => {
+    return stripeEvent.data.object.customer === customer.customerid
+  })
+  return customerNow
+}
+
+async function deleteCustomerDiscount (administrator, customer, coupon) {
+  const req = createRequest(`/api/administrator/subscriptions/reset-customer-coupon?customerid=${customer.customerid}`)
+  req.session = administrator.session
+  req.account = administrator.account
+  req.body = {
+    couponid: coupon.couponid
+  }
+  const customerNow = await req.patch()
+  return customerNow
+}
+
+async function createCustomer (user, properties) {
+  const req = createRequest(`/api/user/subscriptions/create-customer?accountid=${user.account.accountid}`)
+  req.session = user.session
+  req.account = user.account
+  req.body = properties
+  user.customer = await req.post()
+  return user.customer
+}
+
+async function createSetupIntent (user, properties) {
+  const req = createRequest(`/api/user/subscriptions/create-setup-intent?customerid=${user.customer.customerid}`)
+  req.account = user.account
+  req.session = user.session
+  req.body = properties
+  user.setupIntent = await req.post()
+  return user.setupIntent
+}
+
+async function createPaymentIntent (user, properties) {
+  const req = createRequest(`/api/user/subscriptions/create-payment-intent?customerid=${user.customer.customerid}`)
+  req.account = user.account
+  req.session = user.session
+  req.body = properties
+  user.paymentIntent = await req.post()
+  await waitForWebhook('payment_intent.created', (stripeEvent) => {
+    return stripeEvent.data.object.id === user.paymentIntent.stripeObject.id
+  })
+  return user.paymentIntent
+}
+
+async function createUsageRecord (administrator, user, quantity) {
+  const req = createRequest(`/api/user/subscriptions/create-usage-record?subscriptionid=${user.subscription.subscriptionid}`)
+  req.session = user.session
+  req.account = user.account
+  req.body = {
+    quantity: quantity || 100,
+    action: 'set',
+    subscriptionitemid: user.subscription.stripeObject.items.data[0].id
+  }
+  user.usageRecord = await req.post()
+  return user.usageRecord
+}
+
+async function createPaymentMethod (user, properties) {
+  const req = createRequest(`/api/user/subscriptions/create-payment-method?customerid=${user.customer.customerid}`)
+  req.account = user.account
+  req.session = user.session
+  req.body = properties
+  user.paymentMethod = await req.post()
+  if (properties.default === 'true') {
+    await waitForWebhook('customer.updated', (stripeEvent) => {
+      return stripeEvent.data.object.id === user.customer.customerid &&
+             stripeEvent.data.object.invoice_settings.default_payment_method === user.paymentMethod.stripeObject.id
+    })
+    await waitForWebhook('payment_method.attached', (stripeEvent) => {
+      return stripeEvent.data.object.id === user.paymentMethod.stripeObject.id
+    })
+    await waitForWebhook('setup_intent.created', async (stripeEvent) => {
+      if (stripeEvent.data.object.payment_method === user.paymentMethod.stripeObject.id) {
+        user.setupIntent = await global.api.administrator.subscriptions.SetupIntent.get({
+          query: {
+            setupintentid: stripeEvent.data.object.id
+          }
+        })
+        return true
+      }
+    })
+  }
+  return user.paymentMethod
+}
+
+async function createAmountOwed (user, dueDate) {
+  const req = createRequest(`/api/fake-amount-owed?customerid=${user.customer.customerid}&due_date=${(dueDate || 0).toString()}`)
+  req.session = user.session
+  req.account = user.account
+  const invoice = await req.route.api.get(req)
+  const req2 = createRequest(`/api/user/subscriptions/invoice?invoiceid=${invoice.id}`)
+  req2.session = user.session
+  req2.account = user.account
+  req2.stripeKey = stripeKey
+  while (true) {
+    try {
+      user.invoice = await req2.route.api.get(req2)
+    } catch (error) {
+      await wait()
+      continue
+    }
+    break
+  }
+  return user.invoice
+}
+
+async function changeSubscription (user, planid) {
+  const req = createRequest(`/api/user/subscriptions/set-subscription-plan?subscriptionid=${user.subscription.subscriptionid}`)
+  req.session = user.session
+  req.account = user.account
+  req.body = {
+    planid
+  }
+  if (user.paymentMethod) {
+    req.body.paymentmethodid = user.paymentMethod.stripeObject.id
+  }
+  user.subscription = await req.patch()
+  await waitForWebhook('customer.subscription.updated', (stripeEvent) => {
+    return stripeEvent.data.object.plan.planid === planid
+  })
+  await waitForWebhook('invoice.created', async (stripeEvent) => {
+    if (stripeEvent.data.object.id !== user.invoice.stripeObject.id &&
+        stripeEvent.data.object.subscription === user.subscription.subscriptionid &&
+        stripeEvent.data.object.lines.data[stripeEvent.data.object.lines.data.length - 1].plan.planid === planid) {
+      user.invoice = await global.api.administrator.subscriptions.Invoice.get({
+        query: {
+          invoiceid: stripeEvent.data.object.id
+        }
+      })
+      return true
+    }
+  })
+  if (user.invoice.stripeObject.amount_due && !user.invoice.stripeObject.charge) {
+    await waitForWebhook('charge.succeeded', async (stripeEvent) => {
+      if (stripeEvent.data.object.id === user.invoice.stripeObject.charge) {
+        user.charge = await global.api.administrator.subscriptions.Charge.get({
+          query: {
+            chargeid: stripeEvent.data.object.id
+          }
+        })
+        return true
+      }
+    })
+  }
+  return user.subscription
+}
+
+async function changeSubscriptionQuantity (user, quantity) {
+  const req = createRequest(`/api/user/subscriptions/set-subscription-quantity?subscriptionid=${user.subscription.subscriptionid}`)
+  req.session = user.session
+  req.account = user.account
+  req.body = {
+    quantity
+  }
+  if (user.paymentMethod) {
+    req.body.paymentmethodid = user.paymentMethod.stripeObject.id
+  }
+  user.subscription = await req.patch()
+  await waitForWebhook('customer.subscription.updated', (stripeEvent) => {
+    return stripeEvent.data.object.quantity === quantity
+  })
+  if (user.subscription.stripeObject.current_period_end && !user.subscription.stripeObject.trial_end) {
+    await waitForWebhook('invoice.created', async (stripeEvent) => {
+      if (stripeEvent.data.object.id !== user.invoice.stripeObject.id &&
+        stripeEvent.data.object.subscription === user.subscription.subscriptionid &&
+        stripeEvent.data.object.lines.data[stripeEvent.data.object.lines.data.length - 1].quantity === quantity) {
+        user.invoice = await global.api.administrator.subscriptions.Invoice.get({
+          query: {
+            invoiceid: stripeEvent.data.object.id
+          }
+        })
+        return true
+      }
+    })
+    if (user.invoice.stripeObject.charge) {
+      await waitForWebhook('charge.succeeded', (stripeEvent) => {
+        return stripeEvent.data.object.id === user.invoice.stripeObject.charge
+      })
+      await waitForWebhook('charge.updated', async (stripeEvent) => {
+        if (stripeEvent.data.object.id === user.invoice.stripeObject.charge) {
+          user.charge = await global.api.administrator.subscriptions.Charge.get({
+            query: {
+              chargeid: stripeEvent.data.object.id
+            }
+          })
+          return true
+        }
+      })
+    }
+  }
+  return user.subscription
+}
+
+async function createSubscription (user, planid) {
+  const req = createRequest(`/api/user/subscriptions/create-subscription?customerid=${user.customer.customerid}`)
+  req.session = user.session
+  req.account = user.account
+  req.body = {
+    planid
+  }
+  if (user.paymentMethod) {
+    req.body.paymentmethodid = user.paymentMethod.stripeObject.id
+  }
+  user.subscription = await req.post()
+  return user.subscription
+}
+
+async function cancelSubscription (user) {
+  const req = createRequest(`/api/user/subscriptions/set-subscription-canceled?subscriptionid=${user.subscription.subscriptionid}`)
+  req.session = user.session
+  req.account = user.account
+  req.stripeKey = stripeKey
+  user.subscription = await req.patch()
+  return user.subscription
+}
+
+async function deleteSubscription (user, refund) {
+  if (refund) {
+    const req = createRequest(`/api/user/subscriptions/create-cancelation-refund?subscriptionid=${user.subscription.subscriptionid}`)
+    req.session = user.session
+    req.account = user.account
+    const object = await req.post()
+    user.refund = object
+    await waitForWebhook('charge.refunded', (stripeEvent) => {
+      return stripeEvent.data.object.id === user.refund.charge
+    })
+  }
+  const req2 = createRequest(`/api/user/subscriptions/delete-subscription?subscriptionid=${user.subscription.subscriptionid}`)
+  req2.session = user.session
+  req2.account = user.account
+  const subscription = await req2.delete()
+  await waitForWebhook('customer.subscription.deleted', (stripeEvent) => {
+    return stripeEvent.data.object.id === user.subscription.subscriptionid
+  })
+  req2.query.customerid = user.customer.customerid
+  req2.stripeKey = stripeKey
+  user.customer = await global.api.user.subscriptions.Customer.get(req2)
+  user.subscription = subscription
+  return user.subscription
+}
+
+async function forgiveInvoice (administrator, invoiceid) {
+  const req = createRequest(`/api/administrator/subscriptions/set-invoice-uncollectible?invoiceid=${invoiceid}`)
+  req.session = administrator.session
+  req.account = administrator.account
+  const invoice = await req.patch()
+  if (invoice.subscription) {
+    await waitForWebhook('customer.subscription.updated', (stripeEvent) => {
+      return stripeEvent.data.object.id !== invoice.invoiceid
+    })
+  }
+  return invoice
+}
+
+async function denyRefund (administrator, user, chargeid) {
+  const req = createRequest(`/api/administrator/subscriptions/set-refund-request-denied?chargeid=${chargeid}`)
+  req.session = administrator.session
+  req.account = administrator.account
+  req.body = {
+    reason: 'refund denied'
+  }
+  user.charge = await req.patch()
+  return user.charge
+}
+
+async function requestRefund (user, chargeid) {
+  const req = createRequest(`/api/user/subscriptions/create-refund-request?chargeid=${chargeid}`)
+  req.session = user.session
+  req.account = user.account
+  req.body = {
+    reason: 'unused subscription'
+  }
+  user.charge = await req.post()
+  return user.charge
+}
+
+async function flagCharge (administrator, chargeid) {
+  const req = createRequest(`/api/administrator/subscriptions/set-charge-flagged?chargeid=${chargeid}`)
+  req.session = administrator.session
+  req.account = administrator.account
+  const charge = await req.patch()
+  return charge
+}
+
+async function createPayout (administrator) {
+  const req = createRequest('/api/create-fake-payout')
+  req.session = administrator.session
+  req.account = administrator.account
+  const payout = await req.get()
+  const req2 = createRequest(`/api/administrator/subscriptions/payout?payoutid=${payout.id}`)
+  req2.session = administrator.session
+  req2.account = administrator.account
+  req2.stripeKey = stripeKey
+  while (true) {
+    try {
+      administrator.payout = await req2.route.api.get(req2)
+    } catch (error) {
+      await wait()
+      continue
+    }
+    break
+  }
+  return payout
+}
+
+async function toggleRefunds (user, enable) {
+  const req = createRequest(`/api/toggle-refunds?enable=${enable || ''}`)
+  req.session = user.session
+  req.account = user.account
+  return req.get(req)
+}
+
+async function toggleOverdueInvoiceThreshold (user, enable) {
+  const req = createRequest(`/api/toggle-overdue-invoice-threshold?enable=${enable || ''}`)
+  await req.get()
+}

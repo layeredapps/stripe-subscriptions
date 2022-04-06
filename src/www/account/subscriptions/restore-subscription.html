@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/account/subscriptions/navbar-subscription.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <title translate="yes">Restore subscription</title>
+    <link rel="stylesheet" href="/public/content.css">
+    <link rel="stylesheet" href="/public/content-additional.css">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">Restore subscription</h1>
+      <p translate="yes">This will stop the subscription from canceling.</p>
+      <div id="message-container"></div>
+      <form id="submit-form" method="post" class="input-form" action="/account/subscriptions/restore-subscription?subscriptionid=${subscription.subscriptionid}" name="submit-form">
+        <div class="button-group spaced-buttons">
+          <button id="submit-button" class="button" type="submit" translate="yes">Restore subscription</button>
+        </div>
+      </form>
+    </div>
+    <template id="success">
+      <div class="success message" translate="yes">
+        Success! The subscription has been restored and will no longer cancel
+      </div>
+    </template>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! An error occurred restoring the subscription
+      </div>
+    </template>
+  </body>
+</html>

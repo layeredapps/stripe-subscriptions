@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/administrator/subscriptions/navbar-payment-method.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" /> 
+    <title translate="yes">View payment method</title>
+    <link rel="stylesheet" href="/public/content.css">
+    <link rel="stylesheet" href="/public/content-additional.css">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">View payment method</h1>
+      <table id="payment_methods-table" class="data-table">
+        <tbody id="${payment_method.id}">
+          <tr>
+            <th>ID</th>
+            <td>${payment_method.id}</td>
+          </tr>
+          <tr>
+            <th translate="yes">Customer</th>
+            <td>
+              <a href="/administrator/subscriptions/customer?paymentmethodid=${payment_method.customer}">${payment_method.id}</a>
+            </td>
+          </tr>
+          <tr>
+            <th translate="yes">Account</th>
+            <td>
+              <a href="/administrator/account?accountid=${payment_method.accountid}">${payment_method.id}</a>
+            </td>
+          </tr>
+          <tr>
+            <th translate="yes">Brand</th>
+            <td>${payment_method.card.brand}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

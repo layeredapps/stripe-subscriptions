@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" /> 
+    <title translate="yes">Confirming payment</title>
+    <link href="/public/content.css" rel="stylesheet">
+    <link href="/public/content-additional.css" rel="stylesheet">
+    <script id="stripe-v3" src="https://js.stripe.com/v3/"></script>
+    <script>
+      window.addEventListener('load', function (event) {
+        stripe = Stripe('${payment_intent.stripePublishableKey}')
+        return stripe.confirmCardPayment('${payment_intent.client_secret}', {
+          payment_method: '${payment_intent.payment_method}',
+        }).then(function (result) {
+          document.location = '/account/subscriptions/invoice?invoiceid=${payment_intent.invoice}'
+        })
+      })
+    </script>
+  </head>
+  <body class="entry">
+    <div class="container">
+      <p translate="yes">Please wait while your payment completes.</p>
+    </div>
+  </body>
+</html>

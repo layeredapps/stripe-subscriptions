@@ -1,0 +1,30 @@
+const dashboard = require('@layeredapps/dashboard')
+const subscriptions = require('../../../../../index.js')
+
+module.exports = {
+  get: async (req) => {
+    if (!req.query || !req.query.subscriptionid) {
+      throw new Error('invalid-subscriptionid')
+    }
+    let subscription = await dashboard.StorageCache.get(req.query.subscriptionid)
+    if (!subscription) {
+      const subscriptionInfo = await subscriptions.Storage.Subscription.findOne({
+        where: {
+          subscriptionid: req.query.subscriptionid
+        }
+      })
+      if (!subscriptionInfo) {
+        throw new Error('invalid-subscriptionid')
+      }
+      if (subscriptionInfo.dataValues.accountid !== req.account.accountid) {
+        throw new Error('invalid-account')
+      }
+      subscription = {}
+      for (const field of subscriptionInfo._options.attributes) {
+        subscription[field] = subscriptionInfo.get(field)
+      }
+      await dashboard.StorageCache.set(req.query.subscriptionid, subscription)
+    }
+    return subscription
+  }
+}

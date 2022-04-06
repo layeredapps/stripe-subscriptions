@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/account/subscriptions/navbar-subscriptions.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" /> 
+    <title translate="yes">Create subscription</title>
+    <link rel="stylesheet" href="/public/content.css">
+    <link rel="stylesheet" href="/public/content-additional.css">
+    <base href="/" target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <div class="container">
+      <form id="submit-form" method="post" class="input-form" action="/account/subscriptions/start-subscription" name="submit-form">
+        <h1 translate="yes">Create subscription</h1>
+        <div id="message-container"></div>
+        <div class="input-fields">
+          <div class="field">
+            <select name="planid" id="planid">
+              <option value="" translate="yes">
+                Select plan</option>
+            </select>
+          </div>
+        </div>
+        <div class="button-group spaced-buttons">
+          <button id="submit-button" class="button" type="submit" translate="yes">Start subscription</button>
+        </div>
+      </form>
+    </div>
+    <template id="plan-option">
+      <option value="${plan.planid}">
+        ${plan.planid} --- ${plan.amountFormatted} / ${plan.interval}
+      </option>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/administrator/subscriptions/navbar-payment-intent.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" /> 
+    <title translate="yes">View payment intent</title>
+    <link rel="stylesheet" href="/public/content.css">
+    <link rel="stylesheet" href="/public/content-additional.css">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">View payment intent</h1>
+      <table id="payment_intents-table" class="data-table">
+        <tbody id="${payment_intent.id}">
+          <tr>
+            <th>ID</th>
+            <td>${payment_intent.id}</td>
+          </tr>
+          <tr>
+            <th translate="yes">Customer</th>
+            <td>
+              <a href="/administrator/subscriptions/customer?paymentintentid=${payment_intent.customer}">${payment_intent.id}</a>
+            </td>
+          </tr>
+          <tr>
+            <th translate="yes">Invoice</th>
+            <td>
+              <a href="/administrator/subscriptions/invoice?invoiceid=${payment_intent.invoice}">${payment_intent.invoice}</a>
+            </td>
+          </tr>
+          <tr>
+            <th translate="yes">Account</th>
+            <td>
+              <a href="/administrator/account?accountid=${payment_intent.accountid}">${payment_intent.accountid}</a>
+            </td>
+          </tr>
+          <tr>
+            <th translate="yes">Amount</th>
+            <td>${payment_intent.amountFormatted} ${payment_intent.currency}</td>
+          </tr>
+          <tr>
+            <th translate="yes">Status</th>
+            <td id="requires_payment_method" translate="yes">Requires payment method</td>
+            <td id="requires_confirmation" translate="yes">Requires confirmation</td>
+            <td id="requires_action" translate="yes">Requires action</td>
+            <td id="requires_source" translate="yes">Requires source</td>
+            <td id="processing" translate="yes">Processing</td>
+            <td id="requires_capture" translate="yes">Requires capture</td>
+            <td id="canceled" translate="yes">Canceled</td>
+            <td id="succeeded" translate="yes">Succeeded</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

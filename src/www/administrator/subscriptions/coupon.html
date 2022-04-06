@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/administrator/subscriptions/navbar-coupon.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" /> 
+    <title translate="yes">View coupon</title>
+    <link rel="stylesheet" href="/public/content.css">
+    <link rel="stylesheet" href="/public/content-additional.css">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">View coupon</h1>
+      <table id="coupons-table" class="data-table">
+        <tbody id="${coupon.id}">
+          <tr>
+            <th>ID</th>
+            <td>
+              <a href="/administrator/subscriptions/coupon?couponid=${coupon.id}">${coupon.id}</a>
+            </td>
+          </tr>
+          <tr>
+            <th id="amount_off-heading" translate="yes">Amount off</th>
+            <td id="amount_off-value">${coupon.amountOffFormatted} ${coupon.currency}</td>
+            <th id="percent_off-heading" translate="yes">Percent off</th>
+            <td id="percent_off-value">${coupon.percent_off}%</td>
+          </tr>
+          <tr>
+            <th translate="yes">Status</th>
+            <td id="published" translate="yes">Published</td>
+            <td id="unpublished" translate="yes">Unpublished</td>
+            <td id="not-published" translate="yes">Not yet published</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

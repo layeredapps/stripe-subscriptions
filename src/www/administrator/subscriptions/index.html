@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/administrator/subscriptions/navbar.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" /> 
+    <title translate="yes">Subscriptions administration</title>
+    <link rel="stylesheet" href="/public/content.css">
+    <link rel="stylesheet" href="/public/content-additional.css">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">Subscriptions administration</h1>
+      <div id="message-container"></div>
+      <h2 translate="yes">Plans</h2>
+      <p id="no-plans" translate="yes">You do not have any plans. Create a product and then create plans.</p>
+      <menu class="button-group">
+        <a class="button" href="/administrator/subscriptions/create-product">Create product</a>
+        <a class="button" href="/administrator/subscriptions/create-plan">Create plan</a>
+      </menu>
+      <div class="list-table-wrapper">
+        <table id="plans-table" class="list-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th translate="yes">Product</th>
+              <th translate="yes">Price</th>
+              <th translate="yes">Trial</th>
+              <th translate="yes">Status</th>
+              <th translate="yes">Created</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <h2 translate="yes">Coupons</h2>
+      <p id="no-coupons" translate="yes">You do not have any coupons. Coupons allow your customers to be discounted by yourself or administrators, and subscriptions to be discounted by customers.</p>
+      <menu class="button-group">
+        <a class="button" href="/administrator/subscriptions/create-coupon" translate="yes">Create coupon</a>
+      </menu>
+      <div class="list-table-wrapper">
+        <table id="coupons-table" class="list-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th translate="yes">Discount</th>
+              <th translate="yes">Status</th>
+              <th translate="yes">Created</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <h1 translate="yes">Subscriptions</h1>
+      <p id="no-subscriptions" translate="yes">You do not have any subscriptions. Create published products and plans for users to subscribe to.</p>
+      <div id="message-container"></div>
+      <div class="list-table-wrapper">
+        <table id="subscriptions-table" class="list-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Product</th>
+              <th>Price</th>
+              <th>Trial</th>
+              <th>Status</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+    <template id="plan-row">
+      <tr id="${plan.id}">
+        <td><a href="/administrator/subscriptions/plan?planid=${plan.id}">${plan.id}</a></td>
+        <td><a href="/administrator/subscriptions/product?productid=${plan.product}">${plan.product}</a></td>
+        <td>${plan.amountFormatted}</td>
+        <td>${plan.trialFormatted}</td>
+        <td id="draft-plan-${plan.id}">Draft</td>
+        <td id="published-plan-${plan.id}">Published</td>
+        <td id="unpublished-plan-${plan.id}">Unpublished</td>
+        <td>${plan.createdAtFormatted}</td>
+      </tr>
+    </template>
+    <template id="coupon-row">
+      <tr id="${coupon.id}">
+        <td><a href="/administrator/subscriptions/coupon?couponid=${coupon.id}">${coupon.id}</a></td>
+        <td>${coupon.discount}</td>
+        <td id="draft-coupon-${coupon.id}">Draft</td>
+        <td id="published-coupon-${coupon.id}">Published</td>
+        <td id="unpublished-coupon-${coupon.id}">Unpublished</td>
+        <td>${coupon.createdAtFormatted}</td>
+      </tr>
+    </template>
+    <template id="subscription-row">
+      <tr id="${subscription.id}">
+        <td><a href="/administrator/subscriptions/subscription?subscriptionid=${subscription.id}">${subscription.id}</a></td>
+        <td><a href="/administrator/subscriptions/customer?customerid=${subscription.customer.id || subscription.customer}">${subscription.customer.id || subscription.customer}</a></td>
+        <td>${subscription.currentPeriodStartFormatted} - ${subscription.currentPeriodEndFormatted}</td>
+        <td>${subscription.discount}</td>
+        <td><a href="/administrator/subscriptions/plan?subscriptionid=${subscription.plan}">${subscription.plan.id}</a></td>
+        <td>${subscription.status}</td>
+        <td>${subscription.createdAtFormatted}</td>
+      </tr>
+    </template>
+  </body>
+</html>

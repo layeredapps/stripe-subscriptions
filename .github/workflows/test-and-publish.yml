@@ -1,0 +1,93 @@
+name: publish
+
+on: [push]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 16
+    - name: Lint JavaScript source with standard.js
+      run: |
+        if [ ! -z "$NPM_PROXY" ]; then
+          npm --registry=$NPM_PROXY install standard -g
+        else
+          npm install standard -g
+        fi        
+        standard
+    - name: Configure git
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+    - name: Increase version
+      run: npm version patch
+    - name: Run test suite
+      run: |
+        export RESPONSE_PATH=`pwd`/documentation
+        export SCREENSHOT_PATH=`pwd`/documentation/screenshots
+        npm install -D --silent --no-audit --no-fund &>/dev/null 
+        npm install sqlite3 --silent --no-save --no-audit --no-fund &>/dev/null 
+        node --expose-gc --max-old-space-size=4096 ./node_modules/.bin/mocha --ignore 'node_modules/**/*' --timeout 960000 --slow 960000 --recursive --extension .test.js . 2>&1 | tee tests.txt
+      env:
+        NODE_ENV: testing
+        STORAGE: postgresql 
+        POSTGRESQL_DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+        STRIPE_KEY: ${{ secrets.SUBSCRIPTIONS_STRIPE_KEY }}
+        STRIPE_PUBLISHABLE_KEY: ${{ secrets.SUBSCRIPTIONS_STRIPE_PUBLISHABLE_KEY }}
+        STRIPE_JS: false
+        SUBSCRIPTIONS_WEBHOOK_ENDPOINT_SECRET: replaced-at-runtime
+        NGROK: true
+        DISABLE_PAYOUT_TESTS: true
+        GENERATE_RESPONSE: true
+        GENERATE_SCREENSHOTS: true
+        SCREENSHOT_LANGUAGES: en
+    - name: Generate supporting text files
+      run: node main.js
+      env:
+        NODE_ENV: testing
+        EXIT_ON_START: true
+        STRIPE_KEY: ${{ secrets.SUBSCRIPTIONS_STRIPE_KEY }}
+        STRIPE_PUBLISHABLE_KEY: ${{ secrets.SUBSCRIPTIONS_STRIPE_PUBLISHABLE_KEY }}
+        STRIPE_JS: false
+        SUBSCRIPTIONS_WEBHOOK_ENDPOINT_SECRET: replaced-at-runtime
+        NGROK: true
+        DISABLE_PAYOUT_TESTS: true
+    - name: Publish to Github
+      uses: stefanzweifel/git-auto-commit-action@v4.1.6
+      with:
+        commit_message: Automatically regenerated against current version
+        branch: ${{ github.head_ref }}
+        commit_options: '--no-verify --signoff'
+        repository: .
+    - name: Publish to NPM
+      uses: JS-DevTools/npm-publish@v1
+      with:
+        token: ${{ secrets.NPM_TOKEN }}
+        access: 'public'
+    - name: Publish documentation assets
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        external_repository: "layeredapps/layeredapps.github.io"
+        personal_token: ${{ secrets.DEPLOY_TOKEN }}
+        publish_dir: documentation
+        keep_files: true
+        publish_branch: master
+    - name: Pass or fail tests
+      run: |
+        TESTS=`cat tests.txt`
+        if [[ "$TESTS" == *" 1)"* ]]; then
+          exit 1
+        fi

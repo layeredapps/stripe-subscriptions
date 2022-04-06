@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/administrator/subscriptions/navbar-plan.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" /> 
+    <title translate="yes">View plan</title>
+    <link rel="stylesheet" href="/public/content.css">
+    <link rel="stylesheet" href="/public/content-additional.css">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">View plan</h1>
+      <table id="plans-table" class="data-table">
+        <tbody id="${plan.planid}">
+          <tr>
+            <th>ID</th>
+            <td>
+              <a href="/administrator/subscriptions/plan?planid=${plan.planid}">${plan.planid}</a>
+            </td>
+          </tr>
+          <tr>
+            <th translate="yes">Product</th>
+            <td>
+              <a href="/administrator/subscriptions/product?productid=${plan.product}">${plan.product}</a>
+            </td>
+          </tr>
+          <tr>
+            <th translate="yes">Price</th>
+            <td>${plan.amountFormatted}</td>
+          </tr>
+          <tr>
+            <th translate="yes">Trial period</th>
+            <td>${plan.trialFormatted} day(s)</td>
+          </tr>
+          <tr>
+            <th translate="yes">Billing interval</th>
+            <td>${plan.interval_count} ${plan.interval}(s)</td>
+          </tr>
+          <tr>
+            <th translate="yes">Status</th>
+            <td id="published" translate="yes">Published</td>
+            <td id="unpublished" translate="yes">Unpublished</td>
+            <td id="not-published" translate="yes">Not yet published</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

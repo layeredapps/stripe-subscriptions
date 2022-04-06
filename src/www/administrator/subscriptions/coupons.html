@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/administrator/subscriptions/navbar-coupons.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" /> 
+    <title translate="yes">Coupons</title>
+    <link rel="stylesheet" href="/public/content.css">
+    <link rel="stylesheet" href="/public/content-additional.css">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">Coupons</h1>
+      <p translate="yes">Coupons allow discounts to be applied to customers and subscriptions.</p>
+      <div id="message-container"></div>
+      <p><a href="/administrator/subscriptions/create-coupon" class="button" translate="yes">Create coupon</a></p>
+      <div id="no-coupons">
+        <p translate="yes">No coupons have been created yet.</p>
+      </div>
+      <div class="list-table-wrapper">
+        <table id="coupons-table" class="list-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th translate="yes">Discount</th>
+              <th translate="yes">Status</th>
+              <th translate="yes">Created</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <ul id="page-links" class="pagination"></ul>
+    </div>
+    <template id="page-link">
+      <li>
+        <a href="/administrator/subscriptions/coupons?offset=${page.offset}" id="page-link-${page.pageNumber}">${page.pageNumber}</a>
+      </li>
+    </template>
+    <template id="coupon-row">
+      <tr id="${coupon.id}">
+        <td>
+          <a href="/administrator/subscriptions/coupon?couponid=${coupon.id}">${coupon.id}</a>
+        </td>
+        <td id="amount_off-${coupon.id}">${coupon.amount_offFormatted} ${coupon.currency}</td>
+        <td id="percent_off-${coupon.id}">${coupon.percent_off}%</td>
+        <td id="draft-coupon-${coupon.id}" translate="yes">Draft</td>
+        <td id="published-coupon-${coupon.id}" translate="yes">Published</td>
+        <td id="unpublished-coupon-${coupon.id}" translate="yes">Unpublished</td>
+        <td>${coupon.createdAtFormatted}</td>
+      </tr>
+    </template>
+  </body>
+</html>

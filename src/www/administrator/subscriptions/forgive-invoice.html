@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/administrator/subscriptions/navbar-invoice.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <title translate="yes">Forgive invoice</title>
+    <link rel="stylesheet" href="/public/content.css">
+    <link rel="stylesheet" href="/public/content-additional.css">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">Forgive invoice</h1>
+      <p translate="yes">This will close the invoice with any owed amount forgiven.</p>
+      <div id="message-container"></div>
+      <form id="submit-form" method="post" class="input-form" action="/administrator/subscriptions/forgive-invoice?invoiceid=${invoice.id}" name="submit-form">
+        <button id="submit-button" class="button" type="submit" translate="yes">Forgive invoice</button>
+      </form>
+    </div>
+    <template id="success">
+      <div class="success message" translate="yes">
+        Success! The invoice has been marked uncollectible
+      </div>
+    </template>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! An error occurred forgiving the invoice
+      </div>
+    </template>
+  </body>
+</html>

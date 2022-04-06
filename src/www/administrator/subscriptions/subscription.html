@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/administrator/subscriptions/navbar-subscription.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" /> 
+    <title translate="yes">View subscription</title>
+    <link rel="stylesheet" href="/public/content.css">
+    <link rel="stylesheet" href="/public/content-additional.css">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">View subscription</h1>
+      <div id="message-container"></div>
+      <table id="subscriptions-table" class="data-table">
+        <tbody id="${subscription.id}">
+          <tr>
+            <th>ID</th>
+            <td>
+              <a href="/administrator/subscriptions/subscription?subscriptionid=${subscription.id}">${subscription.id}</a>
+            </td>
+          </tr>
+          <tr>
+            <th translate="yes">Customer</th>
+            <td>
+              <a href="/administrator/subscriptions/customer?customerid=${subscription.customer.id || subscription.customer}">${subscription.customer.id || subscription.customer}</a>
+            </td>
+          </tr>
+          <tr>
+            <th translate="yes">Period</th>
+            <td>${subscription.currentPeriodStartFormatted} - ${subscription.currentPeriodEndFormatted}</td>
+          </tr>
+          <tr>
+            <th translate="yes">Discount</th>
+            <td>${subscription.discount.coupon.id}</td>
+          </tr>
+          <tr>
+            <th translate="yes">Plan</th>
+            <td>${subscription.planid}</td>
+          </tr>
+          <tr id="active-subscription-${subscription.id}">
+            <th translate="yes">Status</th>
+            <td translate="yes">Active</td>
+          </tr>
+          <tr id="canceling-subscription-${subscription.id}">
+            <th translate="yes">Status</th>
+            <td>Active (canceling)</td>
+          </tr>
+          <tr id="trialing-subscription-${subscription.id}">
+            <th translate="yes">Status</th>
+            <td>Trial ending ${subscription.trialEndFormatted}</td>
+          </tr>
+          <tr id="past_due-subscription-${subscription.id}">
+            <th translate="yes">Status</th>
+            <td translate="yes">Invoice past due</td>
+          </tr>
+          <tr id="canceled-subscription-${subscription.id}">
+            <th translate="yes">Status</th>
+            <td translate="yes">Canceled</td>
+          </tr>
+          <tr id="unpaid-subscription-${subscription.id}">
+            <th translate="yes">Status</th>
+            <td translate="yes">Unpaid</td>
+          </tr>
+          <tr>
+            <th translate="yes">Created</th>
+            <td>${subscription.createdAtFormatted}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

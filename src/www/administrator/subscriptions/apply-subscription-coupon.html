@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/administrator/subscriptions/navbar-subscription.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <title translate="yes">Apply coupon to subscription</title>
+    <link rel="stylesheet" href="/public/content.css">
+    <link rel="stylesheet" href="/public/content-additional.css">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">Apply coupon to subscription</h1>
+      <p translate="yes">The coupon will remain in effect until its expiration or or removal.</p>
+      <div id="message-container"></div>
+      <form id="submit-form" method="post" class="input-form" action="/administrator/subscriptions/apply-subscription-coupon?subscriptionid=${subscription.id}" name="submit-form">
+        <div class="input-fields">
+          <label class="field-label" for="couponid" translate="yes">Select coupon</label>
+          <div class="field">
+            <select id="couponid" name="couponid">
+              <option value="" translate="yes">
+                Select coupon
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="form-buttons">
+          <button id="submit-button" class="button" type="submit" translate="yes">Apply discount</button>
+        </div>
+      </form>
+    </div>
+    <template id="coupon-option">
+      <option value="${coupon.id}">
+        ${coupon.id}
+      </option>
+    </template>
+    <template id="success">
+      <div class="success message" translate="yes">
+        Success! The coupon has been applied
+      </div>
+    </template>
+    <template id="invalid-couponid">
+      <div class="error message" translate="yes">
+        Error! An invalid coupon was provided
+      </div>
+    </template>
+    <template id="invalid-coupon">
+      <div class="error message" translate="yes">
+        Error! An invalid coupon was provided
+      </div>
+    </template>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! An error occurred applying the coupon
+      </div>
+    </template>
+  </body>
+</html>

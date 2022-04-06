@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/account/subscriptions/navbar-subscriptions.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" /> 
+    <title translate="yes">Confirm subscription</title>
+    <link rel="stylesheet" href="/public/content.css">
+    <link rel="stylesheet" href="/public/content-additional.css">
+  </head>
+  <body class="entry-form">
+    <div class="container">
+      <form id="submit-form" method="post" class="input-form entry-form" action="/account/subscriptions/confirm-subscription?planid=${plan.planid}" name="submit-form">
+        <h1 translate="yes">Confirm subscription</h1>
+        <div id="message-container"></div>
+        <h2 translate="yes">Billing profile</h2>
+        <div id="existing-container" class="input-fields">
+          <label class="field-label" for="customerid" translate="yes">Existing profile</label> 
+          <div class="field">
+            <select name="customerid" id="customerid">
+              <option value="" translate="yes">
+                Select profile</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-fields new-profile">
+          <a id="create-link" href="/account/subscriptions/create-billing-profile?return-url=/account/subscriptions/confirm-subscription?planid=${plan.planid}" class="button">Add new profile</a>
+        </div>
+        <table id="plan-table" class="summary">
+          <tr>
+            <th translate="yes">Plan</th>
+            <th translate="yes">Price</th>
+            <th translate="yes">Period</th>
+          </tr>
+        </table>
+        <div id="charge"></div>
+        <div class="form-buttons">
+          <button id="submit-button" class="button submit" type="submit" translate="yes">Start subscription</button>
+        </div>
+      </form>
+    </div>
+    <template id="customer-option">
+      <option value="${customer.id}">
+        ${customer.description}
+      </option>
+    </template>
+    <template id="charge-now">
+      <p translate="yes">You will be billed ${plan.amountFormatted} now and each ${plan.interval}.</p>
+    </template>
+    <template id="charge-later">
+      <p translate="yes">Recurring charges of ${plan.amountFormatted} begin in ${plan.trial_period_days} days.</p>
+    </template>
+    <template id="plan-row">
+      <tr>
+        <td>${plan.planid}</td>
+        <td>${plan.amountFormatted}</td>
+        <td>${plan.interval_count}x ${plan.interval}</td>
+      </tr>
+    </template>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! An error occurred installing the app
+      </div>
+    </template>
+    <template id="invalid-paymentmethodid">
+      <div class="error message" translate="yes">
+        Error! You have not added payment information
+      </div>
+    </template>
+    <template id="invalid-customerid">
+      <div class="error message" translate="yes">
+        Error! An invalid billing profile was selected
+      </div>
+    </template>
+  </body>
+</html>
