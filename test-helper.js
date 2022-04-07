@@ -16,19 +16,6 @@ global.testConfiguration.maximumPlanIDLength = 100
 global.testConfiguration.minimumProductNameLength = 1
 global.testConfiguration.maximumProductNameLength = 100
 
-process.on('SIGTERM', (p1, p2, p3) => {
-  console.log(`RECEIVED SIGTERM: ${p1}, ${p2}, ${p3}`)
-  console.log(process.memoryUsage())
-  for (const key in global) {
-    console.log(key, '->', global[key])
-  }
-  const fs = require('fs')
-  const path = require('path')
-  const profileLog = fs.readFileSync(path.join(__dirname, 'isolate.log'))
-  console.log('---- profile log')
-  console.log(profileLog.toString())
-})
-
 const enabledEvents = [
   'setup_intent.canceled',
   'setup_intent.created',
@@ -184,7 +171,6 @@ const TestHelper = require('@layeredapps/dashboard/test-helper.js')
 const TestHelperPuppeteer = require('@layeredapps/dashboard/test-helper-puppeteer.js')
 const Log = require('@layeredapps/dashboard/src/log.js')('stripe-subscriptions')
 const ngrok = require('ngrok')
-// const localTunnel = require('localtunnel')
 const packageJSON = require('./package.json')
 const stripe = require('stripe')({
   apiVersion: global.stripeAPIVersion,
@@ -280,7 +266,7 @@ const createRequest = module.exports.createRequest = (rawURL) => {
   return req
 }
 
-let tunnel, webhook, subscriptions
+let webhook, subscriptions
 
 // direct webhook access is set up before the tests a single time
 async function setupBefore () {
@@ -308,7 +294,7 @@ async function rotateWebhook () {
   } else if (global.webhooks && global.webhooks.length > 0) {
     webhookRotation += global.webhooks.length
     global.webhooks = []
-    if (webhookRotation >= 20) {
+    if (webhookRotation >= 10) {
       webhookRotation = 0
       await setupWebhook()
     }
@@ -320,19 +306,16 @@ async function setupWebhook () {
     await deleteOldWebhooks()
     webhook = null
   }
-  let newAddress
   await ngrok.kill()
-  tunnel = null
-  while (!tunnel) {
+  while (!webhook) {
     try {
-      tunnel = await ngrok.connect({
+      const tunnel = await ngrok.connect({
         port: global.port,
         // auth: process.env.NGROK_AUTH,
         onLogEvent: process.env.LOG_LEVEL && process.env.LOG_LEVEL.indexOf('ngrok') > -1 ? console.log : undefined
       })
-      newAddress = tunnel
       webhook = await stripe.webhookEndpoints.create({
-        url: `${newAddress}/webhooks/subscriptions/index-subscription-data`,
+        url: `${tunnel}/webhooks/subscriptions/index-subscription-data`,
         enabled_events: enabledEvents
       }, stripeKey)
       global.subscriptionWebhookEndPointSecret = webhook.secret
@@ -352,6 +335,10 @@ beforeEach(setupBeforeEach)
 afterEach(async () => {
   await deleteOldData()
   await subscriptions.Storage.flush()
+  if (global.webhooks.length) {
+    webhookRotation += 100
+    await rotateWebhook()
+  }
 })
 
 after(async () => {

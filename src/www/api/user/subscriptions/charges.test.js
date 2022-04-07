@@ -7,7 +7,10 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 describe('/api/user/subscriptions/charges', function () {
   const cachedResponses = {}
   const cachedCharges = []
-  before(async () => {
+  beforeEach(async () => {
+    if (Object.keys(cachedResponses).length) {
+      return
+    }
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()

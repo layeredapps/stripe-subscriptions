@@ -6,7 +6,10 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 describe('/administrator/subscriptions/products', function () {
   const cachedResponses = {}
   const cachedProducts = []
-  before(async () => {
+  beforeEach(async () => {
+    if (Object.keys(cachedResponses).length) {
+      return
+    }
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const administrator = await TestHelper.createOwner()

@@ -7,7 +7,10 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 describe('/administrator/subscriptions/payment-intents', function () {
   const cachedResponses = {}
   const cachedPaymentIntents = []
-  before(async () => {
+  beforeEach(async () => {
+    if (Object.keys(cachedResponses).length) {
+      return
+    }
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const administrator = await TestHelper.createOwner()

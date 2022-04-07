@@ -7,7 +7,10 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 describe('/account/subscriptions/pay-invoice', function () {
   const cachedResponses = {}
   let cachedInvoice
-  before(async () => {
+  beforeEach(async () => {
+    if (Object.keys(cachedResponses).length) {
+      return
+    }
     global.subscriptionRefundPeriod = 7 * 24 * 60 * 60
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()

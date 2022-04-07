@@ -6,7 +6,10 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/administrator/subscriptions/apply-subscription-coupon', function () {
   const cachedResponses = {}
-  before(async () => {
+  beforeEach(async () => {
+    if (Object.keys(cachedResponses).length) {
+      return
+    }
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const administrator = await TestStripeAccounts.createOwnerWithPlan({ amount: '1000' })

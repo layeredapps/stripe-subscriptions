@@ -7,7 +7,10 @@ describe('/administrator/subscriptions/payouts', function () {
   if (!process.env.DISABLE_PAYOUT_TESTS) {
     const cachedResponses = {}
     const cachedPayouts = []
-    before(async () => {
+    beforeEach(async () => {
+      if (Object.keys(cachedResponses).length) {
+        return
+      }
       await DashboardTestHelper.setupBeforeEach()
       await TestHelper.setupBeforeEach()
       const administrator = await TestHelper.createOwner()

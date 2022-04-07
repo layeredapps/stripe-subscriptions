@@ -7,7 +7,10 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 describe('/account/subscriptions/request-refund', function () {
   const cachedResponses = {}
   let cachedUser
-  before(async () => {
+  beforeEach(async () => {
+    if (Object.keys(cachedResponses).length) {
+      return
+    }
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     global.subscriptionRefundPeriod = 0

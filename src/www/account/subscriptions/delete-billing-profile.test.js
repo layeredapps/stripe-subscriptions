@@ -6,7 +6,10 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 describe('/account/subscriptions/delete-billing-profile', function () {
   const cachedResponses = {}
   let cachedCustomer
-  before(async () => {
+  beforeEach(async () => {
+    if (Object.keys(cachedResponses).length) {
+      return
+    }
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const user = await TestHelper.createUser()

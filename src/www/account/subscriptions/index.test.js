@@ -9,7 +9,10 @@ describe('/account/subscriptions', function () {
   const cachedInvoices = []
   const cachedSubscriptions = []
   const cachedCustomers = []
-  before(async () => {
+  beforeEach(async () => {
+    if (Object.keys(cachedResponses).length) {
+      return
+    }
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const administrator = await TestStripeAccounts.createOwnerWithPlan({
