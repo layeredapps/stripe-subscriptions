@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/administrator/subscriptions/subscriptions', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -35,7 +36,9 @@ describe('/administrator/subscriptions/subscriptions', function () {
       { click: `/administrator/subscriptions/subscription?subscriptionid=${user.subscription.subscriptionid}` }
     ]
     cachedResponses.returns = await req.get()
-  })
+    cachedResponses.finished = true
+  }
+
   describe('before', () => {
     it('should reject invalid subscriptionid', async () => {
       const administrator = await TestHelper.createOwner()
@@ -52,6 +55,7 @@ describe('/administrator/subscriptions/subscriptions', function () {
     })
 
     it('should bind data to req', async () => {
+      await bundledData()
       const data = cachedResponses.before
       assert.strictEqual(data.subscription.object, 'subscription')
     })
@@ -59,6 +63,7 @@ describe('/administrator/subscriptions/subscriptions', function () {
 
   describe('view', () => {
     it('should present the subscription table (screenshots)', async () => {
+      await bundledData()
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('subscriptions-table')

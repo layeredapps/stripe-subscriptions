@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/account/subscriptions/cancel-subscription', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const administrator = await TestStripeAccounts.createOwnerWithPlan({
@@ -129,24 +130,29 @@ describe('/account/subscriptions/cancel-subscription', function () {
       refund: 'at_period_end'
     }
     cachedResponses.submitFreeTrial2 = await req.post()
-  })
+    cachedResponses.finished = true
+  }
   describe('exceptions', () => {
     it('should reject missing subscription', async () => {
+      await bundledData()
       const errorMessage = cachedResponses.missingSubscription
       assert.strictEqual(errorMessage, 'invalid-subscriptionid')
     })
 
     it('should reject invalid subscription', async () => {
+      await bundledData()
       const errorMessage = cachedResponses.invalidSubscription
       assert.strictEqual(errorMessage, 'invalid-subscriptionid')
     })
 
     it('should reject canceled subscription', async () => {
+      await bundledData()
       const errorMessage = cachedResponses.canceledSubscription
       assert.strictEqual(errorMessage, 'invalid-subscription')
     })
 
     it('should reject other account\'s subscription', async () => {
+      await bundledData()
       const errorMessage = cachedResponses.invalidAccount
       assert.strictEqual(errorMessage, 'invalid-account')
     })
@@ -154,6 +160,7 @@ describe('/account/subscriptions/cancel-subscription', function () {
 
   describe('before', () => {
     it('should bind data to req', async () => {
+      await bundledData()
       const before = cachedResponses.before
       assert.strictEqual(before.subscription.object, 'subscription')
     })
@@ -161,6 +168,7 @@ describe('/account/subscriptions/cancel-subscription', function () {
 
   describe('view', () => {
     it('should present the form', async () => {
+      await bundledData()
       const result = cachedResponses.viewPaid
       const doc = TestHelper.extractDoc(result.html)
       assert.strictEqual(doc.getElementById('submit-form').tag, 'form')
@@ -168,6 +176,7 @@ describe('/account/subscriptions/cancel-subscription', function () {
     })
 
     it('should show fields for free plan cancelations', async () => {
+      await bundledData()
       const result = cachedResponses.viewFree
       const doc = TestHelper.extractDoc(result.html)
       const delay = doc.getElementById('delay-checkbox')
@@ -181,6 +190,7 @@ describe('/account/subscriptions/cancel-subscription', function () {
     })
 
     it('should show fields for free trial cancelations', async () => {
+      await bundledData()
       const result = cachedResponses.viewFreeTrial
       const doc = TestHelper.extractDoc(result.html)
       const delay = doc.getElementById('delay-checkbox')
@@ -194,6 +204,7 @@ describe('/account/subscriptions/cancel-subscription', function () {
     })
 
     it('should show fields for cancelation with credit or refund', async () => {
+      await bundledData()
       const result = cachedResponses.viewPaid
       const doc = TestHelper.extractDoc(result.html)
       const delay = doc.getElementById('delay-checkbox')
@@ -209,6 +220,7 @@ describe('/account/subscriptions/cancel-subscription', function () {
 
   describe('submit', () => {
     it('should cancel free subscription immediately (screenshots)', async () => {
+      await bundledData()
       const result = cachedResponses.submitFree1
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
@@ -217,6 +229,7 @@ describe('/account/subscriptions/cancel-subscription', function () {
     })
 
     it('should cancel free subscription at period end', async () => {
+      await bundledData()
       const result = cachedResponses.submitFree2
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
@@ -225,6 +238,7 @@ describe('/account/subscriptions/cancel-subscription', function () {
     })
 
     it('should cancel free trial immediately', async () => {
+      await bundledData()
       const result = cachedResponses.submitFreeTrial1
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
@@ -233,6 +247,7 @@ describe('/account/subscriptions/cancel-subscription', function () {
     })
 
     it('should cancel free trial at period end', async () => {
+      await bundledData()
       const result = cachedResponses.submitFreeTrial2
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
@@ -241,6 +256,7 @@ describe('/account/subscriptions/cancel-subscription', function () {
     })
 
     it('should cancel paid subscription and credit account', async () => {
+      await bundledData()
       const result = cachedResponses.submitPaid1
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
@@ -249,6 +265,7 @@ describe('/account/subscriptions/cancel-subscription', function () {
     })
 
     it('should cancel paid subscription and show refund', async () => {
+      await bundledData()
       const result = cachedResponses.submitPaid2
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')

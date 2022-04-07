@@ -4,12 +4,13 @@ const TestHelper = require('../../../../../test-helper.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/customers', function () {
-  const cachedResponses = {}
-  const cachedCustomers = []
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses, cachedCustomers
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
+    cachedCustomers = []
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -44,9 +45,11 @@ describe('/api/administrator/subscriptions/customers', function () {
     cachedResponses.returns = await req4.get()
     global.pageSize = 3
     cachedResponses.pageSize = await req4.get()
-  })
+    cachedResponses.finished = true
+  }
   describe('receives', () => {
     it('optional querystring offset (integer)', async () => {
+      await bundledData()
       const offset = 1
       const customersNow = cachedResponses.offset
       for (let i = 0, len = customersNow.length; i < len; i++) {
@@ -55,6 +58,7 @@ describe('/api/administrator/subscriptions/customers', function () {
     })
 
     it('optional querystring limit (integer)', async () => {
+      await bundledData()
       const limit = 1
       const customersNow = cachedResponses.limit
       assert.strictEqual(customersNow.length, limit)

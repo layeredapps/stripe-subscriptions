@@ -5,12 +5,13 @@ const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/payment-intents', function () {
-  const cachedResponses = {}
-  const cachedPaymentIntents = []
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses, cachedPaymentIntents
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
+    cachedPaymentIntents = []
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -46,9 +47,11 @@ describe('/api/administrator/subscriptions/payment-intents', function () {
     cachedResponses.returns = await req4.get()
     global.pageSize = 3
     cachedResponses.pageSize = await req4.get()
-  })
+    cachedResponses.finished = true
+  }
   describe('receives', () => {
     it('optional querystring offset (integer)', async () => {
+      await bundledData()
       const offset = 1
       const paymentIntentsNow = cachedResponses.offset
       for (let i = 0, len = global.pageSize; i < len; i++) {

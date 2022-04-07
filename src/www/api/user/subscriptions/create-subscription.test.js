@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/create-subscription', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -127,15 +128,19 @@ describe('/api/user/subscriptions/create-subscription', function () {
     req6.filename = __filename
     req6.saveResponse = true
     cachedResponses.returns = await req6.post()
-  })
+    cachedResponses.finished = true
+  }
+
   describe('exceptions', () => {
     describe('invalid-customerid', () => {
       it('missing querystring customerid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.missingCustomer
         assert.strictEqual(errorMessage, 'invalid-customerid')
       })
 
       it('invalid querystring customerid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidCustomer
         assert.strictEqual(errorMessage, 'invalid-customerid')
       })
@@ -143,6 +148,7 @@ describe('/api/user/subscriptions/create-subscription', function () {
 
     describe('invalid-customer', () => {
       it('ineligible querystring customer requires payment method', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidPaymentMethod
         assert.strictEqual(errorMessage, 'invalid-paymentmethodid')
       })
@@ -150,6 +156,7 @@ describe('/api/user/subscriptions/create-subscription', function () {
 
     describe('invalid-account', () => {
       it('ineligible accessing account', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidAccount
         assert.strictEqual(errorMessage, 'invalid-account')
       })
@@ -157,11 +164,13 @@ describe('/api/user/subscriptions/create-subscription', function () {
 
     describe('invalid-planid', () => {
       it('missing posted planid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.missingPlan
         assert.strictEqual(errorMessage, 'invalid-planid')
       })
 
       it('invalid posted planid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidPlan
         assert.strictEqual(errorMessage, 'invalid-planid')
       })
@@ -169,11 +178,13 @@ describe('/api/user/subscriptions/create-subscription', function () {
 
     describe('invalid-plan', () => {
       it('ineligible posted plan is not published', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.notPublishedPlan
         assert.strictEqual(errorMessage, 'invalid-plan')
       })
 
       it('ineligible posted plan is unpublished', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.unpublishedPlan
         assert.strictEqual(errorMessage, 'invalid-plan')
       })

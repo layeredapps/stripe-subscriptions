@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/create-refund', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -88,15 +89,19 @@ describe('/api/user/subscriptions/create-refund', function () {
     }
     global.subscriptionRefundPeriod = 7 * 24 * 60 * 60
     cachedResponses.envSuccess = await req7.post()
-  })
+    cachedResponses.finished = true
+  }
+
   describe('exceptions', () => {
     describe('invalid-chargeid', () => {
       it('missing querystring chargeid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.missing
         assert.strictEqual(errorMessage, 'invalid-chargeid')
       })
 
       it('invalid querystring chargeid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalid
         assert.strictEqual(errorMessage, 'invalid-chargeid')
       })
@@ -104,11 +109,13 @@ describe('/api/user/subscriptions/create-refund', function () {
 
     describe('invalid-charge', () => {
       it('ineligible querystring charge is refunded', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidCharge
         assert.strictEqual(errorMessage, 'invalid-charge')
       })
 
       it('ineligible querystring charge is out of refund period', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidCharge2
         assert.strictEqual(errorMessage, 'invalid-charge')
       })
@@ -116,6 +123,7 @@ describe('/api/user/subscriptions/create-refund', function () {
 
     describe('invalid-account', () => {
       it('ineligible accessing account', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidAccount
         assert.strictEqual(errorMessage, 'invalid-account')
       })

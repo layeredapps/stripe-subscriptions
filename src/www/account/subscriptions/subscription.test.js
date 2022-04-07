@@ -5,12 +5,13 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/account/subscriptions/subscription', function () {
-  const cachedResponses = {}
+  let cachedResponses
   let cachedSubscription
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const administrator = await TestStripeAccounts.createOwnerWithPlan({
@@ -42,7 +43,9 @@ describe('/account/subscriptions/subscription', function () {
     } catch (error) {
       cachedResponses.invalidAccount = error.message
     }
-  })
+    cachedResponses.finished = true
+  }
+
   describe('exceptions', () => {
     it('invalid-subscriptionid', async () => {
       const user = await TestHelper.createUser()
@@ -64,6 +67,7 @@ describe('/account/subscriptions/subscription', function () {
     })
 
     it('invalid-account', async () => {
+      await bundledData()
       const errorMessage = cachedResponses.invalidAccount
       assert.strictEqual(errorMessage, 'invalid-account')
     })
@@ -71,6 +75,7 @@ describe('/account/subscriptions/subscription', function () {
 
   describe('before', () => {
     it('should bind data to req', async () => {
+      await bundledData()
       const data = cachedResponses.before
       assert.strictEqual(data.subscription.subscriptionid, cachedSubscription.subscriptionid)
     })
@@ -78,6 +83,7 @@ describe('/account/subscriptions/subscription', function () {
 
   describe('view', () => {
     it('should present the subscription table (screenshots)', async () => {
+      await bundledData()
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       const tbody = doc.getElementById(cachedSubscription.subscriptionid)

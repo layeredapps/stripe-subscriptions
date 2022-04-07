@@ -5,12 +5,13 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/administrator/subscriptions/payouts', function () {
   if (!process.env.DISABLE_PAYOUT_TESTS) {
-    const cachedResponses = {}
-    const cachedPayouts = []
-    beforeEach(async () => {
-      if (Object.keys(cachedResponses).length) {
+    let cachedResponses, cachedPayouts
+    async function bundledData () {
+      if (cachedResponses && cachedResponses.finished) {
         return
       }
+      cachedResponses = {}
+      cachedPayouts = []
       await DashboardTestHelper.setupBeforeEach()
       await TestHelper.setupBeforeEach()
       const administrator = await TestHelper.createOwner()
@@ -36,9 +37,10 @@ describe('/administrator/subscriptions/payouts', function () {
       req2.account = administrator.account
       req2.session = administrator.session
       cachedResponses.offset = await req2.get()
-    })
+    }
     describe('before', () => {
       it('should bind data to req', async () => {
+        await bundledData()
         const data = cachedResponses.before
         assert.strictEqual(data.payouts.length, global.pageSize)
         assert.strictEqual(data.payouts[0].id, cachedPayouts[0])
@@ -48,6 +50,7 @@ describe('/administrator/subscriptions/payouts', function () {
 
     describe('view', () => {
       it('should return one page (screenshots)', async () => {
+        await bundledData()
         const result = cachedResponses.returns
         const doc = TestHelper.extractDoc(result.html)
         const table = doc.getElementById('payouts-table')
@@ -65,6 +68,7 @@ describe('/administrator/subscriptions/payouts', function () {
       })
 
       it('should change offset', async () => {
+        await bundledData()
         const offset = 1
         const result = cachedResponses.offset
         const doc = TestHelper.extractDoc(result.html)

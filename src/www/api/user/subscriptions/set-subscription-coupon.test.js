@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/set-subscription-coupon', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -170,15 +171,19 @@ describe('/api/user/subscriptions/set-subscription-coupon', function () {
     req11.filename = __filename
     req11.saveResponse = true
     cachedResponses.returns = await req11.patch()
-  })
+    cachedResponses.finished = true
+  }
+
   describe('exceptions', () => {
     describe('invalid-subscriptionid', () => {
       it('missing querystring subscriptionid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.missing
         assert.strictEqual(errorMessage, 'invalid-subscriptionid')
       })
 
       it('invalid querystring subscriptionid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalid
         assert.strictEqual(errorMessage, 'invalid-subscriptionid')
       })
@@ -186,11 +191,13 @@ describe('/api/user/subscriptions/set-subscription-coupon', function () {
 
     describe('invalid-subscription', () => {
       it('invalid querystring subscription has coupon', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidSubscription
         assert.strictEqual(errorMessage, 'invalid-subscription')
       })
 
       it('invalid querystring subscription is canceling', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidSubscription2
         assert.strictEqual(errorMessage, 'invalid-subscription')
       })
@@ -198,6 +205,7 @@ describe('/api/user/subscriptions/set-subscription-coupon', function () {
 
     describe('invalid-account', () => {
       it('ineligible accessing account', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidAccount
         assert.strictEqual(errorMessage, 'invalid-account')
       })
@@ -205,11 +213,13 @@ describe('/api/user/subscriptions/set-subscription-coupon', function () {
 
     describe('invalid-couponid', () => {
       it('missing posted couponid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.missingCoupon
         assert.strictEqual(errorMessage, 'invalid-couponid')
       })
 
       it('invalid posted couponid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidCoupon
         assert.strictEqual(errorMessage, 'invalid-couponid')
       })
@@ -217,16 +227,19 @@ describe('/api/user/subscriptions/set-subscription-coupon', function () {
 
     describe('invalid-coupon', () => {
       it('invalid posted coupon is not published', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.notPublishedCoupon
         assert.strictEqual(errorMessage, 'invalid-coupon')
       })
 
       it('invalid posted coupon is unpublished', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.unpublishedAtCoupon
         assert.strictEqual(errorMessage, 'invalid-coupon')
       })
 
       it('invalid posted coupon is other currency', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.currencyCoupon
         assert.strictEqual(errorMessage, 'invalid-coupon')
       })

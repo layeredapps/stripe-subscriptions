@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/refund', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -38,10 +39,13 @@ describe('/api/user/subscriptions/refund', function () {
     req2.filename = __filename
     req2.saveResponse = true
     cachedResponses.returns = await req2.get()
-  })
+    cachedResponses.finished = true
+  }
+
   describe('exceptions', () => {
     describe('invalid-refundid', () => {
       it('missing querystring refundid', async () => {
+        await bundledData()
         const user = await TestHelper.createUser()
         const req = TestHelper.createRequest('/api/user/subscriptions/refund?refundid=invalid')
         req.account = user.account
@@ -56,6 +60,7 @@ describe('/api/user/subscriptions/refund', function () {
       })
 
       it('invalid querystring refundid', async () => {
+        await bundledData()
         const user = await TestHelper.createUser()
         const req = TestHelper.createRequest('/api/user/subscriptions/refund?refundid=invalid')
         req.account = user.account
@@ -72,6 +77,7 @@ describe('/api/user/subscriptions/refund', function () {
 
     describe('invalid-account', () => {
       it('ineligible accessing account', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidAccount
         assert.strictEqual(errorMessage, 'invalid-account')
       })

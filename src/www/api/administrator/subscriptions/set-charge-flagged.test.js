@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/set-charge-flagged', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -55,15 +56,19 @@ describe('/api/administrator/subscriptions/set-charge-flagged', function () {
     req4.filename = __filename
     req4.saveResponse = true
     cachedResponses.returns = await req4.patch()
-  })
+    cachedResponses.finished = true
+  }
+
   describe('exceptions', () => {
     describe('invalid-chargeid', () => {
       it('missing querystring charge', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.missing
         assert.strictEqual(errorMessage, 'invalid-chargeid')
       })
 
       it('invalid querystring charge', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalid
         assert.strictEqual(errorMessage, 'invalid-chargeid')
       })
@@ -71,6 +76,7 @@ describe('/api/administrator/subscriptions/set-charge-flagged', function () {
 
     describe('invalid-charge', () => {
       it('ineligible querystring charge is already flagged', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidCharge
         assert.strictEqual(errorMessage, 'invalid-charge')
       })

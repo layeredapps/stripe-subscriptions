@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/administrator/subscriptions/invoice', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const administrator = await TestStripeAccounts.createOwnerWithPlan({
@@ -34,7 +35,9 @@ describe('/administrator/subscriptions/invoice', function () {
       { click: `/administrator/subscriptions/invoice?invoiceid=${user.invoice.invoiceid}` }
     ]
     cachedResponses.get = await req.get()
-  })
+    cachedResponses.finished = true
+  }
+
   describe('before', () => {
     it('should reject invalid invoiceid', async () => {
       const administrator = await TestHelper.createOwner()
@@ -51,6 +54,7 @@ describe('/administrator/subscriptions/invoice', function () {
     })
 
     it('should bind data to req', async () => {
+      await bundledData()
       const data = cachedResponses.before
       assert.strictEqual(data.invoice.object, 'invoice')
     })
@@ -58,6 +62,7 @@ describe('/administrator/subscriptions/invoice', function () {
 
   describe('view', () => {
     it('should present the invoice table (screenshots)', async () => {
+      await bundledData()
       const result = cachedResponses.get
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('invoices-table')

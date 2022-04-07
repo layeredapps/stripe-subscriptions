@@ -5,12 +5,13 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/administrator/subscriptions/refund-charge', function () {
-  const cachedResponses = {}
+  let cachedResponses
   let cachedCharge
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const administrator = await TestStripeAccounts.createOwnerWithPlan({
@@ -45,7 +46,9 @@ describe('/administrator/subscriptions/refund-charge', function () {
     } catch (error) {
       cachedResponses.invalidCharge = error.message
     }
-  })
+    cachedResponses.finished = true
+  }
+
   describe('exceptions', () => {
     it('should reject invalid chargeid', async () => {
       const administrator = await TestHelper.createOwner()
@@ -69,6 +72,7 @@ describe('/administrator/subscriptions/refund-charge', function () {
 
   describe('before', () => {
     it('should bind data to req', async () => {
+      await bundledData()
       const data = cachedResponses.before
       assert.strictEqual(data.charge.id, cachedCharge.chargeid)
     })
@@ -76,6 +80,7 @@ describe('/administrator/subscriptions/refund-charge', function () {
 
   describe('view', () => {
     it('should present the form', async () => {
+      await bundledData()
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       assert.strictEqual(doc.getElementById('submit-form').tag, 'form')
@@ -85,6 +90,7 @@ describe('/administrator/subscriptions/refund-charge', function () {
 
   describe('submit', () => {
     it('should refund charge (screenshots)', async () => {
+      await bundledData()
       const result = cachedResponses.submit
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')

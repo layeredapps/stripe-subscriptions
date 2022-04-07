@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/payment-method', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -31,10 +32,13 @@ describe('/api/user/subscriptions/payment-method', function () {
     req2.filename = __filename
     req2.saveResponse = true
     cachedResponses.returns = await req2.get()
-  })
+    cachedResponses.finished = true
+  }
+
   describe('exceptions', () => {
     describe('invalid-paymentmethodid', () => {
       it('missing querystring paymentmethodid', async () => {
+        await bundledData()
         const user = await TestHelper.createUser()
         const req = TestHelper.createRequest('/api/user/subscriptions/payment-method')
         req.account = user.account
@@ -49,6 +53,7 @@ describe('/api/user/subscriptions/payment-method', function () {
       })
 
       it('invalid querystring paymentmethodid', async () => {
+        await bundledData()
         const user = await TestHelper.createUser()
         const req = TestHelper.createRequest('/api/user/subscriptions/payment-method?paymentmethodid=invalid')
         req.account = user.account
@@ -65,6 +70,7 @@ describe('/api/user/subscriptions/payment-method', function () {
 
     describe('invalid-account', () => {
       it('ineligible accessing account', async () => {
+        await bundledData()
         const user = await TestStripeAccounts.createUserWithPaymentMethod()
         const user2 = await TestHelper.createUser()
         await TestHelper.createCustomer(user2, {

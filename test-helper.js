@@ -285,15 +285,15 @@ let webhookRotation = 0
 
 async function setupBeforeEach () {
   await subscriptions.Storage.flush()
+  global.webhooks = []
   await rotateWebhook()
 }
 
 async function rotateWebhook () {
   if (!global.webhooks) {
     global.webhooks = []
-  } else if (global.webhooks && global.webhooks.length > 0) {
+  } else if (global.webhooks.length) {
     webhookRotation += global.webhooks.length
-    global.webhooks = []
     if (webhookRotation >= 10) {
       webhookRotation = 0
       await setupWebhook()
@@ -304,9 +304,9 @@ async function rotateWebhook () {
 async function setupWebhook () {
   if (webhook) {
     await deleteOldWebhooks()
+    await ngrok.kill()
     webhook = null
   }
-  await ngrok.kill()
   while (!webhook) {
     try {
       const tunnel = await ngrok.connect({
@@ -319,7 +319,6 @@ async function setupWebhook () {
         enabled_events: enabledEvents
       }, stripeKey)
       global.subscriptionWebhookEndPointSecret = webhook.secret
-      Log.info('created webhook', webhook)
     } catch (error) {
     }
     if (!webhook) {
@@ -333,10 +332,9 @@ before(setupBefore)
 beforeEach(setupBeforeEach)
 
 afterEach(async () => {
-  await deleteOldData()
   await subscriptions.Storage.flush()
+  await deleteOldData()
   if (global.webhooks.length) {
-    webhookRotation += 100
     await rotateWebhook()
   }
 })

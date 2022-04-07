@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/create-setup-intent', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -55,7 +56,9 @@ describe('/api/user/subscriptions/create-setup-intent', function () {
     req2.filename = __filename
     req2.saveResponse = true
     cachedResponses.returns = await req2.post()
-  })
+    cachedResponses.finished = true
+  }
+
   describe('exceptions', () => {
     describe('invalid-customerid', () => {
       it('missing querystring customerid', async () => {
@@ -91,6 +94,7 @@ describe('/api/user/subscriptions/create-setup-intent', function () {
 
     describe('invalid-account', () => {
       it('ineligible accessing account', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidAccount
         assert.strictEqual(errorMessage, 'invalid-account')
       })
@@ -98,11 +102,13 @@ describe('/api/user/subscriptions/create-setup-intent', function () {
 
     describe('invalid-paymentmethodid', () => {
       it('missing posted paymentmethodid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.missingPaymentMethod
         assert.strictEqual(errorMessage, 'invalid-paymentmethodid')
       })
 
       it('invalid posted paymentmethodid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidPaymentMethod
         assert.strictEqual(errorMessage, 'invalid-paymentmethodid')
       })

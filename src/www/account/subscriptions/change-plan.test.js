@@ -5,12 +5,13 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/account/subscriptions/change-plan', function () {
-  const cachedResponses = {}
-  const cachedPlans = []
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses, cachedPlans
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
+    cachedPlans = []
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const administrator = await TestStripeAccounts.createOwnerWithPlan({
@@ -80,9 +81,11 @@ describe('/account/subscriptions/change-plan', function () {
       paymentmethodid: ''
     }
     cachedResponses.invalidPaymentMethod = await req4.post()
-  })
+    cachedResponses.finished = true
+  }
   describe('before', () => {
     it('should bind data to req', async () => {
+      await bundledData()
       const data = cachedResponses.before
       assert.strictEqual(data.plans.length, 1)
       assert.strictEqual(data.plans[0].planid, cachedPlans[1])
@@ -91,6 +94,7 @@ describe('/account/subscriptions/change-plan', function () {
 
   describe('view', () => {
     it('should present the form', async () => {
+      await bundledData()
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       assert.strictEqual(doc.getElementById('submit-form').tag, 'form')
@@ -98,6 +102,7 @@ describe('/account/subscriptions/change-plan', function () {
     })
 
     it('should remove the form if there are no plans', async () => {
+      await bundledData()
       const result = cachedResponses.noPlans
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
@@ -108,6 +113,7 @@ describe('/account/subscriptions/change-plan', function () {
 
   describe('submit', () => {
     it('should apply plan update (screenshots)', async () => {
+      await bundledData()
       const result = cachedResponses.submit
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
@@ -118,6 +124,7 @@ describe('/account/subscriptions/change-plan', function () {
 
   describe('errors', () => {
     it('should reject paid plan without payment information', async () => {
+      await bundledData()
       const result = cachedResponses.invalidPaymentMethod
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')

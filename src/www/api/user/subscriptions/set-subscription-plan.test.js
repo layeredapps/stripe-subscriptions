@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/set-subscription-plan', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -173,16 +174,19 @@ describe('/api/user/subscriptions/set-subscription-plan', function () {
     req10.filename = __filename
     req10.saveResponse = true
     cachedResponses.returns = await req10.patch()
-  })
+    cachedResponses.finished = true
+  }
 
   describe('exceptions', () => {
     describe('invalid-subscriptionid', () => {
       it('missing querystring subscriptionid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalid
         assert.strictEqual(errorMessage, 'invalid-subscriptionid')
       })
 
       it('invalid querystring subscriptionid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.missing
         assert.strictEqual(errorMessage, 'invalid-subscriptionid')
       })
@@ -190,6 +194,7 @@ describe('/api/user/subscriptions/set-subscription-plan', function () {
 
     describe('invalid-account', () => {
       it('ineligible accessing account', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.account
         assert.strictEqual(errorMessage, 'invalid-account')
       })
@@ -197,11 +202,13 @@ describe('/api/user/subscriptions/set-subscription-plan', function () {
 
     describe('invalid-planid', () => {
       it('missing posted planid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.missingPlan
         assert.strictEqual(errorMessage, 'invalid-planid')
       })
 
       it('invalid posted planid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidPlan
         assert.strictEqual(errorMessage, 'invalid-planid')
       })
@@ -209,16 +216,19 @@ describe('/api/user/subscriptions/set-subscription-plan', function () {
 
     describe('invalid-plan', () => {
       it('invalid posted plan is not published', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.notPublishedPlan
         assert.strictEqual(errorMessage, 'invalid-plan')
       })
 
       it('invalid posted plan is unpublished', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.unpublishedAtPlan
         assert.strictEqual(errorMessage, 'invalid-plan')
       })
 
       it('invalid posted plan is unchanged', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.unchanged
         assert.strictEqual(errorMessage, 'invalid-plan')
       })

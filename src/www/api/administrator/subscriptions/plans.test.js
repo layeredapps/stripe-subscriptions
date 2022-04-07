@@ -4,12 +4,13 @@ const TestHelper = require('../../../../../test-helper.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/plans', function () {
-  const cachedResponses = {}
-  const cachedPlans = []
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses, cachedPlans
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
+    cachedPlans = []
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const administrator = await TestHelper.createOwner()
@@ -46,9 +47,11 @@ describe('/api/administrator/subscriptions/plans', function () {
     cachedResponses.returns = await req4.get()
     global.pageSize = 3
     cachedResponses.pageSize = await req4.get()
-  })
+    cachedResponses.finished = true
+  }
   describe('receives', () => {
     it('optional querystring offset (integer)', async () => {
+      await bundledData()
       const offset = 1
       const plansNow = cachedResponses.offset
       for (let i = 0, len = global.pageSize; i < len; i++) {
@@ -57,6 +60,7 @@ describe('/api/administrator/subscriptions/plans', function () {
     })
 
     it('optional querystring limit (integer)', async () => {
+      await bundledData()
       const limit = 1
       const plansNow = cachedResponses.limit
       assert.strictEqual(plansNow.length, limit)

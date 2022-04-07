@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/create-usage-record', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -185,16 +186,19 @@ describe('/api/user/subscriptions/create-usage-record', function () {
     req9.saveResponse = true
     await TestHelper.wait(1000)
     cachedResponses.returns = await req9.post()
-  })
+    cachedResponses.finished = true
+  }
 
   describe('exceptions', () => {
     describe('invalid-subscriptionid', () => {
       it('missing querystring subscriptionid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.missing
         assert.strictEqual(errorMessage, 'invalid-subscriptionid')
       })
 
       it('invalid querystring subscriptionid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalid
         assert.strictEqual(errorMessage, 'invalid-subscriptionid')
       })
@@ -202,6 +206,7 @@ describe('/api/user/subscriptions/create-usage-record', function () {
 
     describe('invalid-subscription', () => {
       it('invalid querystring subscription is not "metered"', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidSubscription
         assert.strictEqual(errorMessage, 'invalid-subscription')
       })
@@ -209,6 +214,7 @@ describe('/api/user/subscriptions/create-usage-record', function () {
 
     describe('invalid-account', () => {
       it('ineligible accessing account', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidAccount
         assert.strictEqual(errorMessage, 'invalid-account')
       })
@@ -216,11 +222,13 @@ describe('/api/user/subscriptions/create-usage-record', function () {
 
     describe('invalid-quantity', () => {
       it('invalid posted quantity is not integer', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidQuantity
         assert.strictEqual(errorMessage, 'invalid-quantity')
       })
 
       it('invalid posted quantity is negative', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.negativeQuantity
         assert.strictEqual(errorMessage, 'invalid-quantity')
       })
@@ -228,11 +236,13 @@ describe('/api/user/subscriptions/create-usage-record', function () {
 
     describe('invalid-action', () => {
       it('missing posted action', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.missingAction
         assert.strictEqual(errorMessage, 'invalid-action')
       })
 
       it('invalid posted action', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidAction
         assert.strictEqual(errorMessage, 'invalid-action')
       })
@@ -240,11 +250,13 @@ describe('/api/user/subscriptions/create-usage-record', function () {
 
     describe('invalid-subscriptionitemid', () => {
       it('missing posted subscriptionitemid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.missingItem
         assert.strictEqual(errorMessage, 'invalid-subscriptionitemid')
       })
 
       it('invalid posted subscriptionitemid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidItem
         assert.strictEqual(errorMessage, 'invalid-subscriptionitemid')
       })

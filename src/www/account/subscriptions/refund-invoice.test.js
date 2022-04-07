@@ -5,12 +5,13 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/account/subscriptions/refund-invoice', function () {
-  const cachedResponses = {}
+  let cachedResponses
   let cachedUser
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     global.subscriptionRefundPeriod = 7 * 24 * 60 * 60
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -21,18 +22,6 @@ describe('/account/subscriptions/refund-invoice', function () {
       trial_period_days: '0'
     })
     const user = cachedUser = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
-    const req = TestHelper.createRequest(`/account/subscriptions/refund-invoice?invoiceid=${user.invoice.invoiceid}`)
-    req.account = user.account
-    req.session = user.session
-    req.filename = __filename
-    req.screenshots = [
-      { hover: '#account-menu-container' },
-      { click: '/account/subscriptions' },
-      { click: '/account/subscriptions/invoices' },
-      { click: `/account/subscriptions/invoice?invoiceid=${user.invoice.invoiceid}` },
-      { click: `/account/subscriptions/refund-invoice?invoiceid=${user.invoice.invoiceid}` },
-      { fill: '#submit-form' }
-    ]
     const req2 = TestHelper.createRequest(`/account/subscriptions/refund-invoice?invoiceid=${user.invoice.invoiceid}`)
     req2.account = user.account
     req2.session = user.session
@@ -45,10 +34,23 @@ describe('/account/subscriptions/refund-invoice', function () {
     } catch (error) {
       cachedResponses.invalidAccount = error.message
     }
+    const req = TestHelper.createRequest(`/account/subscriptions/refund-invoice?invoiceid=${user.invoice.invoiceid}`)
+    req.account = user.account
+    req.session = user.session
+    req.filename = __filename
+    req.screenshots = [
+      { hover: '#account-menu-container' },
+      { click: '/account/subscriptions' },
+      { click: '/account/subscriptions/invoices' },
+      { click: `/account/subscriptions/invoice?invoiceid=${user.invoice.invoiceid}` },
+      { click: `/account/subscriptions/refund-invoice?invoiceid=${user.invoice.invoiceid}` },
+      { fill: '#submit-form' }
+    ]
     await req.route.api.before(req)
     cachedResponses.before = req.data
     cachedResponses.submit = await req.post()
-  })
+    cachedResponses.finished = true
+  }
   describe('exceptions', () => {
     it('invalid-invoiceid', async () => {
       const user = await TestHelper.createUser()
@@ -65,6 +67,7 @@ describe('/account/subscriptions/refund-invoice', function () {
     })
 
     it('invalid-account', async () => {
+      await bundledData()
       const errorMessage = cachedResponses.invalidAccount
       assert.strictEqual(errorMessage, 'invalid-account')
     })
@@ -72,6 +75,7 @@ describe('/account/subscriptions/refund-invoice', function () {
 
   describe('before', () => {
     it('should bind data to req', async () => {
+      await bundledData()
       const data = cachedResponses.before
       assert.strictEqual(data.invoice.invoiceid, cachedUser.invoice.invoiceid)
       assert.strictEqual(data.charge.invoice, cachedUser.invoice.invoiceid)
@@ -80,6 +84,7 @@ describe('/account/subscriptions/refund-invoice', function () {
 
   describe('view', () => {
     it('should present the form', async () => {
+      await bundledData()
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       assert.strictEqual(doc.getElementById('submit-form').tag, 'form')
@@ -89,6 +94,7 @@ describe('/account/subscriptions/refund-invoice', function () {
 
   describe('submit', () => {
     it('should cancel subscription (screenshots)', async () => {
+      await bundledData()
       const result = cachedResponses.submit
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')

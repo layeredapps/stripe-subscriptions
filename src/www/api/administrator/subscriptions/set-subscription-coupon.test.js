@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/set-subscription-coupon', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -122,10 +123,13 @@ describe('/api/administrator/subscriptions/set-subscription-coupon', function ()
     req7.filename = __filename
     req7.saveResponse = true
     cachedResponses.returns = await req7.patch()
-  })
+    cachedResponses.finished = true
+  }
+
   describe('exceptions', () => {
     describe('invalid-subscriptionid', () => {
       it('missing querystring subscriptionid', async () => {
+        await bundledData()
         const administrator = await TestHelper.createOwner()
         const req = TestHelper.createRequest('/api/administrator/subscriptions/set-subscription-coupon')
         req.account = administrator.account
@@ -143,6 +147,7 @@ describe('/api/administrator/subscriptions/set-subscription-coupon', function ()
       })
 
       it('invalid querystring subscriptionid', async () => {
+        await bundledData()
         const administrator = await TestHelper.createOwner()
         const req = TestHelper.createRequest('/api/administrator/subscriptions/set-subscription-coupon?subscriptionid=invalid')
         req.account = administrator.account
@@ -162,11 +167,13 @@ describe('/api/administrator/subscriptions/set-subscription-coupon', function ()
 
     describe('invalid-subscription', () => {
       it('ineligible subscription is canceling', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.subscriptionCanceling
         assert.strictEqual(errorMessage, 'invalid-subscription')
       })
 
       it('ineligible subscription has coupon', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.subscriptionDiscounted
         assert.strictEqual(errorMessage, 'invalid-subscription')
       })
@@ -174,11 +181,13 @@ describe('/api/administrator/subscriptions/set-subscription-coupon', function ()
 
     describe('invalid-couponid', () => {
       it('missing posted couponid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.missingCoupon
         assert.strictEqual(errorMessage, 'invalid-couponid')
       })
 
       it('invalid posted couponid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidCoupon
         assert.strictEqual(errorMessage, 'invalid-couponid')
       })
@@ -186,11 +195,13 @@ describe('/api/administrator/subscriptions/set-subscription-coupon', function ()
 
     describe('invalid-coupon', () => {
       it('ineligible posted coupon is not published', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.notPublished
         assert.strictEqual(errorMessage, 'invalid-coupon')
       })
 
       it('ineligible posted coupon is unpublished', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.unpublishedAt
         assert.strictEqual(errorMessage, 'invalid-coupon')
       })

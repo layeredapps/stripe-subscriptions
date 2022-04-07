@@ -5,12 +5,13 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/account/subscriptions/subscriptions', function () {
-  const cachedResponses = {}
-  const cachedSubscriptions = []
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses, cachedSubscriptions
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
+    cachedSubscriptions = []
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const administrator = await TestHelper.createOwner()
@@ -47,9 +48,11 @@ describe('/account/subscriptions/subscriptions', function () {
     req2.account = user.account
     req2.session = user.session
     cachedResponses.offset = await req2.get()
-  })
+    cachedResponses.finished = true
+  }
   describe('before', () => {
     it('should bind data to req', async () => {
+      await bundledData()
       const data = cachedResponses.before
       assert.strictEqual(data.subscriptions.length, global.pageSize)
       assert.strictEqual(data.subscriptions[0].id, cachedSubscriptions[0])
@@ -59,6 +62,7 @@ describe('/account/subscriptions/subscriptions', function () {
 
   describe('view', () => {
     it('should return one page (screenshots)', async () => {
+      await bundledData()
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('subscriptions-table')
@@ -67,6 +71,7 @@ describe('/account/subscriptions/subscriptions', function () {
     })
 
     it('should change page size', async () => {
+      await bundledData()
       global.pageSize = 3
       const result = cachedResponses.pageSize
       const doc = TestHelper.extractDoc(result.html)
@@ -75,7 +80,8 @@ describe('/account/subscriptions/subscriptions', function () {
       assert.strictEqual(rows.length, global.pageSize + 1)
     })
 
-    it('should change offset', async () => {
+    it('should change page size', async () => {
+      await bundledData()
       const offset = 1
       const result = cachedResponses.offset
       const doc = TestHelper.extractDoc(result.html)

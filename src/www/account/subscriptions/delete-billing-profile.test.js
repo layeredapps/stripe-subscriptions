@@ -4,12 +4,13 @@ const TestHelper = require('../../../../test-helper.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/account/subscriptions/delete-billing-profile', function () {
-  const cachedResponses = {}
+  let cachedResponses
   let cachedCustomer
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const user = await TestHelper.createUser()
@@ -44,7 +45,8 @@ describe('/account/subscriptions/delete-billing-profile', function () {
       { fill: '#submit-form' }
     ]
     cachedResponses.submit = await req2.post()
-  })
+    cachedResponses.finished = true
+  }
   describe('exceptions', () => {
     it('invalid-customerid', async () => {
       const user = await TestHelper.createUser()
@@ -61,6 +63,7 @@ describe('/account/subscriptions/delete-billing-profile', function () {
     })
 
     it('invalid-account', async () => {
+      await bundledData()
       const errorMessage = cachedResponses.invalidAccount
       assert.strictEqual(errorMessage, 'invalid-account')
     })
@@ -68,6 +71,7 @@ describe('/account/subscriptions/delete-billing-profile', function () {
 
   describe('before', () => {
     it('should bind data to req', async () => {
+      await bundledData()
       const data = cachedResponses.before
       assert.strictEqual(data.customer.customerid, cachedCustomer.customerid)
     })
@@ -75,6 +79,7 @@ describe('/account/subscriptions/delete-billing-profile', function () {
 
   describe('view', () => {
     it('should present the form', async () => {
+      await bundledData()
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       assert.strictEqual(doc.getElementById('submit-form').tag, 'form')
@@ -84,6 +89,7 @@ describe('/account/subscriptions/delete-billing-profile', function () {
 
   describe('submit', () => {
     it('should delete billing profile (screenshots)', async () => {
+      await bundledData()
       const result = cachedResponses.submit
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')

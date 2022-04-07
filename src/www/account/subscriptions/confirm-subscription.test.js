@@ -5,12 +5,13 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/account/subscriptions/confirm-subscription', function () {
-  const cachedResponses = {}
+  let cachedResponses
   let publishedPlan
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const administrator = await TestStripeAccounts.createOwnerWithPlan({
@@ -108,14 +109,17 @@ describe('/account/subscriptions/confirm-subscription', function () {
       paymentmethodid: user.paymentMethod.paymentmethodid
     }
     cachedResponses.submit = await req6.post()
-  })
+    cachedResponses.finished = true
+  }
   describe('exceptions', () => {
     it('invalid-planid', async () => {
+      await bundledData()
       const errorMessage = cachedResponses.invalidPlan
       assert.strictEqual(errorMessage, 'invalid-planid')
     })
 
     it('invalid-plan', async () => {
+      await bundledData()
       let errorMessage = cachedResponses.unpublishedAtPlan
       assert.strictEqual(errorMessage, 'invalid-plan')
       errorMessage = cachedResponses.notPublishedPlan
@@ -125,6 +129,7 @@ describe('/account/subscriptions/confirm-subscription', function () {
 
   describe('before', () => {
     it('should bind data to req', async () => {
+      await bundledData()
       const data = cachedResponses.before
       assert.strictEqual(data.plan.planid, publishedPlan.planid)
     })
@@ -132,6 +137,7 @@ describe('/account/subscriptions/confirm-subscription', function () {
 
   describe('view', () => {
     it('should present the form', async () => {
+      await bundledData()
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       assert.strictEqual(doc.getElementById('submit-form').tag, 'form')
@@ -141,6 +147,7 @@ describe('/account/subscriptions/confirm-subscription', function () {
 
   describe('submit', () => {
     it('should start subscription (screenshots)', async () => {
+      await bundledData()
       const result = cachedResponses.submit
       assert.strictEqual(result.redirect, '/home')
     })
@@ -148,6 +155,7 @@ describe('/account/subscriptions/confirm-subscription', function () {
 
   describe('errors', () => {
     it('invalid-paymentmethodid', async () => {
+      await bundledData()
       const result = cachedResponses.invalidPaymentMethod
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')

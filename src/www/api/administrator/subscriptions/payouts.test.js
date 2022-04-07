@@ -5,12 +5,13 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/payouts', function () {
   if (!process.env.DISABLE_PAYOUT_TESTS) {
-    const cachedResponses = {}
-    const cachedPayouts = []
-    beforeEach(async () => {
-      if (Object.keys(cachedResponses).length) {
+    let cachedResponses, cachedPayouts
+    async function bundledData () {
+      if (cachedResponses && cachedResponses.finished) {
         return
       }
+      cachedResponses = {}
+      cachedPayouts = []
       await DashboardTestHelper.setupBeforeEach()
       await TestHelper.setupBeforeEach()
       const administrator = await TestHelper.createOwner()
@@ -38,9 +39,10 @@ describe('/api/administrator/subscriptions/payouts', function () {
       cachedResponses.returns = await req4.get()
       global.pageSize = 3
       cachedResponses.pageSize = await req4.get()
-    })
+    }
     describe('receives', () => {
       it('optional querystring offset (integer)', async () => {
+        await bundledData()
         const offset = 1
         const payoutsNow = cachedResponses.offset
         for (let i = 0, len = payoutsNow.length; i < len; i++) {
@@ -49,12 +51,14 @@ describe('/api/administrator/subscriptions/payouts', function () {
       })
 
       it('optional querystring limit (integer)', async () => {
+        await bundledData()
         const limit = 1
         const payoutsNow = cachedResponses.limit
         assert.strictEqual(payoutsNow.length, limit)
       })
 
       it('optional querystring all (boolean)', async () => {
+        await bundledData()
         const payouts = cachedResponses.all
         assert.strictEqual(payouts.length, cachedPayouts.length)
       })
@@ -62,6 +66,7 @@ describe('/api/administrator/subscriptions/payouts', function () {
 
     describe('returns', () => {
       it('array', async () => {
+        await bundledData()
         const payouts = cachedResponses.returns
         assert.strictEqual(payouts.length, global.pageSize)
       })

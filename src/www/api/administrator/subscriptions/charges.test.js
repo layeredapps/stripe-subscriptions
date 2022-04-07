@@ -5,12 +5,13 @@ const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/charges', function () {
-  const cachedResponses = {}
-  const cachedCharges = []
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses, cachedCharges
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
+    cachedCharges = []
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -44,10 +45,11 @@ describe('/api/administrator/subscriptions/charges', function () {
     cachedResponses.returns = await req4.get()
     global.pageSize = 3
     cachedResponses.pageSize = await req4.get()
-  })
-
+    cachedResponses.finished = true
+  }
   describe('receives', () => {
     it('optional querystring offset (integer)', async () => {
+      await bundledData()
       const offset = 1
       const chargesNow = cachedResponses.offset
       for (let i = 0, len = global.pageSize; i < len; i++) {
@@ -56,6 +58,7 @@ describe('/api/administrator/subscriptions/charges', function () {
     })
 
     it('optional querystring limit (integer)', async () => {
+      await bundledData()
       const limit = 1
       const chargesNow = cachedResponses.limit
       assert.strictEqual(chargesNow.length, limit)

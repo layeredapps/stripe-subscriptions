@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/upcoming-invoice', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -47,10 +48,13 @@ describe('/api/user/subscriptions/upcoming-invoice', function () {
     } catch (error) {
       cachedResponses.invalidSubscription = error.message
     }
-  })
+    cachedResponses.finished = true
+  }
+
   describe('exceptions', () => {
     describe('invalid-subscriptionid', () => {
       it('missing querystring subscriptionid', async () => {
+        await bundledData()
         const user = await TestHelper.createUser()
         const req = TestHelper.createRequest('/api/user/subscriptions/upcoming-invoice')
         req.account = user.account
@@ -65,6 +69,7 @@ describe('/api/user/subscriptions/upcoming-invoice', function () {
       })
 
       it('invalid querystring subscriptionid', async () => {
+        await bundledData()
         const user = await TestHelper.createUser()
         const req = TestHelper.createRequest('/api/user/subscriptions/upcoming-invoice?subscriptionid=invalid')
         req.account = user.account
@@ -81,6 +86,7 @@ describe('/api/user/subscriptions/upcoming-invoice', function () {
 
     describe('invalid-account', () => {
       it('ineligible accessing account', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidAccount
         assert.strictEqual(errorMessage, 'invalid-account')
       })
@@ -88,6 +94,7 @@ describe('/api/user/subscriptions/upcoming-invoice', function () {
 
     describe('invalid-subscription', () => {
       it('ineligible querystring subscription', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidSubscription
         assert.strictEqual(errorMessage, 'invalid-subscription')
       })

@@ -5,12 +5,13 @@ const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/payment-methods', function () {
-  const cachedResponses = {}
-  const cachedPaymentMethods = []
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses, cachedPaymentMethods
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
+    cachedPaymentMethods = []
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -39,9 +40,11 @@ describe('/api/administrator/subscriptions/payment-methods', function () {
     cachedResponses.returns = await req4.get()
     global.pageSize = 3
     cachedResponses.pageSize = await req4.get()
-  })
+    cachedResponses.finished = true
+  }
   describe('receives', () => {
     it('optional querystring offset (integer)', async () => {
+      await bundledData()
       const offset = 1
       const paymentMethodsNow = cachedResponses.offset
       for (let i = 0, len = global.pageSize; i < len; i++) {
@@ -50,6 +53,7 @@ describe('/api/administrator/subscriptions/payment-methods', function () {
     })
 
     it('optional querystring limit (integer)', async () => {
+      await bundledData()
       const limit = 1
       const paymentMethodsNow = cachedResponses.limit
       assert.strictEqual(paymentMethodsNow.length, limit)

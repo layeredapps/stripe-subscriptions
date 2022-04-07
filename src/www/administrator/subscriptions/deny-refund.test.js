@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/administrator/subscriptions/deny-refund', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const administrator = await TestStripeAccounts.createOwnerWithPlan({
@@ -52,7 +53,9 @@ describe('/administrator/subscriptions/deny-refund', function () {
     } catch (error) {
       cachedResponses.alreadyDenied = error.message
     }
-  })
+    cachedResponses.finished = true
+  }
+
   describe('exceptions', () => {
     it('should reject invalid chargeid', async () => {
       const administrator = await TestHelper.createOwner()
@@ -81,6 +84,7 @@ describe('/administrator/subscriptions/deny-refund', function () {
 
   describe('before', () => {
     it('should bind data to req', async () => {
+      await bundledData()
       const data = cachedResponses.before
       assert.strictEqual(data.charge.object, 'charge')
     })
@@ -88,6 +92,7 @@ describe('/administrator/subscriptions/deny-refund', function () {
 
   describe('view', () => {
     it('should present the form', async () => {
+      await bundledData()
       const result = cachedResponses.view
       const doc = TestHelper.extractDoc(result.html)
       assert.strictEqual(doc.getElementById('submit-form').tag, 'form')
@@ -97,6 +102,7 @@ describe('/administrator/subscriptions/deny-refund', function () {
 
   describe('submit', () => {
     it('should deny refund (screenshots)', async () => {
+      await bundledData()
       const result = cachedResponses.result
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')

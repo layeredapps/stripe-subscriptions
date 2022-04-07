@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/administrator/subscriptions/revoke-subscription-coupon', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const administrator = await TestStripeAccounts.createOwnerWithPlan({ amount: '1000' })
@@ -49,7 +50,9 @@ describe('/administrator/subscriptions/revoke-subscription-coupon', function () 
       { fill: '#submit-form' }
     ]
     cachedResponses.returns = await req.post()
-  })
+    cachedResponses.finished = true
+  }
+
   describe('exceptions', () => {
     it('should reject invalid subscription', async () => {
       const administrator = await TestHelper.createOwner()
@@ -73,6 +76,7 @@ describe('/administrator/subscriptions/revoke-subscription-coupon', function () 
 
   describe('before', () => {
     it('should bind data to req', async () => {
+      await bundledData()
       const data = cachedResponses.before
       assert.strictEqual(data.subscription.object, 'subscription')
     })
@@ -80,6 +84,7 @@ describe('/administrator/subscriptions/revoke-subscription-coupon', function () 
 
   describe('view', () => {
     it('should present the form', async () => {
+      await bundledData()
       const result = cachedResponses.get
       const doc = TestHelper.extractDoc(result.html)
       assert.strictEqual(doc.getElementById('submit-form').tag, 'form')
@@ -89,6 +94,7 @@ describe('/administrator/subscriptions/revoke-subscription-coupon', function () 
 
   describe('submit', () => {
     it('should remove coupon (screenshots)', async () => {
+      await bundledData()
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')

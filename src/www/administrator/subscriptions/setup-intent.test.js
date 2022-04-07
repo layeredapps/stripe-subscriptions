@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/administrator/subscriptions/setup-intent', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const administrator = await TestHelper.createOwner()
@@ -29,7 +30,9 @@ describe('/administrator/subscriptions/setup-intent', function () {
       { click: `/administrator/subscriptions/setup-intent?setupintentid=${user.setupIntent.stripeObject.id}` }
     ]
     cachedResponses.returns = await req.get()
-  })
+    cachedResponses.finished = true
+  }
+
   describe('before', () => {
     it('should reject invalid setupintentid', async () => {
       const administrator = await TestHelper.createOwner()
@@ -46,6 +49,7 @@ describe('/administrator/subscriptions/setup-intent', function () {
     })
 
     it('should bind data to req', async () => {
+      await bundledData()
       const data = cachedResponses.before
       assert.strictEqual(data.setupIntent.object, 'setup_intent')
     })
@@ -53,6 +57,7 @@ describe('/administrator/subscriptions/setup-intent', function () {
 
   describe('view', () => {
     it('should have row for setup intent (screenshots)', async () => {
+      await bundledData()
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('setup_intents-table')

@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/set-invoice-uncollectable', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -64,15 +65,19 @@ describe('/api/administrator/subscriptions/set-invoice-uncollectable', function 
     req5.filename = __filename
     req5.saveResponse = true
     cachedResponses.returns = await req5.patch()
-  })
+    cachedResponses.finished = true
+  }
+
   describe('exceptions', () => {
     describe('invalid-invoiceid', () => {
       it('missing querystring invoiceid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.missing
         assert.strictEqual(errorMessage, 'invalid-invoiceid')
       })
 
       it('invalid querystring invoiceid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalid
         assert.strictEqual(errorMessage, 'invalid-invoiceid')
       })
@@ -80,11 +85,13 @@ describe('/api/administrator/subscriptions/set-invoice-uncollectable', function 
 
     describe('invalid-invoice', () => {
       it('invalid querystring invoice is paid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidInvoice
         assert.strictEqual(errorMessage, 'invalid-invoice')
       })
 
       it('invalid querystring invoice is marked uncollectable', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidInvoice2
         assert.strictEqual(errorMessage, 'invalid-invoice')
       })

@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/set-subscription-quantity', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -111,15 +112,19 @@ describe('/api/user/subscriptions/set-subscription-quantity', function () {
     req8.filename = __filename
     req8.saveResponse = true
     cachedResponses.returns = await req8.patch()
-  })
+    cachedResponses.finished = true
+  }
+
   describe('exceptions', () => {
     describe('invalid-subscriptionid', () => {
       it('missing querystring subscriptionid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.missing
         assert.strictEqual(errorMessage, 'invalid-subscriptionid')
       })
 
       it('invalid querystring subscriptionid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalid
         assert.strictEqual(errorMessage, 'invalid-subscriptionid')
       })
@@ -127,6 +132,7 @@ describe('/api/user/subscriptions/set-subscription-quantity', function () {
 
     describe('invalid-account', () => {
       it('ineligible accessing account', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.account
         assert.strictEqual(errorMessage, 'invalid-account')
       })
@@ -134,21 +140,25 @@ describe('/api/user/subscriptions/set-subscription-quantity', function () {
 
     describe('invalid-quantity', () => {
       it('invalid posted quantity', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidQuantity
         assert.strictEqual(errorMessage, 'invalid-quantity')
       })
 
       it('invalid posted quantity is unchanged', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.unchangedQuantity
         assert.strictEqual(errorMessage, 'invalid-quantity')
       })
 
       it('invalid posted quantity is negative', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.negativeQuantity
         assert.strictEqual(errorMessage, 'invalid-quantity')
       })
 
       it('invalid posted quantity is zero', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.zeroQuantity
         assert.strictEqual(errorMessage, 'invalid-quantity')
       })

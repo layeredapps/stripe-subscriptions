@@ -5,14 +5,15 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/account/subscriptions', function () {
-  const cachedResponses = {}
-  const cachedInvoices = []
-  const cachedSubscriptions = []
-  const cachedCustomers = []
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses, cachedInvoices, cachedSubscriptions, cachedCustomers
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
+    cachedInvoices = []
+    cachedSubscriptions = []
+    cachedCustomers = []
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const administrator = await TestStripeAccounts.createOwnerWithPlan({
@@ -69,9 +70,11 @@ describe('/account/subscriptions', function () {
     await req1.route.api.before(req1)
     cachedResponses.before = req1.data
     cachedResponses.returns = await req1.get()
-  })
+    cachedResponses.finished = true
+  }
   describe('before', () => {
     it('should bind data to req', async () => {
+      await bundledData()
       const data = cachedResponses.before
       assert.strictEqual(data.customers.length, cachedCustomers.length)
       assert.strictEqual(data.subscriptions.length, cachedSubscriptions.length)
@@ -81,6 +84,7 @@ describe('/account/subscriptions', function () {
 
   describe('view', () => {
     it('should have row for each invoice', async () => {
+      await bundledData()
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       const invoice1Row = doc.getElementById(cachedInvoices[0])
@@ -90,6 +94,7 @@ describe('/account/subscriptions', function () {
     })
 
     it('should have row for each customer', async () => {
+      await bundledData()
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       const customer1Row = doc.getElementById(cachedCustomers[0])
@@ -99,6 +104,7 @@ describe('/account/subscriptions', function () {
     })
 
     it('should have row for each subscription', async () => {
+      await bundledData()
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       const subscription1Row = doc.getElementById(cachedSubscriptions[0])

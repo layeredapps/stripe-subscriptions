@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/set-invoice-paid', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -128,15 +129,19 @@ describe('/api/user/subscriptions/set-invoice-paid', function () {
     req9.filename = __filename
     req9.saveResponse = true
     cachedResponses.returns = await req9.patch()
-  })
+    cachedResponses.finished = true
+  }
+
   describe('exceptions', () => {
     describe('invalid-invoiceid', () => {
       it('missing querystring invoiceid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.missing
         assert.strictEqual(errorMessage, 'invalid-invoiceid')
       })
 
       it('invalid querystring invoiceid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalid
         assert.strictEqual(errorMessage, 'invalid-invoiceid')
       })
@@ -144,11 +149,13 @@ describe('/api/user/subscriptions/set-invoice-paid', function () {
 
     describe('invalid-account', () => {
       it('ineligible accessing account', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidAccount
         assert.strictEqual(errorMessage, 'invalid-account')
       })
 
       it('ineligible posted payment method', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidAccount2
         assert.strictEqual(errorMessage, 'invalid-account')
       })
@@ -156,11 +163,13 @@ describe('/api/user/subscriptions/set-invoice-paid', function () {
 
     describe('invalid-invoice', () => {
       it('invalid querystring invoice is paid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidInvoice
         assert.strictEqual(errorMessage, 'invalid-invoice')
       })
 
       it('invalid querystring invoice is marked uncollectable', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidInvoice2
         assert.strictEqual(errorMessage, 'invalid-invoice')
       })
@@ -168,11 +177,13 @@ describe('/api/user/subscriptions/set-invoice-paid', function () {
 
     describe('invalid-paymentmethodid', () => {
       it('missing posted paymentmethodid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.missingPaymentMethod
         assert.strictEqual(errorMessage, 'invalid-paymentmethodid')
       })
 
       it('invalid posted paymentmethodid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidPaymentMethod
         assert.strictEqual(errorMessage, 'invalid-paymentmethodid')
       })

@@ -5,12 +5,13 @@ const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/usage-records', function () {
-  const cachedResponses = {}
-  const cachedUsageRecords = []
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses, cachedUsageRecords
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
+    cachedUsageRecords = []
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -80,10 +81,11 @@ describe('/api/administrator/subscriptions/usage-records', function () {
     cachedResponses.returns = await req7.get()
     global.pageSize = 3
     cachedResponses.pageSize = await req7.get()
-  })
-
+    cachedResponses.finished = true
+  }
   describe('receives', () => {
     it('optional querystring offset (integer)', async () => {
+      await bundledData()
       const offset = 1
       const usageRecordsNow = cachedResponses.offset
       for (let i = 0, len = global.pageSize; i < len; i++) {
@@ -92,6 +94,7 @@ describe('/api/administrator/subscriptions/usage-records', function () {
     })
 
     it('optional querystring limit (integer)', async () => {
+      await bundledData()
       const limit = 1
       const usageRecordsNow = cachedResponses.limit
       assert.strictEqual(usageRecordsNow.length, limit)

@@ -5,12 +5,13 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/account/subscriptions/request-refund', function () {
-  const cachedResponses = {}
+  let cachedResponses
   let cachedUser
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     global.subscriptionRefundPeriod = 0
@@ -48,14 +49,12 @@ describe('/account/subscriptions/request-refund', function () {
     } catch (error) {
       cachedResponses.invalidAccount = error.message
     }
-    const req4 = TestHelper.createRequest(`/account/subscriptions/request-refund?invoiceid=${user.invoice.invoiceid}`)
-    req4.account = user.account
-    req4.session = user.session
-    req4.body = {
+    req2.body = {
       reason: 'this is a reason'
     }
-    cachedResponses.submit = await req4.post()
-  })
+    cachedResponses.submit = await req2.post()
+    cachedResponses.finished = true
+  }
   describe('exceptions', () => {
     it('invalid-invoice', async () => {
       const user = await TestHelper.createUser()
@@ -74,6 +73,7 @@ describe('/account/subscriptions/request-refund', function () {
       assert.strictEqual(errorMessage, 'invalid-invoiceid')
     })
     it('invalid-account', async () => {
+      await bundledData()
       const errorMessage = cachedResponses.invalidAccount
       assert.strictEqual(errorMessage, 'invalid-account')
     })
@@ -81,6 +81,7 @@ describe('/account/subscriptions/request-refund', function () {
 
   describe('before', () => {
     it('should bind data to req', async () => {
+      await bundledData()
       const data = cachedResponses.before
       assert.strictEqual(data.invoice.invoiceid, cachedUser.invoice.invoiceid)
       assert.strictEqual(data.charge.id, cachedUser.charge.chargeid)
@@ -89,6 +90,7 @@ describe('/account/subscriptions/request-refund', function () {
 
   describe('view', () => {
     it('should present the form', async () => {
+      await bundledData()
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       assert.strictEqual(doc.getElementById('submit-form').tag, 'form')
@@ -98,6 +100,7 @@ describe('/account/subscriptions/request-refund', function () {
 
   describe('submit', () => {
     it('should create refund request (screenshots)', async () => {
+      await bundledData()
       const result = cachedResponses.submit
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')

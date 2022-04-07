@@ -4,11 +4,12 @@ const TestHelper = require('../../../../../test-helper.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/reset-customer-coupon', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -56,16 +57,19 @@ describe('/api/administrator/subscriptions/reset-customer-coupon', function () {
     req4.account = administrator.account
     req4.session = administrator.session
     cachedResponses.returns = await req4.patch()
-  })
+    cachedResponses.finished = true
+  }
 
   describe('exceptions', () => {
     describe('invalid-customerid', () => {
       it('missing querystring customerid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.missing
         assert.strictEqual(errorMessage, 'invalid-customerid')
       })
 
       it('invalid querystring customerid', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalid
         assert.strictEqual(errorMessage, 'invalid-customerid')
       })
@@ -73,6 +77,7 @@ describe('/api/administrator/subscriptions/reset-customer-coupon', function () {
 
     describe('invalid-customer', () => {
       it('invalid querystring customer has no discount', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidCustomer
         assert.strictEqual(errorMessage, 'invalid-customer')
       })

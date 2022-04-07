@@ -5,12 +5,13 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/account/subscriptions/pay-invoice', function () {
-  const cachedResponses = {}
+  let cachedResponses
   let cachedInvoice
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     global.subscriptionRefundPeriod = 7 * 24 * 60 * 60
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -51,7 +52,8 @@ describe('/account/subscriptions/pay-invoice', function () {
     } catch (error) {
       cachedResponses.invalidInvoice = error.message
     }
-  })
+    cachedResponses.finished = true
+  }
   describe('exceptions', () => {
     it('should reject invalid invoice', async () => {
       const user = await TestHelper.createUser()
@@ -68,11 +70,13 @@ describe('/account/subscriptions/pay-invoice', function () {
     })
 
     it('invalid-account', async () => {
+      await bundledData()
       const errorMessage = cachedResponses.invalidAccount
       assert.strictEqual(errorMessage, 'invalid-account')
     })
 
     it('should reject paid invoice', async () => {
+      await bundledData()
       const errorMessage = cachedResponses.invalidInvoice
       assert.strictEqual(errorMessage, 'invalid-invoice')
     })
@@ -80,6 +84,7 @@ describe('/account/subscriptions/pay-invoice', function () {
 
   describe('before', () => {
     it('should bind data to req', async () => {
+      await bundledData()
       const data = cachedResponses.before
       assert.strictEqual(data.invoice.id, cachedInvoice.invoiceid)
     })
@@ -87,6 +92,7 @@ describe('/account/subscriptions/pay-invoice', function () {
 
   describe('view', () => {
     it('should present the form', async () => {
+      await bundledData()
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       assert.strictEqual(doc.getElementById('submit-form').tag, 'form')
@@ -96,6 +102,7 @@ describe('/account/subscriptions/pay-invoice', function () {
 
   describe('submit', () => {
     it('should pay invoice (screenshots)', async () => {
+      await bundledData()
       const result = cachedResponses.submit
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')

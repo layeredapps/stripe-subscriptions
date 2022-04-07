@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/set-payment-method-detached', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
@@ -55,11 +56,13 @@ describe('/api/user/subscriptions/set-payment-method-detached', function () {
     req3.filename = __filename
     req3.saveResponse = true
     cachedResponses.returns = await req3.patch()
-  })
+    cachedResponses.finished = true
+  }
 
   describe('exceptions', () => {
     describe('invalid-paymentmethodid', () => {
       it('missing querystring paymentmethodid', async () => {
+        await bundledData()
         const user = await TestHelper.createUser()
         const req = TestHelper.createRequest('/api/user/subscriptions/set-payment-method-detached')
         req.account = user.account
@@ -74,6 +77,7 @@ describe('/api/user/subscriptions/set-payment-method-detached', function () {
       })
 
       it('invalid querystring paymentmethodid', async () => {
+        await bundledData()
         const user = await TestHelper.createUser()
         const req = TestHelper.createRequest('/api/user/subscriptions/set-payment-method-detached?paymentmethodid=invalid')
         req.account = user.account
@@ -90,6 +94,7 @@ describe('/api/user/subscriptions/set-payment-method-detached', function () {
 
     describe('invalid-account', () => {
       it('ineligible accessing account', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidAccount
         assert.strictEqual(errorMessage, 'invalid-account')
       })
@@ -97,6 +102,7 @@ describe('/api/user/subscriptions/set-payment-method-detached', function () {
 
     describe('invalid-paymentmethod', () => {
       it('invalid querystring payment method is default', async () => {
+        await bundledData()
         const errorMessage = cachedResponses.invalidPaymentMethod
         assert.strictEqual(errorMessage, 'invalid-paymentmethod')
       })

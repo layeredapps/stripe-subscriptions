@@ -5,11 +5,12 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/administrator/subscriptions/payment-intent', function () {
-  const cachedResponses = {}
-  beforeEach(async () => {
-    if (Object.keys(cachedResponses).length) {
+  let cachedResponses
+  async function bundledData () {
+    if (cachedResponses && cachedResponses.finished) {
       return
     }
+    cachedResponses = {}
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const administrator = await TestHelper.createOwner()
@@ -34,7 +35,9 @@ describe('/administrator/subscriptions/payment-intent', function () {
       { click: `/administrator/subscriptions/payment-intent?paymentintentid=${paymentIntent.paymentintentid}` }
     ]
     cachedResponses.get = await req.get()
-  })
+    cachedResponses.finished = true
+  }
+
   describe('before', () => {
     it('should reject invalid paymentintentid', async () => {
       const administrator = await TestHelper.createOwner()
@@ -51,6 +54,7 @@ describe('/administrator/subscriptions/payment-intent', function () {
     })
 
     it('should bind data to req', async () => {
+      await bundledData()
       const data = cachedResponses.before
       assert.strictEqual(data.paymentIntent.object, 'payment_intent')
     })
@@ -58,6 +62,7 @@ describe('/administrator/subscriptions/payment-intent', function () {
 
   describe('view', () => {
     it('should have row for payment intent (screenshots)', async () => {
+      await bundledData()
       const result = cachedResponses.get
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('payment_intents-table')
