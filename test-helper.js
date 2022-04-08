@@ -319,9 +319,6 @@ async function setupWebhook () {
       global.subscriptionWebhookEndPointSecret = webhook.secret
     } catch (error) {
     }
-    if (!webhook) {
-      await wait()
-    }
   }
 }
 
@@ -339,22 +336,13 @@ afterEach(async () => {
 
 after(async () => {
   await deleteOldData()
-  if (webhook) {
-    await deleteOldWebhooks()
-    webhook = null
-    await ngrok.kill()
-  }
+  await deleteOldWebhooks()
+  await ngrok.kill()
+  await subscriptions.Storage.flush()
   await TestHelperPuppeteer.close()
-  delete (global.packageJSON)
-  delete (global.sitemap)
-  delete (global.api)
-  delete (global.testEnded)
 })
 
-async function deleteOldWebhooks (really) {
-  if (!really) {
-    return
-  }
+async function deleteOldWebhooks () {
   webhook = null
   try {
     const webhooks = await stripe.webhookEndpoints.list({ limit: 100 }, stripeKey)
@@ -380,6 +368,7 @@ async function deleteOldData () {
         }
       }
     } catch (error) {
+      console.log('delete old data error', field, error)
     }
   }
 }
