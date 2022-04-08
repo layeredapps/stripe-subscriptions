@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/administrator/subscriptions/apply-subscription-coupon', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -97,36 +101,36 @@ describe('/administrator/subscriptions/apply-subscription-coupon', function () {
       assert.strictEqual(errorMessage, 'invalid-subscriptionid')
     })
 
-    it('should reject canceling subscription', async () => {
-      await bundledData()
+    it('should reject canceling subscription', async function () {
+      await bundledData(this.test.currentRetry())
       const errorMessage = cachedResponses.cancelingSubscription
       assert.strictEqual(errorMessage, 'invalid-subscription')
     })
 
-    it('should reject free subscription', async () => {
-      await bundledData()
+    it('should reject free subscription', async function () {
+      await bundledData(this.test.currentRetry())
       const errorMessage = cachedResponses.freeSubscription
       assert.strictEqual(errorMessage, 'invalid-subscription')
     })
 
-    it('should reject subscription with coupon', async () => {
-      await bundledData()
+    it('should reject subscription with coupon', async function () {
+      await bundledData(this.test.currentRetry())
       const errorMessage = cachedResponses.existingCoupon
       assert.strictEqual(errorMessage, 'invalid-subscription')
     })
   })
 
   describe('before', () => {
-    it('should bind data to req', async () => {
-      await bundledData()
+    it('should bind data to req', async function () {
+      await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
       assert.strictEqual(data.subscription.object, 'subscription')
     })
   })
 
   describe('view', () => {
-    it('should present the form', async () => {
-      await bundledData()
+    it('should present the form', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.get
       const doc = TestHelper.extractDoc(result.html)
       assert.strictEqual(doc.getElementById('submit-form').tag, 'form')
@@ -135,8 +139,8 @@ describe('/administrator/subscriptions/apply-subscription-coupon', function () {
   })
 
   describe('submit', () => {
-    it('should apply coupon (screenshots)', async () => {
-      await bundledData()
+    it('should apply coupon (screenshots)', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')

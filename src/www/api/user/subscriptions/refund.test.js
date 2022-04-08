@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/refund', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -44,8 +48,8 @@ describe('/api/user/subscriptions/refund', function () {
 
   describe('exceptions', () => {
     describe('invalid-refundid', () => {
-      it('missing querystring refundid', async () => {
-        await bundledData()
+      it('missing querystring refundid', async function () {
+        await bundledData(this.test.currentRetry())
         const user = await TestHelper.createUser()
         const req = TestHelper.createRequest('/api/user/subscriptions/refund?refundid=invalid')
         req.account = user.account
@@ -59,8 +63,8 @@ describe('/api/user/subscriptions/refund', function () {
         assert.strictEqual(errorMessage, 'invalid-refundid')
       })
 
-      it('invalid querystring refundid', async () => {
-        await bundledData()
+      it('invalid querystring refundid', async function () {
+        await bundledData(this.test.currentRetry())
         const user = await TestHelper.createUser()
         const req = TestHelper.createRequest('/api/user/subscriptions/refund?refundid=invalid')
         req.account = user.account
@@ -76,8 +80,8 @@ describe('/api/user/subscriptions/refund', function () {
     })
 
     describe('invalid-account', () => {
-      it('ineligible accessing account', async () => {
-        await bundledData()
+      it('ineligible accessing account', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidAccount
         assert.strictEqual(errorMessage, 'invalid-account')
       })

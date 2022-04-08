@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/create-refund', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -59,8 +63,8 @@ describe('/api/administrator/subscriptions/create-refund', function () {
 
   describe('exceptions', () => {
     describe('invalid-chargeid', () => {
-      it('missing querystring chargeid', async () => {
-        await bundledData()
+      it('missing querystring chargeid', async function () {
+        await bundledData(this.test.currentRetry())
         const administrator = await TestHelper.createOwner()
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-refund')
         req.account = administrator.account
@@ -77,8 +81,8 @@ describe('/api/administrator/subscriptions/create-refund', function () {
         assert.strictEqual(errorMessage, 'invalid-chargeid')
       })
 
-      it('invalid querystring chargeid', async () => {
-        await bundledData()
+      it('invalid querystring chargeid', async function () {
+        await bundledData(this.test.currentRetry())
         const administrator = await TestHelper.createOwner()
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-refund?chargeid=invalid')
         req.account = administrator.account
@@ -97,26 +101,26 @@ describe('/api/administrator/subscriptions/create-refund', function () {
     })
 
     describe('invalid-amount', () => {
-      it('missing posted amount', async () => {
-        await bundledData()
+      it('missing posted amount', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missingAmount
         assert.strictEqual(errorMessage, 'invalid-amount')
       })
 
-      it('invalid posted amount', async () => {
-        await bundledData()
+      it('invalid posted amount', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidAmount
         assert.strictEqual(errorMessage, 'invalid-amount')
       })
 
-      it('invalid posted amount is negative', async () => {
-        await bundledData()
+      it('invalid posted amount is negative', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.negativeAmount
         assert.strictEqual(errorMessage, 'invalid-amount')
       })
 
-      it('invalid posted amount exceeds charge', async () => {
-        await bundledData()
+      it('invalid posted amount exceeds charge', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.excessiveAmount
         assert.strictEqual(errorMessage, 'invalid-amount')
       })

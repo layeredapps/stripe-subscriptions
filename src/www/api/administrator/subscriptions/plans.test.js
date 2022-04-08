@@ -5,7 +5,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/plans', function () {
   let cachedResponses, cachedPlans
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -50,8 +54,8 @@ describe('/api/administrator/subscriptions/plans', function () {
     cachedResponses.finished = true
   }
   describe('receives', () => {
-    it('optional querystring offset (integer)', async () => {
-      await bundledData()
+    it('optional querystring offset (integer)', async function () {
+      await bundledData(this.test.currentRetry())
       const offset = 1
       const plansNow = cachedResponses.offset
       for (let i = 0, len = global.pageSize; i < len; i++) {
@@ -59,8 +63,8 @@ describe('/api/administrator/subscriptions/plans', function () {
       }
     })
 
-    it('optional querystring limit (integer)', async () => {
-      await bundledData()
+    it('optional querystring limit (integer)', async function () {
+      await bundledData(this.test.currentRetry())
       const limit = 1
       const plansNow = cachedResponses.limit
       assert.strictEqual(plansNow.length, limit)

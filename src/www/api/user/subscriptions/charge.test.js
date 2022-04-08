@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/charge', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -44,8 +48,8 @@ describe('/api/user/subscriptions/charge', function () {
 
   describe('exceptions', () => {
     describe('invalid-chargeid', () => {
-      it('missing querystring chargeid', async () => {
-        await bundledData()
+      it('missing querystring chargeid', async function () {
+        await bundledData(this.test.currentRetry())
         const user = await TestHelper.createUser()
         const req = TestHelper.createRequest('/api/user/subscriptions/charge')
         req.account = user.account
@@ -59,8 +63,8 @@ describe('/api/user/subscriptions/charge', function () {
         assert.strictEqual(errorMessage, 'invalid-chargeid')
       })
 
-      it('invalid querystring chargeid', async () => {
-        await bundledData()
+      it('invalid querystring chargeid', async function () {
+        await bundledData(this.test.currentRetry())
         const user = await TestHelper.createUser()
         const req = TestHelper.createRequest('/api/user/subscriptions/charge?chargeid=invalid')
         req.account = user.account
@@ -76,8 +80,8 @@ describe('/api/user/subscriptions/charge', function () {
     })
 
     describe('invalid-account', () => {
-      it('ineligible accessing account', async () => {
-        await bundledData()
+      it('ineligible accessing account', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidAccount
         assert.strictEqual(errorMessage, 'invalid-account')
       })

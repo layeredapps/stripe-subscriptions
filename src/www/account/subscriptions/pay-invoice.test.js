@@ -7,7 +7,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 describe('/account/subscriptions/pay-invoice', function () {
   let cachedResponses
   let cachedInvoice
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -69,30 +73,30 @@ describe('/account/subscriptions/pay-invoice', function () {
       assert.strictEqual(errorMessage, 'invalid-invoiceid')
     })
 
-    it('invalid-account', async () => {
-      await bundledData()
+    it('invalid-account', async function () {
+      await bundledData(this.test.currentRetry())
       const errorMessage = cachedResponses.invalidAccount
       assert.strictEqual(errorMessage, 'invalid-account')
     })
 
-    it('should reject paid invoice', async () => {
-      await bundledData()
+    it('should reject paid invoice', async function () {
+      await bundledData(this.test.currentRetry())
       const errorMessage = cachedResponses.invalidInvoice
       assert.strictEqual(errorMessage, 'invalid-invoice')
     })
   })
 
   describe('before', () => {
-    it('should bind data to req', async () => {
-      await bundledData()
+    it('should bind data to req', async function () {
+      await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
       assert.strictEqual(data.invoice.id, cachedInvoice.invoiceid)
     })
   })
 
   describe('view', () => {
-    it('should present the form', async () => {
-      await bundledData()
+    it('should present the form', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       assert.strictEqual(doc.getElementById('submit-form').tag, 'form')
@@ -101,8 +105,8 @@ describe('/account/subscriptions/pay-invoice', function () {
   })
 
   describe('submit', () => {
-    it('should pay invoice (screenshots)', async () => {
-      await bundledData()
+    it('should pay invoice (screenshots)', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.submit
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')

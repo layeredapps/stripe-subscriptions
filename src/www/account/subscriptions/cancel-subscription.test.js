@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/account/subscriptions/cancel-subscription', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -133,50 +137,50 @@ describe('/account/subscriptions/cancel-subscription', function () {
     cachedResponses.finished = true
   }
   describe('exceptions', () => {
-    it('should reject missing subscription', async () => {
-      await bundledData()
+    it('should reject missing subscription', async function () {
+      await bundledData(this.test.currentRetry())
       const errorMessage = cachedResponses.missingSubscription
       assert.strictEqual(errorMessage, 'invalid-subscriptionid')
     })
 
-    it('should reject invalid subscription', async () => {
-      await bundledData()
+    it('should reject invalid subscription', async function () {
+      await bundledData(this.test.currentRetry())
       const errorMessage = cachedResponses.invalidSubscription
       assert.strictEqual(errorMessage, 'invalid-subscriptionid')
     })
 
-    it('should reject canceled subscription', async () => {
-      await bundledData()
+    it('should reject canceled subscription', async function () {
+      await bundledData(this.test.currentRetry())
       const errorMessage = cachedResponses.canceledSubscription
       assert.strictEqual(errorMessage, 'invalid-subscription')
     })
 
-    it('should reject other account\'s subscription', async () => {
-      await bundledData()
+    it('should reject other account\'s subscription', async function () {
+      await bundledData(this.test.currentRetry())
       const errorMessage = cachedResponses.invalidAccount
       assert.strictEqual(errorMessage, 'invalid-account')
     })
   })
 
   describe('before', () => {
-    it('should bind data to req', async () => {
-      await bundledData()
+    it('should bind data to req', async function () {
+      await bundledData(this.test.currentRetry())
       const before = cachedResponses.before
       assert.strictEqual(before.subscription.object, 'subscription')
     })
   })
 
   describe('view', () => {
-    it('should present the form', async () => {
-      await bundledData()
+    it('should present the form', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.viewPaid
       const doc = TestHelper.extractDoc(result.html)
       assert.strictEqual(doc.getElementById('submit-form').tag, 'form')
       assert.strictEqual(doc.getElementById('submit-button').tag, 'button')
     })
 
-    it('should show fields for free plan cancelations', async () => {
-      await bundledData()
+    it('should show fields for free plan cancelations', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.viewFree
       const doc = TestHelper.extractDoc(result.html)
       const delay = doc.getElementById('delay-checkbox')
@@ -189,8 +193,8 @@ describe('/account/subscriptions/cancel-subscription', function () {
       assert.strictEqual(credit, undefined)
     })
 
-    it('should show fields for free trial cancelations', async () => {
-      await bundledData()
+    it('should show fields for free trial cancelations', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.viewFreeTrial
       const doc = TestHelper.extractDoc(result.html)
       const delay = doc.getElementById('delay-checkbox')
@@ -203,8 +207,8 @@ describe('/account/subscriptions/cancel-subscription', function () {
       assert.strictEqual(credit, undefined)
     })
 
-    it('should show fields for cancelation with credit or refund', async () => {
-      await bundledData()
+    it('should show fields for cancelation with credit or refund', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.viewPaid
       const doc = TestHelper.extractDoc(result.html)
       const delay = doc.getElementById('delay-checkbox')
@@ -219,8 +223,8 @@ describe('/account/subscriptions/cancel-subscription', function () {
   })
 
   describe('submit', () => {
-    it('should cancel free subscription immediately (screenshots)', async () => {
-      await bundledData()
+    it('should cancel free subscription immediately (screenshots)', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.submitFree1
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
@@ -228,8 +232,8 @@ describe('/account/subscriptions/cancel-subscription', function () {
       assert.strictEqual(message.attr.template, 'success')
     })
 
-    it('should cancel free subscription at period end', async () => {
-      await bundledData()
+    it('should cancel free subscription at period end', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.submitFree2
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
@@ -237,8 +241,8 @@ describe('/account/subscriptions/cancel-subscription', function () {
       assert.strictEqual(message.attr.template, 'success')
     })
 
-    it('should cancel free trial immediately', async () => {
-      await bundledData()
+    it('should cancel free trial immediately', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.submitFreeTrial1
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
@@ -246,8 +250,8 @@ describe('/account/subscriptions/cancel-subscription', function () {
       assert.strictEqual(message.attr.template, 'success')
     })
 
-    it('should cancel free trial at period end', async () => {
-      await bundledData()
+    it('should cancel free trial at period end', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.submitFreeTrial2
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
@@ -255,8 +259,8 @@ describe('/account/subscriptions/cancel-subscription', function () {
       assert.strictEqual(message.attr.template, 'success')
     })
 
-    it('should cancel paid subscription and credit account', async () => {
-      await bundledData()
+    it('should cancel paid subscription and credit account', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.submitPaid1
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
@@ -264,8 +268,8 @@ describe('/account/subscriptions/cancel-subscription', function () {
       assert.strictEqual(message.attr.template, 'success-credit')
     })
 
-    it('should cancel paid subscription and show refund', async () => {
-      await bundledData()
+    it('should cancel paid subscription and show refund', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.submitPaid2
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')

@@ -7,7 +7,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 describe('/account/subscriptions/confirm-subscription', function () {
   let cachedResponses
   let publishedPlan
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -112,14 +116,14 @@ describe('/account/subscriptions/confirm-subscription', function () {
     cachedResponses.finished = true
   }
   describe('exceptions', () => {
-    it('invalid-planid', async () => {
-      await bundledData()
+    it('invalid-planid', async function () {
+      await bundledData(this.test.currentRetry())
       const errorMessage = cachedResponses.invalidPlan
       assert.strictEqual(errorMessage, 'invalid-planid')
     })
 
-    it('invalid-plan', async () => {
-      await bundledData()
+    it('invalid-plan', async function () {
+      await bundledData(this.test.currentRetry())
       let errorMessage = cachedResponses.unpublishedAtPlan
       assert.strictEqual(errorMessage, 'invalid-plan')
       errorMessage = cachedResponses.notPublishedPlan
@@ -128,16 +132,16 @@ describe('/account/subscriptions/confirm-subscription', function () {
   })
 
   describe('before', () => {
-    it('should bind data to req', async () => {
-      await bundledData()
+    it('should bind data to req', async function () {
+      await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
       assert.strictEqual(data.plan.planid, publishedPlan.planid)
     })
   })
 
   describe('view', () => {
-    it('should present the form', async () => {
-      await bundledData()
+    it('should present the form', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       assert.strictEqual(doc.getElementById('submit-form').tag, 'form')
@@ -146,16 +150,16 @@ describe('/account/subscriptions/confirm-subscription', function () {
   })
 
   describe('submit', () => {
-    it('should start subscription (screenshots)', async () => {
-      await bundledData()
+    it('should start subscription (screenshots)', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.submit
       assert.strictEqual(result.redirect, '/home')
     })
   })
 
   describe('errors', () => {
-    it('invalid-paymentmethodid', async () => {
-      await bundledData()
+    it('invalid-paymentmethodid', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.invalidPaymentMethod
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')

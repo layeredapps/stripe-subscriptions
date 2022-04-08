@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/setup-intent', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -37,8 +41,8 @@ describe('/api/user/subscriptions/setup-intent', function () {
 
   describe('exceptions', () => {
     describe('invalid-setupintentid', () => {
-      it('missing querystring setupintentid', async () => {
-        await bundledData()
+      it('missing querystring setupintentid', async function () {
+        await bundledData(this.test.currentRetry())
         const user = await TestHelper.createUser()
         const req = TestHelper.createRequest('/api/user/subscriptions/setup-intent')
         req.account = user.account
@@ -52,8 +56,8 @@ describe('/api/user/subscriptions/setup-intent', function () {
         assert.strictEqual(errorMessage, 'invalid-setupintentid')
       })
 
-      it('invalid querystring setupintentid', async () => {
-        await bundledData()
+      it('invalid querystring setupintentid', async function () {
+        await bundledData(this.test.currentRetry())
         const user = await TestHelper.createUser()
         const req = TestHelper.createRequest('/api/user/subscriptions/setup-intent?setupintentid=invalid')
         req.account = user.account
@@ -69,8 +73,8 @@ describe('/api/user/subscriptions/setup-intent', function () {
     })
 
     describe('invalid-account', () => {
-      it('ineligible accessing account', async () => {
-        await bundledData()
+      it('ineligible accessing account', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidAccount
         assert.strictEqual(errorMessage, 'invalid-account')
       })

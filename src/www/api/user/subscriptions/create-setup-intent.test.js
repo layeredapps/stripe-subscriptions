@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/create-setup-intent', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -93,22 +97,22 @@ describe('/api/user/subscriptions/create-setup-intent', function () {
     })
 
     describe('invalid-account', () => {
-      it('ineligible accessing account', async () => {
-        await bundledData()
+      it('ineligible accessing account', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidAccount
         assert.strictEqual(errorMessage, 'invalid-account')
       })
     })
 
     describe('invalid-paymentmethodid', () => {
-      it('missing posted paymentmethodid', async () => {
-        await bundledData()
+      it('missing posted paymentmethodid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missingPaymentMethod
         assert.strictEqual(errorMessage, 'invalid-paymentmethodid')
       })
 
-      it('invalid posted paymentmethodid', async () => {
-        await bundledData()
+      it('invalid posted paymentmethodid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidPaymentMethod
         assert.strictEqual(errorMessage, 'invalid-paymentmethodid')
       })

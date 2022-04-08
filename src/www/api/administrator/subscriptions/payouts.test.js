@@ -6,7 +6,10 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 describe('/api/administrator/subscriptions/payouts', function () {
   if (!process.env.DISABLE_PAYOUT_TESTS) {
     let cachedResponses, cachedPayouts
-    async function bundledData () {
+    async function bundledData (retryNumber) {
+      if (retryNumber) {
+        cachedResponses = {}
+      }
       if (cachedResponses && cachedResponses.finished) {
         return
       }
@@ -41,8 +44,8 @@ describe('/api/administrator/subscriptions/payouts', function () {
       cachedResponses.pageSize = await req4.get()
     }
     describe('receives', () => {
-      it('optional querystring offset (integer)', async () => {
-        await bundledData()
+      it('optional querystring offset (integer)', async function () {
+        await bundledData(this.test.currentRetry())
         const offset = 1
         const payoutsNow = cachedResponses.offset
         for (let i = 0, len = payoutsNow.length; i < len; i++) {
@@ -50,23 +53,23 @@ describe('/api/administrator/subscriptions/payouts', function () {
         }
       })
 
-      it('optional querystring limit (integer)', async () => {
-        await bundledData()
+      it('optional querystring limit (integer)', async function () {
+        await bundledData(this.test.currentRetry())
         const limit = 1
         const payoutsNow = cachedResponses.limit
         assert.strictEqual(payoutsNow.length, limit)
       })
 
-      it('optional querystring all (boolean)', async () => {
-        await bundledData()
+      it('optional querystring all (boolean)', async function () {
+        await bundledData(this.test.currentRetry())
         const payouts = cachedResponses.all
         assert.strictEqual(payouts.length, cachedPayouts.length)
       })
     })
 
     describe('returns', () => {
-      it('array', async () => {
-        await bundledData()
+      it('array', async function () {
+        await bundledData(this.test.currentRetry())
         const payouts = cachedResponses.returns
         assert.strictEqual(payouts.length, global.pageSize)
       })

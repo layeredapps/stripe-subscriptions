@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/administrator/subscriptions/subscriptions', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -54,16 +58,16 @@ describe('/administrator/subscriptions/subscriptions', function () {
       assert.strictEqual(errorMessage, 'invalid-subscriptionid')
     })
 
-    it('should bind data to req', async () => {
-      await bundledData()
+    it('should bind data to req', async function () {
+      await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
       assert.strictEqual(data.subscription.object, 'subscription')
     })
   })
 
   describe('view', () => {
-    it('should present the subscription table (screenshots)', async () => {
-      await bundledData()
+    it('should present the subscription table (screenshots)', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('subscriptions-table')

@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/create-subscription', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -133,58 +137,58 @@ describe('/api/user/subscriptions/create-subscription', function () {
 
   describe('exceptions', () => {
     describe('invalid-customerid', () => {
-      it('missing querystring customerid', async () => {
-        await bundledData()
+      it('missing querystring customerid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missingCustomer
         assert.strictEqual(errorMessage, 'invalid-customerid')
       })
 
-      it('invalid querystring customerid', async () => {
-        await bundledData()
+      it('invalid querystring customerid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidCustomer
         assert.strictEqual(errorMessage, 'invalid-customerid')
       })
     })
 
     describe('invalid-customer', () => {
-      it('ineligible querystring customer requires payment method', async () => {
-        await bundledData()
+      it('ineligible querystring customer requires payment method', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidPaymentMethod
         assert.strictEqual(errorMessage, 'invalid-paymentmethodid')
       })
     })
 
     describe('invalid-account', () => {
-      it('ineligible accessing account', async () => {
-        await bundledData()
+      it('ineligible accessing account', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidAccount
         assert.strictEqual(errorMessage, 'invalid-account')
       })
     })
 
     describe('invalid-planid', () => {
-      it('missing posted planid', async () => {
-        await bundledData()
+      it('missing posted planid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missingPlan
         assert.strictEqual(errorMessage, 'invalid-planid')
       })
 
-      it('invalid posted planid', async () => {
-        await bundledData()
+      it('invalid posted planid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidPlan
         assert.strictEqual(errorMessage, 'invalid-planid')
       })
     })
 
     describe('invalid-plan', () => {
-      it('ineligible posted plan is not published', async () => {
-        await bundledData()
+      it('ineligible posted plan is not published', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.notPublishedPlan
         assert.strictEqual(errorMessage, 'invalid-plan')
       })
 
-      it('ineligible posted plan is unpublished', async () => {
-        await bundledData()
+      it('ineligible posted plan is unpublished', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.unpublishedPlan
         assert.strictEqual(errorMessage, 'invalid-plan')
       })

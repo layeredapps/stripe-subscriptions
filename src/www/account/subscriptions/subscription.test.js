@@ -7,7 +7,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 describe('/account/subscriptions/subscription', function () {
   let cachedResponses
   let cachedSubscription
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -66,24 +70,24 @@ describe('/account/subscriptions/subscription', function () {
       assert.strictEqual(errorMessage, 'invalid-subscriptionid')
     })
 
-    it('invalid-account', async () => {
-      await bundledData()
+    it('invalid-account', async function () {
+      await bundledData(this.test.currentRetry())
       const errorMessage = cachedResponses.invalidAccount
       assert.strictEqual(errorMessage, 'invalid-account')
     })
   })
 
   describe('before', () => {
-    it('should bind data to req', async () => {
-      await bundledData()
+    it('should bind data to req', async function () {
+      await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
       assert.strictEqual(data.subscription.subscriptionid, cachedSubscription.subscriptionid)
     })
   })
 
   describe('view', () => {
-    it('should present the subscription table (screenshots)', async () => {
-      await bundledData()
+    it('should present the subscription table (screenshots)', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       const tbody = doc.getElementById(cachedSubscription.subscriptionid)

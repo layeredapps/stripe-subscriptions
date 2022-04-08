@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/administrator/subscriptions/deny-refund', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -71,28 +75,30 @@ describe('/administrator/subscriptions/deny-refund', function () {
       assert.strictEqual(errorMessage, 'invalid-chargeid')
     })
 
-    it('should reject charge without refund request', async () => {
+    it('should reject charge without refund request', async function () {
+      await bundledData(this.test.currentRetry())
       const errorMessage = cachedResponses.invalidCharge
       assert.strictEqual(errorMessage, 'invalid-charge')
     })
 
-    it('should reject denied refund', async () => {
+    it('should reject denied refund', async function () {
+      await bundledData(this.test.currentRetry())
       const errorMessage = cachedResponses.alreadyDenied
       assert.strictEqual(errorMessage, 'invalid-charge')
     })
   })
 
   describe('before', () => {
-    it('should bind data to req', async () => {
-      await bundledData()
+    it('should bind data to req', async function () {
+      await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
       assert.strictEqual(data.charge.object, 'charge')
     })
   })
 
   describe('view', () => {
-    it('should present the form', async () => {
-      await bundledData()
+    it('should present the form', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.view
       const doc = TestHelper.extractDoc(result.html)
       assert.strictEqual(doc.getElementById('submit-form').tag, 'form')
@@ -101,8 +107,8 @@ describe('/administrator/subscriptions/deny-refund', function () {
   })
 
   describe('submit', () => {
-    it('should deny refund (screenshots)', async () => {
-      await bundledData()
+    it('should deny refund (screenshots)', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.result
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')

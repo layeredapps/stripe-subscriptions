@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/payment-intent', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -42,8 +46,8 @@ describe('/api/user/subscriptions/payment-intent', function () {
 
   describe('exceptions', () => {
     describe('invalid-paymentintentid', () => {
-      it('missing querystring invalid', async () => {
-        await bundledData()
+      it('missing querystring invalid', async function () {
+        await bundledData(this.test.currentRetry())
         const user = await TestHelper.createUser()
         const req = TestHelper.createRequest('/api/user/subscriptions/payment-intent')
         req.account = user.account
@@ -57,8 +61,8 @@ describe('/api/user/subscriptions/payment-intent', function () {
         assert.strictEqual(errorMessage, 'invalid-paymentintentid')
       })
 
-      it('invalid querystring invalid', async () => {
-        await bundledData()
+      it('invalid querystring invalid', async function () {
+        await bundledData(this.test.currentRetry())
         const user = await TestHelper.createUser()
         const req = TestHelper.createRequest('/api/user/subscriptions/payment-intent?paymentintentid=invalid')
         req.account = user.account
@@ -74,8 +78,8 @@ describe('/api/user/subscriptions/payment-intent', function () {
     })
 
     describe('invalid-account', () => {
-      it('ineligible accessing account', async () => {
-        await bundledData()
+      it('ineligible accessing account', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidAccount
         assert.strictEqual(errorMessage, 'invalid-account')
       })

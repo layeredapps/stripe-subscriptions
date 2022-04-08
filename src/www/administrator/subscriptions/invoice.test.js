@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/administrator/subscriptions/invoice', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -53,16 +57,16 @@ describe('/administrator/subscriptions/invoice', function () {
       assert.strictEqual(errorMessage, 'invalid-invoiceid')
     })
 
-    it('should bind data to req', async () => {
-      await bundledData()
+    it('should bind data to req', async function () {
+      await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
       assert.strictEqual(data.invoice.object, 'invoice')
     })
   })
 
   describe('view', () => {
-    it('should present the invoice table (screenshots)', async () => {
-      await bundledData()
+    it('should present the invoice table (screenshots)', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.get
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('invoices-table')

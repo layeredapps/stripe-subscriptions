@@ -7,7 +7,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 describe('/administrator/subscriptions/delete-subscription', function () {
   let cachedResponses
   let cachedSubscription
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -130,39 +134,42 @@ describe('/administrator/subscriptions/delete-subscription', function () {
   }
 
   describe('exceptions', () => {
-    it('should reject missing subscription', async () => {
+    it('should reject missing subscription', async function () {
+      await bundledData(this.test.currentRetry())
       const errorMessage = cachedResponses.missingQueryString
       assert.strictEqual(errorMessage, 'invalid-subscriptionid')
     })
-    it('should reject invalid subscription', async () => {
+    it('should reject invalid subscription', async function () {
+      await bundledData(this.test.currentRetry())
       const errorMessage = cachedResponses.invalidQuerystring
       assert.strictEqual(errorMessage, 'invalid-subscriptionid')
     })
-    it('should reject canceled subscription', async () => {
+    it('should reject canceled subscription', async function () {
+      await bundledData(this.test.currentRetry())
       const errorMessage = cachedResponses.invalidSubscription
       assert.strictEqual(errorMessage, 'invalid-subscription')
     })
   })
 
   describe('before', () => {
-    it('should bind data to req', async () => {
-      await bundledData()
+    it('should bind data to req', async function () {
+      await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
       assert.strictEqual(data.subscription.subscriptionid, cachedSubscription.subscriptionid)
     })
   })
 
   describe('view', () => {
-    it('should present the form', async () => {
-      await bundledData()
+    it('should present the form', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.returnsFreePlan
       const doc = TestHelper.extractDoc(result.html)
       assert.strictEqual(doc.getElementById('submit-form').tag, 'form')
       assert.strictEqual(doc.getElementById('submit-button').tag, 'button')
     })
 
-    it('should show fields for free plan cancelations', async () => {
-      await bundledData()
+    it('should show fields for free plan cancelations', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.returnsFreePlan
       const doc = TestHelper.extractDoc(result.html)
       const delay = doc.getElementById('delay-checkbox')
@@ -175,8 +182,8 @@ describe('/administrator/subscriptions/delete-subscription', function () {
       assert.strictEqual(credit, undefined)
     })
 
-    it('should show fields for free trial cancelations', async () => {
-      await bundledData()
+    it('should show fields for free trial cancelations', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.returnsFreeTrial
       const doc = TestHelper.extractDoc(result.html)
       const delay = doc.getElementById('delay-checkbox')
@@ -189,8 +196,8 @@ describe('/administrator/subscriptions/delete-subscription', function () {
       assert.strictEqual(credit, undefined)
     })
 
-    it('should show fields for cancelation with credit or refund', async () => {
-      await bundledData()
+    it('should show fields for cancelation with credit or refund', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.returnsPaidPlan
       const doc = TestHelper.extractDoc(result.html)
       const delay = doc.getElementById('delay-checkbox')
@@ -205,8 +212,8 @@ describe('/administrator/subscriptions/delete-subscription', function () {
   })
 
   describe('submit', () => {
-    it('should cancel free subscription immediately (screenshots)', async () => {
-      await bundledData()
+    it('should cancel free subscription immediately (screenshots)', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.submitFreeImmedate
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
@@ -214,8 +221,8 @@ describe('/administrator/subscriptions/delete-subscription', function () {
       assert.strictEqual(message.attr.template, 'success')
     })
 
-    it('should cancel free subscription at period end', async () => {
-      await bundledData()
+    it('should cancel free subscription at period end', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.submitFreeAtPeriodEnd
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
@@ -223,8 +230,8 @@ describe('/administrator/subscriptions/delete-subscription', function () {
       assert.strictEqual(message.attr.template, 'success')
     })
 
-    it('should cancel free trial immediately', async () => {
-      await bundledData()
+    it('should cancel free trial immediately', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.submitFreeTrialImmediate
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
@@ -232,8 +239,8 @@ describe('/administrator/subscriptions/delete-subscription', function () {
       assert.strictEqual(message.attr.template, 'success')
     })
 
-    it('should cancel free trial at period end', async () => {
-      await bundledData()
+    it('should cancel free trial at period end', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.submitFreeTrialAtPeriodEnd
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
@@ -241,8 +248,8 @@ describe('/administrator/subscriptions/delete-subscription', function () {
       assert.strictEqual(message.attr.template, 'success')
     })
 
-    it('should cancel paid subscription and credit account', async () => {
-      await bundledData()
+    it('should cancel paid subscription and credit account', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.submitPaidCredit
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
@@ -250,8 +257,8 @@ describe('/administrator/subscriptions/delete-subscription', function () {
       assert.strictEqual(message.attr.template, 'success-credit')
     })
 
-    it('should cancel paid subscription and show refund', async () => {
-      await bundledData()
+    it('should cancel paid subscription and show refund', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.submitPaidRefund
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')

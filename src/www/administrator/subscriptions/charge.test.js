@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/administrator/subscriptions/charge', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -51,16 +55,16 @@ describe('/administrator/subscriptions/charge', function () {
       assert.strictEqual(errorMessage, 'invalid-chargeid')
     })
 
-    it('should bind data to req', async () => {
-      await bundledData()
+    it('should bind data to req', async function () {
+      await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
       assert.strictEqual(data.charge.object, 'charge')
     })
   })
 
   describe('view', () => {
-    it('should present the charge table (screenshots)', async () => {
-      await bundledData()
+    it('should present the charge table (screenshots)', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.result
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('charges-table')

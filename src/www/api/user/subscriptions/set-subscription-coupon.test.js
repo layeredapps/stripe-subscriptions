@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/set-subscription-coupon', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -176,70 +180,70 @@ describe('/api/user/subscriptions/set-subscription-coupon', function () {
 
   describe('exceptions', () => {
     describe('invalid-subscriptionid', () => {
-      it('missing querystring subscriptionid', async () => {
-        await bundledData()
+      it('missing querystring subscriptionid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missing
         assert.strictEqual(errorMessage, 'invalid-subscriptionid')
       })
 
-      it('invalid querystring subscriptionid', async () => {
-        await bundledData()
+      it('invalid querystring subscriptionid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalid
         assert.strictEqual(errorMessage, 'invalid-subscriptionid')
       })
     })
 
     describe('invalid-subscription', () => {
-      it('invalid querystring subscription has coupon', async () => {
-        await bundledData()
+      it('invalid querystring subscription has coupon', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidSubscription
         assert.strictEqual(errorMessage, 'invalid-subscription')
       })
 
-      it('invalid querystring subscription is canceling', async () => {
-        await bundledData()
+      it('invalid querystring subscription is canceling', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidSubscription2
         assert.strictEqual(errorMessage, 'invalid-subscription')
       })
     })
 
     describe('invalid-account', () => {
-      it('ineligible accessing account', async () => {
-        await bundledData()
+      it('ineligible accessing account', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidAccount
         assert.strictEqual(errorMessage, 'invalid-account')
       })
     })
 
     describe('invalid-couponid', () => {
-      it('missing posted couponid', async () => {
-        await bundledData()
+      it('missing posted couponid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missingCoupon
         assert.strictEqual(errorMessage, 'invalid-couponid')
       })
 
-      it('invalid posted couponid', async () => {
-        await bundledData()
+      it('invalid posted couponid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidCoupon
         assert.strictEqual(errorMessage, 'invalid-couponid')
       })
     })
 
     describe('invalid-coupon', () => {
-      it('invalid posted coupon is not published', async () => {
-        await bundledData()
+      it('invalid posted coupon is not published', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.notPublishedCoupon
         assert.strictEqual(errorMessage, 'invalid-coupon')
       })
 
-      it('invalid posted coupon is unpublished', async () => {
-        await bundledData()
+      it('invalid posted coupon is unpublished', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.unpublishedAtCoupon
         assert.strictEqual(errorMessage, 'invalid-coupon')
       })
 
-      it('invalid posted coupon is other currency', async () => {
-        await bundledData()
+      it('invalid posted coupon is other currency', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.currencyCoupon
         assert.strictEqual(errorMessage, 'invalid-coupon')
       })

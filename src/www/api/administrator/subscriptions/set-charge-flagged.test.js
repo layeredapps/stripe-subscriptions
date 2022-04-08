@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/set-charge-flagged', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -61,22 +65,22 @@ describe('/api/administrator/subscriptions/set-charge-flagged', function () {
 
   describe('exceptions', () => {
     describe('invalid-chargeid', () => {
-      it('missing querystring charge', async () => {
-        await bundledData()
+      it('missing querystring charge', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missing
         assert.strictEqual(errorMessage, 'invalid-chargeid')
       })
 
-      it('invalid querystring charge', async () => {
-        await bundledData()
+      it('invalid querystring charge', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalid
         assert.strictEqual(errorMessage, 'invalid-chargeid')
       })
     })
 
     describe('invalid-charge', () => {
-      it('ineligible querystring charge is already flagged', async () => {
-        await bundledData()
+      it('ineligible querystring charge is already flagged', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidCharge
         assert.strictEqual(errorMessage, 'invalid-charge')
       })

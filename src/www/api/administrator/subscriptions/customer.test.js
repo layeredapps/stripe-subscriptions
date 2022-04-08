@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/customer', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -43,14 +47,14 @@ describe('/api/administrator/subscriptions/customer', function () {
 
   describe('exceptions', () => {
     describe('invalid-customerid', () => {
-      it('missing querystring customerid', async () => {
-        await bundledData()
+      it('missing querystring customerid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missing
         assert.strictEqual(errorMessage, 'invalid-customerid')
       })
 
-      it('invalid querystring customerid', async () => {
-        await bundledData()
+      it('invalid querystring customerid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalid
         assert.strictEqual(errorMessage, 'invalid-customerid')
       })

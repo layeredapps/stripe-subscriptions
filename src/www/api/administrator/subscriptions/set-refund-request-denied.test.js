@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/set-refund-request-denied', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -88,28 +92,28 @@ describe('/api/administrator/subscriptions/set-refund-request-denied', function 
 
   describe('exceptions', () => {
     describe('invalid-chargeid', () => {
-      it('missing querystring chargeid', async () => {
-        await bundledData()
+      it('missing querystring chargeid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missing
         assert.strictEqual(errorMessage, 'invalid-chargeid')
       })
 
-      it('invalid querystring chargeid', async () => {
-        await bundledData()
+      it('invalid querystring chargeid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalid
         assert.strictEqual(errorMessage, 'invalid-chargeid')
       })
     })
 
     describe('invalid-charge', () => {
-      it('ineligible querystring charge has no refund request', async () => {
-        await bundledData()
+      it('ineligible querystring charge has no refund request', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidCharge
         assert.strictEqual(errorMessage, 'invalid-charge')
       })
 
-      it('ineligible querystring charge has denied request already', async () => {
-        await bundledData()
+      it('ineligible querystring charge has denied request already', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidCharge2
         assert.strictEqual(errorMessage, 'invalid-charge')
       })

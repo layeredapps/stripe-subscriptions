@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/set-customer-coupon', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -137,50 +141,50 @@ describe('/api/administrator/subscriptions/set-customer-coupon', function () {
 
   describe('exceptions', () => {
     describe('invalid-customerid', () => {
-      it('missing querystring customerid', async () => {
-        await bundledData()
+      it('missing querystring customerid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missing
         assert.strictEqual(errorMessage, 'invalid-customerid')
       })
 
-      it('invalid querystring customerid', async () => {
-        await bundledData()
+      it('invalid querystring customerid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalid
         assert.strictEqual(errorMessage, 'invalid-customerid')
       })
     })
 
     describe('invalid-customer', () => {
-      it('ineligible customer has coupon', async () => {
-        await bundledData()
+      it('ineligible customer has coupon', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidCustomer
         assert.strictEqual(errorMessage, 'invalid-customer')
       })
     })
 
     describe('invalid-couponid', () => {
-      it('missing posted couponid', async () => {
-        await bundledData()
+      it('missing posted couponid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missingCoupon
         assert.strictEqual(errorMessage, 'invalid-couponid')
       })
 
-      it('invalid posted couponid', async () => {
-        await bundledData()
+      it('invalid posted couponid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidCoupon
         assert.strictEqual(errorMessage, 'invalid-couponid')
       })
     })
 
     describe('invalid-coupon', () => {
-      it('ineligible posted coupon is not published', async () => {
-        await bundledData()
+      it('ineligible posted coupon is not published', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.notPublishedCoupon
         assert.strictEqual(errorMessage, 'invalid-coupon')
       })
 
-      it('ineligible posted coupon is unpublished', async () => {
-        await bundledData()
+      it('ineligible posted coupon is unpublished', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.unpublishedAtCoupon
         assert.strictEqual(errorMessage, 'invalid-coupon')
       })

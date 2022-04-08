@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/set-payment-method-detached', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -61,8 +65,8 @@ describe('/api/user/subscriptions/set-payment-method-detached', function () {
 
   describe('exceptions', () => {
     describe('invalid-paymentmethodid', () => {
-      it('missing querystring paymentmethodid', async () => {
-        await bundledData()
+      it('missing querystring paymentmethodid', async function () {
+        await bundledData(this.test.currentRetry())
         const user = await TestHelper.createUser()
         const req = TestHelper.createRequest('/api/user/subscriptions/set-payment-method-detached')
         req.account = user.account
@@ -76,8 +80,8 @@ describe('/api/user/subscriptions/set-payment-method-detached', function () {
         assert.strictEqual(errorMessage, 'invalid-paymentmethodid')
       })
 
-      it('invalid querystring paymentmethodid', async () => {
-        await bundledData()
+      it('invalid querystring paymentmethodid', async function () {
+        await bundledData(this.test.currentRetry())
         const user = await TestHelper.createUser()
         const req = TestHelper.createRequest('/api/user/subscriptions/set-payment-method-detached?paymentmethodid=invalid')
         req.account = user.account
@@ -93,16 +97,16 @@ describe('/api/user/subscriptions/set-payment-method-detached', function () {
     })
 
     describe('invalid-account', () => {
-      it('ineligible accessing account', async () => {
-        await bundledData()
+      it('ineligible accessing account', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidAccount
         assert.strictEqual(errorMessage, 'invalid-account')
       })
     })
 
     describe('invalid-paymentmethod', () => {
-      it('invalid querystring payment method is default', async () => {
-        await bundledData()
+      it('invalid querystring payment method is default', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidPaymentMethod
         assert.strictEqual(errorMessage, 'invalid-paymentmethod')
       })

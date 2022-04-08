@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/charges', function () {
   let cachedResponses, cachedCharges
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -85,8 +89,8 @@ describe('/api/user/subscriptions/charges', function () {
     })
 
     describe('invalid-account', () => {
-      it('ineligible accessing account', async () => {
-        await bundledData()
+      it('ineligible accessing account', async function () {
+        await bundledData(this.test.currentRetry())
         const user = await TestHelper.createUser()
         const user2 = await TestHelper.createUser()
         const req = TestHelper.createRequest(`/api/user/subscriptions/charges?accountid=${user.account.accountid}`)
@@ -104,8 +108,8 @@ describe('/api/user/subscriptions/charges', function () {
   })
 
   describe('receives', () => {
-    it('optional querystring offset (integer)', async () => {
-      await bundledData()
+    it('optional querystring offset (integer)', async function () {
+      await bundledData(this.test.currentRetry())
       const offset = 1
       const chargesNow = cachedResponses.offset
       for (let i = 0, len = global.pageSize; i < len; i++) {
@@ -113,8 +117,8 @@ describe('/api/user/subscriptions/charges', function () {
       }
     })
 
-    it('optional querystring limit (integer)', async () => {
-      await bundledData()
+    it('optional querystring limit (integer)', async function () {
+      await bundledData(this.test.currentRetry())
       const limit = 1
       const chargesNow = cachedResponses.limit
       assert.strictEqual(chargesNow.length, limit)

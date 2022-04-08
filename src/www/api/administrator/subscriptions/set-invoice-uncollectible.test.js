@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/set-invoice-uncollectable', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -70,28 +74,28 @@ describe('/api/administrator/subscriptions/set-invoice-uncollectable', function 
 
   describe('exceptions', () => {
     describe('invalid-invoiceid', () => {
-      it('missing querystring invoiceid', async () => {
-        await bundledData()
+      it('missing querystring invoiceid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missing
         assert.strictEqual(errorMessage, 'invalid-invoiceid')
       })
 
-      it('invalid querystring invoiceid', async () => {
-        await bundledData()
+      it('invalid querystring invoiceid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalid
         assert.strictEqual(errorMessage, 'invalid-invoiceid')
       })
     })
 
     describe('invalid-invoice', () => {
-      it('invalid querystring invoice is paid', async () => {
-        await bundledData()
+      it('invalid querystring invoice is paid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidInvoice
         assert.strictEqual(errorMessage, 'invalid-invoice')
       })
 
-      it('invalid querystring invoice is marked uncollectable', async () => {
-        await bundledData()
+      it('invalid querystring invoice is marked uncollectable', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidInvoice2
         assert.strictEqual(errorMessage, 'invalid-invoice')
       })

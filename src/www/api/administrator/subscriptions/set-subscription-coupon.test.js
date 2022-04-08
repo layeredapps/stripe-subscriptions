@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/set-subscription-coupon', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -128,8 +132,8 @@ describe('/api/administrator/subscriptions/set-subscription-coupon', function ()
 
   describe('exceptions', () => {
     describe('invalid-subscriptionid', () => {
-      it('missing querystring subscriptionid', async () => {
-        await bundledData()
+      it('missing querystring subscriptionid', async function () {
+        await bundledData(this.test.currentRetry())
         const administrator = await TestHelper.createOwner()
         const req = TestHelper.createRequest('/api/administrator/subscriptions/set-subscription-coupon')
         req.account = administrator.account
@@ -146,8 +150,8 @@ describe('/api/administrator/subscriptions/set-subscription-coupon', function ()
         assert.strictEqual(errorMessage, 'invalid-subscriptionid')
       })
 
-      it('invalid querystring subscriptionid', async () => {
-        await bundledData()
+      it('invalid querystring subscriptionid', async function () {
+        await bundledData(this.test.currentRetry())
         const administrator = await TestHelper.createOwner()
         const req = TestHelper.createRequest('/api/administrator/subscriptions/set-subscription-coupon?subscriptionid=invalid')
         req.account = administrator.account
@@ -166,42 +170,42 @@ describe('/api/administrator/subscriptions/set-subscription-coupon', function ()
     })
 
     describe('invalid-subscription', () => {
-      it('ineligible subscription is canceling', async () => {
-        await bundledData()
+      it('ineligible subscription is canceling', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.subscriptionCanceling
         assert.strictEqual(errorMessage, 'invalid-subscription')
       })
 
-      it('ineligible subscription has coupon', async () => {
-        await bundledData()
+      it('ineligible subscription has coupon', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.subscriptionDiscounted
         assert.strictEqual(errorMessage, 'invalid-subscription')
       })
     })
 
     describe('invalid-couponid', () => {
-      it('missing posted couponid', async () => {
-        await bundledData()
+      it('missing posted couponid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missingCoupon
         assert.strictEqual(errorMessage, 'invalid-couponid')
       })
 
-      it('invalid posted couponid', async () => {
-        await bundledData()
+      it('invalid posted couponid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidCoupon
         assert.strictEqual(errorMessage, 'invalid-couponid')
       })
     })
 
     describe('invalid-coupon', () => {
-      it('ineligible posted coupon is not published', async () => {
-        await bundledData()
+      it('ineligible posted coupon is not published', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.notPublished
         assert.strictEqual(errorMessage, 'invalid-coupon')
       })
 
-      it('ineligible posted coupon is unpublished', async () => {
-        await bundledData()
+      it('ineligible posted coupon is unpublished', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.unpublishedAt
         assert.strictEqual(errorMessage, 'invalid-coupon')
       })

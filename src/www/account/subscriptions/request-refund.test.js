@@ -7,7 +7,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 describe('/account/subscriptions/request-refund', function () {
   let cachedResponses
   let cachedUser
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -72,16 +76,16 @@ describe('/account/subscriptions/request-refund', function () {
       }
       assert.strictEqual(errorMessage, 'invalid-invoiceid')
     })
-    it('invalid-account', async () => {
-      await bundledData()
+    it('invalid-account', async function () {
+      await bundledData(this.test.currentRetry())
       const errorMessage = cachedResponses.invalidAccount
       assert.strictEqual(errorMessage, 'invalid-account')
     })
   })
 
   describe('before', () => {
-    it('should bind data to req', async () => {
-      await bundledData()
+    it('should bind data to req', async function () {
+      await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
       assert.strictEqual(data.invoice.invoiceid, cachedUser.invoice.invoiceid)
       assert.strictEqual(data.charge.id, cachedUser.charge.chargeid)
@@ -89,8 +93,8 @@ describe('/account/subscriptions/request-refund', function () {
   })
 
   describe('view', () => {
-    it('should present the form', async () => {
-      await bundledData()
+    it('should present the form', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       assert.strictEqual(doc.getElementById('submit-form').tag, 'form')
@@ -99,8 +103,8 @@ describe('/account/subscriptions/request-refund', function () {
   })
 
   describe('submit', () => {
-    it('should create refund request (screenshots)', async () => {
-      await bundledData()
+    it('should create refund request (screenshots)', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.submit
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')

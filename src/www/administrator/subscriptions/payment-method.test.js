@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/administrator/subscriptions/payment-method', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -48,16 +52,16 @@ describe('/administrator/subscriptions/payment-method', function () {
       assert.strictEqual(errorMessage, 'invalid-paymentmethodid')
     })
 
-    it('should bind data to req', async () => {
-      await bundledData()
+    it('should bind data to req', async function () {
+      await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
       assert.strictEqual(data.paymentMethod.object, 'payment_method')
     })
   })
 
   describe('view', () => {
-    it('should have row for payment method (screenshots)', async () => {
-      await bundledData()
+    it('should have row for payment method (screenshots)', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.get
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('payment_methods-table')

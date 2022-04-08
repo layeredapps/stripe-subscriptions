@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/account/subscriptions', function () {
   let cachedResponses, cachedInvoices, cachedSubscriptions, cachedCustomers
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -73,8 +77,8 @@ describe('/account/subscriptions', function () {
     cachedResponses.finished = true
   }
   describe('before', () => {
-    it('should bind data to req', async () => {
-      await bundledData()
+    it('should bind data to req', async function () {
+      await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
       assert.strictEqual(data.customers.length, cachedCustomers.length)
       assert.strictEqual(data.subscriptions.length, cachedSubscriptions.length)
@@ -83,8 +87,8 @@ describe('/account/subscriptions', function () {
   })
 
   describe('view', () => {
-    it('should have row for each invoice', async () => {
-      await bundledData()
+    it('should have row for each invoice', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       const invoice1Row = doc.getElementById(cachedInvoices[0])
@@ -93,8 +97,8 @@ describe('/account/subscriptions', function () {
       assert.strictEqual(invoice2Row.tag, 'tr')
     })
 
-    it('should have row for each customer', async () => {
-      await bundledData()
+    it('should have row for each customer', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       const customer1Row = doc.getElementById(cachedCustomers[0])
@@ -103,8 +107,8 @@ describe('/account/subscriptions', function () {
       assert.strictEqual(customer2Row.tag, 'tr')
     })
 
-    it('should have row for each subscription', async () => {
-      await bundledData()
+    it('should have row for each subscription', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       const subscription1Row = doc.getElementById(cachedSubscriptions[0])

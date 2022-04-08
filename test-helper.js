@@ -289,12 +289,12 @@ async function setupBeforeEach () {
   await rotateWebhook()
 }
 
-async function rotateWebhook () {
+async function rotateWebhook (remake) {
   if (!global.webhooks) {
     global.webhooks = []
   } else if (global.webhooks.length) {
     webhookRotation += global.webhooks.length
-    if (webhookRotation >= 10) {
+    if (remake || webhookRotation >= 10) {
       webhookRotation = 0
       await setupWebhook()
     }
@@ -302,13 +302,11 @@ async function rotateWebhook () {
 }
 
 async function setupWebhook () {
-  if (webhook) {
-    await deleteOldWebhooks()
-    await ngrok.kill()
-    webhook = null
-  }
+  webhook = null
   while (!webhook) {
     try {
+      await deleteOldWebhooks()
+      await ngrok.kill()
       const tunnel = await ngrok.connect({
         port: global.port,
         // auth: process.env.NGROK_AUTH,
@@ -358,58 +356,30 @@ async function deleteOldWebhooks (really) {
     return
   }
   webhook = null
-  let webhooks = await stripe.webhookEndpoints.list({ limit: 100 }, stripeKey)
-  let errors = 0
-  while (webhooks.data && webhooks.data.length) {
-    for (const webhook of webhooks.data) {
-      if (webhook === 0) {
-        continue
-      }
-      try {
-        await stripe.webhookEndpoints.del(webhook.id, stripeKey)
-      } catch (error) {
-        Log.error('error deleting old data', error)
-        errors++
-        if (errors > 10) {
-          return process.exit(1)
+  try {
+    const webhooks = await stripe.webhookEndpoints.list({ limit: 100 }, stripeKey)
+    if (webhooks && webhooks.data && webhooks.data.length) {
+      for (const webhook of webhooks.data) {
+        if (webhook === 0) {
+          continue
         }
+        await stripe.webhookEndpoints.del(webhook.id, stripeKey)
       }
     }
-    try {
-      webhooks = await stripe.webhookEndpoints.list({ limit: 100 }, stripeKey)
-    } catch (error) {
-      webhooks = { data: [0] }
-    }
+  } catch (error) {
   }
 }
 
 async function deleteOldData () {
   for (const field of ['subscriptions', 'customers', 'plans', 'products', 'coupons']) {
-    let objects
-    while (true) {
-      try {
-        objects = await stripe[field].list({ limit: 100 }, stripeKey)
-        break
-      } catch (error) {
-        await wait()
-      }
-    }
-    while (objects.data && objects.data.length) {
-      for (const object of objects.data) {
-        if (object === 0) {
-          continue
-        }
-        try {
+    try {
+      const objects = await stripe[field].list({ limit: 100 }, stripeKey)
+      if (objects && objects.data && objects.data.length) {
+        for (const object of objects.data) {
           await stripe[field].del(object.id, stripeKey)
-        } catch (error) {
-          await wait()
         }
       }
-      try {
-        objects = await stripe[field].list({ limit: 100 }, stripeKey)
-      } catch (error) {
-        objects = { data: [0] }
-      }
+    } catch (error) {
     }
   }
 }

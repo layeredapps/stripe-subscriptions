@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/account/subscriptions/subscriptions', function () {
   let cachedResponses, cachedSubscriptions
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -34,13 +38,13 @@ describe('/account/subscriptions/subscriptions', function () {
     req1.account = user.account
     req1.session = user.session
     req1.filename = __filename
+    await req1.route.api.before(req1)
+    cachedResponses.before = req1.data
     req1.screenshots = [
       { hover: '#account-menu-container' },
       { click: '/account/subscriptions' },
       { click: '/account/subscriptions/subscriptions' }
     ]
-    await req1.route.api.before(req1)
-    cachedResponses.before = req1.data
     cachedResponses.returns = await req1.get()
     global.pageSize = 3
     cachedResponses.pageSize = await req1.get()
@@ -51,8 +55,8 @@ describe('/account/subscriptions/subscriptions', function () {
     cachedResponses.finished = true
   }
   describe('before', () => {
-    it('should bind data to req', async () => {
-      await bundledData()
+    it('should bind data to req', async function () {
+      await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
       assert.strictEqual(data.subscriptions.length, global.pageSize)
       assert.strictEqual(data.subscriptions[0].id, cachedSubscriptions[0])
@@ -61,8 +65,8 @@ describe('/account/subscriptions/subscriptions', function () {
   })
 
   describe('view', () => {
-    it('should return one page (screenshots)', async () => {
-      await bundledData()
+    it('should return one page (screenshots)', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('subscriptions-table')
@@ -70,8 +74,8 @@ describe('/account/subscriptions/subscriptions', function () {
       assert.strictEqual(rows.length, global.pageSize + 1)
     })
 
-    it('should change page size', async () => {
-      await bundledData()
+    it('should change page size', async function () {
+      await bundledData(this.test.currentRetry())
       global.pageSize = 3
       const result = cachedResponses.pageSize
       const doc = TestHelper.extractDoc(result.html)
@@ -80,8 +84,8 @@ describe('/account/subscriptions/subscriptions', function () {
       assert.strictEqual(rows.length, global.pageSize + 1)
     })
 
-    it('should change page size', async () => {
-      await bundledData()
+    it('should change page size', async function () {
+      await bundledData(this.test.currentRetry())
       const offset = 1
       const result = cachedResponses.offset
       const doc = TestHelper.extractDoc(result.html)

@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/administrator/subscriptions/setup-intent', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -48,16 +52,16 @@ describe('/administrator/subscriptions/setup-intent', function () {
       assert.strictEqual(errorMessage, 'invalid-setupintentid')
     })
 
-    it('should bind data to req', async () => {
-      await bundledData()
+    it('should bind data to req', async function () {
+      await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
       assert.strictEqual(data.setupIntent.object, 'setup_intent')
     })
   })
 
   describe('view', () => {
-    it('should have row for setup intent (screenshots)', async () => {
-      await bundledData()
+    it('should have row for setup intent (screenshots)', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('setup_intents-table')

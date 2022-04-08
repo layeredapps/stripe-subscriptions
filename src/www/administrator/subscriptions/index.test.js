@@ -6,7 +6,11 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts')
 
 describe('/administrator/subscriptions', function () {
   let cachedResponses, cachedPlans, cachedSubscriptions, cachedCoupons
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -63,8 +67,8 @@ describe('/administrator/subscriptions', function () {
     cachedResponses.finished = true
   }
   describe('before', () => {
-    it('should bind data to req', async () => {
-      await bundledData()
+    it('should bind data to req', async function () {
+      await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
       assert.strictEqual(data.plans[0].planid, cachedPlans[0])
       assert.strictEqual(data.plans[1].planid, cachedPlans[1])
@@ -76,8 +80,8 @@ describe('/administrator/subscriptions', function () {
   })
 
   describe('view', () => {
-    it('should have row for each plan', async () => {
-      await bundledData()
+    it('should have row for each plan', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.view
       const doc = TestHelper.extractDoc(result.html)
       const plan1Row = doc.getElementById(cachedPlans[0])
@@ -86,8 +90,8 @@ describe('/administrator/subscriptions', function () {
       assert.strictEqual(plan2Row.tag, 'tr')
     })
 
-    it('should have row for each coupon', async () => {
-      await bundledData()
+    it('should have row for each coupon', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.view
       const doc = TestHelper.extractDoc(result.html)
       const coupon1Row = doc.getElementById(cachedCoupons[0])
@@ -96,8 +100,8 @@ describe('/administrator/subscriptions', function () {
       assert.strictEqual(coupon2Row.tag, 'tr')
     })
 
-    it('should have row for each subscription (screenshots)', async () => {
-      await bundledData()
+    it('should have row for each subscription (screenshots)', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.view
       const doc = TestHelper.extractDoc(result.html)
       const subscription1Row = doc.getElementById(cachedSubscriptions[0])

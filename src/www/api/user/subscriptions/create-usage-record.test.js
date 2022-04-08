@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/create-usage-record', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -191,72 +195,72 @@ describe('/api/user/subscriptions/create-usage-record', function () {
 
   describe('exceptions', () => {
     describe('invalid-subscriptionid', () => {
-      it('missing querystring subscriptionid', async () => {
-        await bundledData()
+      it('missing querystring subscriptionid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missing
         assert.strictEqual(errorMessage, 'invalid-subscriptionid')
       })
 
-      it('invalid querystring subscriptionid', async () => {
-        await bundledData()
+      it('invalid querystring subscriptionid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalid
         assert.strictEqual(errorMessage, 'invalid-subscriptionid')
       })
     })
 
     describe('invalid-subscription', () => {
-      it('invalid querystring subscription is not "metered"', async () => {
-        await bundledData()
+      it('invalid querystring subscription is not "metered"', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidSubscription
         assert.strictEqual(errorMessage, 'invalid-subscription')
       })
     })
 
     describe('invalid-account', () => {
-      it('ineligible accessing account', async () => {
-        await bundledData()
+      it('ineligible accessing account', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidAccount
         assert.strictEqual(errorMessage, 'invalid-account')
       })
     })
 
     describe('invalid-quantity', () => {
-      it('invalid posted quantity is not integer', async () => {
-        await bundledData()
+      it('invalid posted quantity is not integer', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidQuantity
         assert.strictEqual(errorMessage, 'invalid-quantity')
       })
 
-      it('invalid posted quantity is negative', async () => {
-        await bundledData()
+      it('invalid posted quantity is negative', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.negativeQuantity
         assert.strictEqual(errorMessage, 'invalid-quantity')
       })
     })
 
     describe('invalid-action', () => {
-      it('missing posted action', async () => {
-        await bundledData()
+      it('missing posted action', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missingAction
         assert.strictEqual(errorMessage, 'invalid-action')
       })
 
-      it('invalid posted action', async () => {
-        await bundledData()
+      it('invalid posted action', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidAction
         assert.strictEqual(errorMessage, 'invalid-action')
       })
     })
 
     describe('invalid-subscriptionitemid', () => {
-      it('missing posted subscriptionitemid', async () => {
-        await bundledData()
+      it('missing posted subscriptionitemid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missingItem
         assert.strictEqual(errorMessage, 'invalid-subscriptionitemid')
       })
 
-      it('invalid posted subscriptionitemid', async () => {
-        await bundledData()
+      it('invalid posted subscriptionitemid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidItem
         assert.strictEqual(errorMessage, 'invalid-subscriptionitemid')
       })

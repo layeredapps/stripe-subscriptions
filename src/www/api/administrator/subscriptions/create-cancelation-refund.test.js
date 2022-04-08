@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/create-cancelation-refund', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -67,22 +71,22 @@ describe('/api/administrator/subscriptions/create-cancelation-refund', function 
 
   describe('exceptions', () => {
     describe('invalid-subscriptionid', () => {
-      it('missing querystring subscriptionid', async () => {
-        await bundledData()
+      it('missing querystring subscriptionid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missing
         assert.strictEqual(errorMessage, 'invalid-subscriptionid')
       })
 
-      it('invalid querystring subscriptionid', async () => {
-        await bundledData()
+      it('invalid querystring subscriptionid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalid
         assert.strictEqual(errorMessage, 'invalid-subscriptionid')
       })
     })
 
     describe('invalid-subscription', () => {
-      it('ineligible querystring subscription is not active', async () => {
-        await bundledData()
+      it('ineligible querystring subscription is not active', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidSubscription
         assert.strictEqual(errorMessage, 'invalid-subscription')
       })

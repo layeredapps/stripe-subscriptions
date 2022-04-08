@@ -5,7 +5,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/administrator/subscriptions/customers', function () {
   let cachedResponses, cachedCustomers
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -44,16 +48,16 @@ describe('/administrator/subscriptions/customers', function () {
     cachedResponses.finished = true
   }
   describe('before', () => {
-    it('should bind data to req', async () => {
-      await bundledData()
+    it('should bind data to req', async function () {
+      await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
       assert.strictEqual(data.customers[0].id, cachedCustomers[0])
     })
   })
 
   describe('view', () => {
-    it('should return one page (screenshots)', async () => {
-      await bundledData()
+    it('should return one page (screenshots)', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('customers-table')
@@ -61,8 +65,8 @@ describe('/administrator/subscriptions/customers', function () {
       assert.strictEqual(rows.length, global.pageSize + 1)
     })
 
-    it('should change page size', async () => {
-      await bundledData()
+    it('should change page size', async function () {
+      await bundledData(this.test.currentRetry())
       global.pageSize = 3
       const result = cachedResponses.pageSize
       const doc = TestHelper.extractDoc(result.html)
@@ -71,8 +75,8 @@ describe('/administrator/subscriptions/customers', function () {
       assert.strictEqual(rows.length, global.pageSize + 1)
     })
 
-    it('should change page size', async () => {
-      await bundledData()
+    it('should change page size', async function () {
+      await bundledData(this.test.currentRetry())
       const offset = 1
       const result = cachedResponses.offset
       const doc = TestHelper.extractDoc(result.html)

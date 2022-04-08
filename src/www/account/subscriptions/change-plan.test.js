@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/account/subscriptions/change-plan', function () {
   let cachedResponses, cachedPlans
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -84,8 +88,8 @@ describe('/account/subscriptions/change-plan', function () {
     cachedResponses.finished = true
   }
   describe('before', () => {
-    it('should bind data to req', async () => {
-      await bundledData()
+    it('should bind data to req', async function () {
+      await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
       assert.strictEqual(data.plans.length, 1)
       assert.strictEqual(data.plans[0].planid, cachedPlans[1])
@@ -93,16 +97,16 @@ describe('/account/subscriptions/change-plan', function () {
   })
 
   describe('view', () => {
-    it('should present the form', async () => {
-      await bundledData()
+    it('should present the form', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       assert.strictEqual(doc.getElementById('submit-form').tag, 'form')
       assert.strictEqual(doc.getElementById('submit-button').tag, 'button')
     })
 
-    it('should remove the form if there are no plans', async () => {
-      await bundledData()
+    it('should remove the form if there are no plans', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.noPlans
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
@@ -112,8 +116,8 @@ describe('/account/subscriptions/change-plan', function () {
   })
 
   describe('submit', () => {
-    it('should apply plan update (screenshots)', async () => {
-      await bundledData()
+    it('should apply plan update (screenshots)', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.submit
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
@@ -123,8 +127,8 @@ describe('/account/subscriptions/change-plan', function () {
   })
 
   describe('errors', () => {
-    it('should reject paid plan without payment information', async () => {
-      await bundledData()
+    it('should reject paid plan without payment information', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.invalidPaymentMethod
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')

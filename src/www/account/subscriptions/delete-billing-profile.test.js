@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 describe('/account/subscriptions/delete-billing-profile', function () {
   let cachedResponses
   let cachedCustomer
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -62,24 +66,24 @@ describe('/account/subscriptions/delete-billing-profile', function () {
       assert.strictEqual(errorMessage, 'invalid-customerid')
     })
 
-    it('invalid-account', async () => {
-      await bundledData()
+    it('invalid-account', async function () {
+      await bundledData(this.test.currentRetry())
       const errorMessage = cachedResponses.invalidAccount
       assert.strictEqual(errorMessage, 'invalid-account')
     })
   })
 
   describe('before', () => {
-    it('should bind data to req', async () => {
-      await bundledData()
+    it('should bind data to req', async function () {
+      await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
       assert.strictEqual(data.customer.customerid, cachedCustomer.customerid)
     })
   })
 
   describe('view', () => {
-    it('should present the form', async () => {
-      await bundledData()
+    it('should present the form', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       assert.strictEqual(doc.getElementById('submit-form').tag, 'form')
@@ -88,8 +92,8 @@ describe('/account/subscriptions/delete-billing-profile', function () {
   })
 
   describe('submit', () => {
-    it('should delete billing profile (screenshots)', async () => {
-      await bundledData()
+    it('should delete billing profile (screenshots)', async function () {
+      await bundledData(this.test.currentRetry())
       const result = cachedResponses.submit
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')

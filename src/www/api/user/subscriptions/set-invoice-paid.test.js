@@ -6,7 +6,11 @@ const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/set-invoice-paid', function () {
   let cachedResponses
-  async function bundledData () {
+  async function bundledData (retryNumber) {
+    if (retryNumber > 0) {
+      cachedResponses = {}
+      await TestHelper.rotateWebhook(true)
+    }
     if (cachedResponses && cachedResponses.finished) {
       return
     }
@@ -134,56 +138,56 @@ describe('/api/user/subscriptions/set-invoice-paid', function () {
 
   describe('exceptions', () => {
     describe('invalid-invoiceid', () => {
-      it('missing querystring invoiceid', async () => {
-        await bundledData()
+      it('missing querystring invoiceid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missing
         assert.strictEqual(errorMessage, 'invalid-invoiceid')
       })
 
-      it('invalid querystring invoiceid', async () => {
-        await bundledData()
+      it('invalid querystring invoiceid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalid
         assert.strictEqual(errorMessage, 'invalid-invoiceid')
       })
     })
 
     describe('invalid-account', () => {
-      it('ineligible accessing account', async () => {
-        await bundledData()
+      it('ineligible accessing account', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidAccount
         assert.strictEqual(errorMessage, 'invalid-account')
       })
 
-      it('ineligible posted payment method', async () => {
-        await bundledData()
+      it('ineligible posted payment method', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidAccount2
         assert.strictEqual(errorMessage, 'invalid-account')
       })
     })
 
     describe('invalid-invoice', () => {
-      it('invalid querystring invoice is paid', async () => {
-        await bundledData()
+      it('invalid querystring invoice is paid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidInvoice
         assert.strictEqual(errorMessage, 'invalid-invoice')
       })
 
-      it('invalid querystring invoice is marked uncollectable', async () => {
-        await bundledData()
+      it('invalid querystring invoice is marked uncollectable', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidInvoice2
         assert.strictEqual(errorMessage, 'invalid-invoice')
       })
     })
 
     describe('invalid-paymentmethodid', () => {
-      it('missing posted paymentmethodid', async () => {
-        await bundledData()
+      it('missing posted paymentmethodid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missingPaymentMethod
         assert.strictEqual(errorMessage, 'invalid-paymentmethodid')
       })
 
-      it('invalid posted paymentmethodid', async () => {
-        await bundledData()
+      it('invalid posted paymentmethodid', async function () {
+        await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidPaymentMethod
         assert.strictEqual(errorMessage, 'invalid-paymentmethodid')
       })
