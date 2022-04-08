@@ -42,6 +42,7 @@ describe('/administrator/subscriptions/payment-intents', function () {
     cachedResponses.returns = await req1.get()
     global.pageSize = 3
     cachedResponses.pageSize = await req1.get()
+    global.pageSize = 2
     const req2 = TestHelper.createRequest('/administrator/subscriptions/payment-intents?offset=1')
     req2.account = administrator.account
     req2.session = administrator.session
@@ -70,15 +71,14 @@ describe('/administrator/subscriptions/payment-intents', function () {
 
     it('should change page size', async function () {
       await bundledData(this.test.currentRetry())
-      global.pageSize = 3
       const result = cachedResponses.pageSize
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('payment-intents-table')
       const rows = table.getElementsByTagName('tr')
-      assert.strictEqual(rows.length, global.pageSize + 1)
+      assert.strictEqual(rows.length, global.pageSize + 2)
     })
 
-    it('should change page size', async function () {
+    it('should change offset', async function () {
       await bundledData(this.test.currentRetry())
       const offset = 1
       const result = cachedResponses.offset

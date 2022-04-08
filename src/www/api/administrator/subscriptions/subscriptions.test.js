@@ -49,6 +49,7 @@ describe('/api/administrator/subscriptions/subscriptions', function () {
     cachedResponses.returns = await req4.get()
     global.pageSize = 3
     cachedResponses.pageSize = await req4.get()
+    global.pageSize = 2
     cachedResponses.finished = true
   }
   describe('receives', () => {
@@ -83,9 +84,8 @@ describe('/api/administrator/subscriptions/subscriptions', function () {
 
   describe('configuration', () => {
     it('environment PAGE_SIZE', async () => {
-      global.pageSize = 3
       const subscriptions = cachedResponses.pageSize
-      assert.strictEqual(subscriptions.length, global.pageSize)
+      assert.strictEqual(subscriptions.length, global.pageSize + 1)
     })
   })
 })

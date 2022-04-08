@@ -46,6 +46,7 @@ describe('/account/subscriptions/plans', function () {
     cachedResponses.returns = await req1.get()
     global.pageSize = 3
     cachedResponses.pageSize = await req1.get()
+    global.pageSize = 2
     const req2 = TestHelper.createRequest('/account/subscriptions/plans?offset=1')
     req2.account = user.account
     req2.session = user.session
@@ -73,15 +74,14 @@ describe('/account/subscriptions/plans', function () {
 
     it('should change page size', async function () {
       await bundledData(this.test.currentRetry())
-      global.pageSize = 3
       const result = cachedResponses.pageSize
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('plans-table')
       const rows = table.getElementsByTagName('tr')
-      assert.strictEqual(rows.length, global.pageSize + 1)
+      assert.strictEqual(rows.length, global.pageSize + 2)
     })
 
-    it('should change page size', async function () {
+    it('should change offset', async function () {
       await bundledData(this.test.currentRetry())
       const offset = 1
       const result = cachedResponses.offset

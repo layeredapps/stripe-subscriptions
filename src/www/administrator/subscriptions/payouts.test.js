@@ -62,12 +62,11 @@ describe('/administrator/subscriptions/payouts', function () {
       })
 
       it('should change page size', async () => {
-        global.pageSize = 3
         const result = cachedResponses.pageSize
         const doc = TestHelper.extractDoc(result.html)
         const table = doc.getElementById('payouts-table')
         const rows = table.getElementsByTagName('tr')
-        assert.strictEqual(rows.length, global.pageSize + 1)
+        assert.strictEqual(rows.length, global.pageSize + 2)
       })
 
       it('should change offset', async function () {

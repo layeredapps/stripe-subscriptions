@@ -64,6 +64,7 @@ describe('/api/user/subscriptions/payment-methods', function () {
     cachedResponses.returns = await req4.get()
     global.pageSize = 3
     cachedResponses.pageSize = await req4.get()
+    global.pageSize = 2
     cachedResponses.finished = true
   }
   describe('exceptions', () => {
@@ -148,9 +149,8 @@ describe('/api/user/subscriptions/payment-methods', function () {
 
   describe('configuration', () => {
     it('environment PAGE_SIZE', async () => {
-      global.pageSize = 3
       const paymentMethodsNow = cachedResponses.pageSize
-      assert.strictEqual(paymentMethodsNow.length, global.pageSize)
+      assert.strictEqual(paymentMethodsNow.length, global.pageSize + 1)
     })
   })
 })

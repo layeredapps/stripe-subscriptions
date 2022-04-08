@@ -77,9 +77,8 @@ describe('/api/administrator/subscriptions/payouts', function () {
 
     describe('configuration', () => {
       it('environment PAGE_SIZE', async () => {
-        global.pageSize = 3
         const payouts = cachedResponses.pageSize
-        assert.strictEqual(payouts.length, global.pageSize)
+        assert.strictEqual(payouts.length, global.pageSize + 1)
       })
     })
   }

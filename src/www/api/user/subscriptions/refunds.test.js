@@ -57,6 +57,7 @@ describe('/api/user/subscriptions/refunds', function () {
     cachedResponses.returns = await req4.get()
     global.pageSize = 3
     cachedResponses.pageSize = await req4.get()
+    global.pageSize = 2
     cachedResponses.finished = true
   }
   describe('exceptions', () => {
@@ -141,9 +142,8 @@ describe('/api/user/subscriptions/refunds', function () {
 
   describe('configuration', () => {
     it('environment PAGE_SIZE', async () => {
-      global.pageSize = 3
       const refundsNow = cachedResponses.pageSize
-      assert.strictEqual(refundsNow.length, global.pageSize)
+      assert.strictEqual(refundsNow.length, global.pageSize + 1)
     })
   })
 })
