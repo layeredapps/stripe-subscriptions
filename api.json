@@ -827,16 +827,6 @@
     ],
     "configuration": []
   },
-  "✔ object": {
-    "url": "✔ object",
-    "verb": "",
-    "auth": "",
-    "receives": [],
-    "exceptions": {},
-    "redacts": [],
-    "returns": [],
-    "configuration": []
-  },
   "/api/administrator/subscriptions/set-plan-published": {
     "url": "/api/administrator/subscriptions/set-plan-published",
     "verb": "patch",
