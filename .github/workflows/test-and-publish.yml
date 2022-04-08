@@ -26,6 +26,12 @@ jobs:
       run: npm version patch
     - name: Run test suite
       run: |
+        # ---------------------------------------------------------
+        # For some reason an error 143 is thrown at a random point 
+        # using Github Actions, so tests and asset generation is
+        # skipped and performed/committed locally for the Stripe
+        # modules and examples using Stripe.
+        # ---------------------------------------------------------
         export RESPONSE_PATH=`pwd`/documentation
         export SCREENSHOT_PATH=`pwd`/documentation/screenshots
         npm install -D --silent --no-audit --no-fund &>/dev/null 

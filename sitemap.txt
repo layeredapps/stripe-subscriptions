@@ -1,0 +1,331 @@
+@layeredapps/dashboard 0.0.15
+http://localhost:8000
+
+Administrator menu:
+@layeredapps/stripe-subscriptions/src/www/administrator/subscriptions "Stripe Subscriptions <span translate="yes">module</span>"
+/administrator "Dashboard administration"
+
+Account menu:
+@layeredapps/stripe-subscriptions/src/www/account/subscriptions "Subscriptions and billing"
+/account "My account"
+
+Special HTML files:
+@layeredapps/dashboard/template.html
+@layeredapps/dashboard/error.html
+@layeredapps/dashboard/redirect.html
+
+Dashboard modules:
+@layeredapps/maxmind-geoip (1.0.12)
+
+Server handlers:
+/src/server/stripe-subscriptions/bind-stripekey.js
+/src/server/stripe-subscriptions/require-payment-confirmation.js
+/src/server/stripe-subscriptions/require-payment.js
+/src/server/stripe-subscriptions/require-subscription.js
+/src/server/maxmind-geoip/bind-country.js
+
+URL -------------------------------------------------------------- AUTH - TEMPLATE - HTTP REQUESTS - NODEJS ----------------------- HTML ---------------------
+/                                                                  GUEST  FULLSCREEN                 static-page                    /src/www                  
+/account                                                                             GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/account/change-password                                                             GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/account/change-username                                                             GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/account/create-profile                                                              GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/account/create-reset-code                                                           GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/account/delete-account                                                              GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/account/delete-account-complete                                   GUEST  FULLSCREEN GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/account/delete-profile                                                              GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/account/delete-reset-code                                                           GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/account/edit-profile                                                                GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/account/end-all-sessions                                                            GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/account/end-session                                                                 GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/account/profile                                                                     GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/account/profiles                                                                    GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/account/register                                                  GUEST  FULLSCREEN GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/account/reset-account                                             GUEST  FULLSCREEN GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/account/reset-code                                                                  GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/account/reset-codes                                                                 GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/account/restore-account                                           GUEST  FULLSCREEN GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/account/session                                                                     GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/account/sessions                                                                    GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/account/set-default-profile                                                         GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/account/signin                                                    GUEST  FULLSCREEN GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/account/signout                                                   GUEST  FULLSCREEN GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/account/signout-complete                                          GUEST  FULLSCREEN                 static-page                    @layeredapps/dashboard    
+/account/subscriptions                                                               GET             /src/www                       /src/www                  
+/account/subscriptions/add-payment-method                                            GET POST        /src/www                       /src/www                  
+/account/subscriptions/billing-profile                                               GET             /src/www                       /src/www                  
+/account/subscriptions/billing-profiles                                              GET             /src/www                       /src/www                  
+/account/subscriptions/cancel-subscription                                           GET POST        /src/www                       /src/www                  
+/account/subscriptions/change-plan                                                   GET POST        /src/www                       /src/www                  
+/account/subscriptions/confirm-payment                                               GET             /src/www                       /src/www                  
+/account/subscriptions/confirm-subscription                                          GET POST        /src/www                       /src/www                  
+/account/subscriptions/create-billing-profile                                        GET POST        /src/www                       /src/www                  
+/account/subscriptions/delete-billing-profile                                        GET POST        /src/www                       /src/www                  
+/account/subscriptions/invoice                                                       GET             /src/www                       /src/www                  
+/account/subscriptions/invoices                                                      GET             /src/www                       /src/www                  
+/account/subscriptions/pay-invoice                                                   GET POST        /src/www                       /src/www                  
+/account/subscriptions/plan                                                          GET             /src/www                       /src/www                  
+/account/subscriptions/plans                                                         GET             /src/www                       /src/www                  
+/account/subscriptions/refund                                                        GET             /src/www                       /src/www                  
+/account/subscriptions/refund-invoice                                                GET POST        /src/www                       /src/www                  
+/account/subscriptions/refunds                                                       GET             /src/www                       /src/www                  
+/account/subscriptions/request-refund                                                GET POST        /src/www                       /src/www                  
+/account/subscriptions/restore-subscription                                          GET POST        /src/www                       /src/www                  
+/account/subscriptions/start-subscription                                            GET POST        /src/www                       /src/www                  
+/account/subscriptions/subscription                                                  GET             /src/www                       /src/www                  
+/account/subscriptions/subscriptions                                                 GET             /src/www                       /src/www                  
+/account/verify                                                    GUEST  FULLSCREEN GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/administrator                                                                                       static-page                    @layeredapps/dashboard    
+/administrator/account                                                               GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/administrator/account-profiles                                                      GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/administrator/account-reset-codes                                                   GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/administrator/account-sessions                                                      GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/administrator/accounts                                                              GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/administrator/administrators                                                        GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/administrator/assign-administrator                                                  GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/administrator/create-reset-code                                                     GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/administrator/delete-account                                                        GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/administrator/delete-schedule                                                       GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/administrator/profile                                                               GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/administrator/profiles                                                              GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/administrator/reset-code                                                            GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/administrator/reset-codes                                                           GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/administrator/reset-session-key                                                     GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/administrator/revoke-administrator                                                  GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/administrator/schedule-account-delete                                               GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/administrator/session                                                               GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/administrator/sessions                                                              GET             @layeredapps/dashboard         @layeredapps/dashboard    
+/administrator/subscriptions                                                         GET             /src/www                       /src/www                  
+/administrator/subscriptions/apply-customer-coupon                                   GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/apply-subscription-coupon                               GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/charge                                                  GET             /src/www                       /src/www                  
+/administrator/subscriptions/charges                                                 GET             /src/www                       /src/www                  
+/administrator/subscriptions/coupon                                                  GET             /src/www                       /src/www                  
+/administrator/subscriptions/coupons                                                 GET             /src/www                       /src/www                  
+/administrator/subscriptions/create-coupon                                           GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/create-plan                                             GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/create-product                                          GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/customer                                                GET             /src/www                       /src/www                  
+/administrator/subscriptions/customers                                               GET             /src/www                       /src/www                  
+/administrator/subscriptions/delete-coupon                                           GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/delete-plan                                             GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/delete-product                                          GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/delete-subscription                                     GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/deny-refund                                             GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/edit-coupon                                             GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/edit-plan                                               GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/edit-product                                            GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/flag-charge                                             GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/forgive-invoice                                         GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/invoice                                                 GET             /src/www                       /src/www                  
+/administrator/subscriptions/invoices                                                GET             /src/www                       /src/www                  
+/administrator/subscriptions/payment-intent                                          GET             /src/www                       /src/www                  
+/administrator/subscriptions/payment-intents                                         GET             /src/www                       /src/www                  
+/administrator/subscriptions/payment-method                                          GET             /src/www                       /src/www                  
+/administrator/subscriptions/payment-methods                                         GET             /src/www                       /src/www                  
+/administrator/subscriptions/payout                                                  GET             /src/www                       /src/www                  
+/administrator/subscriptions/payouts                                                 GET             /src/www                       /src/www                  
+/administrator/subscriptions/plan                                                    GET             /src/www                       /src/www                  
+/administrator/subscriptions/plans                                                   GET             /src/www                       /src/www                  
+/administrator/subscriptions/product                                                 GET             /src/www                       /src/www                  
+/administrator/subscriptions/products                                                GET             /src/www                       /src/www                  
+/administrator/subscriptions/publish-coupon                                          GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/publish-plan                                            GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/publish-product                                         GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/refund                                                  GET             /src/www                       /src/www                  
+/administrator/subscriptions/refund-charge                                           GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/refund-requests                                         GET             /src/www                       /src/www                  
+/administrator/subscriptions/refunds                                                 GET             /src/www                       /src/www                  
+/administrator/subscriptions/revoke-customer-coupon                                  GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/revoke-subscription-coupon                              GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/setup-intent                                            GET             /src/www                       /src/www                  
+/administrator/subscriptions/setup-intents                                           GET             /src/www                       /src/www                  
+/administrator/subscriptions/subscription                                            GET             /src/www                       /src/www                  
+/administrator/subscriptions/subscriptions                                           GET             /src/www                       /src/www                  
+/administrator/subscriptions/unpublish-coupon                                        GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/unpublish-plan                                          GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/unpublish-product                                       GET POST        /src/www                       /src/www                  
+/administrator/transfer-ownership                                                    GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/api/administrator/account                                                           GET             @layeredapps/dashboard                                   
+/api/administrator/accounts                                                          GET             @layeredapps/dashboard                                   
+/api/administrator/accounts-count                                                    GET             @layeredapps/dashboard                                   
+/api/administrator/administrator-accounts                                            GET             @layeredapps/dashboard                                   
+/api/administrator/administrator-accounts-count                                      GET             @layeredapps/dashboard                                   
+/api/administrator/create-reset-code                                                 POST            @layeredapps/dashboard                                   
+/api/administrator/delete-account                                                    DELETE          @layeredapps/dashboard                                   
+/api/administrator/deleted-accounts                                                  GET             @layeredapps/dashboard                                   
+/api/administrator/deleted-accounts-count                                            GET             @layeredapps/dashboard                                   
+/api/administrator/profile                                                           GET             @layeredapps/dashboard                                   
+/api/administrator/profiles                                                          GET             @layeredapps/dashboard                                   
+/api/administrator/profiles-count                                                    GET             @layeredapps/dashboard                                   
+/api/administrator/reset-account-administrator                                       PATCH           @layeredapps/dashboard                                   
+/api/administrator/reset-code                                                        GET             @layeredapps/dashboard                                   
+/api/administrator/reset-codes                                                       GET             @layeredapps/dashboard                                   
+/api/administrator/reset-codes-count                                                 GET             @layeredapps/dashboard                                   
+/api/administrator/reset-session-key                                                 PATCH           @layeredapps/dashboard                                   
+/api/administrator/session                                                           GET             @layeredapps/dashboard                                   
+/api/administrator/sessions                                                          GET             @layeredapps/dashboard                                   
+/api/administrator/sessions-count                                                    GET             @layeredapps/dashboard                                   
+/api/administrator/set-account-administrator                                         PATCH           @layeredapps/dashboard                                   
+/api/administrator/set-account-deleted                                               PATCH           @layeredapps/dashboard                                   
+/api/administrator/set-owner-account                                                 PATCH           @layeredapps/dashboard                                   
+/api/administrator/subscriptions/charge                                              GET             /src/www                                                 
+/api/administrator/subscriptions/charges                                             GET             /src/www                                                 
+/api/administrator/subscriptions/charges-count                                       GET             /src/www                                                 
+/api/administrator/subscriptions/coupon                                              GET             /src/www                                                 
+/api/administrator/subscriptions/coupons                                             GET             /src/www                                                 
+/api/administrator/subscriptions/coupons-count                                       GET             /src/www                                                 
+/api/administrator/subscriptions/create-cancelation-refund                           POST            /src/www                                                 
+/api/administrator/subscriptions/create-coupon                                       POST            /src/www                                                 
+/api/administrator/subscriptions/create-plan                                         POST            /src/www                                                 
+/api/administrator/subscriptions/create-product                                      POST            /src/www                                                 
+/api/administrator/subscriptions/create-refund                                       POST            /src/www                                                 
+/api/administrator/subscriptions/create-tax-rate                                     POST            /src/www                                                 
+/api/administrator/subscriptions/customer                                            GET             /src/www                                                 
+/api/administrator/subscriptions/customers                                           GET             /src/www                                                 
+/api/administrator/subscriptions/customers-count                                     GET             /src/www                                                 
+/api/administrator/subscriptions/delete-coupon                                       DELETE          /src/www                                                 
+/api/administrator/subscriptions/delete-plan                                         DELETE          /src/www                                                 
+/api/administrator/subscriptions/delete-product                                      DELETE          /src/www                                                 
+/api/administrator/subscriptions/delete-subscription                                 DELETE          /src/www                                                 
+/api/administrator/subscriptions/invoice                                             GET             /src/www                                                 
+/api/administrator/subscriptions/invoices                                            GET             /src/www                                                 
+/api/administrator/subscriptions/invoices-count                                      GET             /src/www                                                 
+/api/administrator/subscriptions/payment-intent                                      GET             /src/www                                                 
+/api/administrator/subscriptions/payment-intents                                     GET             /src/www                                                 
+/api/administrator/subscriptions/payment-intents-count                               GET             /src/www                                                 
+/api/administrator/subscriptions/payment-method                                      GET             /src/www                                                 
+/api/administrator/subscriptions/payment-methods                                     GET             /src/www                                                 
+/api/administrator/subscriptions/payment-methods-count                               GET             /src/www                                                 
+/api/administrator/subscriptions/payout                                              GET             /src/www                                                 
+/api/administrator/subscriptions/payouts                                             GET             /src/www                                                 
+/api/administrator/subscriptions/payouts-count                                       GET             /src/www                                                 
+/api/administrator/subscriptions/plan                                                GET             /src/www                                                 
+/api/administrator/subscriptions/plans                                               GET             /src/www                                                 
+/api/administrator/subscriptions/plans-count                                         GET             /src/www                                                 
+/api/administrator/subscriptions/product                                             GET             /src/www                                                 
+/api/administrator/subscriptions/products                                            GET             /src/www                                                 
+/api/administrator/subscriptions/products-count                                      GET             /src/www                                                 
+/api/administrator/subscriptions/refund                                              GET             /src/www                                                 
+/api/administrator/subscriptions/refund-requests                                     GET             /src/www                                                 
+/api/administrator/subscriptions/refund-requests-count                               GET             /src/www                                                 
+/api/administrator/subscriptions/refunds                                             GET             /src/www                                                 
+/api/administrator/subscriptions/refunds-count                                       GET             /src/www                                                 
+/api/administrator/subscriptions/reset-customer-coupon                               PATCH           /src/www                                                 
+/api/administrator/subscriptions/reset-subscription-coupon                           PATCH           /src/www                                                 
+/api/administrator/subscriptions/set-charge-flagged                                  PATCH           /src/www                                                 
+/api/administrator/subscriptions/set-coupon-published                                PATCH           /src/www                                                 
+/api/administrator/subscriptions/set-coupon-unpublished                              PATCH           /src/www                                                 
+/api/administrator/subscriptions/set-customer-coupon                                 PATCH           /src/www                                                 
+/api/administrator/subscriptions/set-invoice-uncollectible                           PATCH           /src/www                                                 
+/api/administrator/subscriptions/set-plan-published                                  PATCH           /src/www                                                 
+/api/administrator/subscriptions/set-plan-unpublished                                PATCH           /src/www                                                 
+/api/administrator/subscriptions/set-product-published                               PATCH           /src/www                                                 
+/api/administrator/subscriptions/set-product-unpublished                             PATCH           /src/www                                                 
+/api/administrator/subscriptions/set-refund-request-denied                           PATCH           /src/www                                                 
+/api/administrator/subscriptions/set-subscription-canceled                           PATCH           /src/www                                                 
+/api/administrator/subscriptions/set-subscription-coupon                             PATCH           /src/www                                                 
+/api/administrator/subscriptions/set-tax-rate-active                                 PATCH           /src/www                                                 
+/api/administrator/subscriptions/set-tax-rate-inactive                               PATCH           /src/www                                                 
+/api/administrator/subscriptions/setup-intent                                        GET             /src/www                                                 
+/api/administrator/subscriptions/setup-intents                                       GET             /src/www                                                 
+/api/administrator/subscriptions/setup-intents-count                                 GET             /src/www                                                 
+/api/administrator/subscriptions/subscription                                        GET             /src/www                                                 
+/api/administrator/subscriptions/subscriptions                                       GET             /src/www                                                 
+/api/administrator/subscriptions/subscriptions-count                                 GET             /src/www                                                 
+/api/administrator/subscriptions/tax-rate                                            GET             /src/www                                                 
+/api/administrator/subscriptions/tax-rates                                           GET             /src/www                                                 
+/api/administrator/subscriptions/tax-rates-count                                     GET             /src/www                                                 
+/api/administrator/subscriptions/update-coupon                                       PATCH           /src/www                                                 
+/api/administrator/subscriptions/update-plan                                         PATCH           /src/www                                                 
+/api/administrator/subscriptions/update-product                                      PATCH           /src/www                                                 
+/api/administrator/subscriptions/update-tax-rate                                     PATCH           /src/www                                                 
+/api/administrator/subscriptions/usage-record                                        GET             /src/www                                                 
+/api/administrator/subscriptions/usage-records                                       GET             /src/www                                                 
+/api/administrator/subscriptions/usage-records-count                                 GET             /src/www                                                 
+/api/user/account                                                                    GET             @layeredapps/dashboard                                   
+/api/user/create-account                                           GUEST             POST            @layeredapps/dashboard                                   
+/api/user/create-profile                                                             POST            @layeredapps/dashboard                                   
+/api/user/create-reset-code                                                          POST            @layeredapps/dashboard                                   
+/api/user/create-session                                           GUEST             POST            @layeredapps/dashboard                                   
+/api/user/delete-profile                                                             DELETE          @layeredapps/dashboard                                   
+/api/user/delete-reset-code                                                          DELETE          @layeredapps/dashboard                                   
+/api/user/geoip/country                                            GUEST             GET             @layeredapps/maxmind-geoip                               
+/api/user/profile                                                                    GET             @layeredapps/dashboard                                   
+/api/user/profiles                                                                   GET             @layeredapps/dashboard                                   
+/api/user/profiles-count                                                             GET             @layeredapps/dashboard                                   
+/api/user/reset-account-deleted                                    GUEST             PATCH           @layeredapps/dashboard                                   
+/api/user/reset-account-password                                   GUEST             PATCH           @layeredapps/dashboard                                   
+/api/user/reset-code                                                                 GET             @layeredapps/dashboard                                   
+/api/user/reset-codes                                                                GET             @layeredapps/dashboard                                   
+/api/user/reset-codes-count                                                          GET             @layeredapps/dashboard                                   
+/api/user/reset-session-key                                                          PATCH           @layeredapps/dashboard                                   
+/api/user/session                                                                    GET             @layeredapps/dashboard                                   
+/api/user/sessions                                                                   GET             @layeredapps/dashboard                                   
+/api/user/sessions-count                                                             GET             @layeredapps/dashboard                                   
+/api/user/set-account-deleted                                                        PATCH           @layeredapps/dashboard                                   
+/api/user/set-account-password                                                       PATCH           @layeredapps/dashboard                                   
+/api/user/set-account-profile                                                        PATCH           @layeredapps/dashboard                                   
+/api/user/set-account-username                                                       PATCH           @layeredapps/dashboard                                   
+/api/user/set-session-ended                                                          PATCH           @layeredapps/dashboard                                   
+/api/user/set-session-verified                                                       PATCH           @layeredapps/dashboard                                   
+/api/user/subscriptions/charge                                                       GET             /src/www                                                 
+/api/user/subscriptions/charges                                                      GET             /src/www                                                 
+/api/user/subscriptions/charges-count                                                GET             /src/www                                                 
+/api/user/subscriptions/create-cancelation-refund                                    POST            /src/www                                                 
+/api/user/subscriptions/create-customer                                              POST            /src/www                                                 
+/api/user/subscriptions/create-payment-intent                                        POST            /src/www                                                 
+/api/user/subscriptions/create-payment-method                                        POST            /src/www                                                 
+/api/user/subscriptions/create-refund                                                POST            /src/www                                                 
+/api/user/subscriptions/create-refund-request                                        POST            /src/www                                                 
+/api/user/subscriptions/create-setup-intent                                          POST            /src/www                                                 
+/api/user/subscriptions/create-subscription                                          POST            /src/www                                                 
+/api/user/subscriptions/create-usage-record                                          POST            /src/www                                                 
+/api/user/subscriptions/customer                                                     GET             /src/www                                                 
+/api/user/subscriptions/customers                                                    GET             /src/www                                                 
+/api/user/subscriptions/customers-count                                              GET             /src/www                                                 
+/api/user/subscriptions/delete-customer                                              DELETE          /src/www                                                 
+/api/user/subscriptions/delete-subscription                                          DELETE          /src/www                                                 
+/api/user/subscriptions/invoice                                                      GET             /src/www                                                 
+/api/user/subscriptions/invoices                                                     GET             /src/www                                                 
+/api/user/subscriptions/invoices-count                                               GET             /src/www                                                 
+/api/user/subscriptions/payment-intent                                               GET             /src/www                                                 
+/api/user/subscriptions/payment-intents                                              GET             /src/www                                                 
+/api/user/subscriptions/payment-intents-count                                        GET             /src/www                                                 
+/api/user/subscriptions/payment-intents-pending-confirmation                         GET             /src/www                                                 
+/api/user/subscriptions/payment-intents-pending-confirmation-count                   GET             /src/www                                                 
+/api/user/subscriptions/payment-method                                               GET             /src/www                                                 
+/api/user/subscriptions/payment-methods                                              GET             /src/www                                                 
+/api/user/subscriptions/payment-methods-count                                        GET             /src/www                                                 
+/api/user/subscriptions/published-coupon                           GUEST             GET             /src/www                                                 
+/api/user/subscriptions/published-plan                             GUEST             GET             /src/www                                                 
+/api/user/subscriptions/published-plans                                              GET             /src/www                                                 
+/api/user/subscriptions/published-plans-count                                        GET             /src/www                                                 
+/api/user/subscriptions/published-product                          GUEST             GET             /src/www                                                 
+/api/user/subscriptions/published-products                                           GET             /src/www                                                 
+/api/user/subscriptions/published-products-count                                     GET             /src/www                                                 
+/api/user/subscriptions/refund                                                       GET             /src/www                                                 
+/api/user/subscriptions/refunds                                                      GET             /src/www                                                 
+/api/user/subscriptions/refunds-count                                                GET             /src/www                                                 
+/api/user/subscriptions/reset-subscription-canceling                                 PATCH           /src/www                                                 
+/api/user/subscriptions/set-customer-coupon                                          PATCH           /src/www                                                 
+/api/user/subscriptions/set-invoice-paid                                             PATCH           /src/www                                                 
+/api/user/subscriptions/set-payment-intent-canceled                                  PATCH           /src/www                                                 
+/api/user/subscriptions/set-payment-method-detached                                  PATCH           /src/www                                                 
+/api/user/subscriptions/set-setup-intent-canceled                                    PATCH           /src/www                                                 
+/api/user/subscriptions/set-subscription-canceled                                    PATCH           /src/www                                                 
+/api/user/subscriptions/set-subscription-coupon                                      PATCH           /src/www                                                 
+/api/user/subscriptions/set-subscription-plan                                        PATCH           /src/www                                                 
+/api/user/subscriptions/set-subscription-quantity                                    PATCH           /src/www                                                 
+/api/user/subscriptions/setup-intent                                                 GET             /src/www                                                 
+/api/user/subscriptions/setup-intents                                                GET             /src/www                                                 
+/api/user/subscriptions/setup-intents-count                                          GET             /src/www                                                 
+/api/user/subscriptions/subscription                                                 GET             /src/www                                                 
+/api/user/subscriptions/subscriptions                                                GET             /src/www                                                 
+/api/user/subscriptions/subscriptions-count                                          GET             /src/www                                                 
+/api/user/subscriptions/upcoming-invoice                                             GET             /src/www                                                 
+/api/user/subscriptions/usage-record                                                 GET             /src/www                                                 
+/api/user/subscriptions/usage-record-summaries                                       GET             /src/www                                                 
+/api/user/update-profile                                                             PATCH           @layeredapps/dashboard                                   
+/home                                                                                                static-page                    /src/www                  
+/webhooks/subscriptions/index-subscription-data                    GUEST             POST            /src/www                       /src/www                  
