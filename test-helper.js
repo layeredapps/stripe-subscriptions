@@ -310,7 +310,7 @@ async function setupWebhook () {
       const tunnel = await ngrok.connect({
         port: global.port,
         // auth: process.env.NGROK_AUTH,
-        onLogEvent: process.env.LOG_LEVEL && process.env.LOG_LEVEL.indexOf('ngrok') > -1 ? console.log : undefined
+        onLogEvent: process.env.LOG_LEVEL && process.env.LOG_LEVEL.indexOf('ngrok') > -1 ? Log.error : undefined
       })
       webhook = await stripe.webhookEndpoints.create({
         url: `${tunnel}/webhooks/subscriptions/index-subscription-data`,
@@ -368,7 +368,7 @@ async function deleteOldData () {
         }
       }
     } catch (error) {
-      console.log('delete old data error', field, error)
+      Log.error('delete old data error', field, error)
     }
   }
 }
