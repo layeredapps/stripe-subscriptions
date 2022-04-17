@@ -699,48 +699,93 @@ module.exports = async () => {
   })
   await sequelize.sync({ force: true, alter: true })
   Charge.afterCreate(async (object) => {
+    if (global.disableMetrics) {
+      return
+    }
     await metrics.aggregate(object.dataValues.appid, 'charge-created', new Date())
   })
   Coupon.afterCreate(async (object) => {
+    if (global.disableMetrics) {
+      return
+    }
     await metrics.aggregate(object.dataValues.appid, 'coupon-created', new Date())
   })
   Customer.afterCreate(async (object) => {
+    if (global.disableMetrics) {
+      return
+    }
     await metrics.aggregate(object.dataValues.appid, 'customer-created', new Date())
   })
   Dispute.afterCreate(async (object) => {
+    if (global.disableMetrics) {
+      return
+    }
     await metrics.aggregate(object.dataValues.appid, 'dispute-created', new Date())
   })
   Invoice.afterCreate(async (object) => {
+    if (global.disableMetrics) {
+      return
+    }
     await metrics.aggregate(object.dataValues.appid, 'invoice-created', new Date())
   })
   PaymentIntent.afterCreate(async (object) => {
+    if (global.disableMetrics) {
+      return
+    }
     await metrics.aggregate(object.dataValues.appid, 'paymentintent-created', new Date())
   })
   Payout.afterCreate(async (object) => {
+    if (global.disableMetrics) {
+      return
+    }
     await metrics.aggregate(object.dataValues.appid, 'payout-created', new Date())
   })
   PaymentMethod.afterCreate(async (object) => {
+    if (global.disableMetrics) {
+      return
+    }
     await metrics.aggregate(object.dataValues.appid, 'paymentmethod-created', new Date())
   })
   Plan.afterCreate(async (object) => {
+    if (global.disableMetrics) {
+      return
+    }
     await metrics.aggregate(object.dataValues.appid, 'plan-created', new Date())
   })
   Product.afterCreate(async (object) => {
+    if (global.disableMetrics) {
+      return
+    }
     await metrics.aggregate(object.dataValues.appid, 'product-created', new Date())
   })
   Refund.afterCreate(async (object) => {
+    if (global.disableMetrics) {
+      return
+    }
     await metrics.aggregate(object.dataValues.appid, 'refund-created', new Date())
   })
   SetupIntent.afterCreate(async (object) => {
+    if (global.disableMetrics) {
+      return
+    }
     await metrics.aggregate(object.dataValues.appid, 'setupintent-created', new Date())
   })
   Subscription.afterCreate(async (object) => {
+    if (global.disableMetrics) {
+      return
+    }
     await metrics.aggregate(object.dataValues.appid, 'subscription-created', new Date())
   })
   TaxRate.afterCreate(async (object) => {
+    if (global.disableMetrics) {
+      return
+    }
     await metrics.aggregate(object.dataValues.appid, 'taxrate-created', new Date())
   })
   UsageRecord.afterCreate(async (object) => {
+    if (global.disableMetrics) {
+      return
+    }
     await metrics.aggregate(object.dataValues.appid, 'usagerecord-created', new Date())
   })
   return {
