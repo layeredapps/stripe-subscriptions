@@ -1,4 +1,6 @@
 /* eslint-env mocha */
+global.appid = global.appid || 'tests'
+global.language = global.language || 'en'
 global.applicationPath = global.applicationPath || __dirname
 global.stripeAPIVersion = '2020-03-02'
 global.maximumStripeRetries = 0
@@ -166,6 +168,7 @@ const enabledEvents = [
   // 'subscription_schedule.updated'
 ]
 
+const { faker } = require('@faker-js/faker')
 const util = require('util')
 const TestHelper = require('@layeredapps/dashboard/test-helper.js')
 const TestHelperPuppeteer = require('@layeredapps/dashboard/test-helper-puppeteer.js')
@@ -245,6 +248,12 @@ module.exports = {
   denyRefund,
   flagCharge,
   forgiveInvoice,
+  setPlanPublished,
+  setPlanUnpublished,
+  setProductPublished,
+  setProductUnpublished,
+  setCouponPublished,
+  setCouponUnpublished,
   toggleRefunds,
   toggleOverdueInvoiceThreshold,
   requestRefund,
@@ -732,6 +741,54 @@ async function cancelSubscription (user) {
   req.stripeKey = stripeKey
   user.subscription = await req.patch()
   return user.subscription
+}
+
+async function setPlanPublished (administrator, plan) {
+  const req = createRequest(`/api/administrator/subscriptions/set-plan-published?planid=${plan.planid}`)
+  req.session = administrator.session
+  req.account = administrator.account
+  req.stripeKey = stripeKey
+  return req.patch()
+}
+
+async function setPlanUnpublished (administrator, plan) {
+  const req = createRequest(`/api/administrator/subscriptions/set-plan-unpublished?planid=${plan.planid}`)
+  req.session = administrator.session
+  req.account = administrator.account
+  req.stripeKey = stripeKey
+  return req.patch()
+}
+
+async function setProductPublished (administrator, product) {
+  const req = createRequest(`/api/administrator/subscriptions/set-product-published?productid=${product.productid}`)
+  req.session = administrator.session
+  req.account = administrator.account
+  req.stripeKey = stripeKey
+  return req.patch()
+}
+
+async function setProductUnpublished (administrator, product) {
+  const req = createRequest(`/api/administrator/subscriptions/set-product-unpublished?productid=${product.productid}`)
+  req.session = administrator.session
+  req.account = administrator.account
+  req.stripeKey = stripeKey
+  return req.patch()
+}
+
+async function setCouponPublished (administrator, coupon) {
+  const req = createRequest(`/api/administrator/subscriptions/set-coupon-published?couponid=${coupon.couponid}`)
+  req.session = administrator.session
+  req.account = administrator.account
+  req.stripeKey = stripeKey
+  return req.patch()
+}
+
+async function setCouponUnpublished (administrator, coupon) {
+  const req = createRequest(`/api/administrator/subscriptions/set-coupon-unpublished?couponid=${coupon.couponid}`)
+  req.session = administrator.session
+  req.account = administrator.account
+  req.stripeKey = stripeKey
+  return req.patch()
 }
 
 async function deleteSubscription (user, refund) {
