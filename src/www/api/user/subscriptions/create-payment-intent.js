@@ -26,6 +26,7 @@ module.exports = {
     }, req.stripeKey)
     req.query.paymentintentid = paymentIntent.id
     await subscriptions.Storage.PaymentIntent.create({
+      appid: req.appid || global.appid,
       paymentintentid: paymentIntent.id,
       accountid: customer.accountid,
       customerid: customer.customerid,

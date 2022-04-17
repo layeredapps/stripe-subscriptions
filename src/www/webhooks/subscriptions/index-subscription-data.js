@@ -205,6 +205,9 @@ async function updateSetupIntent (stripeEvent, stripeKey) {
   if (customerInfo && customerInfo.dataValues.customerid) {
     properties.accountid = customerInfo.dataValues.accountid
   }
+  if (customerInfo && customerInfo.dataValues.appid) {
+    properties.appid = customerInfo.dataValues.appid
+  }
   if (!Object.keys(properties).length) {
     return
   }
@@ -235,6 +238,9 @@ async function updatePaymentIntent (stripeEvent, stripeKey) {
   })
   if (customerInfo && customerInfo.dataValues.accountid) {
     properties.accountid = customerInfo.dataValues.accountid
+  }
+  if (customerInfo && customerInfo.dataValues.appid) {
+    properties.appid = customerInfo.dataValues.appid
   }
   if (stripeObject.subscription) {
     properties.subscriptionid = stripeObject.subscription
@@ -271,6 +277,9 @@ async function updatePaymentMethod (stripeEvent, stripeKey) {
   if (customerInfo && customerInfo.dataValues.accountid) {
     properties.accountid = customerInfo.dataValues.accountid
   }
+  if (customerInfo && customerInfo.dataValues.appid) {
+    properties.appid = customerInfo.dataValues.appid
+  }
   if (!Object.keys(properties).length) {
     return
   }
@@ -302,6 +311,9 @@ async function updateInvoice (stripeEvent, stripeKey) {
   })
   if (customerInfo && customerInfo.dataValues.accountid) {
     properties.accountid = customerInfo.dataValues.accountid
+  }
+  if (customerInfo && customerInfo.dataValues.appid) {
+    properties.appid = customerInfo.dataValues.appid
   }
   if (!Object.keys(properties).length) {
     return
@@ -370,6 +382,9 @@ async function updateCharge (stripeEvent, stripeKey) {
   })
   if (customerInfo && customerInfo.dataValues.accountid) {
     properties.accountid = customerInfo.dataValues.accountid
+  }
+  if (customerInfo && customerInfo.dataValues.appid) {
+    properties.appid = customerInfo.dataValues.appid
   }
   if (!Object.keys(properties).length) {
     return

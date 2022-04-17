@@ -34,6 +34,7 @@ module.exports = {
       const refund = await stripeCache.execute('refunds', 'create', refundInfo, req.stripeKey)
       req.query.refundid = refund.id
       await subscriptions.Storage.Refund.create({
+        appid: req.appid || global.appid,
         refundid: refund.id,
         accountid: req.account.accountid,
         subscriptionid: subscription.subscriptionid,

@@ -22,6 +22,7 @@ module.exports = {
     }
     const customer = await stripeCache.execute('customers', 'create', customerInfo, req.stripeKey)
     await subscriptions.Storage.Customer.create({
+      appid: req.appid || global.appid,
       customerid: customer.id,
       accountid: req.account.accountid,
       stripeObject: customer

@@ -87,6 +87,7 @@ module.exports = {
     }
     const plan = await stripeCache.execute('plans', 'create', planInfo, req.stripeKey)
     await subscriptions.Storage.Plan.create({
+      appid: req.appid || global.appid,
       planid: plan.id,
       productid: req.body.productid,
       publishedAt: req.body.publishedAt ? new Date() : undefined,

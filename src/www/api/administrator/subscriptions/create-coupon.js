@@ -127,6 +127,7 @@ module.exports = {
     }
     const coupon = await stripeCache.execute('coupons', 'create', couponInfo, req.stripeKey)
     await subscriptions.Storage.Coupon.create({
+      appid: req.appid || global.appid,
       couponid: coupon.id,
       publishedAt: req.body.publishedAt ? new Date() : undefined,
       stripeObject: coupon

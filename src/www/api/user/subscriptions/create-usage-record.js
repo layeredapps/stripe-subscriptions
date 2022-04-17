@@ -56,6 +56,7 @@ module.exports = {
       throw new Error('invalid-usagerecord')
     }
     await subscriptions.Storage.UsageRecord.create({
+      appid: req.appid || global.appid,
       usagerecordid: usageRecord.id,
       stripeObject: usageRecord,
       customerid: subscription.stripeObject.customer,

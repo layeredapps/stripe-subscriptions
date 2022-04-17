@@ -92,6 +92,7 @@ module.exports = {
       customer: req.query.customerid
     }, req.stripeKey)
     await subscriptions.Storage.PaymentMethod.create({
+      appid: req.appid || global.appid,
       customerid: req.query.customerid,
       paymentmethodid: paymentMethod.id,
       accountid: req.account.accountid,

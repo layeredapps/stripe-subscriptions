@@ -65,6 +65,7 @@ module.exports = {
       throw new Error('unknown-error')
     }
     await subscriptions.Storage.Subscription.create({
+      appid: req.appid || global.appid,
       subscriptionid: subscription.id,
       customerid: req.query.customerid,
       accountid: req.account.accountid,

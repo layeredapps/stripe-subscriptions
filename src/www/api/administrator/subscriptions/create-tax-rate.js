@@ -42,6 +42,7 @@ module.exports = {
     }
     const taxRate = await stripeCache.execute('taxRates', 'create', taxRateInfo, req.stripeKey)
     await subscriptions.Storage.TaxRate.create({
+      appid: req.appid || global.appid,
       taxrateid: taxRate.id,
       stripeObject: taxRate
     })

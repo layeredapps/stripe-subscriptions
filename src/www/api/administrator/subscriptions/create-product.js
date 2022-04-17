@@ -27,6 +27,7 @@ module.exports = {
       throw new Error()
     }
     await subscriptions.Storage.Product.create({
+      appid: req.appid || global.appid,
       productid: product.id,
       publishedAt: req.body.publishedAt ? new Date() : undefined,
       stripeObject: product

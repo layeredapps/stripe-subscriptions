@@ -25,6 +25,7 @@ module.exports = {
     }, req.stripeKey)
     req.query.setupintentid = setupIntent.id
     await subscriptions.Storage.SetupIntent.create({
+      appid: req.appid || global.appid,
       setupintentid: setupIntent.id,
       accountid: req.account.accountid,
       customerid: req.query.customerid,
