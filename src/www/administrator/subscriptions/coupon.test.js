@@ -51,7 +51,7 @@ describe('/administrator/subscriptions/coupon', function () {
         })
         await TestHelper.createCustomerDiscount(administrator, user.customer, administrator.coupon)
       }
-      for (let i= 0; i < 3; i++) {
+      for (let i = 0; i < 3; i++) {
         const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
         await TestHelper.createSubscriptionDiscount(administrator, user.subscription, administrator.coupon)
       }

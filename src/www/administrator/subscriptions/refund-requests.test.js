@@ -78,7 +78,7 @@ describe('/administrator/subscriptions/refund-requests', function () {
       const rows = table.getElementsByTagName('tr')
       assert.strictEqual(rows.length, 5)
       // heading
-      // + bundledData created 4 
+      // + bundledData created 4
     })
 
     it('should change page size', async function () {

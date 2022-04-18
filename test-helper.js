@@ -459,7 +459,7 @@ async function createCoupon (administrator, properties) {
       req.body.currency = 'USD'
       req.body.couponid = req.body.couponid || `DISCOUNT${req.body.amount_off}`
     }
-  } else if(!req.body.couponid) {
+  } else if (!req.body.couponid) {
     if (req.body.percent_off) {
       req.body.couponid = `COUPON${req.body.percent_off}PERCENT`
     } else {

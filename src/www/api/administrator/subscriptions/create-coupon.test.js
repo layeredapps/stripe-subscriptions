@@ -321,7 +321,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
     it('optionally-required posted redeem_by (date in future)', async () => {
       const administrator = await TestHelper.createOwner()
       const now = new Date()
-      const date = new Date(now.getFullYear() +1, 1, 1, 12, 47, 33)
+      const date = new Date(now.getFullYear() + 1, 1, 1, 12, 47, 33)
       const timestamp = Math.floor(date.getTime() / 1000)
       const req = TestHelper.createRequest('/api/administrator/subscriptions/create-coupon')
       req.account = administrator.account
@@ -368,7 +368,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
         couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
         amount_off: '10',
         currency: 'usd',
-        duration: 'once',
+        duration: 'once'
       }
       req.filename = __filename
       req.saveResponse = true

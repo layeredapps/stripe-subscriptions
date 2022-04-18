@@ -103,19 +103,15 @@ module.exports = {
     if (req.body.max_redemptions) {
       couponInfo.max_redemptions = req.body.max_redemptions
     }
-    try {
-      const coupon = await stripeCache.execute('coupons', 'create', couponInfo, req.stripeKey)
-      await subscriptions.Storage.Coupon.create({
-        appid: req.appid || global.appid,
-        couponid: coupon.id,
-        publishedAt: req.body.publishedAt ? new Date() : undefined,
-        stripeObject: coupon
-      })
-      req.query = req.query || {}
-      req.query.couponid = coupon.id
-      return global.api.administrator.subscriptions.Coupon.get(req)
-    } catch (error) {
-      throw error
-    }
+    const coupon = await stripeCache.execute('coupons', 'create', couponInfo, req.stripeKey)
+    await subscriptions.Storage.Coupon.create({
+      appid: req.appid || global.appid,
+      couponid: coupon.id,
+      publishedAt: req.body.publishedAt ? new Date() : undefined,
+      stripeObject: coupon
+    })
+    req.query = req.query || {}
+    req.query.couponid = coupon.id
+    return global.api.administrator.subscriptions.Coupon.get(req)
   }
 }

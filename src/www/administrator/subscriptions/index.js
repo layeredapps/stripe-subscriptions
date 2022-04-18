@@ -77,7 +77,7 @@ async function renderPage (req, res) {
       } else if (plan.publishedAt) {
         removeElements.push(`unpublished-plan-${plan.planid}`, `draft-plan-${plan.planid}`)
       } else {
-        removeElements.push(`published-plan-${plan.planid}`, `unpublished-plan-${plan.planid}`) 
+        removeElements.push(`published-plan-${plan.planid}`, `unpublished-plan-${plan.planid}`)
       }
       if (!plan.trial_period_days) {
         removeElements.push(`trial-plan-${plan.planid}`)

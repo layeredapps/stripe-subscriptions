@@ -40,11 +40,11 @@ async function renderPage (req, res) {
         removeElements.push(`open-${invoice.id}`)
       }
       if (invoice.total > 0) {
-         if (invoice.amount_remaining) {
+        if (invoice.amount_remaining) {
           removeElements.push(`no-total-${invoice.id}`, `no-remaining-${invoice.id}`)
-         } else {
+        } else {
           removeElements.push(`no-total-${invoice.id}`, `remaining-${invoice.id}`)
-         }
+        }
       } else {
         removeElements.push(`total-${invoice.id}`, `remaining-${invoice.id}`)
       }
