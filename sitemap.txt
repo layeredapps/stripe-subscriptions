@@ -1,4 +1,4 @@
-@layeredapps/dashboard 0.0.17
+@layeredapps/dashboard 0.0.33
 http://localhost:8000
 
 Administrator menu:
@@ -15,7 +15,7 @@ Special HTML files:
 @layeredapps/dashboard/redirect.html
 
 Dashboard modules:
-@layeredapps/maxmind-geoip (1.0.13)
+@layeredapps/maxmind-geoip (1.0.14)
 
 Server handlers:
 /src/server/stripe-subscriptions/bind-stripekey.js
@@ -75,7 +75,7 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /account/subscriptions/subscription                                                  GET             /src/www                       /src/www                  
 /account/subscriptions/subscriptions                                                 GET             /src/www                       /src/www                  
 /account/verify                                                    GUEST  FULLSCREEN GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
-/administrator                                                                                       static-page                    @layeredapps/dashboard    
+/administrator                                                                       GET             @layeredapps/dashboard         @layeredapps/dashboard    
 /administrator/account                                                               GET             @layeredapps/dashboard         @layeredapps/dashboard    
 /administrator/account-profiles                                                      GET             @layeredapps/dashboard         @layeredapps/dashboard    
 /administrator/account-reset-codes                                                   GET             @layeredapps/dashboard         @layeredapps/dashboard    
@@ -155,6 +155,7 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /api/administrator/delete-account                                                    DELETE          @layeredapps/dashboard                                   
 /api/administrator/deleted-accounts                                                  GET             @layeredapps/dashboard                                   
 /api/administrator/deleted-accounts-count                                            GET             @layeredapps/dashboard                                   
+/api/administrator/metric-keys                                                       GET             @layeredapps/dashboard                                   
 /api/administrator/profile                                                           GET             @layeredapps/dashboard                                   
 /api/administrator/profiles                                                          GET             @layeredapps/dashboard                                   
 /api/administrator/profiles-count                                                    GET             @layeredapps/dashboard                                   
