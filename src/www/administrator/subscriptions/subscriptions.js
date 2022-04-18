@@ -58,8 +58,7 @@ async function renderPage (req, res) {
       }
     }
     if (req.data.total <= global.pageSize) {
-      const pageLinks = doc.getElementById('page-links')
-      pageLinks.parentNode.removeChild(pageLinks)
+      removeElements.push('page-links')
     } else {
       dashboard.HTML.renderPagination(doc, req.data.offset, req.data.total)
     }
