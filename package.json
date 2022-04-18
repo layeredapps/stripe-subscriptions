@@ -11,20 +11,26 @@
       "/src/server/stripe-subscriptions/require-subscription.js"
     ]
   },
-  "dependencies": {
-    "@layeredapps/maxmind-geoip": "latest",
-    "stripe": "^8.127.0"
-  },
   "peerDependencies": {
     "@layeredapps/dashboard": "latest"
+  },
+  "dependencies": {
+    "stripe": "^8.127.0",
+    "@layeredapps/maxmind-geoip": "latest"
   },
   "devDependencies": {
     "@layeredapps/dashboard": "latest",
     "@faker-js/faker": "latest",
-    "mocha": "latest",
     "ngrok": "latest",
+    "ibm_db": "latest",
+    "mocha": "latest",
+    "mysql2": "latest",
+    "pg": "latest",
+    "pg-hstore": "latest",
     "puppeteer": "latest",
-    "standard": "latest"
+    "sqlite3": "latest",
+    "standard": "latest",
+    "tedious": "latest"
   },
   "peerDependenciesMeta": {
     "pg": {
