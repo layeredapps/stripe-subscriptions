@@ -83,7 +83,7 @@ module.exports = {
       try {
         const redeemDate = new Date(Date.parse(req.body.redeem_by))
         const now = new Date()
-        if (redeemDate.getUTCTime() < now.getUTCTime()) {
+        if (redeemDate.getTime() < now.getTime()) {
           throw new Error('invalid-redeem_by')
         }
         couponInfo.redeem_by = Math.floor(redeemDate.getTime() / 1000)

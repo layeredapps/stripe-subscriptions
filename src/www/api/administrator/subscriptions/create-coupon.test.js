@@ -221,38 +221,11 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
       })
     })
 
-    describe('invalid-redeem_by_meridiem', () => {
-      it('invalid posted redeem_by_meridiem', async () => {
-        const administrator = await TestHelper.createOwner()
-        const req = TestHelper.createRequest('/api/administrator/subscriptions/create-coupon')
-        req.account = administrator.account
-        req.session = administrator.session
-        req.body = {
-          couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
-          amount_off: '10',
-          currency: 'usd',
-          duration: 'repeating',
-          duration_in_months: '1',
-          redeem_by_minute: '1',
-          redeem_by_hour: '1',
-          redeem_by_day: '1',
-          redeem_by_month: '1',
-          redeem_by_year: '1750',
-          redeem_by_meridiem: ''
-        }
-        let errorMessage
-        try {
-          await req.post()
-        } catch (error) {
-          errorMessage = error.message
-        }
-        assert.strictEqual(errorMessage, 'invalid-redeem_by_meridiem')
-      })
-    })
-
     describe('invalid-redeem_by', () => {
       it('invalid posted redeem_by', async () => {
         const administrator = await TestHelper.createOwner()
+        const now = new Date()
+        const lastYear = new Date(now.getFullYear() - 1, 1, 12, 47, 33)
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-coupon')
         req.account = administrator.account
         req.session = administrator.session
@@ -262,12 +235,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
           currency: 'usd',
           duration: 'repeating',
           duration_in_months: '1',
-          redeem_by_minute: '1',
-          redeem_by_hour: '1',
-          redeem_by_day: '1',
-          redeem_by_month: '1',
-          redeem_by_year: '1750',
-          redeem_by_meridiem: 'AM'
+          redeem_by: lastYear.toISOString()
         }
         let errorMessage
         try {
@@ -282,23 +250,111 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
 
   describe('receives', () => {
     it('required posted duration', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/api/administrator/subscriptions/create-coupon')
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+        amount_off: '10',
+        currency: 'usd',
+        duration: 'repeating',
+        duration_in_months: '8'
+      }
+      req.filename = __filename
+      req.saveResponse = true
+      const coupon = await req.post()
+      assert.strictEqual(coupon.stripeObject.duration, 'repeating')
     })
 
     it('optionally-required posted amount_off (integer, or percent_off)', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/api/administrator/subscriptions/create-coupon')
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+        amount_off: '10',
+        currency: 'usd',
+        duration: 'once'
+      }
+      req.filename = __filename
+      req.saveResponse = true
+      const coupon = await req.post()
+      assert.strictEqual(coupon.stripeObject.amount_off, 10)
     })
 
     it('optionally-required posted currency (string, if amount_off)', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/api/administrator/subscriptions/create-coupon')
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+        amount_off: '10',
+        currency: 'aud',
+        duration: 'once'
+      }
+      req.filename = __filename
+      req.saveResponse = true
+      const coupon = await req.post()
+      assert.strictEqual(coupon.stripeObject.currency, 'aud')
     })
 
     it('optionally-required posted percent_off (integer, or amount_off)', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/api/administrator/subscriptions/create-coupon')
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+        percent_off: '10',
+        currency: 'usd',
+        duration: 'once'
+      }
+      req.filename = __filename
+      req.saveResponse = true
+      const coupon = await req.post()
+      assert.strictEqual(coupon.stripeObject.percent_off, 10)
     })
 
-    it('optionally-required posted expire date ', async () => {
-
+    it('optionally-required posted redeem_by (date in future)', async () => {
+      const administrator = await TestHelper.createOwner()
+      const now = new Date()
+      const date = new Date(now.getFullYear() +1, 1, 1, 12, 47, 33)
+      const timestamp = Math.floor(date.getTime() / 1000)
+      const req = TestHelper.createRequest('/api/administrator/subscriptions/create-coupon')
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+        percent_off: '10',
+        currency: 'usd',
+        duration: 'once',
+        redeem_by: date.toISOString()
+      }
+      req.filename = __filename
+      req.saveResponse = true
+      const coupon = await req.post()
+      assert.strictEqual(coupon.stripeObject.redeem_by, timestamp)
     })
 
     it('optionally-required posted duration_in_months', async () => {
-
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/api/administrator/subscriptions/create-coupon')
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+        percent_off: '10',
+        currency: 'usd',
+        duration: 'repeating',
+        duration_in_months: '6'
+      }
+      req.filename = __filename
+      req.saveResponse = true
+      const coupon = await req.post()
+      assert.strictEqual(coupon.stripeObject.duration_in_months, 6)
     })
   })
 
@@ -312,14 +368,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
         couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
         amount_off: '10',
         currency: 'usd',
-        duration: 'repeating',
-        duration_in_months: '1',
-        redeem_by_minute: '1',
-        redeem_by_hour: '1',
-        redeem_by_day: '1',
-        redeem_by_month: '1',
-        redeem_by_year: (new Date().getFullYear() + 1).toString().substring(2),
-        redeem_by_meridiem: 'AM'
+        duration: 'once',
       }
       req.filename = __filename
       req.saveResponse = true
