@@ -2,6 +2,7 @@
 const assert = require('assert')
 const TestHelper = require('../../../../test-helper.js')
 const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
+const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/revoke-customer-coupon', function () {
   describe('exceptions', () => {
@@ -142,6 +143,9 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
         { click: `/administrator/subscriptions/revoke-customer-coupon?customerid=${user.customer.customerid}` },
         { fill: '#submit-form' }
       ]
+      global.pageSize = 50
+      global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)
+      global.packageJSON.dashboard.server.push(ScreenshotData.administratorCustomers)
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')

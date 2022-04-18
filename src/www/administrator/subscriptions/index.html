@@ -10,9 +10,66 @@
   </head>
   <body>
     <div class="container">
-      <h1 translate="yes">Subscriptions administration</h1>
+      <h1 translate="yes">Subscription administration</h1>
+      <div class="charts" id="subscriptions-chart-container">
+        <div class="chart">
+          <h2>Subscriptions created in last 90 days</h2>
+          <div class="metrics" id="subscriptions-highlights">
+          </div>
+          <div class="graph">
+            <div class="values" id="subscriptions-values"></div>
+            <div class="columns">
+              <div class="padder">
+                <ol id="subscriptions-chart" class="ninety"></ol>
+              </div>
+              <legend>
+                <span>Today</span>
+                <span>90 days ago</span>
+              </legend>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="charts" id="invoices-chart-container">
+        <div class="chart">
+          <h2>Invoices created in last 90 days</h2>
+          <div class="metrics" id="invoices-highlights">
+          </div>
+          <div class="graph">
+            <div class="values" id="invoices-values"></div>
+            <div class="columns">
+              <div class="padder">
+                <ol id="invoices-chart" class="ninety"></ol>
+              </div>
+              <legend>
+                <span>Today</span>
+                <span>90 days ago</span>
+              </legend>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="charts" id="charges-chart-container">
+        <div class="chart">
+          <h2>Charges created in last 90 days</h2>
+          <div class="metrics" id="charges-highlights">
+          </div>
+          <div class="graph">
+            <div class="values" id="charges-values"></div>
+            <div class="columns">
+              <div class="padder">
+                <ol id="charges-chart" class="ninety"></ol>
+              </div>
+              <legend>
+                <span>Today</span>
+                <span>90 days ago</span>
+              </legend>
+            </div>
+          </div>
+        </div>
+      </div>
       <div id="message-container"></div>
-      <h2 translate="yes">Plans</h2>
+      <h2 translate="yes">Recent plans</h2>
       <p id="no-plans" translate="yes">You do not have any plans. Create a product and then create plans.</p>
       <menu class="button-group">
         <a class="button" href="/administrator/subscriptions/create-product">Create product</a>
@@ -32,7 +89,7 @@
           </thead>
         </table>
       </div>
-      <h2 translate="yes">Coupons</h2>
+      <h2 translate="yes">Recent coupons</h2>
       <p id="no-coupons" translate="yes">You do not have any coupons. Coupons allow your customers to be discounted by yourself or administrators, and subscriptions to be discounted by customers.</p>
       <menu class="button-group">
         <a class="button" href="/administrator/subscriptions/create-coupon" translate="yes">Create coupon</a>
@@ -49,7 +106,7 @@
           </thead>
         </table>
       </div>
-      <h1 translate="yes">Subscriptions</h1>
+      <h1 translate="yes">Recent subscriptions</h1>
       <p id="no-subscriptions" translate="yes">You do not have any subscriptions. Create published products and plans for users to subscribe to.</p>
       <div id="message-container"></div>
       <div class="list-table-wrapper">
@@ -57,11 +114,12 @@
           <thead>
             <tr>
               <th>ID</th>
-              <th>Product</th>
-              <th>Price</th>
-              <th>Trial</th>
-              <th>Status</th>
-              <th>Created</th>
+              <th translate="yes">Customer</th>
+              <th translate="yes">Period</th>
+              <th translate="yes">Discount</th>
+              <th translate="yes">Plan</th>
+              <th translate="yes">Status</th>
+              <th translate="yes">Created</th>
             </tr>
           </thead>
         </table>
@@ -71,8 +129,10 @@
       <tr id="${plan.id}">
         <td><a href="/administrator/subscriptions/plan?planid=${plan.id}">${plan.id}</a></td>
         <td><a href="/administrator/subscriptions/product?productid=${plan.product}">${plan.product}</a></td>
-        <td>${plan.amountFormatted}</td>
-        <td>${plan.trialFormatted}</td>
+        <td id="amount-plan-${plan.planid}">${plan.amountFormatted} x ${plan.interval}</td>
+        <td id="trial-plan-${plan.planid}">${plan.trial_period_days} days</td>
+        <td id="free-plan-${plan.planid}">Free</td>
+        <td id="no-trial-plan-${plan.planid}"></td>
         <td id="draft-plan-${plan.id}">Draft</td>
         <td id="published-plan-${plan.id}">Published</td>
         <td id="unpublished-plan-${plan.id}">Unpublished</td>
@@ -82,7 +142,8 @@
     <template id="coupon-row">
       <tr id="${coupon.id}">
         <td><a href="/administrator/subscriptions/coupon?couponid=${coupon.id}">${coupon.id}</a></td>
-        <td>${coupon.discount}</td>
+        <td id="amount_off-${coupon.id}">${coupon.amountOffFormatted} ${coupon.currency}</td>
+        <td id="percent_off-${coupon.id}">${coupon.percent_off}%</td>
         <td id="draft-coupon-${coupon.id}">Draft</td>
         <td id="published-coupon-${coupon.id}">Published</td>
         <td id="unpublished-coupon-${coupon.id}">Unpublished</td>
@@ -94,11 +155,46 @@
         <td><a href="/administrator/subscriptions/subscription?subscriptionid=${subscription.id}">${subscription.id}</a></td>
         <td><a href="/administrator/subscriptions/customer?customerid=${subscription.customer.id || subscription.customer}">${subscription.customer.id || subscription.customer}</a></td>
         <td>${subscription.currentPeriodStartFormatted} - ${subscription.currentPeriodEndFormatted}</td>
-        <td>${subscription.discount}</td>
+        <td id="has-discount-${subscription.id}"><a href="/administrator/subscriptions/coupon?couponid=${subscription.discount ? subscription.discount.coupon.id : ''}">${subscription.discount ? subscription.discount.coupon.id : ''}</a></td>
+        <td id="no-discount-${subscription.id}">-</td>
         <td><a href="/administrator/subscriptions/plan?subscriptionid=${subscription.plan}">${subscription.plan.id}</a></td>
         <td>${subscription.status}</td>
         <td>${subscription.createdAtFormatted}</td>
       </tr>
+    </template>
+    <template id="chart-value">
+      <h3>${object.value}</h3>
+    </template>
+    <template id="chart-column">
+      <li><span title="${metric.value} on ${metric.dateKey}" style="height: ${metric.normalized}%; top: ${metric.top}%"></span></li>
+    </template>
+    <template id="metric-highlights">
+      <ul>
+        <li>
+          ${highlight.todayFormatted}
+          <span>today</span>
+        </li>
+        <li>
+          ${highlight.yesterdayFormatted}
+          <span>yesterday</span>
+        </li>
+        <li>
+          ${highlight.last7DaysFormatted}
+          <span>7 days</span>
+        </li>
+        <li>
+          ${highlight.last30DaysFormatted}
+          <span>30 days</span>
+        </li>
+        <li>
+          ${highlight.last90DaysFormatted}
+          <span>90 days</span>
+        </li>
+        <li>
+          ${highlight.totalFormatted}
+          <span>all time</span>
+        </li>
+      </ul>
     </template>
   </body>
 </html>

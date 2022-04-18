@@ -37,7 +37,7 @@
     <template id="payment-intent-row">
       <tr id="${payment_intent.id}">
         <td><a href="/administrator/subscriptions/payment-intent?paymentintentid=${payment_intent.id}">${payment_intent.id}</a></td>
-        <td><a href="/administrator/subscriptions/customer?customerid=${payment_intent.customer}">${payment_intent.stripeid}</a></td>
+        <td><a href="/administrator/subscriptions/customer?customerid=${payment_intent.customer}">${payment_intent.customer}</a></td>
         <td>${payment_intent.amountFormatted} ${payment_intent.currency}</td>
         <td id="${payment_intent.id}-status"></td>
       </tr>

@@ -78,7 +78,7 @@
                 <th translate="yes">Subscription</th>
                 <th translate="yes">Billing period</th>
                 <th translate="yes">Total</th>
-                <th translate="yes">Date</th>
+                <th translate="yes">Created</th>
                 <th translate="yes">Status</th>
               </tr>
             </thead>
@@ -88,15 +88,9 @@
     </div>
     <template id="invoice-row">
       <tr id="${invoice.id}">
-        <td>
-          <a href="/administrator/subscriptions/invoice?invoiceid=${invoice.id}">${invoice.id}</a>
-        </td>
-        <td>
-          <a href="/administrator/subscriptions/customer?customerid=${invoice.customer}">${invoice.customer}</a>
-        </td>
-        <td>
-          <a href="/administrator/subscriptions/subscription?subscriptionid=${invoice.subscription}">${invoice.subscription}</a>
-        </td>
+        <td><a href="/administrator/subscriptions/invoice?invoiceid=${invoice.id}">${invoice.id}</a></td>
+        <td><a href="/administrator/subscriptions/customer?customerid=${invoice.customer}">${invoice.customer}</a></td>
+        <td><a href="/administrator/subscriptions/subscription?subscriptionid=${invoice.subscription}">${invoice.subscription}</a></td>
         <td>${invoice.lines.data[invoice.lines.data.length - 1].period.startFormatted} - ${invoice.lines.data[invoice.lines.data.length - 1].period.endFormatted}</td>
         <td>${invoice.amountFormatted}</td>
         <td>${invoice.createdAtFormatted}</td>
@@ -106,17 +100,11 @@
     </template>
     <template id="subscription-row">
       <tr id="${subscription.id}">
-        <td>
-          <a href="/administrator/subscriptions/subscription?subscriptionid=${subscription.id}">${subscription.id}</a>
-        </td>
-        <td>
-          <a href="/administrator/subscriptions/customer?customerid=${subscription.customerid}">${subscription.customerid}</a>
-        </td>
+        <td><a href="/administrator/subscriptions/subscription?subscriptionid=${subscription.id}">${subscription.id}</a></td>
+        <td><a href="/administrator/subscriptions/customer?customerid=${subscription.customerid}">${subscription.customerid}</a></td>
         <td>${subscription.currentPeriodStartFormatted} - ${subscription.currentPeriodEndFormatted}</td>
         <td>${subscription.discount}</td>
-        <td>
-          <a href="/administrator/subscriptions/plan?planid=${subscription.plan}">${subscription.planid}</a>
-        </td>
+        <td><a href="/administrator/subscriptions/plan?planid=${subscription.plan}">${subscription.planid}</a></td>
         <td id="active-subscription-${subscription.id}">Active</td>
         <td id="canceling-subscription-${subscription.id}">Active (canceling)</td>
         <td id="trialing-subscription-${subscription.id}">Trial ending ${subscription.trialEndFormatted}</td>

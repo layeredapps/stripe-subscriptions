@@ -25,6 +25,7 @@
               <th translate="yes">Charge date</th>
               <th translate="yes">Amount</th>
               <th translate="yes">Reason</th>
+              <th translate="yes">Request date</th>
             </tr>
           </thead>
         </table>
@@ -40,9 +41,10 @@
       <tr id="${charge.id}">
         <td><a href="/administrator/subscriptions/charge?chargeid=${charge.id}">${charge.id}</a></td>
         <td><a href="/administrator/subscriptions/customer?customerid=${charge.customer}">${charge.customer}</a></td>
-        <td>${charge.dateFormatted}</td>
+        <td>${charge.createdAtFormatted}</td>
         <td>${charge.amountFormatted}</td>
         <td>${charge.refundReason}</td>
+        <td>${charge.refundRequestedFormatted}</td>
       </tr>
     </template>
   </body>

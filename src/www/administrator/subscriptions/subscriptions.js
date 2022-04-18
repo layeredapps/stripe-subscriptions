@@ -17,7 +17,16 @@ async function beforeRequest (req) {
       subscriptions[i] = subscription
     }
   }
-  req.data = { subscriptions, total, offset }
+  let createdChartDays, createdChartHighlights, createdChartValues
+  if (offset === 0) {
+    req.query.keys = dashboard.Metrics.metricKeys('subscriptions-created', 365).join(',')
+    const createdChart = await global.api.administrator.MetricKeys.get(req)
+    const createdChartMaximum = dashboard.Metrics.maximumDay(createdChart)
+    createdChartDays = dashboard.Metrics.days(createdChart, createdChartMaximum)
+    createdChartHighlights = dashboard.Metrics.highlights(createdChart, createdChartDays)
+    createdChartValues = dashboard.Metrics.chartValues(createdChartMaximum)
+  }
+  req.data = { subscriptions, total, offset, createdChartDays, createdChartHighlights, createdChartValues }
 }
 
 async function renderPage (req, res) {
@@ -28,6 +37,11 @@ async function renderPage (req, res) {
     for (const subscription of req.data.subscriptions) {
       if (subscription.cancel_at_period_end) {
         subscription.status = 'canceling'
+      }
+      if (!subscription.discount) {
+        removeElements.push(`has-discount-${subscription.id}`)
+      } else {
+        removeElements.push(`no-discount-${subscription.id}`)
       }
       for (const status of statuses) {
         if (subscription.status === status) {
@@ -50,8 +64,15 @@ async function renderPage (req, res) {
       dashboard.HTML.renderPagination(doc, req.data.offset, req.data.total)
     }
     removeElements.push('no-subscriptions')
+    if (req.data.createdChartDays && req.data.createdChartDays.length) {
+      dashboard.HTML.renderList(doc, req.data.createdChartDays, 'chart-column', 'created-chart')
+      dashboard.HTML.renderList(doc, req.data.createdChartValues, 'chart-value', 'created-values')
+      dashboard.HTML.renderTemplate(doc, req.data.createdChartHighlights, 'metric-highlights', 'created-highlights')
+    } else {
+      removeElements.push('created-chart-container')
+    }
   } else {
-    removeElements.push('subscriptions-table')
+    removeElements.push('subscriptions-table', 'created-chart-container')
   }
   for (const id of removeElements) {
     const element = doc.getElementById(id)

@@ -16,6 +16,25 @@
       <div id="no-subscriptions">
         <p translate="yes">No subscriptions have been created yet.</p>
       </div>
+      <div class="charts" id="created-chart-container">
+        <div class="chart">
+          <h2>Created in last 365 days</h2>
+          <div class="metrics" id="created-highlights">
+          </div>
+          <div class="graph">
+            <div class="values" id="created-values"></div>
+            <div class="columns">
+              <div class="padder">
+                <ol id="created-chart" class="threesixfive"></ol>
+              </div>
+              <legend>
+                <span>Today</span>
+                <span>365 days ago</span>
+              </legend>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="list-table-wrapper">
         <table id="subscriptions-table" class="list-table">
           <thead>
@@ -33,6 +52,40 @@
       </div>
       <ul id="page-links" class="pagination"></ul>
     </div>
+    <template id="chart-value">
+      <h3>${object.value}</h3>
+    </template>
+    <template id="chart-column">
+      <li><span title="${metric.value} on ${metric.dateKey}" style="height: ${metric.normalized}%; top: ${metric.top}%"></span></li>
+    </template>
+    <template id="metric-highlights">
+      <ul>
+        <li>
+          ${highlight.todayFormatted}
+          <span>today</span>
+        </li>
+        <li>
+          ${highlight.yesterdayFormatted}
+          <span>yesterday</span>
+        </li>
+        <li>
+          ${highlight.last7DaysFormatted}
+          <span>7 days</span>
+        </li>
+        <li>
+          ${highlight.last30DaysFormatted}
+          <span>30 days</span>
+        </li>
+        <li>
+          ${highlight.last90DaysFormatted}
+          <span>90 days</span>
+        </li>
+        <li>
+          ${highlight.totalFormatted}
+          <span>all time</span>
+        </li>
+      </ul>
+    </template>
     <template id="page-link">
       <li>
         <a href="/administrator/subscriptions/subscriptions?offset=${page.offset}" id="page-link-${page.pageNumber}">${page.pageNumber}</a>
@@ -43,7 +96,8 @@
         <td><a href="/administrator/subscriptions/subscription?subscriptionid=${subscription.id}">${subscription.id}</a></td>
         <td><a href="/administrator/subscriptions/customer?customerid=${subscription.customer.id || subscription.customer}">${subscription.customer.id || subscription.customer}</a></td>
         <td>${subscription.currentPeriodStartFormatted} - ${subscription.currentPeriodEndFormatted}</td>
-        <td>${subscription.discount}</td>
+        <td id="has-discount-${subscription.id}"><a href="/administrator/subscriptions/coupon?couponid=${subscription.discount ? subscription.discount.coupon.id : ''}">${subscription.discount ? subscription.discount.coupon.id : ''}</a></td>
+        <td id="no-discount-${subscription.id}">-</td>
         <td><a href="/administrator/subscriptions/plan?planid=${subscription.plan}">${subscription.planid}</a></td>
         <td id="active-subscription-${subscription.id}">Active</td>
         <td id="canceling-subscription-${subscription.id}">Active (canceling)</td>

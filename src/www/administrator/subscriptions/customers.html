@@ -16,12 +16,32 @@
       <div id="no-customers">
         <p translate="yes">No customers have been created yet.</p>
       </div>
+      <div class="charts" id="created-chart-container">
+        <div class="chart">
+          <h2>Created in last 365 days</h2>
+          <div class="metrics" id="created-highlights">
+          </div>
+          <div class="graph">
+            <div class="values" id="created-values"></div>
+            <div class="columns">
+              <div class="padder">
+                <ol id="created-chart" class="threesixfive"></ol>
+              </div>
+              <legend>
+                <span>Today</span>
+                <span>365 days ago</span>
+              </legend>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="list-table-wrapper">
         <table id="customers-table" class="list-table">
           <thead>
             <tr>
               <th>ID</th>
               <th translate="yes">Email</th>
+              <th translate="yes">Discount</th>
               <th translate="yes">Delinquent</th>
               <th translate="yes">Subscriptions</th>
               <th translate="yes">Created</th>
@@ -31,6 +51,40 @@
       </div>
       <ul id="page-links" class="pagination"></ul>
     </div>
+    <template id="chart-value">
+      <h3>${object.value}</h3>
+    </template>
+    <template id="chart-column">
+      <li><span title="${metric.value} on ${metric.dateKey}" style="height: ${metric.normalized}%; top: ${metric.top}%"></span></li>
+    </template>
+    <template id="metric-highlights">
+      <ul>
+        <li>
+          ${highlight.todayFormatted}
+          <span>today</span>
+        </li>
+        <li>
+          ${highlight.yesterdayFormatted}
+          <span>yesterday</span>
+        </li>
+        <li>
+          ${highlight.last7DaysFormatted}
+          <span>7 days</span>
+        </li>
+        <li>
+          ${highlight.last30DaysFormatted}
+          <span>30 days</span>
+        </li>
+        <li>
+          ${highlight.last90DaysFormatted}
+          <span>90 days</span>
+        </li>
+        <li>
+          ${highlight.totalFormatted}
+          <span>all time</span>
+        </li>
+      </ul>
+    </template>
     <template id="page-link">
       <li>
         <a href="/administrator/subscriptions/customers?offset=${page.offset}" id="page-link-${page.pageNumber}">${page.pageNumber}</a>
@@ -41,8 +95,10 @@
         <td>
           <a href="/administrator/subscriptions/customer?customerid=${customer.id}">${customer.id}</a>
         </td>
-        <td>${customer.email}</td>
-        <td>${customer.delinquentFormatted}</td>
+        <td><a href="mailto:${customer.email}">${customer.email}</a></td>
+        <td id="has-discount-${customer.id}"><a href="/administrator/subscriptions/coupon?couponid=${customer.discount ? customer.discount.coupon.id : ''}">${customer.discount ? customer.discount.coupon.id : ''}</a></td>
+        <td id="no-discount-${customer.id}">-</td>
+        <td>${customer.delinquentFormatted || '-'}</td>
         <td>${customer.numSubscriptions}</td>
         <td>${customer.createdAtFormatted}</td>
       </tr>

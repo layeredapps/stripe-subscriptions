@@ -3,6 +3,7 @@ const assert = require('assert')
 const TestHelper = require('../../../../test-helper.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 const TestStripeAccounts = require('../../../../test-stripe-accounts')
+const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions', function () {
   let cachedResponses, cachedPlans, cachedSubscriptions, cachedCoupons
@@ -41,14 +42,12 @@ describe('/administrator/subscriptions', function () {
     cachedSubscriptions.unshift(user2.subscription.subscriptionid)
     const coupon1 = await TestHelper.createCoupon(administrator, {
       publishedAt: 'true',
-      percent_off: '25',
       duration: 'repeating',
       duration_in_months: '3'
     })
     cachedCoupons.unshift(coupon1.couponid)
     const coupon2 = await TestHelper.createCoupon(administrator, {
       publishedAt: 'true',
-      percent_off: '25',
       duration: 'repeating',
       duration_in_months: '3'
     })
@@ -63,6 +62,8 @@ describe('/administrator/subscriptions', function () {
       { hover: '#administrator-menu-container' },
       { click: '/administrator/subscriptions' }
     ]
+    global.pageSize = 50
+    global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)
     cachedResponses.view = await req.get()
     cachedResponses.finished = true
   }

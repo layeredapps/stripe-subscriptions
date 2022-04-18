@@ -19,21 +19,27 @@ async function beforeRequest (req) {
 async function renderPage (req, res) {
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.plan, 'plan')
   navbar.setup(doc, req.data.plan)
+  const removeElements = []
   if (req.data.plan.unpublishedAt) {
-    const published = doc.getElementById('published')
-    published.parentNode.removeChild(published)
-    const notPublished = doc.getElementById('not-published')
-    notPublished.parentNode.removeChild(notPublished)
+    removeElements.push('published', 'not-published')
   } else if (req.data.plan.publishedAt) {
-    const unpublished = doc.getElementById('unpublished')
-    unpublished.parentNode.removeChild(unpublished)
-    const notPublished = doc.getElementById('not-published')
-    notPublished.parentNode.removeChild(notPublished)
+    removeElements.push('unpublished', 'not-published')
   } else {
-    const published = doc.getElementById('published')
-    published.parentNode.removeChild(published)
-    const unpublished = doc.getElementById('unpublished')
-    unpublished.parentNode.removeChild(unpublished)
+    removeElements.push('published', 'unpublished')
+  }
+  if (!req.data.plan.trial_period_days) {
+    removeElements.push('trial')
+  } else {
+    removeElements.push('no-trial')
+  }
+  if (!req.data.plan.amount) {
+    removeElements.push('amount')
+  } else {
+    removeElements.push('free')
+  }
+  for (const id of removeElements) {
+    const element = doc.getElementById(id)
+    element.parentNode.removeChild(element)
   }
   return dashboard.Response.end(req, res, doc)
 }

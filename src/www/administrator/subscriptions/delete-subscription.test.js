@@ -3,6 +3,7 @@ const assert = require('assert')
 const TestHelper = require('../../../../test-helper.js')
 const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
+const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/delete-subscription', function () {
   let cachedResponses
@@ -128,7 +129,9 @@ describe('/administrator/subscriptions/delete-subscription', function () {
       { click: `/administrator/subscriptions/delete-subscription?subscriptionid=${paidSubscription4.subscriptionid}` },
       { fill: '#submit-form' }
     ]
-    global.pageSize = 10
+    global.pageSize = 50
+    global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)
+    global.packageJSON.dashboard.server.push(ScreenshotData.administratorSubscriptions)
     cachedResponses.submitPaidRefund = await req.post()
     cachedResponses.finished = true
   }

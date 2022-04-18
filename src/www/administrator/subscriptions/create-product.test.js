@@ -1,6 +1,7 @@
 /* eslint-env mocha */
 const assert = require('assert')
 const TestHelper = require('../../../../test-helper.js')
+const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/create-product', function () {
   describe('view', () => {
@@ -87,6 +88,9 @@ describe('/administrator/subscriptions/create-product', function () {
         { click: '/administrator/subscriptions/create-product' },
         { fill: '#submit-form' }
       ]
+      global.pageSize = 50
+      global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)
+      global.packageJSON.dashboard.server.push(ScreenshotData.administratorProducts)
       const result = await req.post()
       assert.strictEqual(true, result.redirect.startsWith('/administrator/subscriptions/product?productid='))
     })

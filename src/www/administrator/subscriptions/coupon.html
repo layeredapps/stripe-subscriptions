@@ -33,6 +33,61 @@
           </tr>
         </tbody>
       </table>
+      <h2>Customers with this coupon</h2>
+      <div id="no-customers">
+        <p translate="yes">No customers use this coupon.</p>
+      </div>
+      <div class="list-table-wrapper">
+        <table id="customers-table" class="list-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th translate="yes">Email</th>
+              <th translate="yes">Created</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <h2>Subscriptions with this coupon</h2>
+      <div id="no-subscriptions">
+        <p translate="yes">No subscriptions use this coupon.</p>
+      </div>
+      <div class="list-table-wrapper">
+        <table id="subscriptions-table" class="list-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th translate="yes">Customer</th>
+              <th translate="yes">Plan</th>
+              <th translate="yes">Status</th>
+              <th translate="yes">Created</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
     </div>
+    <template id="customer-row">
+      <tr id="${customer.id}">
+        <td>
+          <a href="/administrator/subscriptions/customer?customerid=${customer.id}">${customer.id}</a>
+        </td>
+        <td><a href="mailto:${customer.email}">${customer.email}</a></td>
+        <td>${customer.createdAtFormatted}</td>
+      </tr>
+    </template>
+    <template id="subscription-row">
+      <tr id="${subscription.id}">
+        <td><a href="/administrator/subscriptions/subscription?subscriptionid=${subscription.id}">${subscription.id}</a></td>
+        <td><a href="/administrator/subscriptions/customer?customerid=${subscription.customer.id || subscription.customer}">${subscription.customer.id || subscription.customer}</a></td>
+        <td><a href="/administrator/subscriptions/plan?planid=${subscription.plan}">${subscription.planid}</a></td>
+        <td id="active-subscription-${subscription.id}">Active</td>
+        <td id="canceling-subscription-${subscription.id}">Active (canceling)</td>
+        <td id="trialing-subscription-${subscription.id}">Trial ending ${subscription.trialEndFormatted}</td>
+        <td id="past_due-subscription-${subscription.id}">Past due</td>
+        <td id="canceled-subscription-${subscription.id}">Canceled</td>
+        <td id="unpaid-subscription-${subscription.id}">Unpaid</td>
+        <td>${subscription.createdAtFormatted}</td>
+      </tr>
+    </template>
   </body>
 </html>

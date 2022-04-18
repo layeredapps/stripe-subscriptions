@@ -1,6 +1,7 @@
 /* eslint-env mocha */
 const assert = require('assert')
 const TestHelper = require('../../../../test-helper.js')
+const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/payout', function () {
   describe('before', () => {
@@ -44,6 +45,8 @@ describe('/administrator/subscriptions/payout', function () {
           { click: '/administrator/subscriptions/payouts' },
           { click: `/administrator/subscriptions/payout?payoutid=${administrator.payout.id}` }
         ]
+        global.pageSize = 50
+        global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)
         const result = await req.get()
         const doc = TestHelper.extractDoc(result.html)
         const tbody = doc.getElementById(payout.id)

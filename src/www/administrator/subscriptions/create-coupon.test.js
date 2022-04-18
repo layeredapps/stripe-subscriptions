@@ -1,6 +1,7 @@
 /* eslint-env mocha */
 const assert = require('assert')
 const TestHelper = require('../../../../test-helper.js')
+const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/create-coupon', function () {
   describe('view', () => {
@@ -87,7 +88,7 @@ describe('/administrator/subscriptions/create-coupon', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        couponid: 'coupon' + new Date().getTime(),
+        couponid: 'SAVE100',
         duration: '',
         amount_off: '100',
         max_redemptions: '1',
@@ -106,7 +107,7 @@ describe('/administrator/subscriptions/create-coupon', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        couponid: 'coupon' + new Date().getTime(),
+        couponid: 'SAVE100',
         duration: 'invalid',
         amount_off: '100',
         max_redemptions: '1',
@@ -125,7 +126,7 @@ describe('/administrator/subscriptions/create-coupon', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        couponid: 'coupon' + new Date().getTime(),
+        couponid: 'SAVE100',
         duration: 'once',
         amount_off: 'invalid',
         max_redemptions: '1',
@@ -144,7 +145,7 @@ describe('/administrator/subscriptions/create-coupon', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        couponid: 'coupon' + new Date().getTime(),
+        couponid: 'NEGATIVETHREE',
         duration: 'once',
         percent_off: '-3',
         max_redemptions: '1',
@@ -163,7 +164,7 @@ describe('/administrator/subscriptions/create-coupon', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        couponid: 'coupon' + new Date().getTime(),
+        couponid: 'MINUSONEREDEMPTIONS',
         duration: 'once',
         percent_off: '30',
         max_redemptions: '-1',
@@ -182,7 +183,7 @@ describe('/administrator/subscriptions/create-coupon', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        couponid: 'coupon' + new Date().getTime(),
+        couponid: 'MISSINGAMOUNT',
         duration: 'once',
         max_redemptions: '1',
         currency: 'usd'
@@ -200,7 +201,7 @@ describe('/administrator/subscriptions/create-coupon', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        couponid: 'coupon' + new Date().getTime(),
+        couponid: 'INVALIDDURATION',
         duration: 'repeating',
         duration_in_months: '-1',
         amount_off: '700',
@@ -220,16 +221,13 @@ describe('/administrator/subscriptions/create-coupon', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        couponid: 'coupon' + new Date().getTime(),
+        couponid: 'INVALIDREDEEMBY',
         duration: 'repeating',
         duration_in_months: '10',
         amount_off: '700',
         max_redemptions: '1',
         currency: 'usd',
-        redeem_by_day: '1',
-        redeem_by_month: '1',
-        redeem_by_year: '0',
-        redeem_by_meridiem: 'PM'
+        redeem_by: new Date(new Date().getFullYear() - 1, 1, 1, 10, 53, 37).toISOString()
       }
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
@@ -244,7 +242,7 @@ describe('/administrator/subscriptions/create-coupon', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        couponid: 'coupon' + new Date().getTime(),
+        couponid: 'SAVE100',
         duration: 'once',
         amount_off: '100',
         max_redemptions: '1',
@@ -258,6 +256,9 @@ describe('/administrator/subscriptions/create-coupon', function () {
         { click: '/administrator/subscriptions/create-coupon' },
         { fill: '#submit-form' }
       ]
+      global.pageSize = 50
+      global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)
+      global.packageJSON.dashboard.server.push(ScreenshotData.administratorCoupons)
       const result = await req.post()
       assert.strictEqual(true, result.redirect.startsWith('/administrator/subscriptions/coupon?couponid='))
     })

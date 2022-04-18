@@ -3,6 +3,7 @@ const assert = require('assert')
 const TestHelper = require('../../../../test-helper.js')
 const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
+const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/revoke-subscription-coupon', function () {
   let cachedResponses
@@ -53,6 +54,9 @@ describe('/administrator/subscriptions/revoke-subscription-coupon', function () 
       { click: `/administrator/subscriptions/revoke-subscription-coupon?subscriptionid=${user.subscription.subscriptionid}` },
       { fill: '#submit-form' }
     ]
+    global.pageSize = 50
+    global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)
+    global.packageJSON.dashboard.server.push(ScreenshotData.administratorSubscriptions)
     cachedResponses.returns = await req.post()
     cachedResponses.finished = true
   }

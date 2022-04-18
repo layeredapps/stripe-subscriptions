@@ -2,6 +2,7 @@
 const assert = require('assert')
 const TestHelper = require('../../../../test-helper.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
+const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/customers', function () {
   let cachedResponses, cachedCustomers
@@ -38,8 +39,12 @@ describe('/administrator/subscriptions/customers', function () {
     ]
     await req1.route.api.before(req1)
     cachedResponses.before = req1.data
+    global.pageSize = 50
+    global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)
+    global.packageJSON.dashboard.server.push(ScreenshotData.administratorCustomers)
     cachedResponses.returns = await req1.get()
     global.pageSize = 3
+    delete (req1.screenshots)
     cachedResponses.pageSize = await req1.get()
     global.pageSize = 2
     const req2 = TestHelper.createRequest('/administrator/subscriptions/customers?offset=1')
@@ -58,6 +63,7 @@ describe('/administrator/subscriptions/customers', function () {
 
   describe('view', () => {
     it('should return one page (screenshots)', async function () {
+      global.pageSize = 50
       await bundledData(this.test.currentRetry())
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)

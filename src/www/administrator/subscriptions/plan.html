@@ -15,27 +15,25 @@
         <tbody id="${plan.planid}">
           <tr>
             <th>ID</th>
-            <td>
-              <a href="/administrator/subscriptions/plan?planid=${plan.planid}">${plan.planid}</a>
-            </td>
+            <td>${plan.planid}</td>
+          </tr>
+          <tr>
+            <th>Nickname</th>
+            <td>${plan.nickname}</td>
           </tr>
           <tr>
             <th translate="yes">Product</th>
-            <td>
-              <a href="/administrator/subscriptions/product?productid=${plan.product}">${plan.product}</a>
-            </td>
+            <td><a href="/administrator/subscriptions/product?productid=${plan.product}">${plan.product}</a></td>
           </tr>
           <tr>
             <th translate="yes">Price</th>
-            <td>${plan.amountFormatted}</td>
+            <td id="amount">${plan.amountFormatted} x ${plan.interval}</td>
+            <td id="free">Free</td>
           </tr>
           <tr>
             <th translate="yes">Trial period</th>
-            <td>${plan.trialFormatted} day(s)</td>
-          </tr>
-          <tr>
-            <th translate="yes">Billing interval</th>
-            <td>${plan.interval_count} ${plan.interval}(s)</td>
+            <td id="trial">${plan.trial_period_days} days</td>
+            <td id="no-trial">None</td>
           </tr>
           <tr>
             <th translate="yes">Status</th>

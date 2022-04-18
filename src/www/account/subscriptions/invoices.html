@@ -38,12 +38,8 @@
     </template>
     <template id="invoice-row">
       <tr id="${invoice.id}">
-        <td>
-          <a href="/account/subscriptions/invoice?invoiceid=${invoice.id}">${invoice.id}</a>
-        </td>
-        <td>
-          <a href="/account/subscriptions/subscription?subscriptionid=${invoice.subscription}">${invoice.subscription}</a>
-        </td>
+        <td><a href="/account/subscriptions/invoice?invoiceid=${invoice.id}">${invoice.id}</a></td>
+        <td><a href="/account/subscriptions/subscription?subscriptionid=${invoice.subscription}">${invoice.subscription}</a></td>
         <td>${invoice.lines.data[invoice.lines.data.length - 1].period.startFormatted} - ${invoice.lines.data[invoice.lines.data.length - 1].period.endFormatted}</td>
         <td>${invoice.createdAtFormatted}</td>
         <td>${invoice.amountFormatted}</td>

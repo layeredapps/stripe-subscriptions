@@ -3,6 +3,7 @@ const assert = require('assert')
 const TestHelper = require('../../../../test-helper.js')
 const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
+const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/payment-intents', function () {
   let cachedResponses, cachedPaymentIntents
@@ -39,8 +40,10 @@ describe('/administrator/subscriptions/payment-intents', function () {
     ]
     await req1.route.api.before(req1)
     cachedResponses.before = req1.data
+    global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)
     cachedResponses.returns = await req1.get()
     global.pageSize = 3
+    delete (req1.screenshots)
     cachedResponses.pageSize = await req1.get()
     global.pageSize = 2
     const req2 = TestHelper.createRequest('/administrator/subscriptions/payment-intents?offset=1')

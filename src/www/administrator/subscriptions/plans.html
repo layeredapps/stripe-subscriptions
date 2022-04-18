@@ -41,8 +41,10 @@
       <tr id="${plan.planid}">
         <td><a href="/administrator/subscriptions/plan?planid=${plan.planid}">${plan.planid}</a></td>
         <td><a href="/administrator/subscriptions/product?productid=${plan.product}">${plan.product}</a></td>
-        <td>${plan.amountFormatted}</td>
-        <td>${plan.trialFormatted}</td>
+        <td id="amount-plan-${plan.planid}">${plan.amountFormatted} x ${plan.interval}</td>
+        <td id="free-plan-${plan.planid}">Free</td>
+        <td id="trial-plan-${plan.planid}">${plan.trial_period_days} days</td>
+        <td id="no-trial-plan-${plan.planid}">None</td>
         <td id="draft-plan-${plan.planid}" translate="yes">Draft</td>
         <td id="published-plan-${plan.planid}" translate="yes">Published</td>
         <td id="unpublished-plan-${plan.planid}" translate="yes">Unpublished</td>

@@ -3,6 +3,7 @@ const assert = require('assert')
 const TestHelper = require('../../../../test-helper.js')
 const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
+const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/subscriptions', function () {
   let cachedResponses
@@ -39,6 +40,9 @@ describe('/administrator/subscriptions/subscriptions', function () {
       { click: '/administrator/subscriptions/subscriptions' },
       { click: `/administrator/subscriptions/subscription?subscriptionid=${user.subscription.subscriptionid}` }
     ]
+    global.pageSize = 50
+    global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)
+    global.packageJSON.dashboard.server.push(ScreenshotData.administratorSubscriptions)
     cachedResponses.returns = await req.get()
     cachedResponses.finished = true
   }

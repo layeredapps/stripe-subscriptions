@@ -199,40 +199,9 @@
           </div>
         </div>
         <div id="redeem_by-container" class="input-fields">
-          <label class="field-label" for="redeem_by_day" translate="yes">Date of expiration (UTC)</label>
+          <label class="field-label" for="redeem_by" translate="yes">Date of expiration (UTC)</label>
           <div class="field">
-            <select name="redeem_by_hour" id="redeem_by_hour">
-              <option value="">HH</option>
-            </select>
-            :
-            <select name="redeem_by_minute" id="redeem_by_minute">
-              <option value="">MM</option>
-            </select>
-            <select name="redeem_by_meridiem" id="redeem_by_meridiem">
-              <option value="AM">AM</option>
-              <option value="PM">PM</option>
-            </select>
-            <select name="redeem_by_day" id="redeem_by_day">
-              <option value="0" translate="yes">Day</option>
-            </select>
-            <select name="redeem_by_month" id="redeem_by_month">
-              <option value="0" translate="yes">Month</option>
-              <option value="1" translate="yes">January</option>
-              <option value="2" translate="yes">February</option>
-              <option value="3" translate="yes">March</option>
-              <option value="4" translate="yes">April</option>
-              <option value="5" translate="yes">May</option>
-              <option value="6" translate="yes">June</option>
-              <option value="7" translate="yes">July</option>
-              <option value="8" translate="yes">August</option>
-              <option value="9" translate="yes">September</option>
-              <option value="10" translate="yes">October</option>
-              <option value="11" translate="yes">November</option>
-              <option value="12" translate="yes">December</option>
-            </select>
-            <select name="redeem_by_year" id="redeem_by_year">
-              <option value="0">Year</option>
-            </select>
+            <input type="datetime-local" id="redeem_by" name="redeem_by" />
           </div>
         </div>
         <div class="button-group spaced-buttons">
@@ -299,11 +268,6 @@
       <div class="error message" translate="yes">
         Error! An error occurred submitting the coupon
       </div>
-    </template>
-    <template id="redeem_by-option-template">
-      <option value="${option.value}">
-        ${option.name}
-      </option>
     </template>
   </body>
 </html>

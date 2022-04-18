@@ -3,6 +3,7 @@ const assert = require('assert')
 const TestHelper = require('../../../../test-helper.js')
 const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
+const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/deny-refund', function () {
   let cachedResponses
@@ -51,6 +52,8 @@ describe('/administrator/subscriptions/deny-refund', function () {
       { click: `/administrator/subscriptions/deny-refund?chargeid=${user.charge.chargeid}` },
       { fill: '#submit-form' }
     ]
+    global.pageSize = 50
+    global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)
     cachedResponses.result = await req.post()
     try {
       await req.route.api.before(req)

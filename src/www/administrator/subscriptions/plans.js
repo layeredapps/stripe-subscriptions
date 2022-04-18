@@ -21,34 +21,40 @@ async function beforeRequest (req) {
 
 async function renderPage (req, res) {
   const doc = dashboard.HTML.parse(req.html || req.route.html)
+  const removeElements = []
   if (req.data.plans && req.data.plans.length) {
     dashboard.HTML.renderTable(doc, req.data.plans, 'plan-row', 'plans-table')
     for (const plan of req.data.plans) {
-      const draftPlan = doc.getElementById(`draft-plan-${plan.planid}`)
-      const publishedPlan = doc.getElementById(`published-plan-${plan.planid}`)
-      const unpublishedPlan = doc.getElementById(`unpublished-plan-${plan.planid}`)
       if (plan.unpublishedAt) {
-        draftPlan.parentNode.removeChild(draftPlan)
-        publishedPlan.parentNode.removeChild(publishedPlan)
+        removeElements.push(`published-plan-${plan.planid}`, `draft-plan-${plan.planid}`)
       } else if (plan.publishedAt) {
-        draftPlan.parentNode.removeChild(draftPlan)
-        unpublishedPlan.parentNode.removeChild(unpublishedPlan)
+        removeElements.push(`unpublished-plan-${plan.planid}`, `draft-plan-${plan.planid}`)
       } else {
-        publishedPlan.parentNode.removeChild(publishedPlan)
-        unpublishedPlan.parentNode.removeChild(unpublishedPlan)
+        removeElements.push(`published-plan-${plan.planid}`, `unpublished-plan-${plan.planid}`) 
+      }
+      if (!plan.trial_period_days) {
+        removeElements.push(`trial-plan-${plan.planid}`)
+      } else {
+        removeElements.push(`no-trial-plan-${plan.planid}`)
+      }
+      if (!plan.amount) {
+        removeElements.push(`amount-plan-${plan.planid}`)
+      } else {
+        removeElements.push(`free-plan-${plan.planid}`)
       }
     }
     if (req.data.total <= global.pageSize) {
-      const pageLinks = doc.getElementById('page-links')
-      pageLinks.parentNode.removeChild(pageLinks)
+      removeElements.push('page-links')
     } else {
       dashboard.HTML.renderPagination(doc, req.data.offset, req.data.total)
     }
-    const noPlans = doc.getElementById('no-plans')
-    noPlans.parentNode.removeChild(noPlans)
+    removeElements.push('no-plans')
   } else {
-    const plansTable = doc.getElementById('plans-table')
-    plansTable.parentNode.removeChild(plansTable)
+    removeElements.push('plans-table')
+  }
+  for (const id of removeElements) {
+    const element = doc.getElementById(id)
+    element.parentNode.removeChild(element)
   }
   return dashboard.Response.end(req, res, doc)
 }

@@ -22,7 +22,8 @@
               <th>ID</th>
               <th translate="yes">Customer</th>
               <th translate="yes">Brand</th>
-              <th translate="yes">Status</th>
+              <th translate="yes">Last 4</th>
+              <th translate="yes">Expires</th>
             </tr>
           </thead>
         </table>
@@ -37,9 +38,10 @@
     <template id="payment-method-row">
       <tr id="${payment_method.id}">
         <td><a href="/administrator/subscriptions/payment-method?paymentmethodid=${payment_method.id}">${payment_method.id}</a></td>
-        <td><a href="/administrator/subscriptions/customer?customerid=${payment_method.customer}">${payment_method.stripeid}</a></td>
+        <td><a href="/administrator/subscriptions/customer?customerid=${payment_method.customer}">${payment_method.customer}</a></td>
         <td>${payment_method.card.brand}</td>
-        <td id="${payment_method.id}-status"></td>
+        <td>${payment_method.card.last4}</td>
+        <td>${payment_method.card.exp_month} / ${payment_method.card.exp_year}</td>
       </tr>
     </template>
   </body>

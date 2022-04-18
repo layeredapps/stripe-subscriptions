@@ -14,7 +14,6 @@ async function beforeRequest (req) {
   }
   const subscriptionRaw = await global.api.administrator.subscriptions.Subscription.get(req)
   const subscription = formatStripeObject(subscriptionRaw)
-  subscription.discount = subscription.discount || { coupon: { id: '' } }
   req.data = { subscription: subscription }
 }
 

@@ -16,7 +16,16 @@ async function beforeRequest (req) {
       charges[i] = charge
     }
   }
-  req.data = { charges, total, offset }
+  let createdChartDays, createdChartHighlights, createdChartValues
+  if (offset === 0) {
+    req.query.keys = dashboard.Metrics.metricKeys('charges-created', 365).join(',')
+    const createdChart = await global.api.administrator.MetricKeys.get(req)
+    const createdChartMaximum = dashboard.Metrics.maximumDay(createdChart)
+    createdChartDays = dashboard.Metrics.days(createdChart, createdChartMaximum)
+    createdChartHighlights = dashboard.Metrics.highlights(createdChart, createdChartDays)
+    createdChartValues = dashboard.Metrics.chartValues(createdChartMaximum)
+  }
+  req.data = { charges, total, offset, createdChartDays, createdChartHighlights, createdChartValues }
 }
 
 async function renderPage (req, res) {
@@ -31,9 +40,19 @@ async function renderPage (req, res) {
     }
     const noCharges = doc.getElementById('no-charges')
     noCharges.parentNode.removeChild(noCharges)
+    if (req.data.createdChartDays && req.data.createdChartDays.length) {
+      dashboard.HTML.renderList(doc, req.data.createdChartDays, 'chart-column', 'created-chart')
+      dashboard.HTML.renderList(doc, req.data.createdChartValues, 'chart-value', 'created-values')
+      dashboard.HTML.renderTemplate(doc, req.data.createdChartHighlights, 'metric-highlights', 'created-highlights')
+    } else {
+      const createdChart = doc.getElementById('created-chart-container')
+      createdChart.parentNode.removeChild(createdChart)
+    }
   } else {
     const chargesTable = doc.getElementById('charges-table')
     chargesTable.parentNode.removeChild(chargesTable)
+    const createdChart = doc.getElementById('created-chart-container')
+    createdChart.parentNode.removeChild(createdChart)
   }
   return dashboard.Response.end(req, res, doc)
 }

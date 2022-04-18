@@ -19,15 +19,11 @@
           </tr>
           <tr>
             <th translate="yes">Customer</th>
-            <td>
-              <a href="/administrator/subscriptions/customer?customerid=${invoice.customer}">${invoice.customer}</a>
-            </td>
+            <td><a href="/administrator/subscriptions/customer?customerid=${invoice.customer}">${invoice.customer}</a></td>
           </tr>
           <tr>
             <th translate="yes">Subscription</th>
-            <td>
-              <a href="/administrator/subscriptions/subscription?subscriptionid=${invoice.subscription}">${invoice.subscription}</a>
-            </td>
+            <td><a href="/administrator/subscriptions/subscription?subscriptionid=${invoice.subscription}">${invoice.subscription}</a></td>
           </tr>
           <tr>
             <th translate="yes">Number</th>
@@ -35,22 +31,26 @@
           </tr>
           <tr>
             <th translate="yes">Period</th>
-            <td>${invoice.lines.data[invoice.lines.data.length - 1].period.startFormatted} - ${invoice.lines.data[invoice.lines.data.length - 1].period.endFormatted}</td>
+            <td>${invoice.periodStartFormatted} - ${invoice.periodEndFormatted}</td>
           </tr>
           <tr>
             <th translate="yes">Amount due</th>
-            <td>${invoice.amountDueFormatted}</td>
+            <td>${invoice.amountDueFormatted || 0} ${invoice.currency}</td>
+          </tr>
+          <tr>
+            <th translate="yes">Amount remaining</th>
+            <td>${invoice.amountRemainingFormatted || 0} ${invoice.currency}</td>
           </tr>
           <tr>
             <th translate="yes">Amount paid</th>
-            <td>${invoice.amountPaidFormatted}</td>
+            <td>${invoice.amountPaidFormatted} ${invoice.currency}</td>
           </tr>
           <tr>
             <th translate="yes">Total</th>
-            <td>${invoice.amountFormatted}</td>
+            <td>${invoice.totalFormatted} ${invoice.currency}</td>
           </tr>
           <tr>
-            <th translate="yes">Date</th>
+            <th translate="yes">Created</th>
             <td>${invoice.createdAtFormatted}</td>
           </tr>
         </tbody>

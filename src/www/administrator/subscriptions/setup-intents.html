@@ -21,7 +21,6 @@
             <tr>
               <th>ID</th>
               <th translate="yes">Customer</th>
-              <th translate="yes">Amount</th>
               <th translate="yes">Status</th>
             </tr>
           </thead>
@@ -37,8 +36,7 @@
     <template id="setup-intent-row">
       <tr id="${setup_intent.id}">
         <td><a href="/administrator/subscriptions/setup-intent?setupintentid=${setup_intent.id}">${setup_intent.id}</a></td>
-        <td><a href="/administrator/subscriptions/customer?customerid=${setup_intent.customer}">${setup_intent.stripeid}</a></td>
-        <td>${setup_intent.amountFormatted} ${setup_intent.currency}</td>
+        <td><a href="/administrator/subscriptions/customer?customerid=${setup_intent.customer}">${setup_intent.customer}</a></td>
         <td id="${setup_intent.id}-status"></td>
       </tr>
     </template>

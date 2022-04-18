@@ -1,6 +1,8 @@
 /* eslint-env mocha */
 const assert = require('assert')
 const TestHelper = require('../../../../test-helper.js')
+const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
+const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/coupon', function () {
   describe('before', () => {
@@ -36,13 +38,25 @@ describe('/administrator/subscriptions/coupon', function () {
 
   describe('view', () => {
     it('should present the coupon table (screenshots)', async () => {
-      const administrator = await TestHelper.createOwner()
+      const administrator = await TestStripeAccounts.createOwnerWithPlan()
       await TestHelper.createCoupon(administrator, {
         publishedAt: 'true',
         percent_off: '25',
         duration: 'repeating',
         duration_in_months: '3'
       })
+      for (let i = 0; i < 4; i++) {
+        const user = await TestHelper.createUser()
+        await TestHelper.createCustomer(user, {
+          email: user.profile.contactEmail,
+          description: user.profile.firstName
+        })
+        await TestHelper.createCustomerDiscount(administrator, user.customer, administrator.coupon)
+      }
+      for (let i= 0; i < 3; i++) {
+        const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+        await TestHelper.createSubscriptionDiscount(administrator, user.subscription, administrator.coupon)
+      }
       const req = TestHelper.createRequest(`/administrator/subscriptions/coupon?couponid=${administrator.coupon.couponid}`)
       req.account = administrator.account
       req.session = administrator.session
@@ -53,6 +67,9 @@ describe('/administrator/subscriptions/coupon', function () {
         { click: '/administrator/subscriptions/coupons' },
         { click: `/administrator/subscriptions/coupon?couponid=${administrator.coupon.couponid}` }
       ]
+      global.pageSize = 50
+      global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)
+      global.packageJSON.dashboard.server.push(ScreenshotData.administratorCoupons)
       const result = await req.get()
       const doc = TestHelper.extractDoc(result.html)
       const tbody = doc.getElementById(administrator.coupon.couponid)

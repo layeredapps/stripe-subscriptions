@@ -35,16 +35,7 @@ async function renderPage (req, res, messageTemplate) {
     const padded = i < 10 ? `0${i}` : i
     minutes.push({ value: i, name: `${padded}`, object: 'option' })
   }
-  dashboard.HTML.renderList(doc, minutes, 'redeem_by-option-template', 'redeem_by_minute')
-  dashboard.HTML.renderList(doc, hours, 'redeem_by-option-template', 'redeem_by_hour')
-  dashboard.HTML.renderList(doc, days, 'redeem_by-option-template', 'redeem_by_day')
-  dashboard.HTML.renderList(doc, years, 'redeem_by-option-template', 'redeem_by_year')
   if (req.body) {
-    dashboard.HTML.setSelectedOptionByValue(doc, 'redeem_by_minute', req.body.redeem_by_day || 0)
-    dashboard.HTML.setSelectedOptionByValue(doc, 'redeem_by_hour', req.body.redeem_by_month || 0)
-    dashboard.HTML.setSelectedOptionByValue(doc, 'redeem_by_day', req.body.redeem_by_year || 0)
-    dashboard.HTML.setSelectedOptionByValue(doc, 'redeem_by_month', req.body.redeem_by_month || 0)
-    dashboard.HTML.setSelectedOptionByValue(doc, 'redeem_by_year', req.body.redeem_by_year || 0)
     dashboard.HTML.setSelectedOptionByValue(doc, 'duration', req.body.duration || '')
     const idField = doc.getElementById('couponid')
     idField.setAttribute('value', (req.body.couponid).split("'").join('&quot;'))
@@ -56,9 +47,6 @@ async function renderPage (req, res, messageTemplate) {
     amountOffField.setAttribute('value', (req.body.amount_off || '').split("'").join('&quot;'))
     const percentOffField = doc.getElementById('percent_off')
     percentOffField.setAttribute('value', (req.body.percent_off || '').split("'").join('&quot;'))
-  } else {
-    const idField = doc.getElementById('couponid')
-    idField.setAttribute('value', generateRandomCoupon())
   }
   return dashboard.Response.end(req, res, doc)
 }
@@ -127,56 +115,14 @@ async function submitForm (req, res) {
       return renderPage(req, res, 'invalid-max_redemptions')
     }
   }
-  if ((req.body.redeem_by_day && req.body.redeem_by_day !== '0') ||
-      (req.body.redeem_by_month && req.body.redeem_by_month !== '0') ||
-      (req.body.redeem_by_year && req.body.redeem_by_year !== '0') ||
-      (req.body.redeem_by_hour && req.body.redeem_by_hour !== 'HH') ||
-      (req.body.redeem_by_minute && req.body.redeem_by_minute !== 'MM')) {
-    if (req.body.redeem_by_meridiem !== 'AM' && req.body.redeem_by_meridiem !== 'PM') {
-      return renderPage(req, res, 'invalid-redeem_by')
-    }
-    if (req.body.redeem_by_day) {
-      try {
-        const day = parseInt(req.body.redeem_by_day, 10)
-        if (!day || day < 1 || day > 31) {
-          return renderPage(req, res, 'invalid-redeem_by')
-        }
-      } catch (s) {
-        return renderPage(req, res, 'invalid-redeem_by')
-      }
-    }
-    if (req.body.redeem_by_month) {
-      try {
-        const month = parseInt(req.body.redeem_by_month, 10)
-        if (!month || month < 1 || month > 12) {
-          return renderPage(req, res, 'invalid-redeem_by')
-        }
-      } catch (s) {
-        return renderPage(req, res, 'invalid-redeem_by')
-      }
-    }
-    if (req.body.redeem_by_year) {
-      try {
-        const year = parseInt(req.body.redeem_by_year, 10)
-        const now = new Date().getFullYear()
-        if (!year || year > now + 5) {
-          return renderPage(req, res, 'invalid-redeem_by')
-        }
-      } catch (s) {
-        return renderPage(req, res, 'invalid-redeem_by')
-      }
-    }
+  if (req.body.redeem_by) {
     try {
-      const redeemBy = new Date(
-        req.body.redeem_by_year,
-        req.body.redeem_by_month - 1,
-        req.body.redeem_by_day,
-        req.body.redeem_by_meridiem === 'PM' ? (req.body.redeem_by_hour || 0) + 12 : req.body.redeem_by_hour || 0,
-        req.body.redeem_by_minute || 0)
-      if (!redeemBy) {
+      const redeemDate = new Date(Date.parse(req.body.redeem_by))
+      const now = new Date()
+      if (redeemDate.getUTCTime() < now.getUTCTime()) {
         return renderPage(req, res, 'invalid-redeem_by')
       }
-    } catch (s) {
+    } catch (error) {
       return renderPage(req, res, 'invalid-redeem_by')
     }
   }
@@ -203,34 +149,4 @@ async function submitForm (req, res) {
     })
     return res.end()
   }
-}
-
-const adjectives = [
-  'autumn', 'hidden', 'bitter', 'misty', 'silent', 'empty', 'dry', 'dark',
-  'summer', 'icy', 'delicate', 'quiet', 'white', 'cool', 'spring', 'winter',
-  'patient', 'twilight', 'dawn', 'crimson', 'wispy', 'weathered', 'blue',
-  'billowing', 'broken', 'cold', 'damp', 'falling', 'frosty', 'green',
-  'long', 'late', 'lingering', 'bold', 'little', 'morning', 'muddy', 'old',
-  'red', 'rough', 'still', 'small', 'sparkling', 'wobbling', 'shy',
-  'wandering', 'withered', 'wild', 'black', 'young', 'holy', 'solitary',
-  'fragrant', 'aged', 'snowy', 'proud', 'floral', 'restless', 'divine',
-  'polished', 'ancient', 'purple', 'lively', 'nameless'
-]
-const nouns = [
-  'waterfall', 'river', 'breeze', 'moon', 'rain', 'wind', 'sea', 'morning',
-  'snow', 'lake', 'sunset', 'pine', 'shadow', 'leaf', 'dawn', 'glitter',
-  'forest', 'hill', 'cloud', 'meadow', 'sun', 'glade', 'bird', 'brook',
-  'butterfly', 'bush', 'dew', 'dust', 'field', 'fire', 'flower', 'firefly',
-  'feather', 'grass', 'haze', 'mountain', 'night', 'pond', 'darkness',
-  'snowflake', 'silence', 'sound', 'sky', 'shape', 'surf', 'thunder',
-  'violet', 'water', 'wildflower', 'wave', 'water', 'resonance', 'sun',
-  'wood', 'dream', 'cherry', 'tree', 'fog', 'frost', 'voice', 'paper',
-  'frog', 'smoke', 'star'
-]
-
-function generateRandomCoupon (installed) {
-  const adjective = adjectives[Math.floor(Math.random() * adjectives.length)]
-  const noun = nouns[Math.floor(Math.random() * nouns.length)]
-  const int = Math.floor(Math.random() * 100) + 1
-  return `${adjective}${noun}${int}`
 }

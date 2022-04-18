@@ -2,6 +2,7 @@
 const assert = require('assert')
 const TestHelper = require('../../../../test-helper.js')
 const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
+const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/plan', function () {
   describe('before', () => {
@@ -52,6 +53,9 @@ describe('/administrator/subscriptions/plan', function () {
         { click: '/administrator/subscriptions/plans' },
         { click: `/administrator/subscriptions/plan?planid=${administrator.plan.planid}` }
       ]
+      global.pageSize = 50
+      global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)
+      global.packageJSON.dashboard.server.push(ScreenshotData.administratorPlans)
       const result = await req.get()
       const doc = TestHelper.extractDoc(result.html)
       const tbody = doc.getElementById(administrator.plan.planid)

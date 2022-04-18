@@ -1,6 +1,7 @@
 /* eslint-env mocha */
 const assert = require('assert')
 const TestHelper = require('../../../../test-helper.js')
+const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/unpublish-coupon', function () {
   describe('exceptions', () => {
@@ -117,6 +118,9 @@ describe('/administrator/subscriptions/unpublish-coupon', function () {
         { click: `/administrator/subscriptions/unpublish-coupon?couponid=${administrator.coupon.couponid}` },
         { fill: '#submit-form' }
       ]
+      global.pageSize = 50
+      global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)
+      global.packageJSON.dashboard.server.push(ScreenshotData.administratorCoupons)
       req.body = {}
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)

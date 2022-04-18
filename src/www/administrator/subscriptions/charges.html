@@ -16,6 +16,25 @@
       <div id="no-charges">
         <p translate="yes">No charges have occured yet.</p>
       </div>
+      <div class="charts" id="created-chart-container">
+        <div class="chart">
+          <h2>Created in last 365 days</h2>
+          <div class="metrics" id="created-highlights">
+          </div>
+          <div class="graph">
+            <div class="values" id="created-values"></div>
+            <div class="columns">
+              <div class="padder">
+                <ol id="created-chart" class="threesixfive"></ol>
+              </div>
+              <legend>
+                <span>Today</span>
+                <span>365 days ago</span>
+              </legend>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="list-table-wrapper">
         <table id="charges-table" class="list-table">
           <thead>
@@ -26,13 +45,47 @@
               <th translate="yes">Paid</th>
               <th translate="yes">Amount</th>
               <th translate="yes">Amount refunded</th>
-              <th translate="yes">Date</th>
+              <th translate="yes">Created</th>
             </tr>
           </thead>
         </table>
       </div>
       <ul id="page-links" class="pagination"></ul>
     </div>
+    <template id="chart-value">
+      <h3>${object.value}</h3>
+    </template>
+    <template id="chart-column">
+      <li><span title="${metric.value} on ${metric.dateKey}" style="height: ${metric.normalized}%; top: ${metric.top}%"></span></li>
+    </template>
+    <template id="metric-highlights">
+      <ul>
+        <li>
+          ${highlight.todayFormatted}
+          <span>today</span>
+        </li>
+        <li>
+          ${highlight.yesterdayFormatted}
+          <span>yesterday</span>
+        </li>
+        <li>
+          ${highlight.last7DaysFormatted}
+          <span>7 days</span>
+        </li>
+        <li>
+          ${highlight.last30DaysFormatted}
+          <span>30 days</span>
+        </li>
+        <li>
+          ${highlight.last90DaysFormatted}
+          <span>90 days</span>
+        </li>
+        <li>
+          ${highlight.totalFormatted}
+          <span>all time</span>
+        </li>
+      </ul>
+    </template>
     <template id="page-link">
       <li>
         <a href="/administrator/subscriptions/charges?offset=${page.offset}" id="page-link-${page.pageNumber}">${page.pageNumber}</a>
@@ -50,9 +103,9 @@
           <a href="/administrator/subscriptions/invoice?invoiceid=${charge.invoice}">${charge.invoice}</a>
         </td>
         <td>${charge.paid}</td>
-        <td>${charge.amountFormatted}</td>
-        <td>${charge.amountRefundedFormatted}</td>
-        <td>${charge.dateFormatted}</td>
+        <td>${charge.amountFormatted || '-'}</td>
+        <td>${charge.amountRefundedFormatted || '-'}</td>
+        <td>${charge.createdAtFormatted}</td>
       </tr>
     </template>
   </body>

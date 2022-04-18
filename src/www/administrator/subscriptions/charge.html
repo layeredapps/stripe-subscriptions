@@ -36,11 +36,11 @@
           </tr>
           <tr>
             <th translate="yes">Amount refunded</th>
-            <td>${charge.amountRefundedFormatted}</td>
+            <td>${charge.amountRefundedFormatted || '-'}</td>
           </tr>
           <tr>
-            <th translate="yes">Date</th>
-            <td>${charge.dateFormatted}</td>
+            <th translate="yes">Created</th>
+            <td>${charge.createdAtFormatted}</td>
           </tr>
         </tbody>
       </table>

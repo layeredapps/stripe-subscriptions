@@ -19,19 +19,23 @@
           </tr>
           <tr>
             <th translate="yes">Customer</th>
-            <td>
-              <a href="/administrator/subscriptions/customer?paymentmethodid=${payment_method.customer}">${payment_method.id}</a>
-            </td>
+            <td><a href="/administrator/subscriptions/customer?paymentmethodid=${payment_method.customer}">${payment_method.customer}</a></td>
           </tr>
           <tr>
             <th translate="yes">Account</th>
-            <td>
-              <a href="/administrator/account?accountid=${payment_method.accountid}">${payment_method.id}</a>
-            </td>
+            <td><a href="/administrator/account?accountid=${payment_method.accountid}">${payment_method.accountid}</a></td>
           </tr>
           <tr>
             <th translate="yes">Brand</th>
             <td>${payment_method.card.brand}</td>
+          </tr>
+          <tr>
+            <th translate="yes">Last 4 digits</th>
+            <td>${payment_method.card.last4}</td>
+          </tr>
+          <tr>
+            <th translate="yes">Expires</th>
+            <td>${payment_method.card.exp_month} / ${payment_method.card.exp_year}</td>
           </tr>
         </tbody>
       </table>
