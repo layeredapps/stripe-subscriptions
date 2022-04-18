@@ -168,7 +168,6 @@ const enabledEvents = [
   // 'subscription_schedule.updated'
 ]
 
-const { faker } = require('@faker-js/faker')
 const util = require('util')
 const TestHelper = require('@layeredapps/dashboard/test-helper.js')
 const TestHelperPuppeteer = require('@layeredapps/dashboard/test-helper-puppeteer.js')
@@ -444,15 +443,37 @@ async function createCoupon (administrator, properties) {
   const req = createRequest('/api/administrator/subscriptions/create-coupon')
   req.session = administrator.session
   req.account = administrator.account
-  req.body = {
-    couponid: `coupon${couponNumber}_` + new Date().getTime() + '_' + Math.ceil(Math.random() * 1000),
-    percent_off: '25',
-    duration: 'repeating',
-    duration_in_months: '3'
-  }
+  req.body = {}
   if (properties) {
     for (const property in properties) {
       req.body[property] = properties[property].toString()
+    }
+  }
+  if (!req.body.percent_off && !req.body.amount_off) {
+    if (Math.random() < 0.5) {
+      req.body.percent_off = 10 + Math.ceil(Math.random() * 20)
+      req.body.couponid = `COUPON${req.body.percent_off}PERCENT`
+    } else {
+      req.body.amount_off = 10 + Math.ceil(Math.random() * 20)
+      req.body.currency = 'USD'
+      req.body.couponid = `DISCOUNT${req.body.amount_off}`
+    }
+  } else if(!req.body.couponid) {
+    if (req.body.percent_off) {
+      req.body.couponid = `COUPON${req.body.percent_off}PERCENT`
+    } else {
+      req.body.couponid = `DISCOUNT${req.body.amount_off}`
+    }
+  }
+  if (Math.random() < 0.5) {
+    req.body.max_redemptions = Math.ceil(Math.random() * 100)
+  }
+  if (!req.body.duration) {
+    if (Math.random() < 0.5) {
+      req.body.duration = 'once'
+    } else {
+      req.body.duration = 'repeating'
+      req.body.duration_in_months = 3 + Math.ceil(Math.random() * 6)
     }
   }
   let coupon = await req.post()
