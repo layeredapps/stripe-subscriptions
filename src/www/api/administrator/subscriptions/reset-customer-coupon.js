@@ -19,7 +19,8 @@ module.exports = {
     }
     const customerNow = await stripeCache.execute('customers', 'update', req.query.customerid, updateInfo, req.stripeKey)
     await subscriptions.Storage.Customer.update({
-      stripeObject: customerNow
+      stripeObject: customerNow,
+      couponid: null
     }, {
       where: {
         customerid: req.query.customerid

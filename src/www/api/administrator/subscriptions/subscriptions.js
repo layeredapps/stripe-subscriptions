@@ -20,6 +20,14 @@ module.exports = {
       where = {
         accountid: req.query.accountid
       }
+    } else if (req.query.couponid) {
+      const coupon = await global.api.administrator.subscriptions.Coupon.get(req)
+      if (!coupon) {
+        throw new Error('invalid-couponid')
+      }
+      where = {
+        couponid: req.query.couponid
+      }
     }
     let subscriptionids
     if (req.query.all) {

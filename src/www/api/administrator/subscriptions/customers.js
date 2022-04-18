@@ -3,13 +3,24 @@ const subscriptions = require('../../../../../index.js')
 module.exports = {
   get: async (req) => {
     req.query = req.query || {}
+    let where
+    if (req.query.couponid) {
+      const coupon = await global.api.administrator.subscriptions.Coupon.get(req)
+      if (!coupon) {
+        throw new Error('invalid-couponid')
+      }
+      where = {
+        couponid: req.query.couponid
+      }
+    }
     let customerids
     if (req.query.all) {
       customerids = await subscriptions.Storage.Customer.findAll({
         attributes: ['customerid'],
         order: [
           ['createdAt', 'DESC']
-        ]
+        ],
+        where
       })
     } else {
       const offset = req.query.offset ? parseInt(req.query.offset, 10) : 0
@@ -18,6 +29,7 @@ module.exports = {
         attributes: ['customerid'],
         offset,
         limit,
+        where,
         order: [
           ['createdAt', 'DESC']
         ]

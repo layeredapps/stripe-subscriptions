@@ -41,10 +41,10 @@ module.exports = async () => {
       allowNull: false
     },
     accountid: DataTypes.STRING(64),
-    subscriptionid: DataTypes.STRING,
-    customerid: DataTypes.STRING,
-    paymentmethodid: DataTypes.STRING,
-    invoiceid: DataTypes.STRING,
+    subscriptionid: DataTypes.STRING(64),
+    customerid: DataTypes.STRING(64),
+    paymentmethodid: DataTypes.STRING(64),
+    invoiceid: DataTypes.STRING(64),
     refundRequested: dateType,
     refundReason: DataTypes.TEXT,
     refundDenied: dateType,
@@ -68,7 +68,7 @@ module.exports = async () => {
       }
     },
     appid: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(64),
       defaultValue: global.appid
     },
     // 'createdAt' is specified for each model because mysql/mariadb truncate
@@ -111,7 +111,7 @@ module.exports = async () => {
     publishedAt: dateType,
     unpublishedAt: dateType,
     appid: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(64),
       defaultValue: global.appid
     },
     // 'createdAt' is specified for each model because mysql/mariadb truncate
@@ -140,6 +140,7 @@ module.exports = async () => {
       }
     },
     accountid: DataTypes.STRING(64),
+    couponid: DataTypes.STRING(64),
     stripeObject: {
       type: DataTypes.TEXT,
       get () {
@@ -153,7 +154,7 @@ module.exports = async () => {
       }
     },
     appid: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(64),
       defaultValue: global.appid
     },
     // 'createdAt' is specified for each model because mysql/mariadb truncate
@@ -194,7 +195,7 @@ module.exports = async () => {
       }
     },
     appid: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(64),
       defaultValue: global.appid
     },
     // 'createdAt' is specified for each model because mysql/mariadb truncate
@@ -234,11 +235,11 @@ module.exports = async () => {
         this.setDataValue('stripeObject', JSON.stringify(value))
       }
     },
-    customerid: DataTypes.STRING,
-    subscriptionid: DataTypes.STRING,
+    customerid: DataTypes.STRING(64),
+    subscriptionid: DataTypes.STRING(64),
     accountid: DataTypes.STRING(64),
     appid: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(64),
       defaultValue: global.appid
     },
     // 'createdAt' is specified for each model because mysql/mariadb truncate
@@ -279,13 +280,13 @@ module.exports = async () => {
       }
     },
     accountid: DataTypes.STRING(64),
-    customerid: DataTypes.STRING,
-    paymentmethodid: DataTypes.STRING,
-    subscriptionid: DataTypes.STRING,
-    invoiceid: DataTypes.STRING,
-    status: DataTypes.STRING,
+    customerid: DataTypes.STRING(64),
+    paymentmethodid: DataTypes.STRING(64),
+    subscriptionid: DataTypes.STRING(64),
+    invoiceid: DataTypes.STRING(64),
+    status: DataTypes.STRING(64),
     appid: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(64),
       defaultValue: global.appid
     },
     // 'createdAt' is specified for each model because mysql/mariadb truncate
@@ -314,7 +315,7 @@ module.exports = async () => {
       }
     },
     accountid: DataTypes.STRING(64),
-    customerid: DataTypes.STRING,
+    customerid: DataTypes.STRING(64),
     stripeObject: {
       type: DataTypes.TEXT,
       get () {
@@ -328,7 +329,7 @@ module.exports = async () => {
       }
     },
     appid: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(64),
       defaultValue: global.appid
     },
     // 'createdAt' is specified for each model because mysql/mariadb truncate
@@ -369,7 +370,7 @@ module.exports = async () => {
       }
     },
     appid: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(64),
       defaultValue: global.appid
     },
     // 'createdAt' is specified for each model because mysql/mariadb truncate
@@ -409,11 +410,11 @@ module.exports = async () => {
         this.setDataValue('stripeObject', JSON.stringify(value))
       }
     },
-    productid: DataTypes.STRING,
+    productid: DataTypes.STRING(64),
     publishedAt: dateType,
     unpublishedAt: dateType,
     appid: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(64),
       defaultValue: global.appid
     },
     // 'createdAt' is specified for each model because mysql/mariadb truncate
@@ -456,7 +457,7 @@ module.exports = async () => {
     publishedAt: dateType,
     unpublishedAt: dateType,
     appid: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(64),
       defaultValue: global.appid
     },
     // 'createdAt' is specified for each model because mysql/mariadb truncate
@@ -497,14 +498,14 @@ module.exports = async () => {
       }
     },
     accountid: DataTypes.STRING(64),
-    subscriptionid: DataTypes.STRING,
-    customerid: DataTypes.STRING,
-    invoiceid: DataTypes.STRING,
-    planid: DataTypes.STRING,
-    productid: DataTypes.STRING,
-    paymentmethodid: DataTypes.STRING,
+    subscriptionid: DataTypes.STRING(64),
+    customerid: DataTypes.STRING(64),
+    invoiceid: DataTypes.STRING(64),
+    planid: DataTypes.STRING(64),
+    productid: DataTypes.STRING(64),
+    paymentmethodid: DataTypes.STRING(64),
     appid: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(64),
       defaultValue: global.appid
     },
     // 'createdAt' is specified for each model because mysql/mariadb truncate
@@ -527,8 +528,8 @@ module.exports = async () => {
       allowNull: false
     },
     accountid: DataTypes.STRING(64),
-    customerid: DataTypes.STRING,
-    paymentmethodid: DataTypes.STRING,
+    customerid: DataTypes.STRING(64),
+    paymentmethodid: DataTypes.STRING(64),
     object: {
       type: DataTypes.VIRTUAL,
       get () {
@@ -548,7 +549,7 @@ module.exports = async () => {
       }
     },
     appid: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(64),
       defaultValue: global.appid
     },
     // 'createdAt' is specified for each model because mysql/mariadb truncate
@@ -588,13 +589,14 @@ module.exports = async () => {
         this.setDataValue('stripeObject', JSON.stringify(value))
       }
     },
-    customerid: DataTypes.STRING,
+    customerid: DataTypes.STRING(64),
     accountid: DataTypes.STRING(64),
-    paymentmethodid: DataTypes.STRING,
-    productid: DataTypes.STRING,
-    planid: DataTypes.STRING,
+    paymentmethodid: DataTypes.STRING(64),
+    productid: DataTypes.STRING(64),
+    planid: DataTypes.STRING(64),
+    couponid: DataTypes.STRING(64),
     appid: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(64),
       defaultValue: global.appid
     },
     // 'createdAt' is specified for each model because mysql/mariadb truncate
@@ -635,7 +637,7 @@ module.exports = async () => {
       }
     },
     appid: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(64),
       defaultValue: global.appid
     },
     // 'createdAt' is specified for each model because mysql/mariadb truncate
@@ -675,14 +677,14 @@ module.exports = async () => {
         this.setDataValue('stripeObject', JSON.stringify(value))
       }
     },
-    customerid: DataTypes.STRING,
+    customerid: DataTypes.STRING(64),
     accountid: DataTypes.STRING(64),
-    productid: DataTypes.STRING,
-    planid: DataTypes.STRING,
-    subscriptionid: DataTypes.STRING,
-    subscriptionitemid: DataTypes.STRING,
+    productid: DataTypes.STRING(64),
+    planid: DataTypes.STRING(64),
+    subscriptionid: DataTypes.STRING(64),
+    subscriptionitemid: DataTypes.STRING(64),
     appid: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(64),
       defaultValue: global.appid
     },
     // 'createdAt' is specified for each model because mysql/mariadb truncate
@@ -796,7 +798,7 @@ module.exports = async () => {
         await Customer.destroy({ where: {} })
         await Dispute.destroy({ where: {} })
         await Invoice.destroy({ where: {} })
-        await Payout.destroy({ where: {} })        
+        await Payout.destroy({ where: {} })
         await PaymentIntent.destroy({ where: {} })
         await PaymentMethod.destroy({ where: {} })
         await Plan.destroy({ where: {} })
@@ -818,7 +820,7 @@ module.exports = async () => {
     Plan,
     Product,
     Invoice,
-    Refund,    
+    Refund,
     SetupIntent,
     Subscription,
     TaxRate,
