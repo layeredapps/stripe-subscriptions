@@ -75,43 +75,21 @@ module.exports = {
         throw new Error('invalid-max_redemptions')
       }
     }
-    let expires
-    if (
-      (req.body.redeem_by_day && req.body.redeem_by_day !== '0') ||
-      (req.body.redeem_by_month && req.body.redeem_by_month !== '0') ||
-      (req.body.redeem_by_year && req.body.redeem_by_year !== '0') ||
-      (req.body.redeem_by_hour && req.body.redeem_by_hour !== 'HH') ||
-      (req.body.redeem_by_minute && req.body.redeem_by_minute !== 'MM')) {
-      if (req.body.redeem_by_meridiem !== 'AM' && req.body.redeem_by_meridiem !== 'PM') {
-        throw new Error('invalid-redeem_by_meridiem')
-      }
-      try {
-        expires = new Date(
-          new Date().getFullYear().toString().substring(0, 2) + req.body.redeem_by_year,
-          req.body.redeem_by_month - 1,
-          req.body.redeem_by_day,
-          req.body.redeem_by_meridiem === 'PM' ? req.body.redeem_by_hour + 12 : req.body.redeem_by_hour,
-          req.body.redeem_by_minute,
-          0)
-        const expiresTimestamp = expires.getTime() / 1000
-        if (expiresTimestamp - Math.floor(new Date().getTime() / 1000) > 5 * 365 * 24 * 60 * 60) {
-          throw new Error('invalid-redeem_by')
-        }
-      } catch (s) {
-        throw new Error('invalid-redeem_by')
-      }
-      if (!expires) {
-        throw new Error('invalid-redeem_by')
-      }
-      req.body.redeem_by = Math.floor(expires.getTime() / 1000)
-      if (req.body.redeem_by < Math.floor(new Date().getTime() / 1000)) {
-        throw new Error('invalid-redeem_by')
-      }
-    }
     const couponInfo = {
       id: req.body.couponid,
-      duration: req.body.duration || null,
-      redeem_by: req.body.redeem_by
+      duration: req.body.duration || null
+    }
+    if (req.body.redeem_by) {
+      try {
+        const redeemDate = new Date(Date.parse(req.body.redeem_by))
+        const now = new Date()
+        if (redeemDate.getUTCTime() < now.getUTCTime()) {
+          throw new Error('invalid-redeem_by')
+        }
+        couponInfo.redeem_by = Math.floor(redeemDate.getTime() / 1000)
+      } catch (error) {
+        throw new Error('invalid-redeem_by')
+      }
     }
     if (req.body.amount_off) {
       couponInfo.amount_off = req.body.amount_off
@@ -125,15 +103,19 @@ module.exports = {
     if (req.body.max_redemptions) {
       couponInfo.max_redemptions = req.body.max_redemptions
     }
-    const coupon = await stripeCache.execute('coupons', 'create', couponInfo, req.stripeKey)
-    await subscriptions.Storage.Coupon.create({
-      appid: req.appid || global.appid,
-      couponid: coupon.id,
-      publishedAt: req.body.publishedAt ? new Date() : undefined,
-      stripeObject: coupon
-    })
-    req.query = req.query || {}
-    req.query.couponid = coupon.id
-    return global.api.administrator.subscriptions.Coupon.get(req)
+    try {
+      const coupon = await stripeCache.execute('coupons', 'create', couponInfo, req.stripeKey)
+      await subscriptions.Storage.Coupon.create({
+        appid: req.appid || global.appid,
+        couponid: coupon.id,
+        publishedAt: req.body.publishedAt ? new Date() : undefined,
+        stripeObject: coupon
+      })
+      req.query = req.query || {}
+      req.query.couponid = coupon.id
+      return global.api.administrator.subscriptions.Coupon.get(req)
+    } catch (error) {
+      throw error
+    }
   }
 }

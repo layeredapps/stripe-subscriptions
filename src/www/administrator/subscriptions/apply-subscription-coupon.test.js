@@ -45,7 +45,6 @@ describe('/administrator/subscriptions/apply-subscription-coupon', function () {
     const user3 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
     await TestHelper.createCoupon(administrator, {
       publishedAt: 'true',
-      percent_off: '25',
       duration: 'repeating',
       duration_in_months: '3'
     })

@@ -38,15 +38,15 @@ async function renderPage (req, res, messageTemplate) {
   if (req.body) {
     dashboard.HTML.setSelectedOptionByValue(doc, 'duration', req.body.duration || '')
     const idField = doc.getElementById('couponid')
-    idField.setAttribute('value', (req.body.couponid).split("'").join('&quot;'))
+    idField.setAttribute('value', (req.body.couponid))
     const durationInMonthsField = doc.getElementById('duration_in_months')
-    durationInMonthsField.setAttribute('value', (req.body.duration_in_months || '').split("'").join('&quot;'))
+    durationInMonthsField.setAttribute('value', req.body.duration_in_months || '')
     const maxRedemptionsField = doc.getElementById('max_redemptions')
-    maxRedemptionsField.setAttribute('value', (req.body.maximum_accounts || '').split("'").join('&quot;'))
+    maxRedemptionsField.setAttribute('value', req.body.max_redemptions || '')
     const amountOffField = doc.getElementById('amount_off')
-    amountOffField.setAttribute('value', (req.body.amount_off || '').split("'").join('&quot;'))
+    amountOffField.setAttribute('value', req.body.amount_off || '')
     const percentOffField = doc.getElementById('percent_off')
-    percentOffField.setAttribute('value', (req.body.percent_off || '').split("'").join('&quot;'))
+    percentOffField.setAttribute('value', req.body.percent_off || '')
   }
   return dashboard.Response.end(req, res, doc)
 }

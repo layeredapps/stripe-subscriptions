@@ -294,6 +294,7 @@ let webhookRotation = 0
 async function setupBeforeEach () {
   await subscriptions.Storage.flush()
   global.webhooks = []
+  percentOff = 0
   await rotateWebhook()
 }
 
@@ -437,9 +438,8 @@ async function createPlan (administrator, properties) {
   return plan
 }
 
-let couponNumber = 0
+let percentOff = 0
 async function createCoupon (administrator, properties) {
-  couponNumber++
   const req = createRequest('/api/administrator/subscriptions/create-coupon')
   req.session = administrator.session
   req.account = administrator.account
@@ -450,13 +450,14 @@ async function createCoupon (administrator, properties) {
     }
   }
   if (!req.body.percent_off && !req.body.amount_off) {
+    percentOff += 5
     if (Math.random() < 0.5) {
-      req.body.percent_off = 10 + Math.ceil(Math.random() * 20)
-      req.body.couponid = `COUPON${req.body.percent_off}PERCENT`
+      req.body.percent_off = percentOff.toString()
+      req.body.couponid = req.body.couponid || `COUPON${req.body.percent_off}PERCENT`
     } else {
-      req.body.amount_off = 10 + Math.ceil(Math.random() * 20)
+      req.body.amount_off = percentOff.toString()
       req.body.currency = 'USD'
-      req.body.couponid = `DISCOUNT${req.body.amount_off}`
+      req.body.couponid = req.body.couponid || `DISCOUNT${req.body.amount_off}`
     }
   } else if(!req.body.couponid) {
     if (req.body.percent_off) {
@@ -466,14 +467,14 @@ async function createCoupon (administrator, properties) {
     }
   }
   if (Math.random() < 0.5) {
-    req.body.max_redemptions = Math.ceil(Math.random() * 100)
+    req.body.max_redemptions = Math.ceil(100 + (Math.random() * 100)).toString()
   }
   if (!req.body.duration) {
     if (Math.random() < 0.5) {
       req.body.duration = 'once'
     } else {
       req.body.duration = 'repeating'
-      req.body.duration_in_months = 3 + Math.ceil(Math.random() * 6)
+      req.body.duration_in_months = (3 + Math.ceil(Math.random() * 6)).toString()
     }
   }
   let coupon = await req.post()

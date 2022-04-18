@@ -39,7 +39,6 @@ describe('/api/administrator/subscriptions/set-coupon-published', () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createCoupon(administrator, {
           publishedAt: 'true',
-          percent_off: '25',
           duration: 'repeating',
           duration_in_months: '3'
         })
@@ -59,7 +58,6 @@ describe('/api/administrator/subscriptions/set-coupon-published', () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createCoupon(administrator, {
           publishedAt: 'true',
-          percent_off: '25',
           duration: 'repeating',
           duration_in_months: '3'
         })
@@ -81,7 +79,6 @@ describe('/api/administrator/subscriptions/set-coupon-published', () => {
     it('object', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        percent_off: '25',
         duration: 'repeating',
         duration_in_months: '3'
       })

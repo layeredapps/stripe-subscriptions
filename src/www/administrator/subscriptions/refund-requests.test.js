@@ -76,7 +76,9 @@ describe('/administrator/subscriptions/refund-requests', function () {
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('charges-table')
       const rows = table.getElementsByTagName('tr')
-      assert.strictEqual(rows.length, global.pageSize + 1)
+      assert.strictEqual(rows.length, 5)
+      // heading
+      // + bundledData created 4 
     })
 
     it('should change page size', async function () {

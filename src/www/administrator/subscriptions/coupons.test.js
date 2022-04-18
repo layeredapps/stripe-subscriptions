@@ -22,7 +22,6 @@ describe('/administrator/subscriptions/coupons', function () {
     for (let i = 0, len = global.pageSize + 2; i < len; i++) {
       await TestHelper.createCoupon(administrator, {
         publishedAt: 'true',
-        percent_off: '25',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -70,7 +69,10 @@ describe('/administrator/subscriptions/coupons', function () {
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('coupons-table')
       const rows = table.getElementsByTagName('tr')
-      assert.strictEqual(rows.length, global.pageSize + 1)
+      assert.strictEqual(rows.length, 18)
+      // heading row
+      // + bundledData created 4
+      // + screenshot-data created 13
     })
 
     it('should change page size', async function () {

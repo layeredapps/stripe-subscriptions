@@ -22,7 +22,6 @@ describe('/administrator/subscriptions/unpublish-coupon', function () {
     it('should reject never published coupon', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        percent_off: '25',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -43,7 +42,6 @@ describe('/administrator/subscriptions/unpublish-coupon', function () {
       await TestHelper.createCoupon(administrator, {
         publishedAt: 'true',
         unpublishedAt: 'true',
-        percent_off: '25',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -65,7 +63,6 @@ describe('/administrator/subscriptions/unpublish-coupon', function () {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
         publishedAt: 'true',
-        percent_off: '25',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -82,7 +79,6 @@ describe('/administrator/subscriptions/unpublish-coupon', function () {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
         publishedAt: 'true',
-        percent_off: '25',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -101,7 +97,6 @@ describe('/administrator/subscriptions/unpublish-coupon', function () {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
         publishedAt: 'true',
-        percent_off: '25',
         duration: 'repeating',
         duration_in_months: '3'
       })

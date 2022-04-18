@@ -9,7 +9,6 @@ describe('/api/administrator/subscriptions/coupons-count', () => {
       for (let i = 0, len = global.pageSize + 1; i < len; i++) {
         await TestHelper.createCoupon(administrator, {
           publishedAt: 'true',
-          percent_off: '25',
           duration: 'repeating',
           duration_in_months: '3'
         })

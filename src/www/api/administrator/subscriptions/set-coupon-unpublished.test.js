@@ -38,7 +38,6 @@ describe('/api/administrator/subscriptions/set-coupon-unpublished', () => {
       it('ineligible querystring coupon is not published', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createCoupon(administrator, {
-          percent_off: '25',
           duration: 'repeating',
           duration_in_months: '3'
         })
@@ -59,7 +58,6 @@ describe('/api/administrator/subscriptions/set-coupon-unpublished', () => {
         await TestHelper.createCoupon(administrator, {
           publishedAt: 'true',
           unpublishedAt: 'true',
-          percent_off: '25',
           duration: 'repeating',
           duration_in_months: '3'
         })
@@ -82,7 +80,6 @@ describe('/api/administrator/subscriptions/set-coupon-unpublished', () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
         publishedAt: 'true',
-        percent_off: '25',
         duration: 'repeating',
         duration_in_months: '3'
       })

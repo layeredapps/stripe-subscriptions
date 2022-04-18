@@ -40,7 +40,6 @@ describe('/api/administrator/subscriptions/delete-coupon', () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
         publishedAt: 'true',
-        percent_off: '25',
         duration: 'repeating',
         duration_in_months: '3'
       })

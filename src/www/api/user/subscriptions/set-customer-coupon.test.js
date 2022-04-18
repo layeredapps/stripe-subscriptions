@@ -52,12 +52,10 @@ describe('/api/user/subscriptions/set-customer-coupon', () => {
       it('invalid querystring customer has coupon', async () => {
         const administrator = await TestHelper.createOwner()
         const coupon1 = await TestHelper.createCoupon(administrator, {
-          publishedAt: 'true',
-          percent_off: '25'
+          publishedAt: 'true'
         })
         const coupon2 = await TestHelper.createCoupon(administrator, {
-          publishedAt: 'true',
-          percent_off: '25'
+          publishedAt: 'true'
         })
         const user = await TestHelper.createUser()
         await TestHelper.createCustomer(user, {
@@ -86,8 +84,7 @@ describe('/api/user/subscriptions/set-customer-coupon', () => {
       it('ineligible account accessing', async () => {
         const administrator = await TestHelper.createOwner()
         const coupon = await TestHelper.createCoupon(administrator, {
-          publishedAt: 'true',
-          percent_off: '25'
+          publishedAt: 'true'
         })
         const user = await TestHelper.createUser()
         await TestHelper.createCustomer(user, {

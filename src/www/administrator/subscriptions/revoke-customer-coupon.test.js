@@ -24,7 +24,6 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
       const administrator = await TestStripeAccounts.createOwnerWithPlan({ amount: '1000' })
       await TestHelper.createCoupon(administrator, {
         publishedAt: 'true',
-        percent_off: '25',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -63,7 +62,6 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
       })
       await TestHelper.createCoupon(administrator, {
         publishedAt: 'true',
-        percent_off: '25',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -92,7 +90,6 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
       })
       await TestHelper.createCoupon(administrator, {
         publishedAt: 'true',
-        percent_off: '25',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -123,7 +120,6 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
       })
       await TestHelper.createCoupon(administrator, {
         publishedAt: 'true',
-        percent_off: '25',
         duration: 'repeating',
         duration_in_months: '3'
       })

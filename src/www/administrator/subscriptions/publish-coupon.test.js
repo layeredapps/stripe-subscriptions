@@ -23,7 +23,6 @@ describe('/administrator/subscriptions/publish-coupon', function () {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
         publishedAt: 'true',
-        percent_off: '25',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -44,7 +43,6 @@ describe('/administrator/subscriptions/publish-coupon', function () {
     it('should bind data to req', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        percent_off: '25',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -60,7 +58,6 @@ describe('/administrator/subscriptions/publish-coupon', function () {
     it('should present the form', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        percent_off: '25',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -78,7 +75,6 @@ describe('/administrator/subscriptions/publish-coupon', function () {
     it('should publish coupon (screenshots)', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        percent_off: '25',
         duration: 'repeating',
         duration_in_months: '3'
       })

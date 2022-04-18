@@ -25,20 +25,16 @@ describe('/api/user/subscriptions/set-subscription-coupon', function () {
       usage_type: 'licensed'
     })
     const coupon1 = await TestHelper.createCoupon(administrator, {
-      publishedAt: 'true',
-      percent_off: '25'
+      publishedAt: 'true'
     })
     const coupon2 = await TestHelper.createCoupon(administrator, {
-      publishedAt: 'true',
-      percent_off: '25'
+      publishedAt: 'true'
     })
     const unpublishedCoupon = await TestHelper.createCoupon(administrator, {
-      percent_off: '25',
       publishedAt: 'true',
       unpublishedAt: 'true'
     })
     const notPublishedCoupon = await TestHelper.createCoupon(administrator, {
-      percent_off: '25'
     })
     const currencyCoupon = await TestHelper.createCoupon(administrator, {
       amount_off: '2500',

@@ -22,7 +22,6 @@ describe('/api/administrator/subscriptions/coupons', function () {
     for (let i = 0, len = global.pageSize + 2; i < len; i++) {
       await TestHelper.createCoupon(administrator, {
         publishedAt: 'true',
-        percent_off: '25',
         duration: 'repeating',
         duration_in_months: '1'
       })

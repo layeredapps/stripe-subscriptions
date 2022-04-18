@@ -32,7 +32,6 @@ describe('/administrator/subscriptions/revoke-subscription-coupon', function () 
     // before
     await TestHelper.createCoupon(administrator, {
       publishedAt: 'true',
-      percent_off: '25',
       duration: 'repeating',
       duration_in_months: '3'
     })

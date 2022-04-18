@@ -26,7 +26,6 @@ describe('/api/administrator/subscriptions/set-subscription-coupon', function ()
     })
     const publishedCoupon = await TestHelper.createCoupon(administrator, {
       publishedAt: 'true',
-      percent_off: '25',
       duration: 'repeating',
       duration_in_months: '3'
     })
@@ -84,7 +83,6 @@ describe('/api/administrator/subscriptions/set-subscription-coupon', function ()
     }
     // not-published and unpublished coupon
     await TestHelper.createCoupon(administrator, {
-      percent_off: '25',
       duration: 'repeating',
       duration_in_months: '3'
     })
@@ -102,7 +100,6 @@ describe('/api/administrator/subscriptions/set-subscription-coupon', function ()
     await TestHelper.createCoupon(administrator, {
       publishedAt: 'true',
       unpublishedAt: 'true',
-      percent_off: '25',
       duration: 'repeating',
       duration_in_months: '3'
     })
