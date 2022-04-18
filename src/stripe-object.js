@@ -19,6 +19,9 @@ module.exports = (sequelizeObject) => {
   if (clone.unpublishedAt) {
     clone.unpublishedAtFormatted = dashboard.Format.date(clone.unpublishedAt)
   }
+  if (clone.refundRequested) {
+    clone.refundRequestedFormatted = dashboard.Format.date(clone.refundRequested)
+  }
   if (clone.amount) {
     clone.amountFormatted = dashboard.Format.money(clone.amount || 0, clone.currency)
   }
@@ -27,6 +30,21 @@ module.exports = (sequelizeObject) => {
   }
   if (clone.amount_off) {
     clone.amountOffFormatted = dashboard.Format.money(clone.amount_off, clone.currency)
+  }
+  if (clone.amount_due) {
+    clone.amountDueFormatted = dashboard.Format.money(clone.amount_due, clone.currency)
+  }
+  if (clone.amount_paid) {
+    clone.amountPaidFormatted = dashboard.Format.money(clone.amount_paid, clone.currency)
+  }
+  if (clone.total) {
+    clone.totalFormatted = dashboard.Format.money(clone.total, clone.currency)
+  }
+  if (clone.period_start) {
+    clone.periodStartFormatted = dashboard.Format.date(clone.period_start)
+  }
+  if (clone.period_end) {
+    clone.periodEndFormatted = dashboard.Format.date(clone.period_end)
   }
   if (clone.trial_period_days) {
     clone.trialPeriodDaysFormatted = clone.trial_period_days || 0
