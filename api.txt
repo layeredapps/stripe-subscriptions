@@ -1,4 +1,4 @@
-@layeredapps/dashboard 0.0.33
+@layeredapps/dashboard 0.0.36
 http://localhost:8000
 
 |------------------------------------------------------------------------------|
@@ -66,7 +66,7 @@ http://localhost:8000
 | optionally-required posted amount_off (integer, or percent_off)  |          |  * invalid posted amount_off                     |
 | optionally-required posted currency (string, if amount_off)      |          | invalid-currency                                 |
 | optionally-required posted percent_off (integer, or amount_off)  |          |  * missing posted currency                       |
-| optionally-required posted expire date                           |          |  * invalid posted currency                       |
+| optionally-required posted redeem_by (date in future)            |          |  * invalid posted currency                       |
 | optionally-required posted duration_in_months                    |          | invalid-percent_off                              |
 |                                                                  |          |  * invalid posted percent_off                    |
 |                                                                  |          | invalid-duration                                 |
@@ -74,8 +74,6 @@ http://localhost:8000
 |                                                                  |          | invalid-duration_in_months                       |
 |                                                                  |          |  * missing posted duration_in_months             |
 |                                                                  |          |  * invalid posted duration_in_months             |
-|                                                                  |          | invalid-redeem_by_meridiem                       |
-|                                                                  |          |  * invalid posted redeem_by_meridiem             |
 |                                                                  |          | invalid-redeem_by                                |
 |                                                                  |          |  * invalid posted redeem_by                      |
 |------------------------------------------------------------------|----------|--------------------------------------------------|

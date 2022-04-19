@@ -122,7 +122,7 @@
       "optionally-required posted amount_off (integer, or percent_off)",
       "optionally-required posted currency (string, if amount_off)",
       "optionally-required posted percent_off (integer, or amount_off)",
-      "optionally-required posted expire date",
+      "optionally-required posted redeem_by (date in future)",
       "optionally-required posted duration_in_months"
     ],
     "exceptions": {
@@ -147,9 +147,6 @@
       "invalid-duration_in_months": [
         "missing posted duration_in_months",
         "invalid posted duration_in_months"
-      ],
-      "invalid-redeem_by_meridiem": [
-        "invalid posted redeem_by_meridiem"
       ],
       "invalid-redeem_by": [
         "invalid posted redeem_by"
