@@ -79,7 +79,7 @@ async function submitForm (req, res) {
   if (req.query && req.query.message === 'success') {
     return renderPage(req, res)
   }
-  if (!req.body.email || !req.body.email.length) {
+  if (!req.body.email || !req.body.email.length || req.body.email.indexOf('@') < 1) {
     return renderPage(req, res, 'invalid-email')
   }
   if (!req.body.description || !req.body.description.length) {

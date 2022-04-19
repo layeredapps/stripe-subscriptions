@@ -73,6 +73,7 @@ describe('/account/subscriptions', function () {
     ]
     await req1.route.api.before(req1)
     cachedResponses.before = req1.data
+    global.pageSize = 50
     cachedResponses.returns = await req1.get()
     cachedResponses.finished = true
   }
@@ -87,7 +88,7 @@ describe('/account/subscriptions', function () {
   })
 
   describe('view', () => {
-    it('should have row for each invoice', async function () {
+    it('should have row for each invoice (screenshots)', async function () {
       await bundledData(this.test.currentRetry())
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)

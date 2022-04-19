@@ -29,15 +29,7 @@ describe('/account/subscriptions/request-refund', function () {
     const req = TestHelper.createRequest(`/account/subscriptions/request-refund?invoiceid=${user.invoice.invoiceid}`)
     req.account = user.account
     req.session = user.session
-    req.filename = __filename
-    req.screenshots = [
-      { hover: '#account-menu-container' },
-      { click: '/account/subscriptions' },
-      { click: '/account/subscriptions/invoices' },
-      { click: `/account/subscriptions/invoice?invoiceid=${user.invoice.invoiceid}` },
-      { click: `/account/subscriptions/request-refund?invoiceid=${user.invoice.invoiceid}` },
-      { fill: '#submit-form' }
-    ]
+
     await req.route.api.before(req)
     cachedResponses.before = req.data
     const req2 = TestHelper.createRequest(`/account/subscriptions/request-refund?invoiceid=${user.invoice.invoiceid}`)
@@ -53,9 +45,19 @@ describe('/account/subscriptions/request-refund', function () {
     } catch (error) {
       cachedResponses.invalidAccount = error.message
     }
+    req2.filename = __filename
+    req2.screenshots = [
+      { hover: '#account-menu-container' },
+      { click: '/account/subscriptions' },
+      { click: '/account/subscriptions/invoices' },
+      { click: `/account/subscriptions/invoice?invoiceid=${user.invoice.invoiceid}` },
+      { click: `/account/subscriptions/request-refund?invoiceid=${user.invoice.invoiceid}` },
+      { fill: '#submit-form' }
+    ]    
     req2.body = {
       reason: 'this is a reason'
     }
+    global.pageSize = 50
     cachedResponses.submit = await req2.post()
     cachedResponses.finished = true
   }

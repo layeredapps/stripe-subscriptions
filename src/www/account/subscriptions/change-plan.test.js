@@ -65,9 +65,10 @@ describe('/account/subscriptions/change-plan', function () {
       { fill: '#submit-form' }
     ]
     req3.body = {
-      planid: plan2.planid,
-      paymentmethodid: user.paymentMethod.paymentmethodid
+      [plan2.planid]: true,
+      [user.paymentMethod.paymentmethodid]: true
     }
+    global.pageSize = 50
     cachedResponses.submit = await req3.post()
     const freePlan = await TestHelper.createPlan(administrator, {
       productid: administrator.product.productid,
@@ -81,8 +82,7 @@ describe('/account/subscriptions/change-plan', function () {
     req4.account = user2.account
     req4.session = user2.session
     req4.body = {
-      planid: plan2.planid,
-      paymentmethodid: ''
+      [plan2.planid]: true
     }
     cachedResponses.invalidPaymentMethod = await req4.post()
     cachedResponses.finished = true

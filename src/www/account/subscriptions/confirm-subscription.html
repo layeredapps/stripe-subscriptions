@@ -7,25 +7,20 @@
     <link rel="stylesheet" href="/public/content.css">
     <link rel="stylesheet" href="/public/content-additional.css">
   </head>
-  <body class="entry-form">
+  <body>
     <div class="container">
-      <form id="submit-form" method="post" class="input-form entry-form" action="/account/subscriptions/confirm-subscription?planid=${plan.planid}" name="submit-form">
+      <form id="submit-form" method="post" class="input-form" action="/account/subscriptions/confirm-subscription?planid=${plan.planid}" name="submit-form">
         <h1 translate="yes">Confirm subscription</h1>
         <div id="message-container"></div>
-        <h2 translate="yes">Billing profile</h2>
-        <div id="existing-container" class="input-fields">
-          <label class="field-label" for="customerid" translate="yes">Existing profile</label> 
-          <div class="field">
-            <select name="customerid" id="customerid">
-              <option value="" translate="yes">
-                Select profile</option>
-            </select>
+        <div id="existing-container">
+          <h3 translate="yes">Billing profile</h3> 
+          <div id="customerid"></div>
+          <div class="button-group nested-button">
+            <a class="small-button" href="/account/subscriptions/create-billing-profile?return-url=/account/subscriptions/confirm-subscription?planid=${plan.planid}">Add billing information</a>
           </div>
         </div>
-        <div class="input-fields new-profile">
-          <a id="create-link" href="/account/subscriptions/create-billing-profile?return-url=/account/subscriptions/confirm-subscription?planid=${plan.planid}" class="button">Add new profile</a>
-        </div>
-        <table id="plan-table" class="summary">
+        <h3 translate="yes">Plan information</h3>
+        <table id="plan-table" class="list-table">
           <tr>
             <th translate="yes">Plan</th>
             <th translate="yes">Price</th>
@@ -33,15 +28,18 @@
           </tr>
         </table>
         <div id="charge"></div>
-        <div class="form-buttons">
+        <div class="form-buttons button-group">
           <button id="submit-button" class="button submit" type="submit" translate="yes">Start subscription</button>
         </div>
       </form>
     </div>
     <template id="customer-option">
-      <option value="${customer.id}">
-        ${customer.description}
-      </option>
+      <div>
+        <label value="${customer.id}">
+          <input type="radio" value="${customer.id}" name="customerid" id="${customer.id}" />
+          ${customer.description}
+        </label>
+      </div>
     </template>
     <template id="charge-now">
       <p translate="yes">You will be billed ${plan.amountFormatted} now and each ${plan.interval}.</p>

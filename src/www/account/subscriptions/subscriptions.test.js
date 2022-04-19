@@ -45,6 +45,7 @@ describe('/account/subscriptions/subscriptions', function () {
       { click: '/account/subscriptions' },
       { click: '/account/subscriptions/subscriptions' }
     ]
+    global.pageSize = 50
     cachedResponses.returns = await req1.get()
     global.pageSize = 3
     cachedResponses.pageSize = await req1.get()
@@ -72,7 +73,9 @@ describe('/account/subscriptions/subscriptions', function () {
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('subscriptions-table')
       const rows = table.getElementsByTagName('tr')
-      assert.strictEqual(rows.length, global.pageSize + 1)
+      assert.strictEqual(rows.length, 5)
+      // 4 created in loop
+      // 1 table header
     })
 
     it('should change page size', async function () {

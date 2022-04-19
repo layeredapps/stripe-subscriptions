@@ -48,6 +48,7 @@ describe('/account/subscriptions/delete-billing-profile', function () {
       { click: `/account/subscriptions/delete-billing-profile?customerid=${user.customer.customerid}` },
       { fill: '#submit-form' }
     ]
+    global.pageSize = 50
     cachedResponses.submit = await req2.post()
     cachedResponses.finished = true
   }

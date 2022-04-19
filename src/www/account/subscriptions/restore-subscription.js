@@ -22,8 +22,8 @@ async function beforeRequest (req) {
   if (req.error) {
     return
   }
-  if (!subscription.cancel_at_period_end) {
-    throw new Error('invalid-subscription')
+  if (!subscription.cancel_at_period_end && req.query.message !== 'success') {
+    req.error = 'invalid-subscription'
   }
   req.data = { subscription }
 }
@@ -53,7 +53,7 @@ async function submitForm (req, res) {
     return dashboard.Response.redirect(req, res, req.query['return-url'])
   } else {
     res.writeHead(302, {
-      location: `${req.urlPath}?message=success`
+      location: `${req.urlPath}?subscriptionid=${req.query.subscriptionid}&message=success`
     })
     return res.end()
   }

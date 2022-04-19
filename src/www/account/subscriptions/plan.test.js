@@ -84,6 +84,7 @@ describe('/account/subscriptions/plan', function () {
         { click: '/account/subscriptions/plans' },
         { click: `/account/subscriptions/plan?planid=${administrator.plan.planid}` }
       ]
+      global.pageSize = 50
       const result = await req.get()
       const doc = TestHelper.extractDoc(result.html)
       const tbody = doc.getElementById(administrator.plan.planid)

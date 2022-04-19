@@ -52,6 +52,7 @@ describe('/account/subscriptions/refund-invoice', function () {
     ]
     await req.route.api.before(req)
     cachedResponses.before = req.data
+    global.pageSize = 50
     cachedResponses.submit = await req.post()
     cachedResponses.finished = true
   }

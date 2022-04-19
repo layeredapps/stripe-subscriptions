@@ -204,6 +204,7 @@ describe('/account/subscriptions/add-payment-method', function () {
         { click: `/account/subscriptions/add-payment-method?customerid=${user.customer.customerid}` },
         { fill: '#form-nojs' }
       ]
+      global.pageSize = 50
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')

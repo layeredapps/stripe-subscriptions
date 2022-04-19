@@ -74,8 +74,7 @@ describe('/account/subscriptions/confirm-subscription', function () {
     req5.account = user.account
     req5.session = user.session
     req5.body = {
-      customerid: invalidCustomer.customerid,
-      paymentmethodid: 'invalid'
+      [invalidCustomer.customerid]: true
     }
     cachedResponses.invalidPaymentMethod = await req5.post()
     const req6 = TestHelper.createRequest(`/account/subscriptions/confirm-subscription?planid=${publishedPlan.planid}`)
@@ -90,9 +89,6 @@ describe('/account/subscriptions/confirm-subscription', function () {
       { click: `/account/subscriptions/start-subscription?planid=${publishedPlan.planid}` },
       {
         click: '#submit-button',
-        body: {
-          planid: publishedPlan.planid
-        },
         waitAfter: async (page) => {
           while (true) {
             try {
@@ -106,12 +102,15 @@ describe('/account/subscriptions/confirm-subscription', function () {
           }
         }
       },
-      { fill: '#submit-form' }
+      { 
+        fill: '#submit-form',
+        body: {
+          planid: publishedPlan.planid,
+          [validCustomer.customerid]: true
+        }
+      }
     ]
-    req6.body = {
-      customerid: validCustomer.customerid,
-      paymentmethodid: user.paymentMethod.paymentmethodid
-    }
+    global.pageSize = 50
     cachedResponses.submit = await req6.post()
     cachedResponses.finished = true
   }

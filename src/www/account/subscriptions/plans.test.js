@@ -46,7 +46,7 @@ describe('/account/subscriptions/plans', function () {
     cachedResponses.returns = await req1.get()
     global.pageSize = 3
     cachedResponses.pageSize = await req1.get()
-    global.pageSize = 2
+    global.pageSize = 50
     const req2 = TestHelper.createRequest('/account/subscriptions/plans?offset=1')
     req2.account = user.account
     req2.session = user.session

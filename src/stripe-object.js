@@ -61,7 +61,7 @@ module.exports = (sequelizeObject) => {
   if (clone.account_balance) {
     clone.accountBalanceFormatted = clone.account_balance < 0 ? dashboard.Format.money(-clone.account_balance, clone.currency) : ''
   }
-  if (clone.lines && clone.lines.data && clone.lines.data.lengt) {
+  if (clone.lines && clone.lines.data && clone.lines.data.length) {
     for (const line of clone.lines.data) {
       if (line.period && line.period.start) {
         line.period.startFormatted = dashboard.Format.date(new Date(line.period.start * 1000))
@@ -72,8 +72,11 @@ module.exports = (sequelizeObject) => {
       if (line.plan && line.plan.amount) {
         line.plan.amountFormatted = dashboard.Format.money(line.plan.amount || 0, line.plan.currency)
       }
+      if (line.amount) {
+        line.amountFormatted = dashboard.Format.money(line.amount || 0, line.currency)
+      }
       if (line.price && line.price.unit_amount) {
-        line.price.unitAmountFormatted = dashboard.Format.money(line.price.unit_amount || 0, line.plan.currency)
+        line.price.unitAmountFormatted = dashboard.Format.money(line.price.unit_amount || 0, line.price.currency)
       }
       if (line.price && line.price.created) {
         line.price.createdFormat = dashboard.Format.date(new Date(line.price.created * 1000))

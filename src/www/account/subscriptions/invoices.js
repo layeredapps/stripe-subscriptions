@@ -23,28 +23,33 @@ async function beforeRequest (req) {
 
 async function renderPage (req, res) {
   const doc = dashboard.HTML.parse(req.html || req.route.html)
+  const removeElements = []
   if (req.data.invoices && req.data.invoices.length) {
     dashboard.HTML.renderTable(doc, req.data.invoices, 'invoice-row', 'invoices-table')
     if (req.data.total <= global.pageSize) {
-      const pageLinks = doc.getElementById('page-links')
-      pageLinks.parentNode.removeChild(pageLinks)
+      removeElements.push('page-links')
     } else {
       dashboard.HTML.renderPagination(doc, req.data.offset, req.data.total)
     }
     for (const invoice of req.data.invoices) {
       if (invoice.status === 'open') {
-        const paid = doc.getElementById(`paid-${invoice.id}`)
-        paid.parentNode.removeChild(paid)
+        removeElements.push(`paid-${invoice.id}`)
       } else {
-        const open = doc.getElementById(`open-${invoice.id}`)
-        open.parentNode.removeChild(open)
+        removeElements.push(`open-${invoice.id}`)
+      }
+      if (invoice.total) {
+        removeElements.push(`no-total-${invoice.id}`)
+      } else {
+        removeElements.push(`total-${invoice.id}`)
       }
     }
-    const noInvoices = doc.getElementById('no-invoices')
-    noInvoices.parentNode.removeChild(noInvoices)
+    removeElements.push('no-invoices')
   } else {
-    const invoicesTable = doc.getElementById('invoices-table')
-    invoicesTable.parentNode.removeChild(invoicesTable)
+    removeElements.push('invoices-table')
+  }
+  for (const id of removeElements) {
+    const element = doc.getElementById(id)
+    element.parentNode.removeChild(element)
   }
   return dashboard.Response.end(req, res, doc)
 }

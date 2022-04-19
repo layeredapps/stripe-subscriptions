@@ -99,6 +99,7 @@ describe('/account/subscriptions/cancel-subscription', function () {
     req.body = {
       refund: 'credit'
     }
+    global.pageSize = 50
     cachedResponses.submitFree1 = await req.post()
     await TestStripeAccounts.createUserWithFreeSubscription(administrator2.plan, user2)
     req = TestHelper.createRequest(`/account/subscriptions/cancel-subscription?subscriptionid=${user2.subscription.subscriptionid}`)

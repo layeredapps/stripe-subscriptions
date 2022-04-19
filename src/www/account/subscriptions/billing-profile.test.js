@@ -72,6 +72,7 @@ describe('/account/subscriptions/billing-profile', function () {
         { click: '/account/subscriptions/billing-profiles' },
         { click: `/account/subscriptions/billing-profile?customerid=${user.customer.customerid}` }
       ]
+      global.pageSize = 50
       const result = await req.get()
       const doc = TestHelper.extractDoc(result.html)
       const tbody = doc.getElementById(user.customer.customerid)

@@ -25,7 +25,7 @@ async function beforeRequest (req) {
       }
       for (const subscription of subscriptions) {
         req.query.planid = subscription.planid
-        const plan = await global.api.user.subscriptions.Plan.get(req)
+        const plan = await global.api.user.subscriptions.PublishedPlan.get(req)
         if (plan.stripeObject.amount) {
           customer.paid++
         } else {

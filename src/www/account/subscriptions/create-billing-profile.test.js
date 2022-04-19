@@ -349,6 +349,7 @@ describe('/account/subscriptions/create-billing-profile', function () {
           }
         }
       ]
+      global.pageSize = 50
       const result = await req.post()
       assert.strictEqual(result.redirect, '/account/subscriptions')
     })

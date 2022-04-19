@@ -23,7 +23,7 @@
               <th translate="yes">Subscription</th>
               <th translate="yes">Billing period</th>
               <th translate="yes">Charge date</th>
-              <th translate="yes">Total</th>
+              <th translate="yes" class="right">Total</th>
               <th translate="yes">Status</th>
             </tr>
           </thead>
@@ -40,9 +40,10 @@
       <tr id="${invoice.id}">
         <td><a href="/account/subscriptions/invoice?invoiceid=${invoice.id}">${invoice.id}</a></td>
         <td><a href="/account/subscriptions/subscription?subscriptionid=${invoice.subscription}">${invoice.subscription}</a></td>
-        <td>${invoice.lines.data[invoice.lines.data.length - 1].period.startFormatted} - ${invoice.lines.data[invoice.lines.data.length - 1].period.endFormatted}</td>
+        <td>${invoice.periodStartFormatted} - ${invoice.periodEndFormatted}</td>
         <td>${invoice.createdAtFormatted}</td>
-        <td>${invoice.amountFormatted}</td>
+        <td id="total-${invoice.id}" class="right">${invoice.totalFormatted} ${invoice.currency}</td>
+        <td id="no-total-${invoice.id}" class="right">-</td>
         <td id="paid-${invoice.id}">Paid</td>
         <td id="open-${invoice.id}">Waiting payment</td>
       </tr>

@@ -49,7 +49,7 @@ function renderPage (req, res, messageTemplate) {
     const existingContainer = doc.getElementById('existing-container')
     existingContainer.parentNode.removeChild(existingContainer)
   }
-  return res.end(doc.toString())
+  return dashboard.Response.end(req, res, doc)
 }
 
 async function submitForm (req, res) {
@@ -69,6 +69,9 @@ async function submitForm (req, res) {
       if (req.data.plan.amount && (!customer.invoice_settings || !customer.invoice_settings.default_payment_method)) {
         return renderPage(req, res, 'invalid-paymentmethodid')
       }
+      if (req.data.plan.amount) {
+        req.body.paymentmethodid = customer.invoice_settings.default_payment_method
+      }
       break
     }
   }
@@ -77,6 +80,7 @@ async function submitForm (req, res) {
   }
   req.query.customerid = req.body.customerid
   req.body.planid = req.query.planid
+
   try {
     await global.api.user.subscriptions.CreateSubscription.post(req)
     return dashboard.Response.redirect(req, res, '/home')

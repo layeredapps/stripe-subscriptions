@@ -20,21 +20,13 @@
         <div class="input-fields">
           <label class="field-label" for="source" translate="yes">New plan</label> 
           <div class="field">
-            <select id="planid" name="planid">
-              <option value="" translate="yes">
-                Select plan
-              </option>
-            </select>
+            <div id="planid"></div>
           </div>
         </div>
         <div id="payment-method-container" class="input-fields">
           <label class="field-label" for="source" translate="yes">Payment method</label>
           <div class="field">
-            <select id="paymentmethodid" name="paymentmethodid">
-              <option value="" translate="yes">
-                Select payment method
-              </option>
-            </select>
+            <div id="paymentmethodid"></div>
           </div>
         </div>
         <div class="button-group spaced-buttons">
@@ -43,14 +35,20 @@
       </form>
     </div>
     <template id="plan-option-template">
-      <option value="${plan.planid}">
-        ${plan.planid}
-      </option>
+      <div>
+        <label value="${plan.planid}">
+          <input type="radio" value="${plan.planid}" id="${plan.planid}" name="planid" />
+          ${plan.planid}
+        </label>
+      </div>
     </template>
     <template id="payment-method-option-template">
-      <option value="${payment_method.id}">
-        ${payment_method.id}
-      </option>
+      <div>
+        <label value="${payment_method.id}">
+          <input type="radio" value="${payment_method.id}" id="${payment_method.id}" name="paymentmethodid" />
+          ${payment_method.card.brand} last 4 digits ${payment_method.card.last4} expiring ${payment_method.card.exp_month} / ${payment_method.card.exp_year}
+        </label>
+      </div>
     </template>
     <template id="plan-name-template">
       <span>${plan.planid}</span>

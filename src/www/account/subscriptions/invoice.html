@@ -19,6 +19,18 @@
             <td><a href="/account/subscriptions/invoice?invoiceid=${invoice.id}">${invoice.id}</a></td>
           </tr>
           <tr>
+            <th translate="yes">Amount</th>
+            <td>${invoice.amountFormatted} ${invoice.currency}</td>
+          </tr>
+          <tr>
+            <th translate="yes">Amount paid</th>
+            <td>${invoice.amountPaidFormatted} ${invoice.currency}</td>
+          </tr>
+          <tr>
+            <th translate="yes">Amount due</th>
+            <td>${invoice.amountDueFormatted} ${invoice.currency}</td>
+          </tr>
+          <tr>
             <th translate="yes">Quantity</th>
             <td>${invoice.quantity || 1}</td>
           </tr>
@@ -28,7 +40,11 @@
           </tr>
           <tr>
             <th translate="yes">Period</th>
-            <td>${invoice.amountFormatted}</td>
+            <td>${invoice.periodStartFormatted} - ${invoice.periodEndFormatted}</td>
+          </tr>
+          <tr>
+            <th translate="yes">Created</th>
+            <td>${invoice.createdAtFormatted}</td>
           </tr>
         </tbody>
       </table>
@@ -71,9 +87,9 @@
             <tr>
               <th>ID</th>
               <th translate="yes">Quantity</th>
-              <th translate="yes">Plan</th>
+              <th translate="yes">Description</th>
               <th translate="yes">Period</th>
-              <th translate="yes">Amount</th>
+              <th translate="yes" class="right">Amount</th>
             </tr>
           </thead>
         </table>
@@ -84,19 +100,17 @@
         <td>${line_item.id}</td>
         <td>${line_item.quantity}</td>
         <td>${line_item.description}</td>
-        <td>${line_item.startFormatted} - ${line_item.endFormatted}</td>
-        <td>${line_item.amountFormatted}</td>
+        <td>${line_item.period.startFormatted} - ${line_item.period.endFormatted}</td>
+        <td class="right">${line_item.amountFormatted}</td>
       </tr>
     </template>
     <template id="charge-row">
       <tr id="${charge.id}">
-        <td>
-          <a href="/account/subscriptions/charge?chargeid=${charge.id}">${charge.id}</a>
-        </td>
+        <td>${charge.id}</td>
         <td>${charge.payment_method_details.card.brand} ${charge.payment_method_details.card.last4}</td>
         <td>${charge.statement_descriptor}</td>
         <td>${charge.amountFormatted}</td>
-        <td>${charge.dateFormatted}</td>
+        <td>${charge.createdAtFormatted}</td>
       </tr>
     </template>
     <template id="refund-row">

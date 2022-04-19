@@ -42,6 +42,7 @@ describe('/account/subscriptions/pay-invoice', function () {
     cachedResponses.returns = await req2.get()
     await req.route.api.before(req)
     cachedResponses.before = req.data
+    global.pageSize = 50
     cachedResponses.submit = await req.post()
     const user2 = await TestHelper.createUser()
     req2.account = user2.account

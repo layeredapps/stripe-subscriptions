@@ -38,6 +38,7 @@ describe('/account/subscriptions/subscription', function () {
     ]
     await req.route.api.before(req)
     cachedResponses.before = req.data
+    global.pageSize = 50
     cachedResponses.returns = await req.get()
     const user2 = await TestHelper.createUser()
     req.account = user2.account

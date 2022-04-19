@@ -1,6 +1,5 @@
 const dashboard = require('@layeredapps/dashboard')
-const statuses = ['active', 'trialing', 'past_due', 'canceled', 'unpaid']
-const intervals = ['day', 'week', 'month', 'year']
+const statuses = ['active', 'trialing', 'past_due', 'canceling', 'canceled', 'unpaid']
 const formatStripeObject = require('../../../stripe-object.js')
 
 module.exports = {
@@ -16,6 +15,16 @@ async function beforeRequest (req) {
     for (const i in customers) {
       const customer = formatStripeObject(customers[i])
       customers[i] = customer
+      if (customer.invoice_settings.default_payment_method) {
+        req.query.paymentmethodid = customer.invoice_settings.default_payment_method
+        const paymentMethod = await global.api.user.subscriptions.PaymentMethod.get(req)
+        customer.paymentMethod = formatStripeObject(paymentMethod)
+      } else {
+        customer.paymentMethod = {
+          card: {
+          }
+        }
+      }
     }
   }
   delete (req.query.customerid)
@@ -27,7 +36,7 @@ async function beforeRequest (req) {
       req.query.planid = subscription.planid
       const planRaw = await global.api.user.subscriptions.PublishedPlan.get(req)
       const plan = formatStripeObject(planRaw)
-      if (!plan.amount || subscription.status !== 'active' || subscription.cancel_at_period_end) {
+      if (!plan.amount || subscription.status === 'canceled' || subscription.cancel_at_period_end) {
         subscription.nextChargeFormatted = '-'
       } else {
         subscription.nextChargeFormatted = dashboard.Format.date(subscription.current_period_end)
@@ -63,22 +72,12 @@ async function renderPage (req, res) {
       if (subscription.status === 'active') {
         if (subscription.cancel_at_period_end) {
           removeElements.push(`active-subscription-${subscription.id}`)
-        } else {
-          removeElements.push(`canceling-subscription-${subscription.id}`)
         }
-      } else if (subscription.status === 'canceled') {
-        removeElements.push(`canceling-subscription-${subscription.id}`)
       }
-      for (const interval of intervals) {
-        if (interval !== subscription.plan.interval) {
-          removeElements.push(`${interval}-multiple-interval-${subscription.id}`, `${interval}-singular-interval-${subscription.id}`)
-        } else {
-          if (subscription.quantity < 2) {
-            removeElements.push(`${interval}-multiple-interval-${subscription.id}`)
-          } else {
-            removeElements.push(`${interval}-singular-interval-${subscription.id}`)
-          }
-        }
+      if (subscription.plan.amount) {
+        removeElements.push(`free-plan-${subscription.planid}`)
+      } else {
+        removeElements.push(`amount-plan-${subscription.planid}`)
       }
     }
     removeElements.push('no-subscriptions')
@@ -88,12 +87,15 @@ async function renderPage (req, res) {
   if (req.data.invoices && req.data.invoices.length) {
     dashboard.HTML.renderTable(doc, req.data.invoices, 'invoice-row', 'invoices-table')
     for (const invoice of req.data.invoices) {
-      if (invoice.status === 'open') {
-        const paid = doc.getElementById(`paid-${invoice.id}`)
-        paid.parentNode.removeChild(paid)
+      if (invoice.total) {
+        removeElements.push(`no-total-${invoice.id}`)
       } else {
-        const open = doc.getElementById(`open-${invoice.id}`)
-        open.parentNode.removeChild(open)
+        removeElements.push(`total-${invoice.id}`)
+      }
+      if (invoice.status === 'open') {
+        removeElements.push(`paid-${invoice.id}`)
+      } else {
+        removeElements.push(`open-${invoice.id}`)
       }
     }
     removeElements.push('no-invoices')
@@ -102,15 +104,19 @@ async function renderPage (req, res) {
   }
   if (req.data.customers && req.data.customers.length) {
     dashboard.HTML.renderTable(doc, req.data.customers, 'customer-row', 'customers-table')
+    for (const customer of req.data.customers) {
+      if (!customer.paymentMethod.id) {
+        removeElements.push(`has-payment-method-brand-${customer.id}`, `has-payment-method-last4-${customer.id}`, `has-payment-method-expiration-${customer.id}`)
+      } else {
+        removeElements.push(`no-payment-method-${customer.id}`)
+      }
+    }
     removeElements.push('no-customers')
   } else {
     removeElements.push('customers-table')
   }
   for (const id of removeElements) {
     const element = doc.getElementById(id)
-    if (!element.parentNode) {
-      throw new Error('error removing element ' + id)
-    }
     element.parentNode.removeChild(element)
   }
   return dashboard.Response.end(req, res, doc)

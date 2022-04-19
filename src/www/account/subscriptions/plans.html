@@ -39,8 +39,10 @@
           <a href="/account/subscriptions/plan?planid=${plan.planid}">${plan.planid}</a>
         </td>
         <td>${plan.planid}</td>
-        <td>${plan.price}</td>
-        <td>${plan.trial_period_days}</td>
+        <td id="amount-plan-${plan.planid}">${plan.amountFormatted}${plan.currency} x ${plan.interval}</td>
+        <td id="free-plan-${plan.planid}">Free</td>
+        <td id="trial-plan-${plan.planid}">${plan.trial_period_days} days</td>
+        <td id="no-trial-plan-${plan.planid}">None</td>
       </tr>
     </template>
   </body>

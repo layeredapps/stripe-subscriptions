@@ -3,29 +3,52 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8" /> 
-    <title translate="yes">View customer</title>
+    <title translate="yes">View billing profile</title>
     <link rel="stylesheet" href="/public/content.css">
     <link rel="stylesheet" href="/public/content-additional.css">
     <base href="/" target="_top">
   </head>
   <body>
     <div class="container">
-      <h1 translate="yes">View customer</h1>
+      <h1 translate="yes">View billing profile</h1>
       <table id="customers-table" class="data-table">
         <tbody id="${customer.id}">
+          <tr>
+            <th translate="yes">Description</th>
+            <td>${customer.description}</td>
+          </tr>
           <tr>
             <th translate="yes">Email</th>
             <td>${customer.email}</td>
           </tr>
-          <tr>
+          <tr id="no-payment-method">
+            <th translate="yes">Payment method</th>
+            <td>
+              None
+              <a class="small-button" href="/account/subscriptions/add-payment-method?customerid=${customer.id}">Add payment method</a>
+            </td>
+          </tr>
+          <tr id="payment-method-brand">
+            <th translate="yes">Card</th>
+            <td>${customer.paymentMethod.card.brand}</td>
+          </tr>
+          <tr id="payment-method-last4">
+            <th translate="yes">Last 4</th>
+            <td>${customer.paymentMethod.card.last4}</td>
+          </tr>
+          <tr id="payment-method-expiration">
+            <th translate="yes">Expires</th>
+            <td>${customer.paymentMethod.card.exp_month} / ${customer.paymentMethod.card.exp_year}</td>
+          </tr>
+          <tr id="has-discount">
             <th translate="yes">Discount</th>
             <td>${customer.discount}</td>
           </tr>
-          <tr>
+          <tr id="has-balance">
             <th translate="yes">Account balance</th>
             <td>${customer.accountBalanceFormatted}</td>
           </tr>
-          <tr>
+          <tr id="is-delinquent">
             <th translate="yes">Delinquent amount</th>
             <td>${customer.delinquentFormatted}</td>
           </tr>
@@ -39,6 +62,68 @@
           </tr>
         </tbody>
       </table>
+      <h3>Subscriptions</h3>
+      <div id="no-subscriptions">
+        <p translate="yes">This billing profile has no subscriptions.</p>
+      </div>
+      <div class="list-table-wrapper">
+        <table id="subscriptions-table" class="list-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th translate="yes">Plan</th>
+              <th translate="yes">Price</th>
+              <th translate="yes">Started</th>
+              <th translate="yes">Next charge</th>
+              <th translate="yes">Status</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <h3>Invoices</h3>
+      <div id="no-invoices">
+        <p translate="yes">This billing profile has no invoices.</p>
+      </div>
+      <div class="list-table-wrapper">
+        <table id="invoices-table" class="list-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th translate="yes">Subscription</th>
+              <th translate="yes">Billing period</th>
+              <th translate="yes">Charge date</th>
+              <th translate="yes">Total</th>
+              <th translate="yes">Status</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
     </div>
+    <template id="subscription-row">
+      <tr id="${subscription.subscriptionid}">
+        <td><a href="/account/subscriptions/subscription?subscriptionid=${subscription.subscriptionid}">${subscription.subscriptionid}</a></td>
+        <td>${subscription.planid}</td>
+        <td>${subscription.amountFormatted} ${subscription.currency}</td>
+        <td>${subscription.createdAtFormatted}</td>
+        <td>${subscription.nextChargeFormatted}</td>
+        <td id="active-subscription-${subscription.subscriptionid}">Active</td>
+        <td id="canceling-subscription-${subscription.subscriptionid}">Active (canceling)</td>
+        <td id="trialing-subscription-${subscription.subscriptionid}">Trial ending ${subscription.trialEndFormatted}</td>
+        <td id="past_due-subscription-${subscription.subscriptionid}">Past due</td>
+        <td id="canceled-subscription-${subscription.subscriptionid}">Canceled</td>
+        <td id="unpaid-subscription-${subscription.subscriptionid}">Unpaid</td>
+      </tr>
+    </template>
+    <template id="invoice-row">
+      <tr id="${invoice.id}">
+        <td><a href="/account/subscriptions/invoice?invoiceid=${invoice.id}">${invoice.id}</a></td>
+        <td><a href="/account/subscriptions/subscription?subscriptionid=${invoice.subscription}">${invoice.subscription}</a></td>
+        <td>${invoice.lines.data[invoice.lines.data.length - 1].period.startFormatted} - ${invoice.lines.data[invoice.lines.data.length - 1].period.endFormatted}</td>
+        <td>${invoice.createdAtFormatted}</td>
+        <td>${invoice.amountFormatted}</td>
+        <td id="paid-${invoice.id}">Paid</td>
+        <td id="open-${invoice.id}">Waiting payment</td>
+      </tr>
+    </template>
   </body>
 </html>

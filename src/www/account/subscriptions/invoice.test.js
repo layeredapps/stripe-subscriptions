@@ -38,6 +38,7 @@ describe('/account/subscriptions/invoice', function () {
     ]
     await req1.route.api.before(req1)
     cachedResponses.before = req1.data
+    global.pageSize = 50
     cachedResponses.returns = await req1.get()
     const user2 = await TestHelper.createUser()
     const req2 = TestHelper.createRequest(`/account/subscriptions/invoice?invoiceid=${user.invoice.invoiceid}`)
