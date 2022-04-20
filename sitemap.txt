@@ -1,4 +1,4 @@
-@layeredapps/dashboard 0.0.42
+@layeredapps/dashboard 0.0.45
 http://localhost:8000
 
 Administrator menu:
@@ -15,7 +15,7 @@ Special HTML files:
 @layeredapps/dashboard/redirect.html
 
 Dashboard modules:
-@layeredapps/maxmind-geoip (1.0.14)
+@layeredapps/maxmind-geoip (1.0.15)
 
 Server handlers:
 /src/server/stripe-subscriptions/bind-stripekey.js
