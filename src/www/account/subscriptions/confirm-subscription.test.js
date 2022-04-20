@@ -102,7 +102,7 @@ describe('/account/subscriptions/confirm-subscription', function () {
           }
         }
       },
-      { 
+      {
         fill: '#submit-form',
         body: {
           planid: publishedPlan.planid,

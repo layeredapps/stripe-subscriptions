@@ -53,7 +53,7 @@ describe('/account/subscriptions/request-refund', function () {
       { click: `/account/subscriptions/invoice?invoiceid=${user.invoice.invoiceid}` },
       { click: `/account/subscriptions/request-refund?invoiceid=${user.invoice.invoiceid}` },
       { fill: '#submit-form' }
-    ]    
+    ]
     req2.body = {
       reason: 'this is a reason'
     }
