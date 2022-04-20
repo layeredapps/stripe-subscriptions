@@ -58,6 +58,7 @@ jobs:
         GENERATE_ENV_TXT: true
         STRIPE_KEY: ${{ secrets.SUBSCRIPTIONS_STRIPE_KEY }}
         STRIPE_PUBLISHABLE_KEY: ${{ secrets.SUBSCRIPTIONS_STRIPE_PUBLISHABLE_KEY }}
+        SUBSCRIPTIONS_WEBHOOK_ENDPOINT_SECRET: replaced-at-runtime
     - name: Publish to Github
       uses: stefanzweifel/git-auto-commit-action@v4.1.6
       with:
