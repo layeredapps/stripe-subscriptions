@@ -1,4 +1,4 @@
-@layeredapps/dashboard 0.0.46
+@layeredapps/dashboard 0.0.47
 http://localhost:8000
 
 |------------------------------------------------------------------------------|
@@ -1191,3 +1191,6 @@ http://localhost:8000
 | optional querystring ending_before (string)   |                       |  * invalid querystring subscriptionitemid  |                        |
 | optional querystring limit (integer)          |                       |                                            |                        |
 |-----------------------------------------------|-----------------------|--------------------------------------------|------------------------|
+
+
+2022-04-20T21:40:43.933Z
