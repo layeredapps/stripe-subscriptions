@@ -1,26 +1,28 @@
 (async () => {
   if (!process.env.SUBSCRIPTIONS_WEBHOOK_ENDPOINT_SECRET) {
-    const stripeKey = {
-      apiKey: process.env.SUBSCRIPTIONS_STRIPE_KEY || process.env.STRIPE_KEY
-    }
-    const stripe = require('stripe')({
-      apiVersion: global.stripeAPIVersion
-    })
-    if (global.maxmimumStripeRetries) {
-      stripe.setMaxNetworkRetries(global.maximumStripeRetries)
-    }
-    const webhooks = await stripe.webhookEndpoints.list({ limit: 100 }, stripeKey)
-    if (webhooks && webhooks.data && webhooks.data.length) {
-      for (const webhook of webhooks.data) {
-        await stripe.webhookEndpoints.del(webhook.id, stripeKey)
+    if (!process.env.EXIT_ON_START) {
+      const stripeKey = {
+        apiKey: process.env.SUBSCRIPTIONS_STRIPE_KEY || process.env.STRIPE_KEY
       }
+      const stripe = require('stripe')({
+        apiVersion: global.stripeAPIVersion
+      })
+      if (global.maxmimumStripeRetries) {
+        stripe.setMaxNetworkRetries(global.maximumStripeRetries)
+      }
+      const webhooks = await stripe.webhookEndpoints.list({ limit: 100 }, stripeKey)
+      if (webhooks && webhooks.data && webhooks.data.length) {
+        for (const webhook of webhooks.data) {
+          await stripe.webhookEndpoints.del(webhook.id, stripeKey)
+        }
+      }
+      const webhook = await stripe.webhookEndpoints.create({
+        url: `${process.env.DASHBOARD_SERVER}/webhooks/subscriptions/index-subscription-data`,
+        enabled_events: enabledEvents
+      }, stripeKey)
+      global.subscriptionWebhookEndPointSecret = webhook.secret
+      delete (process.env.DASHBOARD_SERVER)
     }
-    const webhook = await stripe.webhookEndpoints.create({
-      url: `${process.env.DASHBOARD_SERVER}/webhooks/subscriptions/index-subscription-data`,
-      enabled_events: enabledEvents
-    }, stripeKey)
-    global.subscriptionWebhookEndPointSecret = webhook.secret
-    delete (process.env.DASHBOARD_SERVER)
   }
   const dashboard = require('@layeredapps/dashboard')
   await dashboard.start(__dirname)
