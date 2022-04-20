@@ -1,5 +1,13 @@
 # Documentation for Stripe Subscriptions
 
+#### Shortcuts
+
+- [Documentation website](https://layeredapps.github.io)
+- [Module documentation](https://layeredapps.github.io/stripe-subscriptions-module)
+- [UI screenshots](https://layeredapps.github.io/stripe-subscriptions-ui)
+- [API documentation](https://layeredapps.github.io/stripe-subscriptions-api)
+- [Environment configuration](https://layeredapps.github.io/stripe-subscriptions-configuration)
+
 #### Index
 
 - [Introduction](#introduction)
