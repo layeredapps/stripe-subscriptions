@@ -53,12 +53,9 @@ jobs:
       env:
         NODE_ENV: testing
         EXIT_ON_START: true
-        STRIPE_KEY: ${{ secrets.SUBSCRIPTIONS_STRIPE_KEY }}
-        STRIPE_PUBLISHABLE_KEY: ${{ secrets.SUBSCRIPTIONS_STRIPE_PUBLISHABLE_KEY }}
-        STRIPE_JS: false
-        SUBSCRIPTIONS_WEBHOOK_ENDPOINT_SECRET: replaced-at-runtime
-        NGROK: true
-        DISABLE_PAYOUT_TESTS: true
+        GENERATE_SITEMAP_TXT: true
+        GENERATE_API_TXT: true
+        GENERATE_ENV_TXT: true
     - name: Publish to Github
       uses: stefanzweifel/git-auto-commit-action@v4.1.6
       with:
