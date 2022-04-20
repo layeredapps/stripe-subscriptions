@@ -174,7 +174,7 @@
     before
       ✔ should bind data to req
     view
-      ✔ should have row for each invoice
+      ✔ should have row for each invoice (screenshots)
       ✔ should have row for each customer
       ✔ should have row for each subscription
 
@@ -235,6 +235,12 @@
     submit
       ✔ should cancel subscription (screenshots)
 
+  /account/subscriptions/refund
+    before
+      ✔ should bind data to req
+    view
+      ✔ should present the refund table (screenshots)
+
   /account/subscriptions/refunds
     before
       ✔ should bind data to req
@@ -253,6 +259,25 @@
       ✔ should present the form
     submit
       ✔ should create refund request (screenshots)
+
+  /account/subscriptions/restore-subscription
+    exceptions
+      ✔ should reject missing subscription
+      ✔ should reject invalid subscription
+      ✔ should reject non-canceled subscription
+      ✔ should reject other account's subscription
+    before
+      ✔ should bind data to req
+    view
+      ✔ should present the form
+    submit
+      ✔ should restore subscription (screenshots)
+
+  /account/subscriptions
+    before
+      ✔ should bind data to req
+    view
+      ✔ should have option for each plan (screenshots)
 
   /account/subscriptions/subscription
     exceptions
@@ -2044,5 +2069,5 @@
       ✔ environment PAGE_SIZE
 
 
-  977 passing (2h)
+  988 passing (2h)
 
