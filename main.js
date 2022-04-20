@@ -18,9 +18,7 @@
     const webhook = await stripe.webhookEndpoints.create({
       url: `${process.env.DASHBOARD_SERVER}/webhooks/subscriptions/index-subscription-data`,
       enabled_events: enabledEvents
-    }, {
-      apiKey: process.env.SUBSCRIPTIONS_STRIPE_KEY || process.env.STRIPE_KEY
-    })
+    }, stripeKey)
     global.subscriptionWebhookEndPointSecret = webhook.secret
     delete (process.env.DASHBOARD_SERVER)
   }

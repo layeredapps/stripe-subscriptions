@@ -56,6 +56,8 @@ jobs:
         GENERATE_SITEMAP_TXT: true
         GENERATE_API_TXT: true
         GENERATE_ENV_TXT: true
+        STRIPE_KEY: ${{ secrets.SUBSCRIPTIONS_STRIPE_KEY }}
+        STRIPE_PUBLISHABLE_KEY: ${{ secrets.SUBSCRIPTIONS_STRIPE_PUBLISHABLE_KEY }}
     - name: Publish to Github
       uses: stefanzweifel/git-auto-commit-action@v4.1.6
       with:
