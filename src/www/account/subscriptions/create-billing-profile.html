@@ -32,15 +32,27 @@
         </div>
         <div class="input-fields">
           <label class="field-label" translate="yes">Card number</label>
-          <div id="card-container" class="field"></div>
+          <div class="field">
+            <div class="normal-field">
+              <div id="card-container"></div>
+            </div>
+          </div>
         </div>
         <div class="input-fields">
           <label class="field-label" for="cvc">CVC</label>
-          <div id="cvc-container" class="field"></div>
+          <div class="field">
+            <div class="tiny-field">
+              <div id="cvc-container"></div>
+            </div>
+          </div>
         </div>
         <div class="input-fields">
           <label class="field-label" for="mm" translate="yes">Expiry</label>
-          <div id="expiry-container" class="field"></div>
+          <div class="field">
+            <div class="tiny-field">
+              <div id="expiry-container"></div>
+            </div>
+          </div>
         </div>
         <div class="input-fields">
           <label class="field-label" for="name" translate="yes">Name on card</label>
@@ -78,7 +90,11 @@
         </div>
         <div class="input-fields">
           <label class="field-label" translate="yes">Postal code</label>
-          <div id="zip-container" class="field"></div>
+          <div class="field">
+            <div class="tiny-field">
+              <div id="zip-container"></div>
+            </div>
+          </div>
         </div>
         <div class="input-fields">
           <label class="field-label" for="address_country" translate="yes">Country</label>
@@ -117,20 +133,26 @@
         <div class="input-fields">
           <label class="field-label" for="cvc">CVC</label>
           <div class="field">
-            <input name="cvc" required="" id="cvc" type="text" maxlength="3">
+            <div class="tiny-field">
+              <input name="cvc" required="" id="cvc" type="text" maxlength="3">
+            </div>
           </div>
         </div>
         <div class="input-fields">
           <label class="field-label" for="mm" translate="yes">Expiry</label>
           <div class="field">
-            <input name="exp_month" required="" placeholder="MM" id="exp_month" type="text" maxlength="2">
-            <input name="exp_year" required="" placeholder="YY" id="exp_year" type="text" maxlength="2">
+            <div class="tiny-field">
+              <input name="exp_month" required="" placeholder="MM" id="exp_month" type="text" maxlength="2">
+              <input name="exp_year" required="" placeholder="YY" id="exp_year" type="text" maxlength="2">
+            </div>
           </div>
         </div>
         <div class="input-fields">
           <label class="field-label" for="name" translate="yes">Name on card</label>
           <div class="field">
-            <input required="" id="name" name="name" type="text" maxlength="1000">
+            <div class="normal-field">
+              <input required="" id="name" name="name" type="text" maxlength="1000">
+            </div>
           </div>
         </div>
         <div class="input-fields">
@@ -164,7 +186,9 @@
         <div id="zip-container" class="input-fields">
           <label class="field-label" for="address_zip">ZIP</label>
           <div class="field">
-            <input id="address_zip" name="address_zip" type="text" maxlength="1000">
+            <div class="tiny-field">
+              <input id="address_zip" name="address_zip" type="text" maxlength="1000">
+            </div>
           </div>
         </div>
         <div class="input-fields">
@@ -175,7 +199,7 @@
             </select>
           </div>
         </div>
-        <div class="form-buttons">
+        <div class="form-buttons spaced-buttons">
           <button class="button" id="submit-button" class="button" type="submit" translate="yes">Save profile</button>
           <button class="button" type="submit" name="refresh" value="true">Change country</button>
         </div>
