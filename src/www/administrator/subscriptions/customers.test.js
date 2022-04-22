@@ -63,8 +63,8 @@ describe('/administrator/subscriptions/customers', function () {
 
   describe('view', () => {
     it('should return one page (screenshots)', async function () {
-      global.pageSize = 50
       await bundledData(this.test.currentRetry())
+      global.pageSize = 50
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('customers-table')
