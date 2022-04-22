@@ -1,1 +1,14 @@
-.StripeElement { padding: 0.5rem; border-radius: 0.25rem; border: none; background-color: rgba(0, 0, 0, 0.125); color: #2F365F }
+.StripeElement { padding: 0.5rem; border-radius: 0.25rem; border: none; background-color: -var(--stripe-element-background-color); color: var(--stripe-element-text-color) }
+
+/* color settings */
+:root {
+  --stripe-element-background-color: rgba(0, 0, 0, 0.125);
+  --stripe-element-text-color: #2F365F;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --stripe-element-background-color: rgba(255, 255, 255, 0.25);
+    --stripe-element-text-color: rgba(247, 241, 237, 0.75);
+  }
+}
