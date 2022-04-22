@@ -43,7 +43,11 @@ function renderPage (req, res, messageTemplate) {
   if (req.data.customers && req.data.customers.length) {
     dashboard.HTML.renderList(doc, req.data.customers, 'customer-option', 'customerid')
     if (req.body) {
-      dashboard.HTML.setSelectedOptionByValue(doc, 'customerid', req.body.customerid)
+      const checked = doc.getElementById(req.body.customerid)
+      checked.setAttribute('checked', true)
+    } else {
+      const checked = doc.getElementById(req.data.customers[0].customerid)
+      checked.setAttribute('checked', true)
     }
   } else {
     const existingContainer = doc.getElementById('existing-container')
