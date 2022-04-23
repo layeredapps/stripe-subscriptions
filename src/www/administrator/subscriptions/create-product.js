@@ -18,11 +18,11 @@ function renderPage (req, res, messageTemplate) {
   }
   if (req.body) {
     const nameField = doc.getElementById('name')
-    nameField.setAttribute('value', (req.body.name || '').split("'").join('&quot;'))
+    nameField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.name || ''))
     const statementDescriptorField = doc.getElementById('statement_descriptor')
-    statementDescriptorField.setAttribute('value', (req.body.statement_descriptor || '').split("'").join('&quot;'))
+    statementDescriptorField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.statement_descriptor || ''))
     const unitLabelField = doc.getElementById('unit_label')
-    unitLabelField.setAttribute('value', (req.body.unit_label || '').split("'").join('&quot;'))
+    unitLabelField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.unit_label || ''))
   }
   return dashboard.Response.end(req, res, doc)
 }

@@ -66,7 +66,7 @@ async function renderPage (req, res, messageTemplate) {
       if (!element || element.tag !== 'input') {
         continue
       }
-      element.setAttribute('value', (req.body[field]).split("'").join('&quot;'))
+      element.setAttribute('value', dashboard.Format.replaceQuotes(req.body[field]))
     }
   }
   return dashboard.Response.end(req, res, doc)
