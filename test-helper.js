@@ -168,6 +168,7 @@ const enabledEvents = [
   // 'subscription_schedule.updated'
 ]
 
+const path = require('path')
 const util = require('util')
 const TestHelper = require('@layeredapps/dashboard/test-helper.js')
 const TestHelperPuppeteer = require('@layeredapps/dashboard/test-helper-puppeteer.js')
@@ -293,11 +294,11 @@ let webhookRotation = 0
 
 async function setupBeforeEach () {
   global.packageJSON.dashboard.serverFilePaths.push(
-    `${__dirname}/src/server/bind-stripekey.js`,
+    path.join(__dirname, '/src/server/bind-stripekey.js'),
     require.resolve('@layeredapps/maxmind-geoip/src/server/bind-country.js')
   )
   global.packageJSON.dashboard.server.push(
-    require(`${__dirname}/src/server/bind-stripekey.js`),
+    require(path.join(__dirname, '/src/server/bind-stripekey.js')),
     require('@layeredapps/maxmind-geoip/src/server/bind-country.js')
   )
   await subscriptions.Storage.flush()
