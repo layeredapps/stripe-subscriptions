@@ -264,7 +264,7 @@ module.exports = {
 }
 
 for (const x in TestHelper) {
-  module.exports[x] = TestHelper[x]
+  module.exports[x] = module.exports[x] || TestHelper[x]
 }
 
 module.exports.wait = wait
@@ -292,6 +292,14 @@ async function setupBefore () {
 let webhookRotation = 0
 
 async function setupBeforeEach () {
+  global.packageJSON.dashboard.serverFilePaths.push(
+    `${__dirname}/src/server/bind-stripekey.js`,
+    require.resolve('@layeredapps/maxmind-geoip/src/server/bind-country.js')
+  )
+  global.packageJSON.dashboard.server.push(
+    require(`${__dirname}/src/server/bind-stripekey.js`),
+    require('@layeredapps/maxmind-geoip/src/server/bind-country.js')
+  )
   await subscriptions.Storage.flush()
   global.webhooks = []
   percentOff = 0

@@ -4,12 +4,7 @@
     "modules": [
       "@layeredapps/maxmind-geoip"
     ],
-    "server": [
-      "/src/server/stripe-subscriptions/bind-stripekey.js",
-      "/src/server/stripe-subscriptions/require-payment-confirmation.js",
-      "/src/server/stripe-subscriptions/require-payment.js",
-      "/src/server/stripe-subscriptions/require-subscription.js"
-    ]
+    "server": []
   },
   "peerDependencies": {
     "@layeredapps/dashboard": "latest"
