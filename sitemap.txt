@@ -1,4 +1,4 @@
-@layeredapps/dashboard 0.0.55
+@layeredapps/dashboard 0.0.58
 http://localhost:8000
 
 Administrator menu:
@@ -15,14 +15,7 @@ Special HTML files:
 @layeredapps/dashboard/redirect.html
 
 Dashboard modules:
-@layeredapps/maxmind-geoip (1.0.16)
-
-Server handlers:
-/src/server/stripe-subscriptions/bind-stripekey.js
-/src/server/stripe-subscriptions/require-payment-confirmation.js
-/src/server/stripe-subscriptions/require-payment.js
-/src/server/stripe-subscriptions/require-subscription.js
-/src/server/maxmind-geoip/bind-country.js
+@layeredapps/maxmind-geoip (1.0.18)
 
 URL -------------------------------------------------------------- AUTH - TEMPLATE - HTTP REQUESTS - NODEJS ----------------------- HTML ---------------------
 /                                                                  GUEST  FULLSCREEN                 static-page                    /src/www                  
@@ -331,4 +324,4 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /home                                                                                                static-page                    /src/www                  
 /webhooks/subscriptions/index-subscription-data                    GUEST             POST            /src/www                       /src/www                  
 
-2022-04-23T08:21:38.387Z
+2022-04-24T03:21:46.463Z
