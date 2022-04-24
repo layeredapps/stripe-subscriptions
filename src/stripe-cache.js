@@ -63,6 +63,10 @@ function formatError (error, group) {
     switch (error.raw.code) {
       case 'invoice_upcoming_none':
         return 'invalid-subscription'
+      case 'resource_already_exists':
+        if (error.raw.message === 'Coupon already exists.') {
+          return 'duplicate-couponid'
+        }
     }
   }
   return 'unknown-error'

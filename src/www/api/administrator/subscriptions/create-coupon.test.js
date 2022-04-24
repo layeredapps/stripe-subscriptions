@@ -24,7 +24,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
         assert.strictEqual(errorMessage, 'invalid-couponid')
       })
 
-      it('invalid posted couponid is not alphanumeric_', async () => {
+      it('invalid posted couponid is not alphanumeric', async () => {
         const administrator = await TestHelper.createOwner()
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-coupon')
         req.account = administrator.account
@@ -41,6 +41,32 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
           errorMessage = error.message
         }
         assert.strictEqual(errorMessage, 'invalid-couponid')
+      })
+    })
+
+    describe('duplicate-couponid', () => {
+      it('invalid posted couponid is already used', async () => {
+        const administrator = await TestHelper.createOwner()
+        await TestHelper.createCoupon(administrator, {
+          couponid: 'save10percent',
+          percent_off: '10',
+          duration: 'once'
+        })
+        const req = TestHelper.createRequest('/api/administrator/subscriptions/create-coupon')
+        req.account = administrator.account
+        req.session = administrator.session
+        req.body = {
+          couponid: 'save10percent',
+          percent_off: '10',
+          duration: 'once'
+        }
+        let errorMessage
+        try {
+          await req.post()
+        } catch (error) {
+          errorMessage = error.message
+        }
+        assert.strictEqual(errorMessage, 'duplicate-couponid')
       })
     })
 
