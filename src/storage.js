@@ -798,9 +798,9 @@ module.exports = async () => {
         await Customer.destroy({ where: {} })
         await Dispute.destroy({ where: {} })
         await Invoice.destroy({ where: {} })
-        await Payout.destroy({ where: {} })
         await PaymentIntent.destroy({ where: {} })
         await PaymentMethod.destroy({ where: {} })
+        await Payout.destroy({ where: {} })
         await Plan.destroy({ where: {} })
         await Product.destroy({ where: {} })
         await Refund.destroy({ where: {} })
@@ -814,12 +814,12 @@ module.exports = async () => {
     Coupon,
     Customer,
     Dispute,
+    Invoice,
     PaymentIntent,
     PaymentMethod,
     Payout,
     Plan,
     Product,
-    Invoice,
     Refund,
     SetupIntent,
     Subscription,
