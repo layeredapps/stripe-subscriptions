@@ -398,7 +398,7 @@ async function createProduct (administrator, properties) {
   req.session = administrator.session
   req.account = administrator.account
   req.body = {
-    name: `product${productNumber}_` + new Date().getTime() + '_' + Math.ceil(Math.random() * 1000),
+    name: `product${productNumber}`,
     statement_descriptor: `product${productNumber} description`,
     unit_label: 'thing'
   }
@@ -425,7 +425,7 @@ async function createPlan (administrator, properties) {
   req.session = administrator.session
   req.account = administrator.account
   req.body = {
-    planid: `plan${planNumber}_` + new Date().getTime() + '_' + Math.ceil(Math.random() * 100000),
+    planid: `plan${planNumber}`,
     currency: 'USD',
     interval: 'month',
     interval_count: '1',
@@ -447,6 +447,7 @@ async function createPlan (administrator, properties) {
   return plan
 }
 
+let couponNumber = 0
 let percentOff = 0
 async function createCoupon (administrator, properties) {
   const req = createRequest('/api/administrator/subscriptions/create-coupon')
@@ -458,23 +459,20 @@ async function createCoupon (administrator, properties) {
       req.body[property] = properties[property].toString()
     }
   }
+  couponNumber++
   if (!req.body.percent_off && !req.body.amount_off) {
-    percentOff += 5
+    percentOff++
+    if (percentOff === 100) {
+      percentOff = 1
+    }
     if (Math.random() < 0.5) {
       req.body.percent_off = percentOff.toString()
-      req.body.couponid = req.body.couponid || `COUPON${req.body.percent_off}PERCENT`
     } else {
       req.body.amount_off = percentOff.toString()
       req.body.currency = 'USD'
-      req.body.couponid = req.body.couponid || `DISCOUNT${req.body.amount_off}`
     }
-  } else if (!req.body.couponid) {
-    if (req.body.percent_off) {
-      req.body.couponid = `COUPON${req.body.percent_off}PERCENT`
-    } else {
-      req.body.couponid = `DISCOUNT${req.body.amount_off}`
-    }
-  }
+  } 
+  req.body.couponid = req.body.couponid || `COUPON${couponNumber}`
   if (Math.random() < 0.5) {
     req.body.max_redemptions = Math.ceil(100 + (Math.random() * 100)).toString()
   }
