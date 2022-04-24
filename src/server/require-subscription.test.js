@@ -2,8 +2,8 @@
 const assert = require('assert')
 const dashboard = require('@layeredapps/dashboard')
 const RequireSubscription = require('./require-subscription.js')
-const TestHelper = require('../../../test-helper.js')
-const TestStripeAccounts = require('../../../test-stripe-accounts.js')
+const TestHelper = require('../../test-helper.js')
+const TestStripeAccounts = require('../../test-stripe-accounts.js')
 
 describe('server/stripe-subscriptions/require-subscription', function () {
   describe('after', () => {
