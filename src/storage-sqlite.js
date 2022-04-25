@@ -1,4 +1,5 @@
 const { Sequelize } = require('sequelize')
+const Log = require('@layeredapps/dashboard/src/log.js')('sequelize-stripe-subscriptions-sqlite')
 
 module.exports = async () => {
   const prefixedDatabaseFile = process.env.SUBSCRIPTIONS_SQLITE_DATABASE_FILE || process.env.SQLITE_DATABASE_FILE
@@ -8,7 +9,9 @@ module.exports = async () => {
     sequelize = new Sequelize(prefixedDatabaseName || 'subscriptions', '', '', {
       storage: prefixedDatabaseFile,
       dialect: 'sqlite',
-      logging: false,
+      logging: (sql) => {
+        return Log.info(sql)
+      },
       pool: {
         max: process.env.SUBSCRIPTIONS_MAX_CONNECTIONS || process.env.MAX_CONNECTIONS || 10,
         min: 0,
@@ -18,7 +21,9 @@ module.exports = async () => {
   } else {
     sequelize = new Sequelize('sqlite::memory', {
       dialect: 'sqlite',
-      logging: false,
+      logging: (sql) => {
+        return Log.info(sql)
+      },
       pool: {
         max: process.env.SUBSCRIPTIONS_MAX_CONNECTIONS || process.env.MAX_CONNECTIONS || 10,
         min: 0,

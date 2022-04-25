@@ -172,7 +172,7 @@ const path = require('path')
 const util = require('util')
 const TestHelper = require('@layeredapps/dashboard/test-helper.js')
 const TestHelperPuppeteer = require('@layeredapps/dashboard/test-helper-puppeteer.js')
-const Log = require('@layeredapps/dashboard/src/log.js')('stripe-subscriptions')
+const Log = require('@layeredapps/dashboard/src/log.js')('test-helper-stripe-subscriptions')
 const ngrok = require('ngrok')
 const packageJSON = require('./package.json')
 const stripe = require('stripe')({
@@ -279,6 +279,7 @@ let webhook, subscriptions
 
 // direct webhook access is set up before the tests a single time
 async function setupBefore () {
+  Log.info('setupBefore')
   subscriptions = require('./index.js')
   await subscriptions.setup()
   await deleteOldWebhooks(true)
@@ -293,6 +294,7 @@ async function setupBefore () {
 let webhookRotation = 0
 
 async function setupBeforeEach () {
+  Log.info('setupBeforeEach')
   global.packageJSON.dashboard.serverFilePaths.push(
     path.join(__dirname, '/src/server/bind-stripekey.js'),
     require.resolve('@layeredapps/maxmind-geoip/src/server/bind-country.js')
@@ -304,22 +306,28 @@ async function setupBeforeEach () {
   await subscriptions.Storage.flush()
   global.webhooks = []
   await deleteOldData()
-  await rotateWebhook()
+  await rotateWebhook(true)
+  planNumber = 0
+  productNumber = 0
+  couponNumber = 0
 }
 
 async function rotateWebhook (remake) {
+  Log.info('rotateWebhook', remake)
   if (!global.webhooks) {
     global.webhooks = []
+    return setupWebhook()
   } else if (global.webhooks.length) {
     webhookRotation += global.webhooks.length
     if (remake || webhookRotation >= 10) {
       webhookRotation = 0
-      await setupWebhook()
+      return setupWebhook()
     }
   }
 }
 
 async function setupWebhook () {
+  Log.info('setupWebhook')
   webhook = null
   while (!webhook) {
     try {
@@ -345,6 +353,7 @@ before(setupBefore)
 beforeEach(setupBeforeEach)
 
 afterEach(async () => {
+  Log.info('afterEach')
   await subscriptions.Storage.flush()
   await deleteOldData()
   if (global.webhooks.length) {
@@ -353,6 +362,7 @@ afterEach(async () => {
 })
 
 after(async () => {
+  Log.info('after')
   await deleteOldData()
   await deleteOldWebhooks()
   await ngrok.kill()
@@ -361,6 +371,7 @@ after(async () => {
 })
 
 async function deleteOldWebhooks () {
+  Log.info('deleteOldWebhooks')
   webhook = null
   try {
     const webhooks = await stripe.webhookEndpoints.list({ limit: 100 }, stripeKey)
@@ -377,22 +388,28 @@ async function deleteOldWebhooks () {
 }
 
 async function deleteOldData () {
+  Log.info('deleteOldData')
   for (const field of ['subscriptions', 'customers', 'plans', 'products', 'coupons']) {
     try {
       const objects = await stripe[field].list({ limit: 100 }, stripeKey)
       if (objects && objects.data && objects.data.length) {
         for (const object of objects.data) {
-          await stripe[field].del(object.id, stripeKey)
+          try {
+            await stripe[field].del(object.id, stripeKey)
+          } catch (error) {
+            Log.error('delete old data item error', object.id, error)
+          }
         }
       }
     } catch (error) {
-      Log.error('delete old data error', field, error)
+      Log.error('delete old data list error', field, error)
     }
   }
 }
 
 let productNumber = 0
 async function createProduct (administrator, properties) {
+  Log.info('createProduct', administrator, properties)
   productNumber++
   const req = createRequest('/api/administrator/subscriptions/create-product')
   req.session = administrator.session
@@ -420,6 +437,7 @@ async function createProduct (administrator, properties) {
 
 let planNumber = 0
 async function createPlan (administrator, properties) {
+  Log.info('createPlan', administrator, properties)
   planNumber++
   const req = createRequest('/api/administrator/subscriptions/create-plan')
   req.session = administrator.session
@@ -450,6 +468,7 @@ async function createPlan (administrator, properties) {
 let couponNumber = 0
 let percentOff = 0
 async function createCoupon (administrator, properties) {
+  Log.info('createCoupon', administrator, properties)
   couponNumber++
   const req = createRequest('/api/administrator/subscriptions/create-coupon')
   req.session = administrator.session
@@ -497,6 +516,7 @@ async function createCoupon (administrator, properties) {
 }
 
 async function createRefund (administrator, chargeid) {
+  Log.info('createRefund', administrator, chargeid)
   const req = createRequest(`/api/administrator/subscriptions/charge?chargeid=${chargeid}`)
   req.session = administrator.session
   req.account = administrator.account
@@ -518,6 +538,7 @@ async function createRefund (administrator, chargeid) {
 }
 
 async function createSubscriptionDiscount (administrator, subscription, coupon) {
+  Log.info('createSubscriptionDiscount', administrator, subscription, coupon)
   const req = createRequest(`/api/administrator/subscriptions/set-subscription-coupon?subscriptionid=${subscription.subscriptionid}`)
   req.session = administrator.session
   req.account = administrator.account
@@ -536,6 +557,7 @@ async function createSubscriptionDiscount (administrator, subscription, coupon) 
 }
 
 async function deleteSubscriptionDiscount (administrator, subscription, coupon) {
+  Log.info('deleteSubscriptionDiscount', administrator, subscription, coupon)
   const req = createRequest(`/api/administrator/subscriptions/reset-subscription-coupon?subscriptionid=${subscription.subscriptionid}`)
   req.session = administrator.session
   req.account = administrator.account
@@ -547,6 +569,7 @@ async function deleteSubscriptionDiscount (administrator, subscription, coupon) 
 }
 
 async function createCustomerDiscount (administrator, customer, coupon) {
+  Log.info('createCustomerDiscount', administrator, customer, coupon)
   const req = createRequest(`/api/administrator/subscriptions/set-customer-coupon?customerid=${customer.customerid}`)
   req.session = administrator.session
   req.account = administrator.account
@@ -561,6 +584,7 @@ async function createCustomerDiscount (administrator, customer, coupon) {
 }
 
 async function deleteCustomerDiscount (administrator, customer, coupon) {
+  Log.info('deleteCustomerDiscount', administrator, customer, coupon)
   const req = createRequest(`/api/administrator/subscriptions/reset-customer-coupon?customerid=${customer.customerid}`)
   req.session = administrator.session
   req.account = administrator.account
@@ -572,6 +596,7 @@ async function deleteCustomerDiscount (administrator, customer, coupon) {
 }
 
 async function createCustomer (user, properties) {
+  Log.info('createCustomer', user, properties)
   const req = createRequest(`/api/user/subscriptions/create-customer?accountid=${user.account.accountid}`)
   req.session = user.session
   req.account = user.account
@@ -581,6 +606,7 @@ async function createCustomer (user, properties) {
 }
 
 async function createSetupIntent (user, properties) {
+  Log.info('createSetupIntent', user, properties)
   const req = createRequest(`/api/user/subscriptions/create-setup-intent?customerid=${user.customer.customerid}`)
   req.account = user.account
   req.session = user.session
@@ -590,6 +616,7 @@ async function createSetupIntent (user, properties) {
 }
 
 async function createPaymentIntent (user, properties) {
+  Log.info('createPaymentIntent', user, properties)
   const req = createRequest(`/api/user/subscriptions/create-payment-intent?customerid=${user.customer.customerid}`)
   req.account = user.account
   req.session = user.session
@@ -602,6 +629,7 @@ async function createPaymentIntent (user, properties) {
 }
 
 async function createUsageRecord (user, quantity) {
+  Log.info('createUsageRecord', user, quantity)
   const req = createRequest(`/api/user/subscriptions/create-usage-record?subscriptionid=${user.subscription.subscriptionid}`)
   req.session = user.session
   req.account = user.account
@@ -615,6 +643,7 @@ async function createUsageRecord (user, quantity) {
 }
 
 async function createPaymentMethod (user, properties) {
+  Log.info('createPaymentMethod', user, properties)
   const req = createRequest(`/api/user/subscriptions/create-payment-method?customerid=${user.customer.customerid}`)
   req.account = user.account
   req.session = user.session
@@ -643,6 +672,7 @@ async function createPaymentMethod (user, properties) {
 }
 
 async function createAmountOwed (user, dueDate) {
+  Log.info('createAmountOwed', user, dueDate)
   const req = createRequest(`/api/fake-amount-owed?customerid=${user.customer.customerid}&due_date=${(dueDate || 0).toString()}`)
   req.session = user.session
   req.account = user.account
@@ -664,6 +694,7 @@ async function createAmountOwed (user, dueDate) {
 }
 
 async function changeSubscription (user, planid) {
+  Log.info('changeSubscription', user, planid)
   const req = createRequest(`/api/user/subscriptions/set-subscription-plan?subscriptionid=${user.subscription.subscriptionid}`)
   req.session = user.session
   req.account = user.account
@@ -705,6 +736,7 @@ async function changeSubscription (user, planid) {
 }
 
 async function changeSubscriptionQuantity (user, quantity) {
+  Log.info('changeSubscriptionQuantity', user, quantity)
   const req = createRequest(`/api/user/subscriptions/set-subscription-quantity?subscriptionid=${user.subscription.subscriptionid}`)
   req.session = user.session
   req.account = user.account
@@ -751,6 +783,7 @@ async function changeSubscriptionQuantity (user, quantity) {
 }
 
 async function createSubscription (user, planid) {
+  Log.info('createSubscription', user, planid)
   const req = createRequest(`/api/user/subscriptions/create-subscription?customerid=${user.customer.customerid}`)
   req.session = user.session
   req.account = user.account
@@ -765,6 +798,7 @@ async function createSubscription (user, planid) {
 }
 
 async function cancelSubscription (user) {
+  Log.info('cancelSubscription', user)
   const req = createRequest(`/api/user/subscriptions/set-subscription-canceled?subscriptionid=${user.subscription.subscriptionid}`)
   req.session = user.session
   req.account = user.account
@@ -774,6 +808,7 @@ async function cancelSubscription (user) {
 }
 
 async function setPlanPublished (administrator, plan) {
+  Log.info('setPlanPublished', administrator, plan)
   const req = createRequest(`/api/administrator/subscriptions/set-plan-published?planid=${plan.planid}`)
   req.session = administrator.session
   req.account = administrator.account
@@ -782,6 +817,7 @@ async function setPlanPublished (administrator, plan) {
 }
 
 async function setPlanUnpublished (administrator, plan) {
+  Log.info('setPlanUnpublished', administrator, plan)
   const req = createRequest(`/api/administrator/subscriptions/set-plan-unpublished?planid=${plan.planid}`)
   req.session = administrator.session
   req.account = administrator.account
@@ -790,6 +826,7 @@ async function setPlanUnpublished (administrator, plan) {
 }
 
 async function setProductPublished (administrator, product) {
+  Log.info('setProductPublished', administrator, product)
   const req = createRequest(`/api/administrator/subscriptions/set-product-published?productid=${product.productid}`)
   req.session = administrator.session
   req.account = administrator.account
@@ -798,6 +835,7 @@ async function setProductPublished (administrator, product) {
 }
 
 async function setProductUnpublished (administrator, product) {
+  Log.info('setProductUnpublished', administrator, product)
   const req = createRequest(`/api/administrator/subscriptions/set-product-unpublished?productid=${product.productid}`)
   req.session = administrator.session
   req.account = administrator.account
@@ -806,6 +844,7 @@ async function setProductUnpublished (administrator, product) {
 }
 
 async function setCouponPublished (administrator, coupon) {
+  Log.info('setCouponPublished', administrator, coupon)
   const req = createRequest(`/api/administrator/subscriptions/set-coupon-published?couponid=${coupon.couponid}`)
   req.session = administrator.session
   req.account = administrator.account
@@ -814,6 +853,7 @@ async function setCouponPublished (administrator, coupon) {
 }
 
 async function setCouponUnpublished (administrator, coupon) {
+  Log.info('setCouponUnpublished', administrator, coupon)
   const req = createRequest(`/api/administrator/subscriptions/set-coupon-unpublished?couponid=${coupon.couponid}`)
   req.session = administrator.session
   req.account = administrator.account
@@ -822,6 +862,7 @@ async function setCouponUnpublished (administrator, coupon) {
 }
 
 async function deleteSubscription (user, refund) {
+  Log.info('deleteSubscription', user, refund)
   if (refund) {
     const req = createRequest(`/api/user/subscriptions/create-cancelation-refund?subscriptionid=${user.subscription.subscriptionid}`)
     req.session = user.session
@@ -847,6 +888,7 @@ async function deleteSubscription (user, refund) {
 }
 
 async function forgiveInvoice (administrator, invoiceid) {
+  Log.info('forgiveInvoice', administrator, invoiceid)
   const req = createRequest(`/api/administrator/subscriptions/set-invoice-uncollectible?invoiceid=${invoiceid}`)
   req.session = administrator.session
   req.account = administrator.account
@@ -860,6 +902,7 @@ async function forgiveInvoice (administrator, invoiceid) {
 }
 
 async function denyRefund (administrator, user, chargeid) {
+  Log.info('denyRefund', administrator, user, chargeid)
   const req = createRequest(`/api/administrator/subscriptions/set-refund-request-denied?chargeid=${chargeid}`)
   req.session = administrator.session
   req.account = administrator.account
@@ -871,6 +914,7 @@ async function denyRefund (administrator, user, chargeid) {
 }
 
 async function requestRefund (user, chargeid) {
+  Log.info('requestRefund', user, chargeid)
   const req = createRequest(`/api/user/subscriptions/create-refund-request?chargeid=${chargeid}`)
   req.session = user.session
   req.account = user.account
@@ -882,6 +926,7 @@ async function requestRefund (user, chargeid) {
 }
 
 async function flagCharge (administrator, chargeid) {
+  Log.info('flagCharge', administrator, chargeid)
   const req = createRequest(`/api/administrator/subscriptions/set-charge-flagged?chargeid=${chargeid}`)
   req.session = administrator.session
   req.account = administrator.account
@@ -890,6 +935,7 @@ async function flagCharge (administrator, chargeid) {
 }
 
 async function createPayout (administrator) {
+  Log.info('createPayout', administrator)
   const req = createRequest('/api/create-fake-payout')
   req.session = administrator.session
   req.account = administrator.account
@@ -911,6 +957,7 @@ async function createPayout (administrator) {
 }
 
 async function toggleRefunds (user, enable) {
+  Log.info('toggleRefunds', user, enable)
   const req = createRequest(`/api/toggle-refunds?enable=${enable || ''}`)
   req.session = user.session
   req.account = user.account
@@ -918,6 +965,9 @@ async function toggleRefunds (user, enable) {
 }
 
 async function toggleOverdueInvoiceThreshold (user, enable) {
+  Log.info('toggleOverdueInvoiceThreshold', user, enable)
   const req = createRequest(`/api/toggle-overdue-invoice-threshold?enable=${enable || ''}`)
+  req.session = user.session
+  req.account = user.account
   await req.get()
 }

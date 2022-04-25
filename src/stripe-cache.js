@@ -60,13 +60,13 @@ function formatError (error, group) {
     }
   }
   if (error.raw && error.raw.code) {
-    switch (error.raw.code) {
-      case 'invoice_upcoming_none':
-        return 'invalid-subscription'
-      case 'resource_already_exists':
-        if (error.raw.message === 'Coupon already exists.') {
-          return 'duplicate-couponid'
-        }
+    if (error.raw.code === 'invoice_upcoming_none') {
+      return 'invalid-subscription'
+    }
+  }
+  if (error.raw && error.raw.message) {
+    if (error.raw.message === 'Coupon already exists.') {
+      return 'duplicate-couponid'
     }
   }
   return 'unknown-error'
@@ -91,6 +91,7 @@ function execute (group, method, p1, p2, p3, p4, p5, callback) {
       p1 = null
     }
   }
+  Log.info('stripe query', group, method, p1, p2, p3, p4, p5)
   if (p5) {
     return stripe[group][method](p1, p2, p3, p4, p5, (error, result) => {
       if (!error) {
