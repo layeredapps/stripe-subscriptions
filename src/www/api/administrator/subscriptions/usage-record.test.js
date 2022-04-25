@@ -43,7 +43,7 @@ describe('/api/administrator/subscriptions/usage-record', () => {
         amount: 1000
       })
       const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
-      await TestHelper.createUsageRecord(administrator, user, 100)
+      await TestHelper.createUsageRecord(user, 100)
       const req = TestHelper.createRequest(`/api/administrator/subscriptions/usage-record?usagerecordid=${user.usageRecord.stripeObject.id}`)
       req.account = administrator.account
       req.session = administrator.session

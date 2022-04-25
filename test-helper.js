@@ -601,7 +601,7 @@ async function createPaymentIntent (user, properties) {
   return user.paymentIntent
 }
 
-async function createUsageRecord (administrator, user, quantity) {
+async function createUsageRecord (user, quantity) {
   const req = createRequest(`/api/user/subscriptions/create-usage-record?subscriptionid=${user.subscription.subscriptionid}`)
   req.session = user.session
   req.account = user.account

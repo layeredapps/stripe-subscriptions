@@ -26,7 +26,7 @@ describe('/api/administrator/subscriptions/usage-records', function () {
     let accountUser
     for (let i = 0, len = global.pageSize; i < len; i++) {
       const user = accountUser = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
-      await TestHelper.createUsageRecord(administrator, user, 100)
+      await TestHelper.createUsageRecord(user, 100)
       cachedUsageRecords.unshift(user.usageRecord.usagerecordid)
     }
     await TestHelper.createCustomer(accountUser, {
@@ -48,10 +48,10 @@ describe('/api/administrator/subscriptions/usage-records', function () {
       default: 'true'
     })
     await TestHelper.createSubscription(accountUser, administrator.plan.planid)
-    await TestHelper.createUsageRecord(administrator, accountUser, 100)
+    await TestHelper.createUsageRecord(accountUser, 100)
     cachedUsageRecords.unshift(accountUser.usageRecord.usagerecordid)
     await TestHelper.wait(1100)
-    await TestHelper.createUsageRecord(administrator, accountUser, 100)
+    await TestHelper.createUsageRecord(accountUser, 100)
     cachedUsageRecords.unshift(accountUser.usageRecord.usagerecordid)
     const req1 = TestHelper.createRequest('/api/administrator/subscriptions/usage-records?offset=1')
     req1.account = administrator.account
