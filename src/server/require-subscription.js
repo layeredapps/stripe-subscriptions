@@ -2,9 +2,6 @@ const dashboard = require('@layeredapps/dashboard')
 
 module.exports = {
   after: async (req, res) => {
-    if (!global.requireSubscription) {
-      return
-    }
     if (!req.account || !req.session) {
       return
     }

@@ -7,9 +7,6 @@ global.minimumProductNameLength = parseInt(process.env.MINIMUM_PRODUCT_NAME_LENG
 global.maximumProductNameLength = parseInt(process.env.MAXIMUM_PRODUCT_NAME_LENGTH || '50', 10)
 global.subscriptionRefundPeriod = parseInt(process.env.SUBSCRIPTION_REFUND_PERIOD || '604800', 10)
 global.maximumStripeRetries = parseInt(process.env.MAXIMUM_STRIPE_RETRIES || '0', 10)
-global.requireSubscription = process.env.REQUIRE_SUBSCRIPTION === 'true'
-global.requirePayment = process.env.REQUIRE_PAYMENT === 'true'
-global.requirePaymentConfirmation = process.env.REQUIRE_PAYMENT_CONFIRMATION === 'true'
 global.overdueInvoiceThreshold = parseInt(process.env.OVERDUE_INVOICE_THRESHOLD || '1', 10)
 global.startSubscriptionPath = process.env.START_SUBSCRIPTION_PATH || '/account/subscriptions/start-subscription'
 global.stripeAPIVersion = '2020-08-27'

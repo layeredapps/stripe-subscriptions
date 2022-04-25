@@ -7,8 +7,6 @@ const properties = [
   { camelCase: 'subscriptionWebhookEndPointSecret', raw: 'SUBSCRIPTIONS_WEBHOOK_ENDPOINT_SECRET', description: 'Secret provided by Stripe to sign webhooks', value: 'wh_sec_xxx', valueDescription: 'String', noDefaultValue: true },
   { camelCase: 'stripeKey', raw: 'STRIPE_KEY', description: 'The `sk_test_xxx` key from Stripe', value: 'sk_test_xxx', valueDescription: 'String', noDefaultValue: true },
   { camelCase: 'stripePublishableKey', raw: 'STRIPE_PUBLISHABLE_KEY', description: 'The `pk_test_xxx` key from Stripe', value: 'pk_test_xxx', valueDescription: 'String', noDefaultValue: true }, { camelCase: 'requireSubscription', raw: 'REQUIRE_SUBSCRIPTION', description: 'Users must create subscription to access application', value: 'true', default: '', valueDescription: 'Boolean' },
-  { camelCase: 'requirePayment', raw: 'REQUIRE_PAYMENT', description: 'Users must resolve unpaid invoices to access application', value: 'true', default: '', valueDescription: 'Boolean' },
-  { camelCase: 'requirePaymentConfirmation', raw: 'REQUIRE_PAYMENT_CONFIRMATION', description: 'Users must resolve payment confirmations to access application', value: 'true', default: '', valueDescription: 'Boolean' },
   { camelCase: 'overdueInvoiceThreshold', raw: 'OVERDUE_INVOICE_THRESHOLD', description: 'Duration in days to allow open invoices before enforcing payment', value: '6', default: '1', valueDescription: 'Integer' },
   { camelCase: 'startSubscriptionPath', raw: 'START_SUBSCRIPTION_PATH', description: 'Alternate URL path to your start subscription flow', value: '/start-subscription', default: '/account/subscriptions/start-subscription', valueDescription: 'String' }
 ]

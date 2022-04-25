@@ -50,15 +50,6 @@ You will need to retrieve various keys from [Stripe](https://stripe.com).  Durin
     - environment STRIPE_PUBLISHABLE_KEY=pk_test_xxxxxxx
     - environment SUBSCRIPTIONS_WEBHOOK_ENDPOINT_SECRET=whsec_xxxxxxxx
 
-## Requiring subscriptions
-
-Environment variables are documented in Dashboard and each module's `/start-dev.sh`.
-
-You can require subscriptions and no overdue invoices through environment variables:
-
-    REQUIRE_SUBSCRIPTION=true
-    REQUIRE_PAYMENT=true
-
 ### Configuring your products and plans
 
 This module adds a complete interface for creating products and plans.  Stripe's nomenclature and structure is used directly so for more information refer to the <a href="https://stripe.com/docs">Stripe documentation</a> and <a href="https://stripe.com/docs/api">Stripe API documentation</a>.
