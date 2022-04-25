@@ -48,7 +48,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
       it('invalid posted couponid is already used', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createCoupon(administrator, {
-          couponid: 'save10percent',
+          couponid: 'CUSTOM1',
           percent_off: '10',
           duration: 'once'
         })
@@ -56,7 +56,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          couponid: 'save10percent',
+          couponid: 'CUSTOM1',
           percent_off: '10',
           duration: 'once'
         }
@@ -77,7 +77,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+          couponid: 'CUSTOM2',
           amount_off: '',
           percent_off: ''
         }
@@ -96,7 +96,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+          couponid: 'CUSTOM3',
           amount_off: 'invalid',
           percent_off: ''
         }
@@ -117,7 +117,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+          couponid: 'CUSTOM4',
           amount_off: '1',
           currency: ''
         }
@@ -136,7 +136,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+          couponid: 'CUSTOM5',
           amount_off: '1',
           currency: 'invalid'
         }
@@ -157,7 +157,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+          couponid: 'CUSTOM6',
           percent_off: 'invalid'
         }
         let errorMessage
@@ -168,7 +168,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
         }
         assert.strictEqual(errorMessage, 'invalid-percent_off')
         req.body = {
-          couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+          couponid: 'CUSTOM7',
           percent_off: '101'
         }
         errorMessage = null
@@ -188,7 +188,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+          couponid: 'CUSTOM8',
           amount_off: '10',
           currency: 'usd',
           duration: 'invalid'
@@ -210,7 +210,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+          couponid: 'CUSTOM9',
           amount_off: '10',
           currency: 'usd',
           duration: 'repeating',
@@ -231,7 +231,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+          couponid: 'CUSTOM10',
           amount_off: '10',
           currency: 'usd',
           duration: 'repeating',
@@ -256,7 +256,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+          couponid: 'CUSTOM11',
           amount_off: '10',
           currency: 'usd',
           duration: 'repeating',
@@ -281,7 +281,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+        couponid: 'CUSTOM12',
         amount_off: '10',
         currency: 'usd',
         duration: 'repeating',
@@ -299,7 +299,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+        couponid: 'CUSTOM13',
         amount_off: '10',
         currency: 'usd',
         duration: 'once'
@@ -316,7 +316,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+        couponid: 'CUSTOM14',
         amount_off: '10',
         currency: 'aud',
         duration: 'once'
@@ -333,7 +333,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+        couponid: 'CUSTOM15',
         percent_off: '10',
         currency: 'usd',
         duration: 'once'
@@ -353,7 +353,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+        couponid: 'CUSTOM16',
         percent_off: '10',
         currency: 'usd',
         duration: 'once',
@@ -371,7 +371,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+        couponid: 'CUSTOM17',
         percent_off: '10',
         currency: 'usd',
         duration: 'repeating',
@@ -391,7 +391,7 @@ describe('/api/administrator/subscriptions/create-coupon', () => {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        couponid: 'coupon' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+        couponid: 'CUSTOM18',
         amount_off: '10',
         currency: 'usd',
         duration: 'once'

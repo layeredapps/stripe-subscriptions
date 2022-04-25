@@ -39,7 +39,7 @@ describe('/api/administrator/subscriptions/set-customer-coupon', function () {
       duration: 'repeating',
       duration_in_months: '3'
     })
-    // missing and invalid id
+    // missing and invalid customer id
     const req = TestHelper.createRequest('/api/administrator/subscriptions/set-customer-coupon')
     req.account = administrator.account
     req.session = administrator.session

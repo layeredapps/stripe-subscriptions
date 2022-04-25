@@ -79,7 +79,7 @@ describe('/administrator/subscriptions/edit-plan', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        planid: 'plan' + new Date().getTime(),
+        planid: 'PLAN1',
         productid: ''
       }
       const result = await req.post()

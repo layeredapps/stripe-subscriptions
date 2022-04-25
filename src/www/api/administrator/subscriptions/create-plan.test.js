@@ -98,7 +98,7 @@ describe('/api/administrator/subscriptions/create-plan', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          planid: 'plan' + new Date().getTime() + 'r' + Math.ceil(Math.random() * '1000'),
+          planid: 'CUSTOM1',
           currency: 'usd',
           amount: '1000',
           interval: 'month',
@@ -124,7 +124,7 @@ describe('/api/administrator/subscriptions/create-plan', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          planid: 'plan' + new Date().getTime() + 'r' + Math.ceil(Math.random() * '1000'),
+          planid: 'CUSTOM2',
           currency: 'usd',
           amount: '1000',
           interval: 'month',
@@ -150,7 +150,7 @@ describe('/api/administrator/subscriptions/create-plan', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          planid: 'plan' + new Date().getTime() + 'r' + Math.ceil(Math.random() * '1000'),
+          planid: 'CUSTOM3',
           currency: 'usd',
           amount: '1000',
           interval: 'month',
@@ -178,7 +178,7 @@ describe('/api/administrator/subscriptions/create-plan', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          planid: 'plan' + new Date().getTime() + 'r' + Math.ceil(Math.random() * '1000'),
+          planid: 'CUSTOM4',
           currency: 'usd',
           amount: '',
           interval: 'month',
@@ -204,7 +204,7 @@ describe('/api/administrator/subscriptions/create-plan', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          planid: 'plan' + new Date().getTime() + 'r' + Math.ceil(Math.random() * '1000'),
+          planid: 'CUSTOM5',
           currency: 'usd',
           amount: 'invalid',
           interval: 'month',
@@ -232,7 +232,7 @@ describe('/api/administrator/subscriptions/create-plan', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          planid: 'plan' + new Date().getTime() + 'r' + Math.ceil(Math.random() * '1000'),
+          planid: 'CUSTOM6',
           currency: '',
           amount: '1000',
           interval: 'month',
@@ -258,7 +258,7 @@ describe('/api/administrator/subscriptions/create-plan', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          planid: 'plan' + new Date().getTime() + 'r' + Math.ceil(Math.random() * '1000'),
+          planid: 'CUSTOM7',
           currency: 'invalid',
           amount: '1000',
           interval: 'month',
@@ -286,7 +286,7 @@ describe('/api/administrator/subscriptions/create-plan', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          planid: 'plan' + new Date().getTime() + 'r' + Math.ceil(Math.random() * '1000'),
+          planid: 'CUSTOM8',
           currency: 'usd',
           amount: '1000',
           interval: '',
@@ -312,7 +312,7 @@ describe('/api/administrator/subscriptions/create-plan', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          planid: 'plan' + new Date().getTime() + 'r' + Math.ceil(Math.random() * '1000'),
+          planid: 'CUSTOM9',
           currency: 'usd',
           amount: '1000',
           interval: 'invalid',
@@ -340,7 +340,7 @@ describe('/api/administrator/subscriptions/create-plan', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          planid: 'plan' + new Date().getTime() + 'r' + Math.ceil(Math.random() * '1000'),
+          planid: 'CUSTOM10',
           currency: 'usd',
           amount: '1000',
           interval: 'month',
@@ -366,7 +366,7 @@ describe('/api/administrator/subscriptions/create-plan', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          planid: 'plan' + new Date().getTime() + 'r' + Math.ceil(Math.random() * '1000'),
+          planid: 'CUSTOM11',
           currency: 'usd',
           amount: '1000',
           interval: 'month',
@@ -394,7 +394,7 @@ describe('/api/administrator/subscriptions/create-plan', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          planid: 'plan' + new Date().getTime() + 'r' + Math.ceil(Math.random() * '1000'),
+          planid: 'CUSTOM12',
           currency: 'usd',
           amount: '1000',
           interval: 'month',
@@ -422,7 +422,7 @@ describe('/api/administrator/subscriptions/create-plan', () => {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          planid: 'plan' + new Date().getTime() + 'r' + Math.ceil(Math.random() * '1000'),
+          planid: 'CUSTOM13',
           currency: 'usd',
           amount: '1000',
           interval: 'month',
@@ -452,7 +452,7 @@ describe('/api/administrator/subscriptions/create-plan', () => {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        planid: 'plan' + new Date().getTime() + 'r' + Math.ceil(Math.random() * '1000'),
+        planid: 'CUSTOM14',
         currency: 'usd',
         amount: '1000',
         interval: 'month',
@@ -475,7 +475,7 @@ describe('/api/administrator/subscriptions/create-plan', () => {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        planid: 'plan' + new Date().getTime() + 'r' + Math.ceil(Math.random() * '1000'),
+        planid: 'CUSTOM15',
         currency: 'usd',
         amount: '1000',
         interval: 'month',
@@ -496,7 +496,7 @@ describe('/api/administrator/subscriptions/create-plan', () => {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        planid: 'plan' + new Date().getTime() + 'r' + Math.ceil(Math.random() * '1000'),
+        planid: 'CUSTOM16',
         currency: 'usd',
         amount: '1000',
         interval: 'month',
@@ -520,7 +520,7 @@ describe('/api/administrator/subscriptions/create-plan', () => {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        planid: 'plan' + new Date().getTime() + 'r' + Math.ceil(Math.random() * '1000'),
+        planid: 'CUSTOM17',
         currency: 'usd',
         amount: '1000',
         interval: 'month',
@@ -536,7 +536,7 @@ describe('/api/administrator/subscriptions/create-plan', () => {
   })
 
   describe('configuration', () => {
-    it('environment MINIMUM_PLANID_LENGTH', async () => {
+    it('environment MINIMUM_CUSTOMID_LENGTH', async () => {
       global.minimumPlanIDLength = 100
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
@@ -546,7 +546,7 @@ describe('/api/administrator/subscriptions/create-plan', () => {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        planid: 'this',
+        planid: 'tooshort',
         currency: 'usd',
         amount: '1000',
         interval: 'month',
@@ -563,7 +563,7 @@ describe('/api/administrator/subscriptions/create-plan', () => {
       assert.strictEqual(errorMessage, 'invalid-planid-length')
     })
 
-    it('environment MAXIMUM_PLANID_LENGTH', async () => {
+    it('environment MAXIMUM_CUSTOMID_LENGTH', async () => {
       global.maximumPlanIDLength = 1
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
@@ -573,7 +573,7 @@ describe('/api/administrator/subscriptions/create-plan', () => {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        planid: 'that',
+        planid: 'toolong',
         currency: 'usd',
         amount: '1000',
         interval: 'month',

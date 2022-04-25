@@ -76,7 +76,7 @@ describe('/administrator/subscriptions/create-plan', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        planid: 'plan' + new Date().getTime(),
+        planid: 'CUSTOM1',
         usage_type: 'licensed',
         amount: '100',
         interval: 'month',
@@ -98,7 +98,7 @@ describe('/administrator/subscriptions/create-plan', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        planid: 'plan' + new Date().getTime(),
+        planid: 'CUSTOM2',
         usage_type: 'licensed',
         amount: '100',
         interval: 'month',
@@ -123,7 +123,7 @@ describe('/administrator/subscriptions/create-plan', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        planid: 'plan' + new Date().getTime(),
+        planid: 'CUSTOM3',
         usage_type: 'licensed',
         amount: '100',
         interval: 'month',
@@ -147,7 +147,7 @@ describe('/administrator/subscriptions/create-plan', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        planid: 'plan' + new Date().getTime(),
+        planid: 'CUSTOM4',
         usage_type: 'licensed',
         amount: '100',
         interval: 'month',
@@ -171,7 +171,7 @@ describe('/administrator/subscriptions/create-plan', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        planid: 'plan' + new Date().getTime(),
+        planid: 'CUSTOM5',
         usage_type: 'licensed',
         amount: '100',
         interval: 'month',
@@ -195,7 +195,7 @@ describe('/administrator/subscriptions/create-plan', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        planid: 'plan' + new Date().getTime(),
+        planid: 'CUSTOM6',
         usage_type: '',
         amount: '100',
         interval: 'month',
@@ -219,7 +219,7 @@ describe('/administrator/subscriptions/create-plan', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        planid: 'plan' + new Date().getTime(),
+        planid: 'CUSTOM7',
         usage_type: 'licensed',
         amount: '',
         interval: 'month',
@@ -243,7 +243,7 @@ describe('/administrator/subscriptions/create-plan', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        planid: 'plan' + new Date().getTime(),
+        planid: 'CUSTOM8',
         usage_type: 'licensed',
         amount: '-1',
         interval: 'month',
@@ -267,7 +267,7 @@ describe('/administrator/subscriptions/create-plan', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        planid: 'plan' + new Date().getTime(),
+        planid: 'CUSTOM9',
         usage_type: 'licensed',
         amount: '100',
         interval: '',
@@ -291,7 +291,7 @@ describe('/administrator/subscriptions/create-plan', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        planid: 'plan' + new Date().getTime(),
+        planid: 'CUSTOM10',
         usage_type: 'licensed',
         amount: '100',
         interval: '',
@@ -315,7 +315,7 @@ describe('/administrator/subscriptions/create-plan', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        planid: 'plan' + new Date().getTime(),
+        planid: 'CUSTOM11',
         usage_type: 'licensed',
         amount: '100',
         interval: '',
@@ -339,7 +339,7 @@ describe('/administrator/subscriptions/create-plan', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        planid: 'plan' + new Date().getTime(),
+        planid: 'CUSTOM12',
         usage_type: 'licensed',
         amount: '100',
         interval: 'month',
@@ -364,7 +364,7 @@ describe('/administrator/subscriptions/create-plan', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        planid: 'plan' + new Date().getTime(),
+        planid: 'CUSTOM13',
         usage_type: 'licensed',
         amount: '1000',
         interval: 'month',
