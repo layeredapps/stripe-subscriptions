@@ -492,7 +492,7 @@ async function createCoupon (administrator, properties) {
       req.body.amount_off = percentOff.toString()
       req.body.currency = 'USD'
     }
-  } 
+  }
   if (Math.random() < 0.5) {
     req.body.max_redemptions = Math.ceil(100 + (Math.random() * 100)).toString()
   }

@@ -6,7 +6,7 @@ const properties = [
   { camelCase: 'maximumStripeRetries', raw: 'MAXIMUM_STRIPE_RETRIES', description: 'Retry Stripe web requests', value: '2', default: '', valueDescription: 'Integer', defaultDescription: '0' },
   { camelCase: 'subscriptionWebhookEndPointSecret', raw: 'SUBSCRIPTIONS_WEBHOOK_ENDPOINT_SECRET', description: 'Secret provided by Stripe to sign webhooks', value: 'wh_sec_xxx', valueDescription: 'String', noDefaultValue: true },
   { camelCase: 'stripeKey', raw: 'STRIPE_KEY', description: 'The `sk_test_xxx` key from Stripe', value: 'sk_test_xxx', valueDescription: 'String', noDefaultValue: true },
-  { camelCase: 'stripePublishableKey', raw: 'STRIPE_PUBLISHABLE_KEY', description: 'The `pk_test_xxx` key from Stripe', value: 'pk_test_xxx', valueDescription: 'String', noDefaultValue: true }, 
+  { camelCase: 'stripePublishableKey', raw: 'STRIPE_PUBLISHABLE_KEY', description: 'The `pk_test_xxx` key from Stripe', value: 'pk_test_xxx', valueDescription: 'String', noDefaultValue: true },
   { camelCase: 'overdueInvoiceThreshold', raw: 'OVERDUE_INVOICE_THRESHOLD', description: 'Duration in days to allow open invoices before enforcing payment', value: '6', default: '1', valueDescription: 'Integer' },
   { camelCase: 'startSubscriptionPath', raw: 'START_SUBSCRIPTION_PATH', description: 'Alternate URL path to your start subscription flow', value: '/start-subscription', default: '/account/subscriptions/start-subscription', valueDescription: 'String' }
 ]
