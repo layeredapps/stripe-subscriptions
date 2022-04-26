@@ -21,7 +21,8 @@ module.exports = {
       stripeObject: taxRateNow
     }, {
       where: {
-        taxrateid: req.query.taxrateid
+        taxrateid: req.query.taxrateid,
+        appid: req.appid || global.appid
       }
     })
     return global.api.administrator.subscriptions.TaxRate.get(req)

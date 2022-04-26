@@ -21,7 +21,8 @@ module.exports = {
       stripeObject: subscriptionNow
     }, {
       where: {
-        subscriptionid: req.query.subscriptionid
+        subscriptionid: req.query.subscriptionid,
+        appid: req.appid || global.appid
       }
     })
     return true

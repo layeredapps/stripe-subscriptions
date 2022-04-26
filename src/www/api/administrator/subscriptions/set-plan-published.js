@@ -17,7 +17,8 @@ module.exports = {
       publishedAt: new Date()
     }, {
       where: {
-        planid: req.query.planid
+        planid: req.query.planid,
+        appid: req.appid || global.appid
       }
     })
     await dashboard.StorageCache.remove(req.query.planid)

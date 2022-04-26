@@ -11,7 +11,8 @@ module.exports = {
     }
     const where = {
       accountid: req.query.accountid,
-      status: 'requires_confirmation'
+      status: 'requires_confirmation',
+      appid: req.appid || global.appid
     }
     let paymentintentids
     if (req.query.all) {

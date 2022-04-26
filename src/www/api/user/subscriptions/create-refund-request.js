@@ -23,7 +23,8 @@ module.exports = {
       refundReason: req.body.reason
     }, {
       where: {
-        chargeid: req.query.chargeid
+        chargeid: req.query.chargeid,
+        appid: req.appid || global.appid
       }
     })
     return global.api.user.subscriptions.Charge.get(req)

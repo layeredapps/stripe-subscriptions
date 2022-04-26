@@ -13,7 +13,8 @@ module.exports = {
     await stripeCache.execute('plans', 'del', req.query.planid, req.stripeKey)
     await subscriptions.Storage.Plan.destroy({
       where: {
-        planid: req.query.planid
+        planid: req.query.planid,
+        appid: req.appid || global.appid
       }
     })
     return true

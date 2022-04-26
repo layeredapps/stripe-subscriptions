@@ -10,7 +10,8 @@ module.exports = {
     if (!customer) {
       const customerInfo = await subscriptions.Storage.Customer.findOne({
         where: {
-          customerid: req.query.customerid
+          customerid: req.query.customerid,
+          appid: req.appid || global.appid
         }
       })
       if (!customerInfo) {

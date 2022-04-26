@@ -24,7 +24,8 @@ module.exports = {
       stripeObject: chargeNow
     }, {
       where: {
-        chargeid: req.query.chargeid
+        chargeid: req.query.chargeid,
+        appid: req.appid || global.appid
       }
     })
     await dashboard.StorageCache.remove(req.query.chargeid)

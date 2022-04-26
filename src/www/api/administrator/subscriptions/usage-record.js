@@ -10,7 +10,8 @@ module.exports = {
     if (!usageRecord) {
       const usageRecordInfo = await subscriptions.Storage.UsageRecord.findOne({
         where: {
-          usagerecordid: req.query.usagerecordid
+          usagerecordid: req.query.usagerecordid,
+          appid: req.appid || global.appid
         }
       })
       if (!usageRecordInfo) {

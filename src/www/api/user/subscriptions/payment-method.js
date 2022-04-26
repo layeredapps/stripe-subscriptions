@@ -10,7 +10,8 @@ module.exports = {
     if (!paymentMethod) {
       const paymentMethodInfo = await subscriptions.Storage.PaymentMethod.findOne({
         where: {
-          paymentmethodid: req.query.paymentmethodid
+          paymentmethodid: req.query.paymentmethodid,
+          appid: req.appid || global.appid
         }
       })
       if (!paymentMethodInfo) {

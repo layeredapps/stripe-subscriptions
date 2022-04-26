@@ -113,7 +113,8 @@ module.exports = {
         stripeObject: customerNow
       }, {
         where: {
-          customerid: req.query.customerid
+          customerid: req.query.customerid,
+          appid: req.appid || global.appid
         }
       })
     }

@@ -37,7 +37,8 @@ module.exports = {
       couponid: req.body.couponid
     }, {
       where: {
-        subscriptionid: req.query.subscriptionid
+        subscriptionid: req.query.subscriptionid,
+        appid: req.appid || global.appid
       }
     })
     await dashboard.StorageCache.remove(req.query.subscriptionid)

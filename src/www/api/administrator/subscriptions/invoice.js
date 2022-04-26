@@ -10,7 +10,8 @@ module.exports = {
     if (!invoice) {
       const invoiceInfo = await subscriptions.Storage.Invoice.findOne({
         where: {
-          invoiceid: req.query.invoiceid
+          invoiceid: req.query.invoiceid,
+          appid: req.appid || global.appid
         }
       })
       if (!invoiceInfo) {

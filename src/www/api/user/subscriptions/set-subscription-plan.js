@@ -53,7 +53,8 @@ module.exports = {
       planid: req.body.planid
     }, {
       where: {
-        subscriptionid: req.query.subscriptionid
+        subscriptionid: req.query.subscriptionid,
+        appid: req.appid || global.appid
       }
     })
     // if (newPlan.stripeObject.amount > oldplan.stripeObject.amount || newPlan.stripeObject.interval !== oldplan.stripeObject.interval) {

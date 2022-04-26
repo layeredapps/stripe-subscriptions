@@ -11,7 +11,8 @@ module.exports = {
     }
     return subscriptions.Storage.Refund.count({
       where: {
-        accountid: req.query.accountid
+        accountid: req.query.accountid,
+        appid: req.appid || global.appid
       }
     })
   }

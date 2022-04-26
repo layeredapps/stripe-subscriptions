@@ -20,7 +20,8 @@ module.exports = {
       stripeObject: invoiceNow
     }, {
       where: {
-        invoiceid: req.query.invoiceid
+        invoiceid: req.query.invoiceid,
+        appid: req.appid || global.appid
       }
     })
     await dashboard.StorageCache.remove(req.query.invoiceid)

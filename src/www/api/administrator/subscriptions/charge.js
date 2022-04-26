@@ -10,7 +10,8 @@ module.exports = {
     if (!charge) {
       const chargeInfo = await subscriptions.Storage.Charge.findOne({
         where: {
-          chargeid: req.query.chargeid
+          chargeid: req.query.chargeid,
+          appid: req.appid || global.appid
         }
       })
       if (!chargeInfo) {

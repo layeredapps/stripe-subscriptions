@@ -9,7 +9,8 @@ module.exports = {
     const where = {
       refundRequested: {
         [sequelize.Op.lte]: minDate
-      }
+      },
+      appid: req.appid || global.appid
     }
     let chargeids
     if (req.query.all) {

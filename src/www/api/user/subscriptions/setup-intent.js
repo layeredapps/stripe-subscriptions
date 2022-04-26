@@ -10,7 +10,8 @@ module.exports = {
     if (!setupIntent) {
       const setupIntentInfo = await subscriptions.Storage.SetupIntent.findOne({
         where: {
-          setupintentid: req.query.setupintentid
+          setupintentid: req.query.setupintentid,
+          appid: req.appid || global.appid
         }
       })
       if (!setupIntentInfo) {

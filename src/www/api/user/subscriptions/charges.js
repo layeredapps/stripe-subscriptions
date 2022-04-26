@@ -10,7 +10,8 @@ module.exports = {
       throw new Error('invalid-account')
     }
     const where = {
-      accountid: req.query.accountid
+      accountid: req.query.accountid,
+      appid: req.appid || global.appid
     }
     let chargeids
     if (req.query.all) {

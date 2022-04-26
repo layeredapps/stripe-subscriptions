@@ -10,7 +10,8 @@ module.exports = {
     if (!taxRate) {
       const taxRateInfo = await subscriptions.Storage.TaxRate.findOne({
         where: {
-          taxrateid: req.query.taxrateid
+          taxrateid: req.query.taxrateid,
+          appid: req.appid || global.appid
         }
       })
       if (!taxRateInfo) {

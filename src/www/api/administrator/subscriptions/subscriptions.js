@@ -3,31 +3,27 @@ const subscriptions = require('../../../../../index.js')
 module.exports = {
   get: async (req) => {
     req.query = req.query || {}
-    let where
+    const where = {
+      appid: req.appid || global.appid
+    }
     if (req.query.customerid) {
       const customer = await global.api.administrator.subscriptions.Customer.get(req)
       if (!customer) {
         throw new Error('invalid-customer')
       }
-      where = {
-        customerid: req.query.customerid
-      }
+      where.customerid = req.query.customerid
     } else if (req.query.accountid) {
       const account = await global.api.administrator.Account.get(req)
       if (!account) {
         throw new Error('invalid-account')
       }
-      where = {
-        accountid: req.query.accountid
-      }
+      where.accountid = req.query.accountid
     } else if (req.query.couponid) {
       const coupon = await global.api.administrator.subscriptions.Coupon.get(req)
       if (!coupon) {
         throw new Error('invalid-couponid')
       }
-      where = {
-        couponid: req.query.couponid
-      }
+      where.couponid = req.query.couponid
     }
     let subscriptionids
     if (req.query.all) {

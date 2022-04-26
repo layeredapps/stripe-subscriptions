@@ -12,7 +12,8 @@ module.exports = {
     return subscriptions.Storage.PaymentIntent.count({
       where: {
         pendingConfirmation: true,
-        accountid: req.query.accountid
+        accountid: req.query.accountid,
+        appid: req.appid || global.appid
       }
     })
   }

@@ -10,7 +10,8 @@ module.exports = {
     if (!refund) {
       const refundInfo = await subscriptions.Storage.Refund.findOne({
         where: {
-          refundid: req.query.refundid
+          refundid: req.query.refundid,
+          appid: req.appid || global.appid
         }
       })
       if (!refundInfo) {

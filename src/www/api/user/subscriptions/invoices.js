@@ -9,19 +9,17 @@ module.exports = {
     if (!account) {
       throw new Error('invalid-account')
     }
-    let where
+    const where = {
+      appid: req.appid || global.appid
+    }
     if (req.query.customerid) {
       const customer = await global.api.user.subscriptions.Customer.get(req)
       if (!customer) {
         throw new Error('invalid-customerid')
       }
-      where = {
-        customerid: req.query.customerid
-      }
+      where.customerid = req.query.customerid
     } else {
-      where = {
-        accountid: req.query.accountid
-      }
+      where.accountid = req.query.accountid
     }
     let invoiceids
     if (req.query.all) {

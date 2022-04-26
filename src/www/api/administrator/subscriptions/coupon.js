@@ -10,7 +10,8 @@ module.exports = {
     if (!coupon) {
       const couponInfo = await subscriptions.Storage.Coupon.findOne({
         where: {
-          couponid: req.query.couponid
+          couponid: req.query.couponid,
+          appid: req.appid || global.appid
         }
       })
       if (!couponInfo) {

@@ -9,7 +9,8 @@ module.exports = {
     const where = {
       publishedAt: {
         [sequelize.Op.lte]: minDate
-      }
+      },
+      appid: req.appid || global.appid
     }
     let planids
     if (req.query.all) {

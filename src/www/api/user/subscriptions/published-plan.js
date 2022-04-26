@@ -11,7 +11,8 @@ module.exports = {
     if (!plan) {
       const planInfo = await subscriptions.Storage.Plan.findOne({
         where: {
-          planid: req.query.planid
+          planid: req.query.planid,
+          appid: req.appid || global.appid
         }
       })
       if (!planInfo) {

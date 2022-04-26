@@ -50,7 +50,8 @@ module.exports = {
       productid: req.body.productid || plan.productid
     }, {
       where: {
-        planid: req.query.planid
+        planid: req.query.planid,
+        appid: req.appid || global.appid
       }
     })
     await dashboard.StorageCache.remove(req.query.planid)

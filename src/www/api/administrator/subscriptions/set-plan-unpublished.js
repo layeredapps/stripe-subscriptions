@@ -16,7 +16,8 @@ module.exports = {
       unpublishedAt: new Date()
     }, {
       where: {
-        planid: req.query.planid
+        planid: req.query.planid,
+        appid: req.appid || global.appid
       }
     })
     return global.api.administrator.subscriptions.Plan.get(req)

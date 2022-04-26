@@ -23,7 +23,8 @@ module.exports = {
       stripeObject: taxRateNow
     }, {
       where: {
-        taxrateid: req.query.taxrateid
+        taxrateid: req.query.taxrateid,
+        appid: req.appid || global.appid
       }
     })
     await dashboard.StorageCache.remove(req.query.taxrateid)

@@ -21,7 +21,8 @@ module.exports = {
       stripeObject: setupIntentNow
     }, {
       where: {
-        setupintentid: req.query.setupintentid
+        setupintentid: req.query.setupintentid,
+        appid: req.appid || global.appid
       }
     })
     await dashboard.StorageCache.remove(req.query.setupintentid)

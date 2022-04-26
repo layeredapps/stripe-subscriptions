@@ -13,7 +13,8 @@ module.exports = {
     await stripeCache.execute('customers', 'del', req.query.customerid, req.stripeKey)
     await subscriptions.Storage.Customer.destroy({
       where: {
-        customerid: req.query.customerid
+        customerid: req.query.customerid,
+        appid: req.appid || global.appid
       }
     })
     return true

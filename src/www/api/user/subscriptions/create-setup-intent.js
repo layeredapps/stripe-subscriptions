@@ -24,6 +24,14 @@ module.exports = {
       payment_method: req.body.paymentmethodid
     }, req.stripeKey)
     req.query.setupintentid = setupIntent.id
+    console.log("******", {
+      appid: req.appid || global.appid,
+      setupintentid: setupIntent.id,
+      accountid: req.account.accountid,
+      customerid: req.query.customerid,
+      paymentmethodid: req.body.paymentmethodid,
+      stripeObject: setupIntent
+    })
     await subscriptions.Storage.SetupIntent.create({
       appid: req.appid || global.appid,
       setupintentid: setupIntent.id,

@@ -10,7 +10,8 @@ module.exports = {
     if (!paymentIntent) {
       const paymentIntentInfo = await subscriptions.Storage.PaymentIntent.findOne({
         where: {
-          paymentintentid: req.query.paymentintentid
+          paymentintentid: req.query.paymentintentid,
+          appid: req.appid || global.appid
         }
       })
       if (!paymentIntentInfo) {

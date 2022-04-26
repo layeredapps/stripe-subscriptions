@@ -3,9 +3,13 @@ const subscriptions = require('../../../../../index.js')
 module.exports = {
   get: async (req) => {
     req.query = req.query || {}
+    const where = {
+      appid: req.appid || global.appid
+    }
     let paymentintentids
     if (req.query.all) {
       paymentintentids = await subscriptions.Storage.PaymentIntent.findAll({
+        where,
         attributes: ['paymentintentid'],
         order: [
           ['createdAt', 'DESC']
@@ -15,6 +19,7 @@ module.exports = {
       const offset = req.query.offset ? parseInt(req.query.offset, 10) : 0
       const limit = req.query.limit ? parseInt(req.query.limit, 10) : global.pageSize
       paymentintentids = await subscriptions.Storage.PaymentIntent.findAll({
+        where,
         attributes: ['paymentintentid'],
         offset,
         limit,

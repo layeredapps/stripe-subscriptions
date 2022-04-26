@@ -1,5 +1,5 @@
 const dashboard = require('@layeredapps/dashboard')
-const Log = require('@layeredapps/dashboard/src/log.js')('stripe-subscriptions')
+const Log = require('@layeredapps/dashboard/src/log.js')('stripe-subscriptions-webhook')
 const packageJSON = require('../../../../package.json')
 const stripe = require('stripe')({
   apiVersion: global.stripeAPIVersion,
@@ -162,244 +162,277 @@ async function load (id, group, key) {
 }
 
 async function updatePlan (stripeEvent, stripeKey) {
-  const stripeObject = await load(stripeEvent.data.object.id, 'plans', stripeKey)
-  await upsert(subscriptions.Storage.Plan, 'planid', stripeObject.id, {
-    planid: stripeObject.id,
-    stripeObject
-  })
-  const properties = {}
-  if (stripeObject.product) {
-    properties.productid = stripeObject.product
-  }
-  return subscriptions.Storage.Plan.update(properties, {
+  const exists = await subscriptions.Storage.Plan.findOne({
+    attributes: ['planid', 'appid'],
     where: {
-      planid: stripeObject.id
+      planid: stripeEvent.data.object.id
+    }
+  })
+  if (!exists || !exists.dataValues || !exists.dataValues.planid) {
+    return
+  }
+  Log.info('update plan', stripeEvent.data.object)
+  const stripeObject = await load(stripeEvent.data.object.id, 'plans', stripeKey)
+  return subscriptions.Storage.Plan.update({
+    stripeObject
+  }, {
+    where: {
+      planid: exists.dataValues.planid,
+      appid: exists.dataValues.appid
     }
   })
 }
 
 async function updateProduct (stripeEvent, stripeKey) {
+  const exists = await subscriptions.Storage.Product.findOne({
+    attributes: ['productid', 'appid'],
+    where: {
+      productid: stripeEvent.data.object.id
+    }
+  })
+  if (!exists || !exists.dataValues || !exists.dataValues.productid) {
+    return
+  }
+  Log.info('update product', stripeEvent.data.object)
   const stripeObject = await load(stripeEvent.data.object.id, 'products', stripeKey)
-  await upsert(subscriptions.Storage.Product, 'productid', stripeObject.id, {
-    productid: stripeObject.id,
+  return subscriptions.Storage.Product.update({
     stripeObject
+  }, {
+    productid: exists.dataValues.productid,
+    appid: exists.dataValues.appid
   })
 }
 
 async function updateSetupIntent (stripeEvent, stripeKey) {
-  const stripeObject = await load(stripeEvent.data.object.id, 'setupIntents', stripeKey)
-  await upsert(subscriptions.Storage.SetupIntent, 'setupintentid', stripeObject.id, {
-    setupintentid: stripeObject.id,
-    stripeObject
-  })
-  const properties = {}
-  const customerInfo = await subscriptions.Storage.Customer.findOne({
-    attributes: ['customerid', 'accountid'],
+  const exists = await subscriptions.Storage.Customer.findOne({
+    attributes: ['customerid', 'appid', 'accountid'],
     where: {
-      customerid: stripeObject.customer
+      customerid: stripeEvent.data.object.customer
     }
   })
-  if (customerInfo && customerInfo.dataValues.customerid) {
-    properties.customerid = customerInfo.dataValues.customerid
-  }
-  if (customerInfo && customerInfo.dataValues.customerid) {
-    properties.accountid = customerInfo.dataValues.accountid
-  }
-  if (customerInfo && customerInfo.dataValues.appid) {
-    properties.appid = customerInfo.dataValues.appid
-  }
-  if (!Object.keys(properties).length) {
+  if (!exists || !exists.dataValues || !exists.dataValues.customerid) {
     return
   }
-  return subscriptions.Storage.SetupIntent.update(properties, {
-    where: {
-      setupintentid: stripeObject.id
-    }
+  Log.info('update setup intent', stripeEvent.data.object)
+  const stripeObject = await load(stripeEvent.data.object.id, 'setupIntents', stripeKey)
+  return upsert(subscriptions.Storage.SetupIntent, 'setupintentid', stripeObject.id, {
+    setupintentid: stripeObject.id,
+    appid: exists.dataValues.appid,
+    customerid: exists.dataValues.customerid,
+    accountid: exists.dataValues.accountid,
+    stripeObject
   })
 }
 
 async function updatePaymentIntent (stripeEvent, stripeKey) {
+  const exists = await subscriptions.Storage.Customer.findOne({
+    attributes: ['customerid', 'accountid', 'appid'],
+    where: {
+      customerid: stripeEvent.data.object.customer
+    }
+  })
+  if (!exists || !exists.dataValues || !exists.dataValues.customerid) {
+    return
+  }
+  Log.info('update payment intent', stripeEvent.data.object)
   const stripeObject = await load(stripeEvent.data.object.id, 'paymentIntents', stripeKey)
   const updateObject = {
     paymentintentid: stripeObject.id,
+    appid: exists.dataValues.appid,
+    customerid: exists.dataValues.customerid,
+    accountid: exists.dataValues.accountid,
     stripeObject,
     status: stripeObject.status
   }
-  await upsert(subscriptions.Storage.PaymentIntent, 'paymentintentid', stripeObject.id, updateObject)
-  const properties = {}
-  if (stripeObject.customer) {
-    properties.customerid = stripeObject.customer
-  }
-  const customerInfo = await subscriptions.Storage.Customer.findOne({
-    attributes: ['accountid'],
-    where: {
-      customerid: stripeObject.customer
-    }
-  })
-  if (customerInfo && customerInfo.dataValues.accountid) {
-    properties.accountid = customerInfo.dataValues.accountid
-  }
-  if (customerInfo && customerInfo.dataValues.appid) {
-    properties.appid = customerInfo.dataValues.appid
-  }
   if (stripeObject.subscription) {
-    properties.subscriptionid = stripeObject.subscription
+    updateObject.subscriptionid = stripeObject.subscription
   }
   if (stripeObject.invoice) {
-    properties.invoiceid = stripeObject.invoice
+    updateObject.invoiceid = stripeObject.invoice
   }
-  if (!Object.keys(properties).length) {
-    return
-  }
-  return subscriptions.Storage.PaymentIntent.update(properties, {
-    where: {
-      paymentintentid: stripeObject.id
-    }
-  })
+  return upsert(subscriptions.Storage.PaymentIntent, 'paymentintentid', stripeObject.id, updateObject)
 }
 
 async function updatePaymentMethod (stripeEvent, stripeKey) {
-  const stripeObject = await load(stripeEvent.data.object.id, 'paymentMethods', stripeKey)
-  await upsert(subscriptions.Storage.PaymentMethod, 'paymentmethodid', stripeObject.id, {
-    paymentmethodid: stripeObject.id,
-    stripeObject
-  })
-  const properties = {}
-  if (stripeObject.customer) {
-    properties.customerid = stripeObject.customer
-  }
-  const customerInfo = await subscriptions.Storage.Customer.findOne({
-    attributes: ['accountid'],
+  const exists = await subscriptions.Storage.Customer.findOne({
+    attributes: ['customerid', 'appid', 'accountid'],
     where: {
-      customerid: stripeObject.customer
+      customerid: stripeEvent.data.object.customer
     }
   })
-  if (customerInfo && customerInfo.dataValues.accountid) {
-    properties.accountid = customerInfo.dataValues.accountid
-  }
-  if (customerInfo && customerInfo.dataValues.appid) {
-    properties.appid = customerInfo.dataValues.appid
-  }
-  if (!Object.keys(properties).length) {
+  if (!exists || !exists.dataValues || !exists.dataValues.customerid) {
     return
   }
-  return subscriptions.Storage.PaymentMethod.update(properties, {
-    where: {
-      paymentmethodid: stripeObject.id
-    }
+  Log.info('update payment method', stripeEvent.data.object)
+  const stripeObject = await load(stripeEvent.data.object.id, 'paymentMethods', stripeKey)
+  return upsert(subscriptions.Storage.PaymentMethod, 'paymentmethodid', stripeObject.id, {
+    paymentmethodid: stripeObject.id,
+    appid: exists.dataValues.appid,
+    accountid: exists.dataValues.accountid,
+    customerid: exists.dataValues.customerid,
+    stripeObject
   })
 }
 
 async function updateInvoice (stripeEvent, stripeKey) {
-  const stripeObject = await load(stripeEvent.data.object.id, 'invoices', stripeKey)
-  await upsert(subscriptions.Storage.Invoice, 'invoiceid', stripeObject.id, {
-    invoiceid: stripeObject.id,
-    stripeObject
-  })
-  const properties = {}
-  if (stripeObject.customer) {
-    properties.customerid = stripeObject.customer
-  }
-  if (stripeObject.subscription) {
-    properties.subscriptionid = stripeObject.subscription
-  }
-  const customerInfo = await subscriptions.Storage.Customer.findOne({
-    attributes: ['accountid'],
+  const exists = await subscriptions.Storage.Customer.findOne({
+    attributes: ['customerid', 'appid', 'accountid'],
     where: {
-      customerid: stripeObject.customer
+      customerid: stripeEvent.data.object.customer
     }
   })
-  if (customerInfo && customerInfo.dataValues.accountid) {
-    properties.accountid = customerInfo.dataValues.accountid
-  }
-  if (customerInfo && customerInfo.dataValues.appid) {
-    properties.appid = customerInfo.dataValues.appid
-  }
-  if (!Object.keys(properties).length) {
+  if (!exists || !exists.dataValues || !exists.dataValues.customerid) {
     return
   }
-  return subscriptions.Storage.Invoice.update(properties, {
-    where: {
-      invoiceid: stripeObject.id
-    }
-  })
+  Log.info('update invoice', stripeEvent.data.object)
+  const stripeObject = await load(stripeEvent.data.object.id, 'invoices', stripeKey)
+  const updateObject = {
+    invoiceid: stripeObject.id,
+    appid: exists.dataValues.appid,
+    customerid: exists.dataValues.customerid,
+    accountid: exists.dataValues.accountid,
+    stripeObject
+  }
+  if (stripeObject.subscription) {
+    updateObject.subscriptionid = stripeObject.subscription
+  }
+  return upsert(subscriptions.Storage.Invoice, 'invoiceid', stripeObject.id, updateObject)
 }
 
 async function updateCustomer (stripeEvent, stripeKey) {
+  const exists = await subscriptions.Storage.Customer.findOne({
+    attributes: ['customerid', 'appid'],
+    where: {
+      customerid: stripeEvent.data.object.id
+    }
+  })
+  if (!exists || !exists.dataValues || !exists.dataValues.customerid) {
+    return
+  }
+  Log.info('update customer', stripeEvent.data.object)
   const stripeObject = await load(stripeEvent.data.object.id, 'customers', stripeKey)
-  await upsert(subscriptions.Storage.Customer, 'customerid', stripeObject.id, {
-    customerid: stripeObject.id,
+  return subscriptions.Storage.Customer.update({
     stripeObject
+  }, {
+    where: {
+      customerid: exists.dataValues.customerid,
+      appid: exists.dataValues.appid
+    }
   })
 }
 
 async function updateCoupon (stripeEvent, stripeKey) {
+  const exists = await subscriptions.Storage.Coupon.findOne({
+    attributes: ['couponid', 'appid'],
+    where: {
+      couponid: stripeEvent.data.object.id
+    }
+  })
+  if (!exists || !exists.dataValues || !exists.dataValues.couponid) {
+    return
+  }
+  Log.info('update coupon', stripeEvent.data.object)
   const stripeObject = await load(stripeEvent.data.object.id, 'coupons', stripeKey)
-  await upsert(subscriptions.Storage.Coupon, 'couponid', stripeObject.id, {
-    couponid: stripeObject.id,
+  return subscriptions.Storage.Coupon.update({
     stripeObject
+  }, {
+    where: {
+      couponid: exists.dataValues.couponid,
+      appid: exists.dataValues.appid
+    }
   })
 }
 
 async function updateDiscount (stripeEvent, stripeKey) {
+  Log.info('update discount', stripeEvent.data.object)
   if (stripeEvent.data.object.subscription) {
+    const exists = await subscriptions.Storage.Subscription.findOne({
+      attributes: ['subscriptionid', 'appid'],
+      where: {
+        subscriptionid: stripeEvent.data.object.subscription
+      }
+    })
+    if (!exists || !exists.dataValues || !exists.dataValues.subscriptionid) {
+      return
+    }
     const stripeObject = await load(stripeEvent.data.object.subscription, 'subscriptions', stripeKey)
-    await upsert(subscriptions.Storage.Subscription, 'subscriptionid', stripeObject.id, {
-      subscriptionid: stripeObject.id,
+    return subscriptions.Storage.Subscription.update({
       stripeObject
+    }, {
+      where: {
+        subscriptionid: exists.dataValues.subscriptionid,
+        appid: exists.dataValues.appid
+      }
     })
   } else {
+    const exists = await subscriptions.Storage.Customer.findOne({
+      attributes: ['customerid', 'appid'],
+      where: {
+        customerid: stripeEvent.data.object.customer
+      }
+    })
+    if (!exists || !exists.dataValues || !exists.dataValues.customerid) {
+      return
+    }
     const stripeObject = await load(stripeEvent.data.object.customer, 'customers', stripeKey)
-    await upsert(subscriptions.Storage.Customer, 'customerid', stripeObject.id, {
-      customerid: stripeObject.id,
+    return subscriptions.Storage.Customer.update({
       stripeObject
+    }, {
+      where: {
+        customerid: exists.dataValues.customerid,
+        appid: exists.dataValues.appid
+      }
     })
   }
 }
 
 async function updateCharge (stripeEvent, stripeKey) {
-  const stripeObject = await load(stripeEvent.data.object.id, 'charges', stripeKey)
-  await upsert(subscriptions.Storage.Charge, 'chargeid', stripeObject.id, {
-    chargeid: stripeObject.id,
-    stripeObject
-  })
-  const properties = {}
-  if (stripeObject.customer) {
-    properties.customerid = stripeObject.customer
-  }
-  if (stripeObject.invoice) {
-    properties.invoiceid = stripeObject.invoice
-    const invoice = await load(stripeEvent.data.object.invoice, 'invoices', stripeKey)
-    if (invoice && invoice.subscription) {
-      properties.subscriptionid = invoice.subscription
-    }
-  }
-  const customerInfo = await subscriptions.Storage.Customer.findOne({
-    attributes: ['accountid'],
+  const exists = await subscriptions.Storage.Customer.findOne({
+    attributes: ['customerid', 'accountid', 'appid'],
     where: {
-      customerid: stripeObject.customer
+      customerid: stripeEvent.data.object.customer
     }
   })
-  if (customerInfo && customerInfo.dataValues.accountid) {
-    properties.accountid = customerInfo.dataValues.accountid
-  }
-  if (customerInfo && customerInfo.dataValues.appid) {
-    properties.appid = customerInfo.dataValues.appid
-  }
-  if (!Object.keys(properties).length) {
+  if (!exists || !exists.dataValues || !exists.dataValues.customerid) {
     return
   }
-  return subscriptions.Storage.Charge.update(properties, {
-    where: {
-      chargeid: stripeObject.id
+  Log.info('update charge', stripeEvent.data.object)
+  const stripeObject = await load(stripeEvent.data.object.id, 'charges', stripeKey)
+  const updateObject = {
+    chargeid: stripeObject.id,
+    customerid: exists.dataValues.customerid,
+    appid: exists.dataValues.appid,
+    accountid: exists.dataValues.accountid,
+    stripeObject
+  }
+  if (stripeObject.invoice) {
+    updateObject.invoiceid = stripeObject.invoice
+    const invoice = await load(stripeEvent.data.object.invoice, 'invoices', stripeKey)
+    if (invoice && invoice.subscription) {
+      updateObject.subscriptionid = invoice.subscription
     }
-  })
+  }
+  return upsert(subscriptions.Storage.Charge, 'chargeid', stripeObject.id, updateObject)
 }
 
 async function updateSubscription (stripeEvent, stripeKey) {
+  const exists = await subscriptions.Storage.Subscription.findOne({
+    attributes: ['subscriptionid', 'appid'],
+    where: {
+      subscriptionid: stripeEvent.data.object.id
+    }
+  })
+  if (!exists || !exists.dataValues || !exists.dataValues.subscriptionid) {
+    return
+  }
+  Log.info('update subscription', stripeEvent.data.object)
   const stripeObject = await load(stripeEvent.data.object.id, 'subscriptions', stripeKey)
-  await upsert(subscriptions.Storage.Subscription, 'subscriptionid', stripeObject.id, {
-    subscriptionid: stripeObject.id,
+  return subscriptions.Storage.Subscription.update({
     stripeObject
+  }, {
+    where: {
+      subscriptionid: exists.dataValues.subscriptionid,
+      appid: exists.dataValues.appid
+    }
   })
 }

@@ -10,7 +10,8 @@ module.exports = {
     if (!payout) {
       const payoutInfo = await subscriptions.Storage.Payout.findOne({
         where: {
-          payoutid: req.query.payoutid
+          payoutid: req.query.payoutid,
+          appid: req.appid || global.appid
         }
       })
       if (!payoutInfo) {

@@ -24,7 +24,8 @@ module.exports = {
       stripeObject: paymentMethodNow
     }, {
       where: {
-        paymentmethodid: req.query.paymentmethodid
+        paymentmethodid: req.query.paymentmethodid,
+        appid: req.appid || global.appid
       }
     })
     await dashboard.StorageCache.remove(req.query.paymentmethodid)

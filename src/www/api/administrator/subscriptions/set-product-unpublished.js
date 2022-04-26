@@ -17,7 +17,8 @@ module.exports = {
       unpublishedAt: new Date()
     }, {
       where: {
-        productid: req.query.productid
+        productid: req.query.productid,
+        appid: req.appid || global.appid
       }
     })
     await dashboard.StorageCache.remove(req.query.productid)
