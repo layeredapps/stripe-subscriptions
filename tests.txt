@@ -18,18 +18,6 @@
     STRIPE_PUBLISHABLE_KEY
       The `pk_test_xxx` key from Stripe
         ✔ String
-    REQUIRE_SUBSCRIPTION
-      Users must create subscription to access application
-        ✔ default unset
-        ✔ Boolean
-    REQUIRE_PAYMENT
-      Users must resolve unpaid invoices to access application
-        ✔ default unset
-        ✔ Boolean
-    REQUIRE_PAYMENT_CONFIRMATION
-      Users must resolve payment confirmations to access application
-        ✔ default unset
-        ✔ Boolean
     OVERDUE_INVOICE_THRESHOLD
       Duration in days to allow open invoices before enforcing payment
         ✔ default 1
@@ -833,7 +821,9 @@
     exceptions
       invalid-couponid
         ✔ missing posted couponid
-        ✔ invalid posted couponid is not alphanumeric_
+        ✔ invalid posted couponid is not alphanumeric
+      duplicate-couponid
+        ✔ invalid posted couponid is already used
       invalid-amount_off
         ✔ missing posted amount_off
         ✔ invalid posted amount_off
@@ -2069,5 +2059,5 @@
       ✔ environment PAGE_SIZE
 
 
-  988 passing (2h)
+  983 passing (3h)
 
