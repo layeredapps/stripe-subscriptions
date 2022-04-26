@@ -33,7 +33,6 @@ describe('/account/subscriptions/confirm-payment', function () {
   //       address_country: 'US',
   //       default: 'true'
   //     })
-  //     global.requirePaymentConfirmation = true
   //     await TestHelper.createSubscription(user, administrator.plan.planid)
   //     await TestHelper.waitForWebhook('payment_intent.created', (stripeEvent) => {
   //       return stripeEvent.data.object.invoice === user.invoice.invoiceid
@@ -82,7 +81,6 @@ describe('/account/subscriptions/confirm-payment', function () {
         address_country: 'US',
         default: 'true'
       })
-      global.requirePaymentConfirmation = true
       await TestStripeAccounts.createUserWithFreeSubscription(administrator.plan, user)
       await TestHelper.waitForWebhook('payment_intent.created', (stripeEvent) => {
         return stripeEvent.data.object.invoice === user.invoice.invoiceid

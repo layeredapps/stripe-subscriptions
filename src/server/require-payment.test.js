@@ -7,7 +7,6 @@ const TestStripeAccounts = require('../../test-stripe-accounts.js')
 describe('server/stripe-subscriptions/require-payment', () => {
   describe('after', function () {
     it('should ignore guests', async () => {
-      global.requirePayment = true
       const req = TestHelper.createRequest('/')
       const res = {}
       let result
@@ -20,7 +19,6 @@ describe('server/stripe-subscriptions/require-payment', () => {
 
     it('should ignore user with amount owed requesting account pages', async () => {
       const user = await TestHelper.createUser()
-      global.requirePayment = true
       await TestHelper.toggleOverdueInvoiceThreshold(false)
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,
@@ -42,7 +40,6 @@ describe('server/stripe-subscriptions/require-payment', () => {
 
     it('should ignore administrator with amount owed requesting administration pages', async () => {
       const administrator = await TestHelper.createOwner()
-      global.requirePayment = true
       await TestHelper.toggleOverdueInvoiceThreshold(false)
       await TestHelper.createCustomer(administrator, {
         email: administrator.profile.contactEmail,
@@ -50,7 +47,6 @@ describe('server/stripe-subscriptions/require-payment', () => {
         country: 'US'
       })
       await TestHelper.createAmountOwed(administrator)
-      global.requirePayment = true
       const req = TestHelper.createRequest('/administrator/subscriptions')
       req.account = administrator.account
       req.session = administrator.session
@@ -65,7 +61,6 @@ describe('server/stripe-subscriptions/require-payment', () => {
 
     it('should ignore user without amount owed', async () => {
       const user = await TestHelper.createUser()
-      global.requirePayment = true
       await TestHelper.toggleOverdueInvoiceThreshold(false)
       const req = TestHelper.createRequest('/home')
       req.account = user.account
@@ -83,7 +78,6 @@ describe('server/stripe-subscriptions/require-payment', () => {
       const administrator = await TestStripeAccounts.createOwnerWithPlan({ trial_period_days: 1 })
       await TestHelper.toggleOverdueInvoiceThreshold(false)
       const user = await TestStripeAccounts.createUserWithFreeTrialSubscription(administrator.plan)
-      global.requirePayment = true
       await TestHelper.toggleOverdueInvoiceThreshold(true)
       const req = TestHelper.createRequest('/home')
       req.account = user.account
@@ -113,7 +107,6 @@ describe('server/stripe-subscriptions/require-payment', () => {
     //     return stripeEvent.data.object.invoice === user.invoice.invoiceid
     //   })
     //   console.log('wait3')
-    //   global.requirePayment = true
     //   await TestHelper.toggleOverdueInvoiceThreshold(false)
     //   const req = TestHelper.createRequest('/home')
     //   req.account = user.account

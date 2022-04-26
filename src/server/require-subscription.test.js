@@ -8,7 +8,6 @@ const TestStripeAccounts = require('../../test-stripe-accounts.js')
 describe('server/stripe-subscriptions/require-subscription', function () {
   describe('after', () => {
     it('should ignore guests', async () => {
-      global.requireSubscription = true
       const req = TestHelper.createRequest('/')
       const res = {}
       let result
@@ -21,7 +20,6 @@ describe('server/stripe-subscriptions/require-subscription', function () {
 
     it('should ignore user without subscription requesting account pages', async () => {
       const user = await TestHelper.createUser()
-      global.requireSubscription = true
       const req = TestHelper.createRequest('/account/change-password')
       req.account = user.account
       req.session = user.session
@@ -36,7 +34,6 @@ describe('server/stripe-subscriptions/require-subscription', function () {
 
     it('should ignore administrator without subscription requesting administration pages', async () => {
       const administrator = await TestHelper.createOwner()
-      global.requireSubscription = true
       const req = TestHelper.createRequest('/administrator/subscriptions')
       req.account = administrator.account
       req.session = administrator.session
@@ -57,7 +54,6 @@ describe('server/stripe-subscriptions/require-subscription', function () {
         usage_type: 'licensed'
       })
       const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
-      global.requireSubscription = true
       const req = TestHelper.createRequest('/home')
       req.account = user.account
       req.session = user.session
@@ -74,7 +70,6 @@ describe('server/stripe-subscriptions/require-subscription', function () {
     it('should require user create subscription', async () => {
       await TestHelper.createOwner()
       const user = await TestHelper.createUser()
-      global.requireSubscription = true
       const req = TestHelper.createRequest('/home')
       req.account = user.account
       req.session = user.session

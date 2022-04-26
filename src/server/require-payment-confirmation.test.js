@@ -7,7 +7,6 @@ const TestStripeAccounts = require('../../test-stripe-accounts.js')
 describe('server/stripe-subscriptions/require-payment-confirmation', function () {
   describe('after', () => {
     it('should ignore guests', async () => {
-      global.requirePaymentConfirmation = true
       const req = TestHelper.createRequest('/')
       const res = {}
       let result
@@ -26,7 +25,6 @@ describe('server/stripe-subscriptions/require-payment-confirmation', function ()
     //     usage_type: 'licensed'
     //   })
     //   const user = await TestStripeAccounts.createUserWithFreeTrialSubscription(administrator.plan)
-    //   global.requirePaymentConfirmation = true
     //   const req = TestHelper.createRequest('/account/change-password')
     //   req.account = user.account
     //   req.session = user.session
@@ -65,7 +63,6 @@ describe('server/stripe-subscriptions/require-payment-confirmation', function ()
         address_country: 'US',
         default: 'true'
       })
-      global.requirePaymentConfirmation = true
       await TestHelper.createSubscription(administrator, administrator.plan.planid)
       const req = TestHelper.createRequest('/administrator/subscriptions')
       req.account = administrator.account
@@ -87,7 +84,6 @@ describe('server/stripe-subscriptions/require-payment-confirmation', function ()
         usage_type: 'licensed'
       })
       const user = await TestStripeAccounts.createUserWithFreeSubscription(administrator.plan)
-      global.requirePaymentConfirmation = true
       const req = TestHelper.createRequest('/home')
       req.account = user.account
       req.session = user.session
@@ -129,7 +125,6 @@ describe('server/stripe-subscriptions/require-payment-confirmation', function ()
     //     address_country: 'US',
     //     default: 'true'
     //   })
-    //   global.requirePaymentConfirmation = true
     //   await TestHelper.createSubscription(user, administrator.plan.planid)
     //   const req = TestHelper.createRequest('/home')
     //   req.account = user.account
