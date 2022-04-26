@@ -4,6 +4,8 @@ const TestHelper = require('../../../../../test-helper.js')
 const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 
 describe('/api/user/subscriptions/refunds-count', function () {
+  before(TestHelper.disableMetrics)
+  after(TestHelper.enableMetrics)
   describe('returns', () => {
     it('integer', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPlan({ amount: '10000', interval: 'day' })

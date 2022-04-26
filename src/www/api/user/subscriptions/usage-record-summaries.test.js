@@ -2,7 +2,9 @@
 const assert = require('assert')
 const TestHelper = require('../../../../../test-helper.js')
 
-describe('/api/user/subscriptions/usage-record-summaries', () => {
+describe('/api/user/subscriptions/usage-record-summaries', function () {
+  before(TestHelper.disableMetrics)
+  after(TestHelper.enableMetrics)
   describe('exceptions', () => {
     describe('invalid-subscriptionitemid', () => {
       it('missing querystring subscriptionitemid', async () => {

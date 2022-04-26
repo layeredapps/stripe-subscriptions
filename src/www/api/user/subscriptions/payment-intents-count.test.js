@@ -2,7 +2,9 @@
 const assert = require('assert')
 const TestHelper = require('../../../../../test-helper.js')
 
-describe('/api/user/subscriptions/payment-intents-count', () => {
+describe('/api/user/subscriptions/payment-intents-count', function () {
+  before(TestHelper.disableMetrics)
+  after(TestHelper.enableMetrics)
   describe('returns', () => {
     it('integer', async () => {
       const user = await TestHelper.createUser()

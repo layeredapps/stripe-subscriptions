@@ -2,7 +2,9 @@
 const assert = require('assert')
 const TestHelper = require('../../../../../test-helper.js')
 
-describe('/api/administrator/subscriptions/payouts-count', () => {
+describe('/api/administrator/subscriptions/payouts-count', function () {
+  before(TestHelper.disableMetrics)
+  after(TestHelper.enableMetrics)
   if (!process.env.DISABLE_PAYOUT_TESTS) {
     describe('returns', function () {
       it('integer', async () => {

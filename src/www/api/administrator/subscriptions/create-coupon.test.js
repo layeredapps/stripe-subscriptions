@@ -2,7 +2,9 @@
 const assert = require('assert')
 const TestHelper = require('../../../../../test-helper.js')
 
-describe('/api/administrator/subscriptions/create-coupon', () => {
+describe('/api/administrator/subscriptions/create-coupon', function () {
+  before(TestHelper.disableMetrics)
+  after(TestHelper.enableMetrics)
   describe('exceptions', () => {
     describe('invalid-couponid', () => {
       it('missing posted couponid', async () => {

@@ -2,7 +2,9 @@
 const assert = require('assert')
 const TestHelper = require('../../../../../test-helper.js')
 
-describe('/api/administrator/subscriptions/create-plan', () => {
+describe('/api/administrator/subscriptions/create-plan', function () {
+  before(TestHelper.disableMetrics)
+  after(TestHelper.enableMetrics)
   describe('exceptions', () => {
     describe('invalid-planid', () => {
       it('invalid posted planid is not alphanumeric_', async () => {

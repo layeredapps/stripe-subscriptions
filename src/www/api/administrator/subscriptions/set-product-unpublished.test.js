@@ -2,7 +2,9 @@
 const assert = require('assert')
 const TestHelper = require('../../../../../test-helper.js')
 
-describe('/api/administrator/subscriptions/set-product-unpublished', () => {
+describe('/api/administrator/subscriptions/set-product-unpublished', function () {
+  before(TestHelper.disableMetrics)
+  after(TestHelper.enableMetrics)
   describe('exceptions', () => {
     describe('invalid-productid', () => {
       it('missing querystring productid', async () => {

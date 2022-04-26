@@ -4,6 +4,8 @@ const TestHelper = require('../../../../../test-helper.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/coupons', function () {
+  before(TestHelper.disableMetrics)
+  after(TestHelper.enableMetrics)
   let cachedResponses, cachedCoupons
   async function bundledData (retryNumber) {
     if (retryNumber > 0) {

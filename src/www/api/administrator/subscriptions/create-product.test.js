@@ -2,7 +2,9 @@
 const assert = require('assert')
 const TestHelper = require('../../../../../test-helper.js')
 
-describe('/api/administrator/subscriptions/create-product', () => {
+describe('/api/administrator/subscriptions/create-product', function () {
+  before(TestHelper.disableMetrics)
+  after(TestHelper.enableMetrics)
   describe('exceptions', () => {
     describe('invalid-name', () => {
       it('missing posted name', async () => {

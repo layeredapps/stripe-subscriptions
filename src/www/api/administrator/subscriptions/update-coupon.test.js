@@ -2,7 +2,9 @@
 const assert = require('assert')
 const TestHelper = require('../../../../../test-helper.js')
 
-describe('/api/administrator/subscriptions/update-coupon', () => {
+describe('/api/administrator/subscriptions/update-coupon', function () {
+  before(TestHelper.disableMetrics)
+  after(TestHelper.enableMetrics)
   describe('exceptions', () => {
     describe('invalid-couponid', () => {
       it('missing querystring couponid', async () => {

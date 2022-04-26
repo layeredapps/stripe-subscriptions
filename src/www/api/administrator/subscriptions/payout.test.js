@@ -3,6 +3,8 @@ const assert = require('assert')
 const TestHelper = require('../../../../../test-helper.js')
 
 describe('/api/administrator/subscriptions/payout', function () {
+  before(TestHelper.disableMetrics)
+  after(TestHelper.enableMetrics)
   if (!process.env.DISABLE_PAYOUT_TESTS) {
     describe('exceptions', () => {
       describe('invalid-payoutid', () => {

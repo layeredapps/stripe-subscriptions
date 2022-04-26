@@ -2,7 +2,9 @@
 const assert = require('assert')
 const TestHelper = require('../../../../../test-helper.js')
 
-describe('/api/user/subscriptions/create-payment-method', () => {
+describe('/api/user/subscriptions/create-payment-method', function () {
+  before(TestHelper.disableMetrics)
+  after(TestHelper.enableMetrics)
   describe('exceptions', () => {
     describe('invalid-customerid', () => {
       it('missing querystring customerid', async () => {

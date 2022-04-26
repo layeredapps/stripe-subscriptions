@@ -5,6 +5,8 @@ const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/refund-requests-count', function () {
+  before(TestHelper.disableMetrics)
+  after(TestHelper.enableMetrics)
   describe('returns', () => {
     it('integer', async () => {
       await DashboardTestHelper.setupBeforeEach()

@@ -4,6 +4,8 @@ const TestHelper = require('../../../../../test-helper.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/administrator/subscriptions/payouts', function () {
+  before(TestHelper.disableMetrics)
+  after(TestHelper.enableMetrics)
   if (!process.env.DISABLE_PAYOUT_TESTS) {
     let cachedResponses, cachedPayouts
     async function bundledData (retryNumber) {

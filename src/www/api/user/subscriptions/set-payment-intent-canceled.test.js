@@ -3,7 +3,9 @@ const assert = require('assert')
 const TestHelper = require('../../../../../test-helper.js')
 const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 
-describe('/api/user/subscriptions/set-payment-intent-canceled', () => {
+describe('/api/user/subscriptions/set-payment-intent-canceled', function () {
+  before(TestHelper.disableMetrics)
+  after(TestHelper.enableMetrics)
   describe('exceptions', () => {
     describe('invalid-paymentintentid', () => {
       it('missing querystring paymentintentid', async () => {

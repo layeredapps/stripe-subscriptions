@@ -4,6 +4,8 @@ const TestHelper = require('../../../../../test-helper.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/setup-intents', function () {
+  before(TestHelper.disableMetrics)
+  after(TestHelper.enableMetrics)
   let cachedResponses, cachedSetupIntents
   async function bundledData (retryNumber) {
     if (retryNumber > 0) {

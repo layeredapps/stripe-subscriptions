@@ -5,6 +5,8 @@ const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
 describe('/api/user/subscriptions/set-payment-method-detached', function () {
+  before(TestHelper.disableMetrics)
+  after(TestHelper.enableMetrics)
   let cachedResponses
   async function bundledData (retryNumber) {
     if (retryNumber > 0) {

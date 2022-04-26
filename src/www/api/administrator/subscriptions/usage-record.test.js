@@ -3,7 +3,9 @@ const assert = require('assert')
 const TestHelper = require('../../../../../test-helper.js')
 const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 
-describe('/api/administrator/subscriptions/usage-record', () => {
+describe('/api/administrator/subscriptions/usage-record', function () {
+  before(TestHelper.disableMetrics)
+  after(TestHelper.enableMetrics)
   describe('exceptions', () => {
     describe('invalid-usagerecordid', () => {
       it('missing querystring usagerecordid', async () => {
