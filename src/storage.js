@@ -700,7 +700,9 @@ module.exports = async () => {
     sequelize,
     modelName: 'usagerecord'
   })
-  await sequelize.sync({ force: true, alter: true })
+  // table creation
+  await sequelize.sync()
+  // exception logging
   const originalQuery = sequelize.query
   sequelize.query = function () {
     return originalQuery.apply(this, arguments).catch((error) => {
@@ -708,6 +710,7 @@ module.exports = async () => {
       throw error
     })
   }
+  // metrics
   Charge.afterCreate(async (object) => {
     if (global.disableMetrics) {
       return
@@ -801,21 +804,21 @@ module.exports = async () => {
   return {
     flush: async () => {
       if (process.env.NODE_ENV === 'testing') {
-        await Charge.destroy({ where: {} })
-        await Coupon.destroy({ where: {} })
-        await Customer.destroy({ where: {} })
-        await Dispute.destroy({ where: {} })
-        await Invoice.destroy({ where: {} })
-        await PaymentIntent.destroy({ where: {} })
-        await PaymentMethod.destroy({ where: {} })
-        await Payout.destroy({ where: {} })
-        await Plan.destroy({ where: {} })
-        await Product.destroy({ where: {} })
-        await Refund.destroy({ where: {} })
-        await SetupIntent.destroy({ where: {} })
-        await Subscription.destroy({ where: {} })
-        await TaxRate.destroy({ where: {} })
-        await UsageRecord.destroy({ where: {} })
+        await Charge.sync({ force: true })
+        await Coupon.sync({ force: true })
+        await Customer.sync({ force: true })
+        await Dispute.sync({ force: true })
+        await Invoice.sync({ force: true })
+        await PaymentIntent.sync({ force: true })
+        await PaymentMethod.sync({ force: true })
+        await Payout.sync({ force: true })
+        await Plan.sync({ force: true })
+        await Product.sync({ force: true })
+        await Refund.sync({ force: true })
+        await SetupIntent.sync({ force: true })
+        await Subscription.sync({ force: true })
+        await TaxRate.sync({ force: true })
+        await UsageRecord.sync({ force: true })
       }
     },
     Charge,
