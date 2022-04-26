@@ -6,6 +6,7 @@ module.exports = {
     const where = {
       appid: req.appid || global.appid
     }
+    let taxrateids
     if (req.query.all) {
       taxrateids = await subscriptions.Storage.TaxRate.findAll({
         where,
