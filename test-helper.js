@@ -291,8 +291,6 @@ async function setupBefore () {
   global.sitemap['/api/toggle-overdue-invoice-threshold'] = helperRoutes.toggleOverdueInvoiceThreshold
 }
 
-let webhookRotation = 0
-
 async function setupBeforeEach () {
   Log.info('setupBeforeEach')
   global.packageJSON.dashboard.serverFilePaths.push(
@@ -307,10 +305,9 @@ async function setupBeforeEach () {
   global.webhooks = []
   await deleteOldData()
   await rotateWebhook(true)
-  planNumber = 0
-  productNumber = 0
-  couponNumber = 0
 }
+
+let webhookRotation = 0
 
 async function rotateWebhook (remake) {
   Log.info('rotateWebhook', remake)
@@ -336,7 +333,7 @@ async function setupWebhook () {
       const tunnel = await ngrok.connect({
         port: global.port,
         // auth: process.env.NGROK_AUTH,
-        onLogEvent: process.env.LOG_LEVEL && process.env.LOG_LEVEL.indexOf('ngrok') > -1 ? Log.error : undefined
+        onLogEvent: Log.info
       })
       webhook = await stripe.webhookEndpoints.create({
         url: `${tunnel}/webhooks/subscriptions/index-subscription-data`,
