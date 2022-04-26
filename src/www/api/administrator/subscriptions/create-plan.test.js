@@ -538,7 +538,7 @@ describe('/api/administrator/subscriptions/create-plan', function () {
   })
 
   describe('configuration', () => {
-    it('environment MINIMUM_CUSTOMID_LENGTH', async () => {
+    it('environment MINIMUM_PLANID_LENGTH', async () => {
       global.minimumPlanIDLength = 100
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
@@ -565,7 +565,7 @@ describe('/api/administrator/subscriptions/create-plan', function () {
       assert.strictEqual(errorMessage, 'invalid-planid-length')
     })
 
-    it('environment MAXIMUM_CUSTOMID_LENGTH', async () => {
+    it('environment MAXIMUM_PLANID_LENGTH', async () => {
       global.maximumPlanIDLength = 1
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
