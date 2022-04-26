@@ -10,7 +10,7 @@
   "modules": [
     {
       "name": "@layeredapps/maxmind-geoip",
-      "version": "1.0.18"
+      "version": "1.0.19"
     }
   ],
   "content": [],

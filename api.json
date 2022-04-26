@@ -128,7 +128,10 @@
     "exceptions": {
       "invalid-couponid": [
         "missing posted couponid",
-        "invalid posted couponid is not alphanumeric_"
+        "invalid posted couponid is not alphanumeric"
+      ],
+      "duplicate-couponid": [
+        "invalid posted couponid is already used"
       ],
       "invalid-amount_off": [
         "missing posted amount_off",

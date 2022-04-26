@@ -1,4 +1,4 @@
-@layeredapps/dashboard 0.0.58
+@layeredapps/dashboard 0.0.63
 http://localhost:8000
 
 |------------------------------------------------------------------------------|
@@ -55,28 +55,30 @@ http://localhost:8000
 |                                      |          |  * ineligible querystring subscription is not active  |
 |--------------------------------------|----------|-------------------------------------------------------|
 
-|--------------------------------------------------------------------------------------------------------------------------------|
-| /api/administrator/subscriptions/create-coupon                                                                                 |
-| RECEIVES---------------------------------------------------------| RETURNS--| EXCEPTIONS---------------------------------------|
-| required posted duration_in_months                               | object   | invalid-couponid                                 |
-| required posted currency                                         |          |  * missing posted couponid                       |
-| required posted amount_off                                       |          |  * invalid posted couponid is not alphanumeric_  |
-| required posted couponid                                         |          | invalid-amount_off                               |
-| required posted duration                                         |          |  * missing posted amount_off                     |
-| optionally-required posted amount_off (integer, or percent_off)  |          |  * invalid posted amount_off                     |
-| optionally-required posted currency (string, if amount_off)      |          | invalid-currency                                 |
-| optionally-required posted percent_off (integer, or amount_off)  |          |  * missing posted currency                       |
-| optionally-required posted redeem_by (date in future)            |          |  * invalid posted currency                       |
-| optionally-required posted duration_in_months                    |          | invalid-percent_off                              |
-|                                                                  |          |  * invalid posted percent_off                    |
-|                                                                  |          | invalid-duration                                 |
-|                                                                  |          |  * invalid posted duration                       |
-|                                                                  |          | invalid-duration_in_months                       |
-|                                                                  |          |  * missing posted duration_in_months             |
-|                                                                  |          |  * invalid posted duration_in_months             |
-|                                                                  |          | invalid-redeem_by                                |
-|                                                                  |          |  * invalid posted redeem_by                      |
-|------------------------------------------------------------------|----------|--------------------------------------------------|
+|-------------------------------------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/create-coupon                                                                                |
+| RECEIVES---------------------------------------------------------| RETURNS--| EXCEPTIONS--------------------------------------|
+| required posted duration_in_months                               | object   | invalid-couponid                                |
+| required posted currency                                         |          |  * missing posted couponid                      |
+| required posted amount_off                                       |          |  * invalid posted couponid is not alphanumeric  |
+| required posted couponid                                         |          | duplicate-couponid                              |
+| required posted duration                                         |          |  * invalid posted couponid is already used      |
+| optionally-required posted amount_off (integer, or percent_off)  |          | invalid-amount_off                              |
+| optionally-required posted currency (string, if amount_off)      |          |  * missing posted amount_off                    |
+| optionally-required posted percent_off (integer, or amount_off)  |          |  * invalid posted amount_off                    |
+| optionally-required posted redeem_by (date in future)            |          | invalid-currency                                |
+| optionally-required posted duration_in_months                    |          |  * missing posted currency                      |
+|                                                                  |          |  * invalid posted currency                      |
+|                                                                  |          | invalid-percent_off                             |
+|                                                                  |          |  * invalid posted percent_off                   |
+|                                                                  |          | invalid-duration                                |
+|                                                                  |          |  * invalid posted duration                      |
+|                                                                  |          | invalid-duration_in_months                      |
+|                                                                  |          |  * missing posted duration_in_months            |
+|                                                                  |          |  * invalid posted duration_in_months            |
+|                                                                  |          | invalid-redeem_by                               |
+|                                                                  |          |  * invalid posted redeem_by                     |
+|------------------------------------------------------------------|----------|-------------------------------------------------|
 
 |-------------------------------------------------------------------------------------------------------------------------------------------------|
 | /api/administrator/subscriptions/create-plan                                                                                                    |
@@ -1193,4 +1195,4 @@ http://localhost:8000
 |-----------------------------------------------|-----------------------|--------------------------------------------|------------------------|
 
 
-2022-04-24T03:21:46.469Z
+2022-04-26T21:07:21.719Z
