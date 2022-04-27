@@ -14,7 +14,7 @@ async function beforeRequest (req) {
   }
   const subscriptionRaw = await global.api.administrator.subscriptions.Subscription.get(req)
   const subscription = formatStripeObject(subscriptionRaw)
-  req.data = { subscription: subscription }
+  req.data = { subscription }
 }
 
 async function renderPage (req, res) {

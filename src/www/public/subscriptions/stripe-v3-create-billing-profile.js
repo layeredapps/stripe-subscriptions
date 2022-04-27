@@ -20,13 +20,13 @@ window.onload = function () {
       iconColor: '#fa755a'
     }
   }
-  const zipNumber = elements.create('postalCode', { style: style })
+  const zipNumber = elements.create('postalCode', { style })
   zipNumber.mount('#zip-container')
-  const cvcNumber = elements.create('cardCvc', { style: style })
+  const cvcNumber = elements.create('cardCvc', { style })
   cvcNumber.mount('#cvc-container')
-  const expiryNumber = elements.create('cardExpiry', { style: style })
+  const expiryNumber = elements.create('cardExpiry', { style })
   expiryNumber.mount('#expiry-container')
-  cardNumber = elements.create('cardNumber', { style: style })
+  cardNumber = elements.create('cardNumber', { style })
   cardNumber.mount('#card-container')
   stripeElements.push(zipNumber, cvcNumber, expiryNumber, cardNumber)
   const submit = document.getElementById('form-stripejs-v3')

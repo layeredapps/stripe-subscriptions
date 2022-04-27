@@ -13,7 +13,7 @@ async function beforeRequest (req) {
   }
   const chargeRaw = await global.api.administrator.subscriptions.Charge.get(req)
   const charge = formatStripeObject(chargeRaw)
-  req.data = { charge: charge }
+  req.data = { charge }
 }
 
 async function renderPage (req, res) {

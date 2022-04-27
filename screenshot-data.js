@@ -631,7 +631,7 @@ function createSubscription (date, customer, plan) {
             billing_thresholds: null,
             created: Math.floor(date.getTime() / 1000),
             metadata: {},
-            plan: plan,
+            plan,
             price: {
               id: plan.planid,
               object: 'price',
@@ -679,7 +679,7 @@ function createSubscription (date, customer, plan) {
       pending_invoice_item_interval: null,
       pending_setup_intent: null,
       pending_update: null,
-      plan: plan,
+      plan,
       quantity: 1,
       schedule: null,
       start_date: Math.floor(date.getTime() / 1000),
