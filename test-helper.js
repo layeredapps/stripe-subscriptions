@@ -303,7 +303,7 @@ async function setupBeforeEach () {
   )
   await subscriptions.Storage.flush()
   await deleteOldData()
-  if (global.webhooks && global.webhooks.length) {
+  if (!global.webhooks || global.webhooks.length) {
     await rotateWebhook(true)
     global.webhooks = []
   }
