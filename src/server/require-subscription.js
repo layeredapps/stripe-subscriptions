@@ -13,7 +13,7 @@ module.exports = {
         req.urlPath.startsWith('/api/')) {
       return
     }
-    if (req.account.owner && req.urlPath === '/home') {
+    if (req.account.owner && (req.urlPath === '/home' || req.urlPath === global.homePath)) {
       return
     }
     let startSubscriptionPath = global.startSubscriptionPath

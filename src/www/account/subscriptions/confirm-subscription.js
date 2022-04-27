@@ -87,7 +87,7 @@ async function submitForm (req, res) {
 
   try {
     await global.api.user.subscriptions.CreateSubscription.post(req)
-    return dashboard.Response.redirect(req, res, '/home')
+    return dashboard.Response.redirect(req, res, global.homePath || '/home')
   } catch (error) {
     return renderPage(req, res, error.message)
   }
