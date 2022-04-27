@@ -1,4 +1,6 @@
-module.exports = async (req, proxyRequestOptions) => {
+module.exports = addXInvoicesLatestHeader
+
+async function addXInvoicesLatestHeader (req, proxyRequestOptions) {
   if (!req.account) {
     return
   }

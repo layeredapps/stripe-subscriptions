@@ -1,4 +1,6 @@
-module.exports = async (req, proxyRequestOptions) => {
+module.exports = addXPlansHeader
+
+async function addXPlansHeader (req, proxyRequestOptions) {
   if (!req.account) {
     return
   }

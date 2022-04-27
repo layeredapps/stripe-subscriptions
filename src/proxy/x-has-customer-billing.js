@@ -1,4 +1,6 @@
-module.exports = async (req, proxyRequestOptions) => {
+module.exports = addXHasCustomerBillingHeader
+
+async function addXHasCustomerBillingHeader (req, proxyRequestOptions) {
   if (!req.account) {
     return
   }

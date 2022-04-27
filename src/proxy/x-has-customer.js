@@ -1,4 +1,6 @@
-module.exports = async (req, proxyRequestOptions) => {
+module.exports = addXHasCustomerHeader
+
+async function addXHasCustomerHeader (req, proxyRequestOptions) {
   if (!req.account) {
     return
   }
