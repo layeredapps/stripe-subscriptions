@@ -110,9 +110,7 @@
         <p>You can style Dashboard content by having your application serve a <em>/public/template-additional.css</em> with header and navigation styling, or <em>/public/content-additional.css</em> for content and form styling.</p>
         <p>You can replace this page when you have a "/" ready on your application server:</p>
         <pre><code>const dashboard = require('@layeredapps/dashboard')
-dashboard.start(__dirname)
-delete (global.sitemap['/'])
-delete (global.sitemap['/home'])</code></pre>
+dashboard.start(__dirname)</code></pre>
         <p>You can use NodeJS for caching if you only have one Dashboard server, or <em>Redis</em> as a shared-cache if you have multiple instances of Dashboard.</p>
         <pre><code>export CACHE=redis|node
 export REDIS_URL=redis://localhost:6379 
