@@ -293,14 +293,16 @@ async function setupBefore () {
 
 async function setupBeforeEach () {
   Log.info('setupBeforeEach')
-  global.packageJSON.dashboard.serverFilePaths.push(
-    path.join(__dirname, '/src/server/bind-stripekey.js'),
-    require.resolve('@layeredapps/maxmind-geoip/src/server/bind-country.js')
-  )
-  global.packageJSON.dashboard.server.push(
-    require(path.join(__dirname, '/src/server/bind-stripekey.js')),
-    require('@layeredapps/maxmind-geoip/src/server/bind-country.js')
-  )
+  const bindStripeKey = require.resolve('./src/server/bind-stripekey.js')
+  if (global.packageJSON.dashboard.serverFilePaths.indexOf(bindStripeKey) === -1) {
+    global.packageJSON.dashboard.serverFilePaths.push(bindStripeKey)
+    global.packageJSON.dashboard.server.push(require(bindStripeKey))
+  }
+  const bindCountry = require.resolve('@layeredapps/maxmind-geoip/src/server/bind-country.js')
+  if (global.packageJSON.dashboard.serverFilePaths.indexOf(bindCountry) === -1) {
+    global.packageJSON.dashboard.serverFilePaths.push(bindCountry)
+    global.packageJSON.dashboard.server.push(require(bindCountry))
+  }
   await subscriptions.Storage.flush()
   await deleteOldData()
   if (!global.webhooks || global.webhooks.length) {
