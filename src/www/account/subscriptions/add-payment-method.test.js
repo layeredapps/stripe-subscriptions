@@ -8,8 +8,7 @@ describe('/account/subscriptions/add-payment-method', function () {
       global.stripeJS = false
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest(`/account/subscriptions/add-payment-method?customerid=${user.customer.customerid}`)
       req.account = user.account
@@ -27,8 +26,7 @@ describe('/account/subscriptions/add-payment-method', function () {
       global.stripeJS = 3
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest(`/account/subscriptions/add-payment-method?customerid=${user.customer.customerid}`)
       req.account = user.account
@@ -48,8 +46,7 @@ describe('/account/subscriptions/add-payment-method', function () {
       global.stripeJS = false
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest(`/account/subscriptions/add-payment-method?customerid=${user.customer.customerid}`)
       req.account = user.account
@@ -73,8 +70,7 @@ describe('/account/subscriptions/add-payment-method', function () {
       global.stripeJS = false
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest(`/account/subscriptions/add-payment-method?customerid=${user.customer.customerid}`)
       req.account = user.account
@@ -98,8 +94,7 @@ describe('/account/subscriptions/add-payment-method', function () {
       global.stripeJS = false
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest(`/account/subscriptions/add-payment-method?customerid=${user.customer.customerid}`)
       req.account = user.account
@@ -123,8 +118,7 @@ describe('/account/subscriptions/add-payment-method', function () {
       global.stripeJS = false
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest(`/account/subscriptions/add-payment-method?customerid=${user.customer.customerid}`)
       req.account = user.account
@@ -148,8 +142,7 @@ describe('/account/subscriptions/add-payment-method', function () {
       global.stripeJS = false
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest(`/account/subscriptions/add-payment-method?customerid=${user.customer.customerid}`)
       req.account = user.account
@@ -173,8 +166,7 @@ describe('/account/subscriptions/add-payment-method', function () {
       global.stripeJS = false
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest(`/account/subscriptions/add-payment-method?customerid=${user.customer.customerid}`)
       req.account = user.account
@@ -182,7 +174,7 @@ describe('/account/subscriptions/add-payment-method', function () {
       req.fill = '#form-nojs'
       req.body = {
         email: user.profile.contactEmail,
-        description: 'description',
+        description: 'Chase Sapphire',
         name: `${user.profile.firstName} ${user.profile.lastName}`,
         cvc: '123',
         number: '4111111111111111',
@@ -216,8 +208,7 @@ describe('/account/subscriptions/add-payment-method', function () {
     // it('should add payment information stripe.js v3', async () => {
     //   const user = await TestHelper.createUser()
     //   await TestHelper.createCustomer(user, {
-    //     email: user.profile.contactEmail,
-    //     description: user.profile.firstName
+    //     email: user.profile.contactEmail
     //   })
     //   global.stripeJS = 3
     //   const req = TestHelper.createRequest(`/account/subscriptions/add-payment-method?customerid=${user.customer.customerid}`)

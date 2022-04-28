@@ -62,7 +62,6 @@ describe('/api/user/subscriptions/set-customer-coupon', function () {
         const user = await TestHelper.createUser()
         await TestHelper.createCustomer(user, {
           email: user.profile.contactEmail,
-          description: user.profile.firstName,
           country: 'US'
         })
         await TestHelper.createCustomerDiscount(administrator, user.customer, coupon1)
@@ -91,7 +90,6 @@ describe('/api/user/subscriptions/set-customer-coupon', function () {
         const user = await TestHelper.createUser()
         await TestHelper.createCustomer(user, {
           email: user.profile.contactEmail,
-          description: user.profile.firstName,
           country: 'US'
         })
         const user2 = await TestHelper.createUser()
@@ -116,7 +114,6 @@ describe('/api/user/subscriptions/set-customer-coupon', function () {
         const user = await TestHelper.createUser()
         await TestHelper.createCustomer(user, {
           email: user.profile.contactEmail,
-          description: user.profile.firstName,
           country: 'US'
         })
         const req = TestHelper.createRequest(`/api/user/subscriptions/set-customer-coupon?customerid=${user.customer.customerid}`)
@@ -138,7 +135,6 @@ describe('/api/user/subscriptions/set-customer-coupon', function () {
         const user = await TestHelper.createUser()
         await TestHelper.createCustomer(user, {
           email: user.profile.contactEmail,
-          description: user.profile.firstName,
           country: 'US'
         })
         const req = TestHelper.createRequest(`/api/user/subscriptions/set-customer-coupon?customerid=${user.customer.customerid}`)
@@ -165,7 +161,6 @@ describe('/api/user/subscriptions/set-customer-coupon', function () {
         const user = await TestHelper.createUser()
         await TestHelper.createCustomer(user, {
           email: user.profile.contactEmail,
-          description: user.profile.firstName,
           country: 'US'
         })
         const req = TestHelper.createRequest(`/api/user/subscriptions/set-customer-coupon?customerid=${user.customer.customerid}`)
@@ -192,7 +187,6 @@ describe('/api/user/subscriptions/set-customer-coupon', function () {
         const user = await TestHelper.createUser()
         await TestHelper.createCustomer(user, {
           email: user.profile.contactEmail,
-          description: user.profile.firstName,
           country: 'US'
         })
         const req = TestHelper.createRequest(`/api/user/subscriptions/set-customer-coupon?customerid=${user.customer.customerid}`)
@@ -221,7 +215,6 @@ describe('/api/user/subscriptions/set-customer-coupon', function () {
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,
-        description: user.profile.firstName,
         country: 'US'
       })
       const req = TestHelper.createRequest(`/api/user/subscriptions/set-customer-coupon?customerid=${user.customer.customerid}`)

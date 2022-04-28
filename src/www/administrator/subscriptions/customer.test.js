@@ -9,8 +9,7 @@ describe('/administrator/subscriptions/customer', function () {
       const administrator = await TestHelper.createOwner()
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/customer?customerid=invalid')
       req.account = administrator.account
@@ -28,8 +27,7 @@ describe('/administrator/subscriptions/customer', function () {
       const administrator = await TestHelper.createOwner()
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/customer?customerid=${user.customer.customerid}`)
       req.account = administrator.account
@@ -44,8 +42,7 @@ describe('/administrator/subscriptions/customer', function () {
       const administrator = await TestHelper.createOwner()
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/customer?customerid=${user.customer.customerid}`)
       req.account = administrator.account

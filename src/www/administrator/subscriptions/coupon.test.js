@@ -46,8 +46,7 @@ describe('/administrator/subscriptions/coupon', function () {
       for (let i = 0; i < 4; i++) {
         const user = await TestHelper.createUser()
         await TestHelper.createCustomer(user, {
-          email: user.profile.contactEmail,
-          description: user.profile.firstName
+          email: user.profile.contactEmail
         })
         await TestHelper.createCustomerDiscount(administrator, user.customer, administrator.coupon)
       }

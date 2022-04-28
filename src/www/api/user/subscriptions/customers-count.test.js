@@ -10,8 +10,7 @@ describe('/api/user/subscriptions/customers-count', function () {
       const user = await TestHelper.createUser()
       for (let i = 0, len = global.pageSize + 1; i < len; i++) {
         await TestHelper.createCustomer(user, {
-          email: user.profile.contactEmail,
-          description: user.profile.firstName
+          email: user.profile.contactEmail
         })
       }
       const req = TestHelper.createRequest(`/api/user/subscriptions/customers-count?accountid=${user.account.accountid}`)

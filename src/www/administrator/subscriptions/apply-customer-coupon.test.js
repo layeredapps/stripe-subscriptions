@@ -29,7 +29,6 @@ describe('/administrator/subscriptions/apply-customer-coupon', function () {
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,
-        description: user.profile.firstName,
         country: 'US'
       })
       await TestHelper.createCustomerDiscount(administrator, user.customer, administrator.coupon)
@@ -55,7 +54,6 @@ describe('/administrator/subscriptions/apply-customer-coupon', function () {
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,
-        description: user.profile.firstName,
         country: 'US'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/apply-customer-coupon?customerid=${user.customer.customerid}`)
@@ -72,7 +70,6 @@ describe('/administrator/subscriptions/apply-customer-coupon', function () {
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,
-        description: user.profile.firstName,
         country: 'US'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/apply-customer-coupon?customerid=${user.customer.customerid}`)
@@ -96,7 +93,6 @@ describe('/administrator/subscriptions/apply-customer-coupon', function () {
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,
-        description: user.profile.firstName,
         country: 'US'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/apply-customer-coupon?customerid=${user.customer.customerid}`)

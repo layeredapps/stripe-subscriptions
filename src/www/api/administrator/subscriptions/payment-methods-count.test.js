@@ -11,7 +11,6 @@ describe('/api/administrator/subscriptions/payment-methods-count', function () {
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,
-        description: user.profile.firstName,
         country: 'US'
       })
       for (let i = 0, len = global.pageSize + 1; i < len; i++) {

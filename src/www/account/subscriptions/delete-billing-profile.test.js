@@ -19,8 +19,7 @@ describe('/account/subscriptions/delete-billing-profile', function () {
     await TestHelper.setupBeforeEach()
     const user = await TestHelper.createUser()
     cachedCustomer = await TestHelper.createCustomer(user, {
-      email: user.profile.contactEmail,
-      description: user.profile.firstName
+      email: user.profile.contactEmail
     })
     const req1 = TestHelper.createRequest(`/account/subscriptions/delete-billing-profile?customerid=${user.customer.customerid}`)
     req1.account = user.account

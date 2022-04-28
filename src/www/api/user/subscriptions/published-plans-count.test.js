@@ -22,8 +22,7 @@ describe('/api/user/subscriptions/published-plans-count', function () {
       }
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest('/api/user/subscriptions/published-plans-count')
       req.account = user.account

@@ -7,8 +7,7 @@ describe('/account/subscriptions/billing-profile', function () {
     it('should reject invalid customer', async () => {
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest('/account/subscriptions/billing-profile?customerid=invalid')
       req.account = user.account
@@ -25,8 +24,7 @@ describe('/account/subscriptions/billing-profile', function () {
     it('should reject other account\'s customer', async () => {
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const user2 = await TestHelper.createUser()
       const req = TestHelper.createRequest(`/account/subscriptions/billing-profile?customerid=${user.customer.customerid}`)
@@ -44,8 +42,7 @@ describe('/account/subscriptions/billing-profile', function () {
     it('should bind data to req', async () => {
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest(`/account/subscriptions/billing-profile?customerid=${user.customer.customerid}`)
       req.account = user.account
@@ -59,8 +56,7 @@ describe('/account/subscriptions/billing-profile', function () {
     it('should have row for customer (screenshots)', async () => {
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest(`/account/subscriptions/billing-profile?customerid=${user.customer.customerid}`)
       req.account = user.account

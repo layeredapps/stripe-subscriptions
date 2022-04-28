@@ -57,8 +57,7 @@ describe('/api/user/subscriptions/set-subscription-plan', function () {
     const user = await TestStripeAccounts.createUserWithPaidSubscription(plan1)
     const user2 = await TestHelper.createUser()
     await TestHelper.createCustomer(user2, {
-      email: user.profile.contactEmail,
-      description: user.profile.firstName
+      email: user.profile.contactEmail
     })
     // invalid and missing subscription
     const req = TestHelper.createRequest('/api/user/subscriptions/set-subscription-quantity')

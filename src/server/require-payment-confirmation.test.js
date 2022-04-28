@@ -46,7 +46,6 @@ describe('server/stripe-subscriptions/require-payment-confirmation', function ()
       })
       await TestHelper.createCustomer(administrator, {
         email: administrator.profile.contactEmail,
-        description: administrator.profile.firstName,
         country: 'US'
       })
       await TestHelper.createPaymentMethod(administrator, {

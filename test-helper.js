@@ -595,12 +595,38 @@ async function deleteCustomerDiscount (administrator, customer, coupon) {
   return customerNow
 }
 
+const cardTypes = [
+  'American Express',
+  'Diners Club - Carte Blanche',
+  'Diners Club',
+  'Discover',
+  'InstaPayment',
+  'JCB',
+  'Laser',
+  'Maestro',
+  'MasterCard',
+  'Visa',
+  'Visa Electron',
+  'Work American Express',
+  'Work Diners Club - Carte Blanche',
+  'Work Diners Club',
+  'Work Discover',
+  'Work InstaPayment',
+  'Work JCB',
+  'Work Laser',
+  'Work Maestro',
+  'Work MasterCard',
+  'Work Visa',
+  'Work Visa Electron'
+]
+
 async function createCustomer (user, properties) {
   Log.info('createCustomer', user, properties)
   const req = createRequest(`/api/user/subscriptions/create-customer?accountid=${user.account.accountid}`)
   req.session = user.session
   req.account = user.account
   req.body = properties
+  req.body.description = req.body.description || card[Math.floor(Math.random() * cardTypes.length)]
   user.customer = await req.post()
   return user.customer
 }

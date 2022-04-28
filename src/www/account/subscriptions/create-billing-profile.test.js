@@ -51,7 +51,7 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.fill = '#form-nojs'
       req.body = {
         email: user.profile.contactEmail,
-        description: '',
+        description: 'Chase Sapphire',
         name: `${user.profile.firstName} ${user.profile.lastName}`,
         cvc: '111',
         number: '4111111111111111',
@@ -74,7 +74,7 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.fill = '#form-nojs'
       req.body = {
         email: '',
-        description: 'description',
+        description: 'Chase Sapphire',
         name: `${user.profile.firstName} ${user.profile.lastName}`,
         cvc: '111',
         number: '4111111111111111',
@@ -97,7 +97,7 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.fill = '#form-nojs'
       req.body = {
         email: user.profile.contactEmail,
-        description: 'description',
+        description: 'Chase Sapphire',
         name: '',
         cvc: '111',
         number: '4111111111111111',
@@ -120,7 +120,7 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.fill = '#form-nojs'
       req.body = {
         email: user.profile.contactEmail,
-        description: 'description',
+        description: 'Chase Sapphire',
         name: `${user.profile.firstName} ${user.profile.lastName}`,
         cvc: '0',
         number: '4111111111111111',
@@ -143,7 +143,7 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.fill = '#form-nojs'
       req.body = {
         email: user.profile.contactEmail,
-        description: 'description',
+        description: 'Chase Sapphire',
         name: `${user.profile.firstName} ${user.profile.lastName}`,
         cvc: '123',
         number: '',
@@ -166,7 +166,7 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.fill = '#form-nojs'
       req.body = {
         email: user.profile.contactEmail,
-        description: 'description',
+        description: 'Chase Sapphire',
         name: `${user.profile.firstName} ${user.profile.lastName}`,
         cvc: '123',
         number: '4111111111111111',
@@ -189,7 +189,7 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.fill = '#form-nojs'
       req.body = {
         email: user.profile.contactEmail,
-        description: 'description',
+        description: 'Chase Sapphire',
         name: `${user.profile.firstName} ${user.profile.lastName}`,
         cvc: '123',
         number: '4111111111111111',
@@ -268,7 +268,7 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.fill = '#form-stripejs-v3'
       req.body = {
         email: '',
-        description: 'description',
+        description: 'Chase Sapphire',
         name: `${user.profile.firstName} ${user.profile.lastName}`,
         'cvc-container': '111',
         'card-container': '4111111111111111',
@@ -296,7 +296,7 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.fill = '#form-nojs'
       req.body = {
         email: user.profile.contactEmail,
-        description: 'description',
+        description: 'Chase Sapphire',
         name: `${user.profile.firstName} ${user.profile.lastName}`,
         cvc: '111',
         number: '4111111111111111',
@@ -315,7 +315,7 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.session = user.session
       req.body = {
         email: user.profile.contactEmail,
-        description: 'description',
+        description: 'Chase Sapphire',
         name: `${user.profile.firstName} ${user.profile.lastName}`,
         'cvc-container': { type: true, value: '111' },
         'card-container': { type: true, value: '4111111111111111' },

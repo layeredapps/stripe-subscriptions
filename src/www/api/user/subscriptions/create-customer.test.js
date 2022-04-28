@@ -14,7 +14,7 @@ describe('/api/user/subscriptions/create-customer', function () {
         req.session = user.session
         req.body = {
           email: user.profile.contactEmail,
-          description: 'customer'
+          description: 'Work VISA'
         }
         let errorMessage
         try {
@@ -32,7 +32,7 @@ describe('/api/user/subscriptions/create-customer', function () {
         req.session = user.session
         req.body = {
           email: user.profile.contactEmail,
-          description: 'customer'
+          description: 'Work VISA'
         }
         let errorMessage
         try {
@@ -70,7 +70,7 @@ describe('/api/user/subscriptions/create-customer', function () {
       req.session = user.session
       req.body = {
         email: user.profile.contactEmail,
-        description: 'customer'
+        description: 'Work VISA'
       }
       req.filename = __filename
       req.saveResponse = true

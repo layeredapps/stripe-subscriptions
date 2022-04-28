@@ -30,8 +30,9 @@ describe('/api/user/subscriptions/create-usage-record', function () {
     req.account = user.account
     req.session = user.session
     req.body = {
-      email: user.profile.contactEmail,
-      description: 'customer'
+      quantity: 'abcde',
+      action: 'set',
+      subscriptionitemid: 'fake'
     }
     try {
       await req.post()
@@ -42,8 +43,9 @@ describe('/api/user/subscriptions/create-usage-record', function () {
     req2.account = user.account
     req2.session = user.session
     req2.body = {
-      email: user.profile.contactEmail,
-      description: 'customer'
+      quantity: 'abcde',
+      action: 'set',
+      subscriptionitemid: 'fake'
     }
     try {
       await req2.post()

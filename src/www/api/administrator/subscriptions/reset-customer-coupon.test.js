@@ -40,8 +40,7 @@ describe('/api/administrator/subscriptions/reset-customer-coupon', function () {
     // invalid customer has no coupon
     const user = await TestHelper.createUser()
     await TestHelper.createCustomer(user, {
-      email: user.profile.contactEmail,
-      description: user.profile.firstName
+      email: user.profile.contactEmail
     })
     const req3 = TestHelper.createRequest(`/api/administrator/subscriptions/reset-customer-coupon?customerid=${user.customer.customerid}`)
     req3.account = administrator.account

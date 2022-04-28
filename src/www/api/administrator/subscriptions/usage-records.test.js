@@ -32,8 +32,7 @@ describe('/api/administrator/subscriptions/usage-records', function () {
       cachedUsageRecords.unshift(user.usageRecord.usagerecordid)
     }
     await TestHelper.createCustomer(accountUser, {
-      email: accountUser.profile.contactEmail,
-      description: accountUser.profile.firstName
+      email: accountUser.profile.contactEmail
     })
     await TestHelper.createPaymentMethod(accountUser, {
       cvc: '111',

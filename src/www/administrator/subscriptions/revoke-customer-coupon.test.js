@@ -30,7 +30,6 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,
-        description: user.profile.firstName,
         country: 'US'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/revoke-customer-coupon?customerid=${user.customer.customerid}`)
@@ -57,7 +56,6 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,
-        description: user.profile.firstName,
         country: 'US'
       })
       await TestHelper.createCoupon(administrator, {
@@ -85,7 +83,6 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,
-        description: user.profile.firstName,
         country: 'US'
       })
       await TestHelper.createCoupon(administrator, {
@@ -115,7 +112,6 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,
-        description: user.profile.firstName,
         country: 'US'
       })
       await TestHelper.createCoupon(administrator, {

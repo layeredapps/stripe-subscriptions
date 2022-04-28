@@ -22,7 +22,6 @@ describe('server/stripe-subscriptions/require-payment', () => {
       await TestHelper.toggleOverdueInvoiceThreshold(false)
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,
-        description: user.profile.firstName,
         country: 'US'
       })
       await TestHelper.createAmountOwed(user)
@@ -43,7 +42,6 @@ describe('server/stripe-subscriptions/require-payment', () => {
       await TestHelper.toggleOverdueInvoiceThreshold(false)
       await TestHelper.createCustomer(administrator, {
         email: administrator.profile.contactEmail,
-        description: administrator.profile.firstName,
         country: 'US'
       })
       await TestHelper.createAmountOwed(administrator)

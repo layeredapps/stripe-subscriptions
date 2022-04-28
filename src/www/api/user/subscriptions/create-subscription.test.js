@@ -53,7 +53,6 @@ describe('/api/user/subscriptions/create-subscription', function () {
     // missing payment method
     await TestHelper.createCustomer(user, {
       email: user.profile.contactEmail,
-      description: user.profile.firstName,
       country: 'US'
     })
     const req3 = TestHelper.createRequest(`/api/user/subscriptions/create-subscription?customerid=${user.customer.customerid}`)

@@ -21,7 +21,6 @@ describe('/account/subscriptions/billing-profiles', function () {
     for (let i = 0, len = global.pageSize + 2; i < len; i++) {
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,
-        description: user.profile.firstName,
         country: 'US'
       })
       cachedCustomers.unshift(user.customer.customerid)

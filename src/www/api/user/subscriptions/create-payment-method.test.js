@@ -42,8 +42,7 @@ describe('/api/user/subscriptions/create-payment-method', function () {
       it('ineligible accessing account', async () => {
         const user = await TestHelper.createUser()
         await TestHelper.createCustomer(user, {
-          email: user.profile.contactEmail,
-          description: user.profile.firstName
+          email: user.profile.contactEmail
         })
         const user2 = await TestHelper.createUser()
         const req = TestHelper.createRequest(`/api/user/subscriptions/create-payment-method?customerid=${user.customer.customerid}`)
@@ -78,15 +77,14 @@ describe('/api/user/subscriptions/create-payment-method', function () {
       global.stripeJS = false
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest(`/api/user/subscriptions/create-payment-method?customerid=${user.customer.customerid}`)
       req.account = user.account
       req.session = user.session
       req.body = {
         email: user.profile.contactEmail,
-        description: 'description',
+        description: 'Chase Sapphire',
         name: '',
         cvc: '111',
         number: '4111111111111111',
@@ -106,15 +104,14 @@ describe('/api/user/subscriptions/create-payment-method', function () {
       global.stripeJS = false
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest(`/api/user/subscriptions/create-payment-method?customerid=${user.customer.customerid}`)
       req.account = user.account
       req.session = user.session
       req.body = {
         email: user.profile.contactEmail,
-        description: 'description',
+        description: 'Chase Sapphire',
         name: `${user.profile.firstName} ${user.profile.lastName}`,
         cvc: '0',
         number: '4111111111111111',
@@ -134,15 +131,14 @@ describe('/api/user/subscriptions/create-payment-method', function () {
       global.stripeJS = false
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest(`/api/user/subscriptions/create-payment-method?customerid=${user.customer.customerid}`)
       req.account = user.account
       req.session = user.session
       req.body = {
         email: user.profile.contactEmail,
-        description: 'description',
+        description: 'Chase Sapphire',
         name: `${user.profile.firstName} ${user.profile.lastName}`,
         cvc: '123',
         number: '',
@@ -162,15 +158,14 @@ describe('/api/user/subscriptions/create-payment-method', function () {
       global.stripeJS = false
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest(`/api/user/subscriptions/create-payment-method?customerid=${user.customer.customerid}`)
       req.account = user.account
       req.session = user.session
       req.body = {
         email: user.profile.contactEmail,
-        description: 'description',
+        description: 'Chase Sapphire',
         name: `${user.profile.firstName} ${user.profile.lastName}`,
         cvc: '123',
         number: '4111111111111111',
@@ -190,15 +185,14 @@ describe('/api/user/subscriptions/create-payment-method', function () {
       global.stripeJS = false
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest(`/api/user/subscriptions/create-payment-method?customerid=${user.customer.customerid}`)
       req.account = user.account
       req.session = user.session
       req.body = {
         email: user.profile.contactEmail,
-        description: 'description',
+        description: 'Chase Sapphire',
         name: `${user.profile.firstName} ${user.profile.lastName}`,
         cvc: '123',
         number: '4111111111111111',
@@ -218,15 +212,14 @@ describe('/api/user/subscriptions/create-payment-method', function () {
       global.stripeJS = 2
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest(`/api/user/subscriptions/create-payment-method?customerid=${user.customer.customerid}`)
       req.account = user.account
       req.session = user.session
       req.body = {
         email: user.profile.contactEmail,
-        description: 'description',
+        description: 'Chase Sapphire',
         name: `${user.profile.firstName} ${user.profile.lastName}`,
         token: ''
       }
@@ -245,8 +238,7 @@ describe('/api/user/subscriptions/create-payment-method', function () {
       global.stripeJS = false
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest(`/api/user/subscriptions/create-payment-method?customerid=${user.customer.customerid}`)
       req.account = user.account
@@ -276,8 +268,7 @@ describe('/api/user/subscriptions/create-payment-method', function () {
       global.stripeJS = 2
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       const req = TestHelper.createRequest(`/api/user/subscriptions/create-payment-method?customerid=${user.customer.customerid}`)
       req.account = user.account

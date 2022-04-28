@@ -23,7 +23,6 @@ describe('/administrator/subscriptions/customers', function () {
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,
-        description: user.profile.firstName,
         country: 'US'
       })
       cachedCustomers.unshift(user.customer.customerid)

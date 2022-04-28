@@ -40,8 +40,7 @@ describe('/api/user/subscriptions/delete-customer', function () {
       it('ineligible accessing account', async () => {
         const user = await TestHelper.createUser()
         await TestHelper.createCustomer(user, {
-          email: user.profile.contactEmail,
-          description: user.profile.firstName,
+          email: user.profile.contactEmail
           country: 'US'
         })
         const user2 = await TestHelper.createUser()
@@ -64,7 +63,6 @@ describe('/api/user/subscriptions/delete-customer', function () {
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,
-        description: user.profile.firstName,
         country: 'US'
       })
       const req = TestHelper.createRequest(`/api/user/subscriptions/delete-customer?customerid=${user.customer.customerid}`)

@@ -24,8 +24,7 @@ describe('/api/administrator/subscriptions/customers', function () {
     for (let i = 0, len = global.pageSize + 2; i < len; i++) {
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       cachedCustomers.unshift(user.customer.customerid)
     }

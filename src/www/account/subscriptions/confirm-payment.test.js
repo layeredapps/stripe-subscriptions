@@ -16,7 +16,6 @@ describe('/account/subscriptions/confirm-payment', function () {
   //     const user = await TestHelper.createUser()
   //     await TestHelper.createCustomer(user, {
   //       email: user.profile.contactEmail,
-  //       description: user.profile.firstName,
   //       country: 'US'
   //     })
   //     await TestHelper.createPaymentMethod(user, {
@@ -64,7 +63,6 @@ describe('/account/subscriptions/confirm-payment', function () {
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,
-        description: user.profile.firstName,
         country: 'US'
       })
       await TestHelper.createPaymentMethod(user, {

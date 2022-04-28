@@ -68,7 +68,7 @@ describe('/account/subscriptions/confirm-subscription', function () {
     cachedResponses.returns = await req4.get()
     const invalidCustomer = await TestHelper.createCustomer(user, {
       email: user.profile.contactEmail,
-      description: user.profile.firstName
+      description: 'Chase Visa Debit'
     })
     const req5 = TestHelper.createRequest(`/account/subscriptions/confirm-subscription?planid=${publishedPlan.planid}`)
     req5.account = user.account

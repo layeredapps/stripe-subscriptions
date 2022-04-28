@@ -56,7 +56,6 @@ describe('/account/subscriptions/subscription', function () {
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,
-        description: user.profile.firstName,
         country: 'US'
       })
       const req = TestHelper.createRequest('/account/subscriptions/subscription?subscriptionid=invalid')

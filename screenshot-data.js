@@ -986,6 +986,31 @@ function createCharge (subscription, invoice) {
   }
 }
 
+const cardTypes = [
+  'American Express',
+  'Diners Club - Carte Blanche',
+  'Diners Club',
+  'Discover',
+  'InstaPayment',
+  'JCB',
+  'Laser',
+  'Maestro',
+  'MasterCard',
+  'Visa',
+  'Visa Electron',
+  'Work American Express',
+  'Work Diners Club - Carte Blanche',
+  'Work Diners Club',
+  'Work Discover',
+  'Work InstaPayment',
+  'Work JCB',
+  'Work Laser',
+  'Work Maestro',
+  'Work MasterCard',
+  'Work Visa',
+  'Work Visa Electron'
+]
+
 function createCustomer (date) {
   const id = faker.datatype.uuid().split('-').join('').substring(0, 24)
   const firstName = faker.name.firstName()
@@ -1003,7 +1028,7 @@ function createCustomer (date) {
       currency: null,
       default_source: null,
       delinquent: false,
-      description: firstName,
+      description: card[Math.floor(Math.random() * cardTypes.length)],
       discount: null,
       email,
       invoice_prefix: '063BA694',

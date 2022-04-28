@@ -118,8 +118,7 @@ const TestStripeAccounts = module.exports = {
   createUserWithoutPaymentMethod: async (user) => {
     user = user || await TestHelper.createUser()
     await TestHelper.createCustomer(user, {
-      email: user.profile.contactEmail,
-      description: user.profile.firstName
+      email: user.profile.contactEmail
     })
     user.customer = await global.api.administrator.subscriptions.Customer.get({
       query: {

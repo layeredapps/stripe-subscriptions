@@ -10,13 +10,11 @@ describe('/api/administrator/subscriptions/customers-count', function () {
       const administrator = await TestHelper.createOwner()
       const user1 = await TestHelper.createUser()
       await TestHelper.createCustomer(user1, {
-        email: user1.profile.contactEmail,
-        description: user1.profile.firstName
+        email: user1.profile.contactEmail
       })
       const user2 = await TestHelper.createUser()
       await TestHelper.createCustomer(user2, {
-        email: user2.profile.contactEmail,
-        description: user2.profile.firstName
+        email: user2.profile.contactEmail
       })
       const req = TestHelper.createRequest('/api/administrator/subscriptions/customers-count')
       req.account = administrator.account

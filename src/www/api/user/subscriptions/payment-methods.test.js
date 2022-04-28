@@ -26,8 +26,7 @@ describe('/api/user/subscriptions/payment-methods', function () {
     })
     const user = await TestHelper.createUser()
     await TestHelper.createCustomer(user, {
-      email: user.profile.contactEmail,
-      description: user.profile.firstName
+      email: user.profile.contactEmail
     })
     for (let i = 0, len = global.pageSize + 2; i < len; i++) {
       await TestHelper.createPaymentMethod(user, {

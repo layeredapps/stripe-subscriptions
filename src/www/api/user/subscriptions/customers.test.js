@@ -34,8 +34,7 @@ describe('/api/user/subscriptions/customers', function () {
         amount: '1000'
       })
       await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        description: user.profile.firstName
+        email: user.profile.contactEmail
       })
       cachedCustomers.unshift(user.customer.customerid)
     }
