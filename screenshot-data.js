@@ -44,6 +44,31 @@ const coupons = [
   mergeStripeObject(createCoupon(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 285, now.getHours(), now.getMinutes(), now.getSeconds())))
 ]
 
+const cardTypes = [
+  'American Express',
+  'Diners Club - Carte Blanche',
+  'Diners Club',
+  'Discover',
+  'InstaPayment',
+  'JCB',
+  'Laser',
+  'Maestro',
+  'MasterCard',
+  'Visa',
+  'Visa Electron',
+  'Work American Express',
+  'Work Diners Club - Carte Blanche',
+  'Work Diners Club',
+  'Work Discover',
+  'Work InstaPayment',
+  'Work JCB',
+  'Work Laser',
+  'Work Maestro',
+  'Work MasterCard',
+  'Work Visa',
+  'Work Visa Electron'
+]
+
 for (let i = 0; i < 365; i++) {
   if (i === 0) {
     customerQuantities[i] = 30 + Math.ceil(Math.random() * 80)
@@ -985,31 +1010,6 @@ function createCharge (subscription, invoice) {
     updatedAt: invoice.createdAt
   }
 }
-
-const cardTypes = [
-  'American Express',
-  'Diners Club - Carte Blanche',
-  'Diners Club',
-  'Discover',
-  'InstaPayment',
-  'JCB',
-  'Laser',
-  'Maestro',
-  'MasterCard',
-  'Visa',
-  'Visa Electron',
-  'Work American Express',
-  'Work Diners Club - Carte Blanche',
-  'Work Diners Club',
-  'Work Discover',
-  'Work InstaPayment',
-  'Work JCB',
-  'Work Laser',
-  'Work Maestro',
-  'Work MasterCard',
-  'Work Visa',
-  'Work Visa Electron'
-]
 
 function createCustomer (date) {
   const id = faker.datatype.uuid().split('-').join('').substring(0, 24)
