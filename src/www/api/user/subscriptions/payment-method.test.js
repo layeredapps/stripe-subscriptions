@@ -80,7 +80,7 @@ describe('/api/user/subscriptions/payment-method', function () {
         const user = await TestStripeAccounts.createUserWithPaymentMethod()
         const user2 = await TestHelper.createUser()
         await TestHelper.createCustomer(user2, {
-          email: user.profile.contactEmail
+          email: user.profile.contactEmail,
           country: 'US'
         })
         const req = TestHelper.createRequest(`/api/user/subscriptions/payment-method?paymentmethodid=${user.paymentMethod.paymentmethodid}`)

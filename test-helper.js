@@ -626,7 +626,7 @@ async function createCustomer (user, properties) {
   req.session = user.session
   req.account = user.account
   req.body = properties
-  req.body.description = req.body.description || card[Math.floor(Math.random() * cardTypes.length)]
+  req.body.description = req.body.description || cardTypes[Math.floor(Math.random() * cardTypes.length)]
   user.customer = await req.post()
   return user.customer
 }

@@ -1013,7 +1013,6 @@ const cardTypes = [
 
 function createCustomer (date) {
   const id = faker.datatype.uuid().split('-').join('').substring(0, 24)
-  const firstName = faker.name.firstName()
   const email = faker.internet.email()
   return {
     customerid: `cus_${id}`,
@@ -1028,7 +1027,7 @@ function createCustomer (date) {
       currency: null,
       default_source: null,
       delinquent: false,
-      description: card[Math.floor(Math.random() * cardTypes.length)],
+      description: cardTypes[Math.floor(Math.random() * cardTypes.length)],
       discount: null,
       email,
       invoice_prefix: '063BA694',

@@ -10,7 +10,7 @@ describe('/api/user/subscriptions/payment-intents-count', function () {
       const user = await TestHelper.createUser()
       for (let i = 0, len = global.pageSize + 1; i < len; i++) {
         await TestHelper.createCustomer(user, {
-          email: user.profile.contactEmail
+          email: user.profile.contactEmail,
           country: 'US'
         })
         await TestHelper.createPaymentMethod(user, {
