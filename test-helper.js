@@ -168,7 +168,6 @@ const enabledEvents = [
   // 'subscription_schedule.updated'
 ]
 
-const path = require('path')
 const util = require('util')
 const TestHelper = require('@layeredapps/dashboard/test-helper.js')
 const TestHelperPuppeteer = require('@layeredapps/dashboard/test-helper-puppeteer.js')
