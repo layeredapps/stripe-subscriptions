@@ -25,8 +25,8 @@ async function requirePaymentConfirmation (req, res) {
   req.query = queryWas
   if (paymentIntents && paymentIntents.length) {
     res.ended = true
-    let aconfirmPaymentURL = `/account/subscriptions/confirm-payment?invoiceid=${paymentIntents[0].invoice}`
-    aconfirmPaymentURL += '&return-url=' + req.url
-    return dashboard.Response.redirect(req, res, aconfirmPaymentURL)
+    let confirmPaymentURL = `/account/subscriptions/confirm-payment?invoiceid=${paymentIntents[0].invoice}`
+    confirmPaymentURL += '&return-url=' + req.url
+    return dashboard.Response.redirect(req, res, confirmPaymentURL)
   }
 }
