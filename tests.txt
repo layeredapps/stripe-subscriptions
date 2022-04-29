@@ -1,5 +1,5 @@
 
-> @layeredapps/stripe-subscriptions@1.0.21 test
+> @layeredapps/stripe-subscriptions@1.0.30 test
 > NODE_ENV=testing STORAGE=sqlite SQLITE_DATABASE=subscriptions mocha --retries 3 --ignore 'node_modules/**/*' --timeout 240000 --slow 240000 --recursive --extension .test.js .
 
 
@@ -149,7 +149,7 @@
       ✔ should require description for stripe.js v3
       ✔ should require email for stripe.js v3
       ✔ should create billing profile for no stripe.js
-      ✔ should create billing profile for stripe.js v3 (screenshots) (139561ms)
+      ✔ should create billing profile for stripe.js v3 (screenshots)
 
   /account/subscriptions/delete-billing-profile
     exceptions
@@ -716,7 +716,7 @@
       ✔ should change page size
       ✔ should change offset
 
-  /administrator/subscriptions/subscriptions
+  /administrator/subscriptions/subscription
     before
       ✔ should reject invalid subscriptionid
       ✔ should bind data to req
