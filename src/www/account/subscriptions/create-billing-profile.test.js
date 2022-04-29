@@ -51,7 +51,7 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.fill = '#form-nojs'
       req.body = {
         email: user.profile.contactEmail,
-        description: 'Chase Sapphire',
+        description: '',
         name: `${user.profile.firstName} ${user.profile.lastName}`,
         cvc: '111',
         number: '4111111111111111',
