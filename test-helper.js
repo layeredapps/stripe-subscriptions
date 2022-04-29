@@ -607,17 +607,17 @@ const cardTypes = [
   'MasterCard',
   'Visa',
   'Visa Electron',
-  'Work American Express',
-  'Work Diners Club - Carte Blanche',
-  'Work Diners Club',
-  'Work Discover',
-  'Work InstaPayment',
-  'Work JCB',
-  'Work Laser',
-  'Work Maestro',
-  'Work MasterCard',
-  'Work Visa',
-  'Work Visa Electron'
+  'American Express (work)',
+  'Diners Club - Carte Blanche (work)',
+  'Diners Club (work)',
+  'Discover (work)',
+  'InstaPayment (work)',
+  'JCB (work)',
+  'Laser (work)',
+  'Maestro (work)',
+  'MasterCard (work)',
+  'Visa (work)',
+  'Visa Electron (work)'
 ]
 
 async function createCustomer (user, properties) {
