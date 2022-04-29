@@ -19,7 +19,7 @@ global.testConfiguration.minimumProductNameLength = 1
 global.testConfiguration.maximumProductNameLength = 100
 global.testConfiguration.stripeKey = process.env.SUBSCRIPTIONS_STRIPE_KEY || process.env.STRIPE_KEY
 global.testConfiguration.stripePublishableKey = process.env.SUBSCRIPTIONS_STRIPE_PUBLISHABLE_KEY || process.env.STRIPE_PUBLISHABLE_KEY
-global.testConfiguration.subscriptionWebhookEndPointSecret = process.env.SUBSTRIPTIONS_WEBHOOK_SECRET || false
+global.testConfiguration.subscriptionWebhookEndPointSecret = process.env.SUBSCRIPTIONS_WEBHOOK_SECRET || false
 
 const enabledEvents = [
   'setup_intent.canceled',
