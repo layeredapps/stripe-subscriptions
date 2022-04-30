@@ -1,5 +1,5 @@
 @layeredapps/dashboard 0.0.72
-http://localhost:8000
+http://localhost:50011
 
 Administrator menu:
 @layeredapps/stripe-subscriptions/src/www/administrator/subscriptions "Stripe Subscriptions <span translate="yes">module</span>"
@@ -324,4 +324,4 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /home                                                                                                static-page                    /src/www                  
 /webhooks/subscriptions/index-subscription-data                    GUEST             POST            /src/www                       /src/www                  
 
-2022-04-30T01:01:07.455Z
+2022-04-30T01:38:01.892Z

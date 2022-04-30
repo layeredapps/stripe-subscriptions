@@ -1193,5 +1193,1218 @@
       "object"
     ],
     "configuration": []
+  },
+  "/api/administrator/subscriptions/usage-records-count": {
+    "url": "/api/administrator/subscriptions/usage-records-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/usage-records": {
+    "url": "/api/administrator/subscriptions/usage-records",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)",
+      "optional querystring accountid",
+      "optional querystring customerid",
+      "optional querystring subscriptionid"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/charge": {
+    "url": "/api/user/subscriptions/charge",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-chargeid": [
+        "missing querystring chargeid",
+        "invalid querystring chargeid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/charges-count": {
+    "url": "/api/user/subscriptions/charges-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/charges": {
+    "url": "/api/user/subscriptions/charges",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {
+      "invalid-accountid": [
+        "missing querystring accountid",
+        "invalid querystring accountid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/create-cancelation-refund": {
+    "url": "/api/user/subscriptions/create-cancelation-refund",
+    "verb": "post",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-subscription": [
+        "ineligible querystring subscription is not active",
+        "ineligible querystring subscription is free"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/create-customer": {
+    "url": "/api/user/subscriptions/create-customer",
+    "verb": "post",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-accountid": [
+        "missing querystring accountid",
+        "invalid querystring accountid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/create-payment-intent": {
+    "url": "/api/user/subscriptions/create-payment-intent",
+    "verb": "post",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-customerid": [
+        "missing querystring customerid",
+        "invalid querystring customerid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account",
+        "ineligible posted payment method"
+      ],
+      "invalid-paymentmethodid": [
+        "missing posted paymentmethodid",
+        "invalid posted paymentmethodid"
+      ],
+      "object": []
+    },
+    "redacts": [],
+    "returns": [],
+    "configuration": []
+  },
+  "/api/user/subscriptions/create-payment-method": {
+    "url": "/api/user/subscriptions/create-payment-method",
+    "verb": "post",
+    "auth": false,
+    "receives": [
+      "optionally-required posted name",
+      "optionally-required posted cvc",
+      "optionally-required posted number",
+      "optionally-required posted exp_month",
+      "optionally-required posted exp_year",
+      "optionally-required posted token"
+    ],
+    "exceptions": {
+      "invalid-customerid": [
+        "missing querystring customerid",
+        "invalid querystring customerid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": [
+      "environment STRIPE_JS"
+    ]
+  },
+  "/api/user/subscriptions/create-refund-request": {
+    "url": "/api/user/subscriptions/create-refund-request",
+    "verb": "post",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-chargeid": [
+        "missing querystring chargeid",
+        "invalid querystring chargeid"
+      ],
+      "invalid-charge": [
+        "ineligible querystring charge is refunded",
+        "ineligible querystring charge has refund request"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/create-refund": {
+    "url": "/api/user/subscriptions/create-refund",
+    "verb": "post",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-chargeid": [
+        "missing querystring chargeid",
+        "invalid querystring chargeid"
+      ],
+      "invalid-charge": [
+        "ineligible querystring charge is refunded",
+        "ineligible querystring charge is out of refund period"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": [
+      "environment SUBSCRIPTION_REFUND_PERIOD"
+    ]
+  },
+  "/api/user/subscriptions/create-setup-intent": {
+    "url": "/api/user/subscriptions/create-setup-intent",
+    "verb": "post",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-customerid": [
+        "missing querystring customerid",
+        "invalid querystring customerid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-paymentmethodid": [
+        "missing posted paymentmethodid",
+        "invalid posted paymentmethodid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/create-subscription": {
+    "url": "/api/user/subscriptions/create-subscription",
+    "verb": "post",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-customerid": [
+        "missing querystring customerid",
+        "invalid querystring customerid"
+      ],
+      "invalid-customer": [
+        "ineligible querystring customer requires payment method"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-planid": [
+        "missing posted planid",
+        "invalid posted planid"
+      ],
+      "invalid-plan": [
+        "ineligible posted plan is not published",
+        "ineligible posted plan is unpublished"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/create-usage-record": {
+    "url": "/api/user/subscriptions/create-usage-record",
+    "verb": "post",
+    "auth": false,
+    "receives": [
+      "required posted quantity",
+      "required posted action",
+      "required posted subscriptionitemid"
+    ],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-subscription": [
+        "invalid querystring subscription is not \"metered\""
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-quantity": [
+        "invalid posted quantity is not integer",
+        "invalid posted quantity is negative"
+      ],
+      "invalid-action": [
+        "missing posted action",
+        "invalid posted action"
+      ],
+      "invalid-subscriptionitemid": [
+        "missing posted subscriptionitemid",
+        "invalid posted subscriptionitemid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/customer": {
+    "url": "/api/user/subscriptions/customer",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-customerid": [
+        "missing querystring customerid",
+        "invalid querystring customerid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/customers-count": {
+    "url": "/api/user/subscriptions/customers-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/customers": {
+    "url": "/api/user/subscriptions/customers",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {
+      "invalid-accountid": [
+        "missing querystring accountid",
+        "invalid querystring accountid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/delete-customer": {
+    "url": "/api/user/subscriptions/delete-customer",
+    "verb": "delete",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-customerid": [
+        "missing querystring customerid",
+        "invalid querystring customerid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "boolean"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/delete-subscription": {
+    "url": "/api/user/subscriptions/delete-subscription",
+    "verb": "delete",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-subscription": [
+        "ineligible querystring subscription is not active"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "boolean"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/invoice": {
+    "url": "/api/user/subscriptions/invoice",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-invoiceid": [
+        "missing querystring invoiceid",
+        "invalid querystring invoiceid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/invoices-count": {
+    "url": "/api/user/subscriptions/invoices-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/invoices": {
+    "url": "/api/user/subscriptions/invoices",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {
+      "invalid-accountid": [
+        "missing querystring accountid",
+        "invalid querystring accountid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/payment-intent": {
+    "url": "/api/user/subscriptions/payment-intent",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-paymentintentid": [
+        "missing querystring invalid",
+        "invalid querystring invalid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/payment-intents-count": {
+    "url": "/api/user/subscriptions/payment-intents-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/payment-intents": {
+    "url": "/api/user/subscriptions/payment-intents",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {
+      "invalid-accountid": [
+        "missing querystring accountid",
+        "invalid querystring accountid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/payment-method": {
+    "url": "/api/user/subscriptions/payment-method",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-paymentmethodid": [
+        "missing querystring paymentmethodid",
+        "invalid querystring paymentmethodid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/payment-methods-count": {
+    "url": "/api/user/subscriptions/payment-methods-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/payment-methods": {
+    "url": "/api/user/subscriptions/payment-methods",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {
+      "invalid-accountid": [
+        "missing querystring accountid",
+        "invalid querystring accountid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/published-coupon": {
+    "url": "/api/user/subscriptions/published-coupon",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-couponid": [
+        "missing querystring couponid",
+        "invalid querystring couponid"
+      ],
+      "invalid-coupon": [
+        "ineligible querystring coupon is not published"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/published-plan": {
+    "url": "/api/user/subscriptions/published-plan",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-planid": [
+        "missing querystring planid",
+        "invalid querystring planid"
+      ],
+      "invalid-plan": [
+        "ineligible querystring plan is not published"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/published-plans-count": {
+    "url": "/api/user/subscriptions/published-plans-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/published-plans": {
+    "url": "/api/user/subscriptions/published-plans",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/published-product": {
+    "url": "/api/user/subscriptions/published-product",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-productid": [
+        "missing querystring productid",
+        "invalid querystring productid"
+      ],
+      "invalid-product": [
+        "ineligible querystring product is not published"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/published-products-count": {
+    "url": "/api/user/subscriptions/published-products-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/published-products": {
+    "url": "/api/user/subscriptions/published-products",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/refund": {
+    "url": "/api/user/subscriptions/refund",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-refundid": [
+        "missing querystring refundid",
+        "invalid querystring refundid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/refunds-count": {
+    "url": "/api/user/subscriptions/refunds-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/refunds": {
+    "url": "/api/user/subscriptions/refunds",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {
+      "invalid-accountid": [
+        "missing querystring accountid",
+        "invalid querystring accountid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/reset-subscription-canceling": {
+    "url": "/api/user/subscriptions/reset-subscription-canceling",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-subscription": [
+        "invalid querystring subscription is active"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/set-customer-coupon": {
+    "url": "/api/user/subscriptions/set-customer-coupon",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-customerid": [
+        "missing querystring customerid",
+        "invalid querystring customerid"
+      ],
+      "invalid-customer": [
+        "invalid querystring customer has coupon"
+      ],
+      "invalid-account": [
+        "ineligible account accessing"
+      ],
+      "invalid-couponid": [
+        "missing posted couponid",
+        "invalid posted couponid"
+      ],
+      "invalid-coupon": [
+        "invalid posted coupon is not published",
+        "invalid posted coupon is unpublished"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/set-invoice-paid": {
+    "url": "/api/user/subscriptions/set-invoice-paid",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-invoiceid": [
+        "missing querystring invoiceid",
+        "invalid querystring invoiceid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account",
+        "ineligible posted payment method"
+      ],
+      "invalid-invoice": [
+        "invalid querystring invoice is paid",
+        "invalid querystring invoice is marked uncollectable"
+      ],
+      "invalid-paymentmethodid": [
+        "missing posted paymentmethodid",
+        "invalid posted paymentmethodid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/set-payment-intent-canceled": {
+    "url": "/api/user/subscriptions/set-payment-intent-canceled",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-paymentintentid": [
+        "missing querystring paymentintentid",
+        "invalid querystring paymentintentid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/set-payment-method-detached": {
+    "url": "/api/user/subscriptions/set-payment-method-detached",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-paymentmethodid": [
+        "missing querystring paymentmethodid",
+        "invalid querystring paymentmethodid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-paymentmethod": [
+        "invalid querystring payment method is default"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/set-setup-intent-canceled": {
+    "url": "/api/user/subscriptions/set-setup-intent-canceled",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-setupintentid": [
+        "missing querystring setupintentid",
+        "invalid querystring setupintentid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/set-subscription-canceled": {
+    "url": "/api/user/subscriptions/set-subscription-canceled",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-subscription": [
+        "ineligible querystring subscription is not active"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/set-subscription-coupon": {
+    "url": "/api/user/subscriptions/set-subscription-coupon",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-subscription": [
+        "invalid querystring subscription has coupon",
+        "invalid querystring subscription is canceling"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-couponid": [
+        "missing posted couponid",
+        "invalid posted couponid"
+      ],
+      "invalid-coupon": [
+        "invalid posted coupon is not published",
+        "invalid posted coupon is unpublished",
+        "invalid posted coupon is other currency"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/set-subscription-plan": {
+    "url": "/api/user/subscriptions/set-subscription-plan",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-planid": [
+        "missing posted planid",
+        "invalid posted planid"
+      ],
+      "invalid-plan": [
+        "invalid posted plan is not published",
+        "invalid posted plan is unpublished",
+        "invalid posted plan is unchanged"
+      ],
+      "invalid-paymentmethodid": [
+        "invalid customer requires payments method"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/set-subscription-quantity": {
+    "url": "/api/user/subscriptions/set-subscription-quantity",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-quantity": [
+        "invalid posted quantity",
+        "invalid posted quantity is unchanged",
+        "invalid posted quantity is negative",
+        "invalid posted quantity is zero"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/setup-intent": {
+    "url": "/api/user/subscriptions/setup-intent",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-setupintentid": [
+        "missing querystring setupintentid",
+        "invalid querystring setupintentid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/setup-intents-count": {
+    "url": "/api/user/subscriptions/setup-intents-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/setup-intents": {
+    "url": "/api/user/subscriptions/setup-intents",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {
+      "invalid-accountid": [
+        "missing querystring accountid",
+        "invalid querystring accountid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/subscription": {
+    "url": "/api/user/subscriptions/subscription",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/subscriptions-count": {
+    "url": "/api/user/subscriptions/subscriptions-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-accountid": [
+        "missing querystring accountid",
+        "invalid querystring accountid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/subscriptions": {
+    "url": "/api/user/subscriptions/subscriptions",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {
+      "invalid-accountid": [
+        "missing querystring accountid",
+        "invalid querystring accountid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/upcoming-invoice": {
+    "url": "/api/user/subscriptions/upcoming-invoice",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-subscription": [
+        "ineligible querystring subscription"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/usage-record-summaries": {
+    "url": "/api/user/subscriptions/usage-record-summaries",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring starting_after (string)",
+      "optional querystring ending_before (string)",
+      "optional querystring limit (integer)"
+    ],
+    "exceptions": {
+      "invalid-subscriptionitemid": [
+        "missing querystring subscriptionitemid",
+        "invalid querystring subscriptionitemid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "stripe list response"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
   }
 }
