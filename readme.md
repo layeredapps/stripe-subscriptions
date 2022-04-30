@@ -1,4 +1,4 @@
-# Documentation for Stripe Subscriptions
+# Documentation for Stripe Subscriptions module
 
 #### Shortcuts
 
