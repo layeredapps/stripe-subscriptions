@@ -1,4 +1,4 @@
-@layeredapps/dashboard 0.0.75
+@layeredapps/dashboard 0.0.81
 http://localhost:8000
 
 Administrator menu:
@@ -15,7 +15,7 @@ Special HTML files:
 @layeredapps/dashboard/redirect.html
 
 Dashboard modules:
-@layeredapps/maxmind-geoip (1.0.21)
+@layeredapps/maxmind-geoip (1.0.22)
 
 URL -------------------------------------------------------------- AUTH - TEMPLATE - HTTP REQUESTS - NODEJS ----------------------- HTML ---------------------
 /                                                                  GUEST  FULLSCREEN                 static-page                    /src/www                  
@@ -324,4 +324,4 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /home                                                                                                static-page                    /src/www                  
 /webhooks/subscriptions/index-subscription-data                    GUEST             POST            /src/www                       /src/www                  
 
-2022-05-01T06:37:22.168Z
+2022-05-02T08:26:57.256Z
