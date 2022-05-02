@@ -15,6 +15,9 @@ module.exports = {
     if (plan.stripeObject.usage_type !== 'metered') {
       throw new Error('invalid-subscription')
     }
+    if (!req.body) {
+      throw new Error('invalid-quantity')
+    }
     try {
       const quantity = parseInt(req.body.quantity, 10)
       if (req.body.quantity !== quantity.toString()) {
