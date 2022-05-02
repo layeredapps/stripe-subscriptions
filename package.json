@@ -23,6 +23,7 @@
     "pg": "latest",
     "pg-hstore": "latest",
     "puppeteer": "latest",
+    "redis": "latest",
     "sqlite3": "latest",
     "standard": "latest",
     "tedious": "latest"
@@ -40,13 +41,10 @@
     "ibm_db": {
       "optional": true
     },
-    "odbc": {
-      "optional": true
-    },
-    "snowflake-sdk": {
-      "optional": true
-    },
     "mariadb": {
+      "optional": true
+    },
+    "redis": {
       "optional": true
     },
     "sqlite3": {
