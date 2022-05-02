@@ -119,7 +119,7 @@ async function submitForm (req, res) {
     try {
       const redeemDate = new Date(Date.parse(req.body.redeem_by))
       const now = new Date()
-      if (redeemDate.getUTCTime() < now.getUTCTime()) {
+      if (redeemDate.getTime() < now.getTime()) {
         return renderPage(req, res, 'invalid-redeem_by')
       }
     } catch (error) {
