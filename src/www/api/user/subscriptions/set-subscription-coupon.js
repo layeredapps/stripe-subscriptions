@@ -17,9 +17,6 @@ module.exports = {
     if (!req.body || !req.body.couponid) {
       throw new Error('invalid-couponid')
     }
-    if (!req.body || !req.body.couponid) {
-      throw new Error('invalid-couponid')
-    }
     if (subscription.stripeObject.discount) {
       throw new Error('invalid-subscription')
     }
