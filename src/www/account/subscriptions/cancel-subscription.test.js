@@ -133,7 +133,7 @@ describe('/account/subscriptions/cancel-subscription', function () {
     req.body = {
       refund: 'credit',
       'crsf-token': ''
-    }    
+    }
     cachedResponses.csrf = await req.post()
     delete (req.puppeteer)
     // submit

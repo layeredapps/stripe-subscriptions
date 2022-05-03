@@ -354,8 +354,8 @@ describe('/account/subscriptions/create-billing-profile', function () {
       assert.strictEqual(result.redirect, '/account/subscriptions')
     })
   })
-  
-  describe('errors', () =>{ 
+
+  describe('errors', () => {
     it('invalid-xss-input', async function () {
       global.stripeJS = false
       const user = await TestHelper.createUser()

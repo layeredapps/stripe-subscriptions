@@ -69,7 +69,7 @@ describe('/administrator/subscriptions/apply-subscription-coupon', function () {
     cachedResponses.before = req4.data
     // get
     cachedResponses.get = await req4.get()
-    //csrf
+    // csrf
     req4.puppeteer = false
     req4.body['csrf-token'] = ''
     cachedResponses.csrf = await req.post()

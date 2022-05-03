@@ -59,7 +59,7 @@ describe('/administrator/subscriptions/delete-product', function () {
       const req = TestHelper.createRequest(`/administrator/subscriptions/delete-product?productid=${administrator.product.productid}`)
       req.account = administrator.account
       req.session = administrator.session
-            req.filename = __filename
+      req.filename = __filename
       req.screenshots = [
         { hover: '#administrator-menu-container' },
         { click: '/administrator/subscriptions' },

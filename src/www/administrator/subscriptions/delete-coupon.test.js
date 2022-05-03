@@ -65,7 +65,7 @@ describe('/administrator/subscriptions/delete-coupon', function () {
       const req = TestHelper.createRequest(`/administrator/subscriptions/delete-coupon?couponid=${administrator.coupon.couponid}`)
       req.account = administrator.account
       req.session = administrator.session
-            req.filename = __filename
+      req.filename = __filename
       req.screenshots = [
         { hover: '#administrator-menu-container' },
         { click: '/administrator/subscriptions' },

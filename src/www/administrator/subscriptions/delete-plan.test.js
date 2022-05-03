@@ -66,7 +66,7 @@ describe('/administrator/subscriptions/delete-plan', function () {
       const req = TestHelper.createRequest(`/administrator/subscriptions/delete-plan?planid=${administrator.plan.planid}`)
       req.account = administrator.account
       req.session = administrator.session
-            req.filename = __filename
+      req.filename = __filename
       req.screenshots = [
         { hover: '#administrator-menu-container' },
         { click: '/administrator/subscriptions' },

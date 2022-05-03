@@ -115,7 +115,7 @@ describe('/administrator/subscriptions/unpublish-coupon', function () {
       global.pageSize = 50
       global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)
       global.packageJSON.dashboard.server.push(ScreenshotData.administratorCoupons)
-            const result = await req.post()
+      const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
       const message = messageContainer.child[0]

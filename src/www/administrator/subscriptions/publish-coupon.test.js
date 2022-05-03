@@ -100,7 +100,7 @@ describe('/administrator/subscriptions/publish-coupon', function () {
       assert.strictEqual(message.attr.template, 'success')
     })
   })
-  
+
   describe('errors', () => {
     it('invalid-csrf-token', async () => {
       const administrator = await TestHelper.createOwner()
