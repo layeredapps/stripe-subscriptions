@@ -48,6 +48,15 @@ describe('/account/subscriptions/delete-billing-profile', function () {
       { fill: '#submit-form' }
     ]
     global.pageSize = 50
+    // csrf
+    req2.puppeteer = false
+    req2.body = {
+      'csrf-token': ''
+    }
+    cachedResponses.csrf = await req2.post()
+    delete (req2.puppeteer)
+    delete (req2.body)
+    // submit
     cachedResponses.submit = await req2.post()
     cachedResponses.finished = true
   }
@@ -99,6 +108,17 @@ describe('/account/subscriptions/delete-billing-profile', function () {
       const messageContainer = doc.getElementById('message-container')
       const message = messageContainer.child[0]
       assert.strictEqual(message.attr.template, 'success')
+    })
+  })
+
+  describe('errors', () => {
+    it('invalid-csrf-token', async function () {
+      await bundledData(this.test.currentRetry())
+      const result = cachedResponses.csrf
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-csrf-token')
     })
   })
 })

@@ -15,6 +15,7 @@
   <body>
     <div class="container">
       <form id="form-stripejs-v3" method="post" class="input-form" action="/account/subscriptions/create-billing-profile" name="form-stripejs-v3">
+        <input type="hidden" name="csrf-token" />
         <input type="hidden" id="stripe-publishable-key" />
         <h1 translate="yes">Create billing profile</h1><input type="hidden" name="token" id="token">
         <div id="message-container"></div>
@@ -110,6 +111,7 @@
         </div>
       </form>
       <form id="form-nojs" method="post" class="input-form" action="/account/subscriptions/create-billing-profile" name="form-nojs">
+        <input type="hidden" name="csrf-token" />
         <input type="hidden" id="stripe-publishable-key" />
         <div id="message-container"></div>
         <div class="input-fields">
@@ -263,6 +265,16 @@
     <template id="unknown-error">
       <div class="error message" translate="yes">
         Error! An error occurred saving your information
+      </div>
+    </template>
+    <template id="invalid-csrf-token">
+      <div class="error message" translate="yes">
+        Error! This form was not submitted correctly
+      </div>
+    </template>
+    <template id="invalid-xss-input">
+      <div class="error message" translate="yes">
+        Error! Invalid value(s) were posted to the server
       </div>
     </template>
   </body>

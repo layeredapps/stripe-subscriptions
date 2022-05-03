@@ -120,4 +120,32 @@ describe('/administrator/subscriptions/apply-customer-coupon', function () {
       assert.strictEqual(message.attr.template, 'success')
     })
   })
+
+  describe('errors', () => {
+    it('invalid-csrf-token', async () => {
+      const administrator = await TestHelper.createOwner()
+      await TestHelper.createCoupon(administrator, {
+        publishedAt: 'true',
+        duration: 'repeating',
+        duration_in_months: '3'
+      })
+      const user = await TestHelper.createUser()
+      await TestHelper.createCustomer(user, {
+        email: user.profile.contactEmail,
+        country: 'US'
+      })
+      const req = TestHelper.createRequest(`/administrator/subscriptions/apply-customer-coupon?customerid=${user.customer.customerid}`)
+      req.puppeteer = false
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        'csrf-token': ''
+      }
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-csrf-token')
+    })
+  })
 })

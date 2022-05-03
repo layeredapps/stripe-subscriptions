@@ -40,6 +40,20 @@ describe('/administrator/subscriptions/deny-refund', function () {
     await req.route.api.before(req)
     cachedResponses.before = req.data
     cachedResponses.view = await req.get()
+    // xss
+    req.body = {
+      reason: '<script>'
+    }
+    cachedResponses.xss = await req.post()
+    // csrf
+    req.puppeteer = false
+    req.body = {
+      reason: 'excuse',
+      'csrf-token': ''
+    }
+    cachedResponses.csrf = await req.post()
+    delete (req.puppeteer)
+    // submit
     req.body = {
       reason: 'this is a reason'
     }
@@ -117,6 +131,26 @@ describe('/administrator/subscriptions/deny-refund', function () {
       const messageContainer = doc.getElementById('message-container')
       const message = messageContainer.child[0]
       assert.strictEqual(message.attr.template, 'success')
+    })
+  })
+
+  describe('errors', () => {
+    it('invalid-xss-input', async function () {
+      await bundledData(this.test.currentRetry())
+      const result = cachedResponses.csrf
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-xss-input')
+    })
+
+    it('invalid-csrf-token', async function () {
+      await bundledData(this.test.currentRetry())
+      const result = cachedResponses.csrf
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-csrf-token')
     })
   })
 })

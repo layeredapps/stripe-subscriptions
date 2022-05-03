@@ -110,6 +110,13 @@ describe('/account/subscriptions/confirm-subscription', function () {
         }
       }
     ]
+    // csrf
+    req6.puppeteer = false
+    req6.body = {}
+    cachedResponses.csrf = await req6.post()
+    delete (req6.puppeteer)
+    delete (req6.body)
+    // submit
     global.pageSize = 50
     cachedResponses.submit = await req6.post()
     cachedResponses.finished = true
@@ -164,6 +171,15 @@ describe('/account/subscriptions/confirm-subscription', function () {
       const messageContainer = doc.getElementById('message-container')
       const message = messageContainer.child[0]
       assert.strictEqual(message.attr.template, 'invalid-paymentmethodid')
+    })
+
+    it('invalid-csrf-token', async function () {
+      await bundledData(this.test.currentRetry())
+      const result = cachedResponses.csrf
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-csrf-token')
     })
   })
 })

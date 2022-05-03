@@ -262,4 +262,46 @@ describe('/administrator/subscriptions/create-coupon', function () {
       assert.strictEqual(true, result.redirect.startsWith('/administrator/subscriptions/coupon?couponid='))
     })
   })
+
+  describe('errors', () => {
+    it('invalid-xss-input', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/create-coupon')
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        couponid: '<script>',
+        duration: 'once',
+        amount_off: '100',
+        max_redemptions: '1',
+        currency: 'usd'
+      }
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-xss-input')
+    })
+
+    it('invalid-csrf-token', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/create-coupon')
+      req.puppeteer = false
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        couponid: 'SAVE100',
+        duration: 'once',
+        amount_off: '100',
+        max_redemptions: '1',
+        currency: 'usd',
+        'csrf-token': ''
+      }
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-csrf-token')
+    })
+  })
 })

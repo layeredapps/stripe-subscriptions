@@ -92,8 +92,6 @@ describe('/administrator/subscriptions/unpublish-product', function () {
       const req = TestHelper.createRequest(`/administrator/subscriptions/unpublish-product?productid=${administrator.product.productid}`)
       req.account = administrator.account
       req.session = administrator.session
-      req.body = {}
-      req.body = {}
       req.filename = __filename
       req.screenshots = [
         { hover: '#administrator-menu-container' },
@@ -111,6 +109,27 @@ describe('/administrator/subscriptions/unpublish-product', function () {
       const messageContainer = doc.getElementById('message-container')
       const message = messageContainer.child[0]
       assert.strictEqual(message.attr.template, 'success')
+    })
+  })
+
+  describe('errors', () => {
+    it('invalid-csrf-token', async () => {
+      const administrator = await TestHelper.createOwner()
+      await TestHelper.createProduct(administrator, {
+        publishedAt: 'true'
+      })
+      const req = TestHelper.createRequest(`/administrator/subscriptions/unpublish-product?productid=${administrator.product.productid}`)
+      req.puppeteer = false
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        'csrf-token': ''
+      }
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-csrf-token')
     })
   })
 })

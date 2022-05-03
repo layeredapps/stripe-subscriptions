@@ -145,4 +145,39 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
       assert.strictEqual(message.attr.template, 'success')
     })
   })
+
+  describe('errors', () => {
+    it('invalid-csrf-token', async () => {
+      const administrator = await TestStripeAccounts.createOwnerWithPlan({
+        amount: '1000',
+        trial_period_days: '0',
+        interval: 'month',
+        usage_type: 'licensed'
+      })
+      const user = await TestHelper.createUser()
+      await TestHelper.createCustomer(user, {
+        email: user.profile.contactEmail,
+        country: 'US'
+      })
+      await TestHelper.createCoupon(administrator, {
+        publishedAt: 'true',
+        duration: 'repeating',
+        duration_in_months: '3'
+      })
+      await TestHelper.createCustomerDiscount(administrator, user.customer, administrator.coupon)
+      const req = TestHelper.createRequest(`/administrator/subscriptions/revoke-customer-coupon?customerid=${user.customer.customerid}`)
+      req.puppeteer = false
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        couponid: administrator.coupon.couponid,
+        'csrf-token': ''
+      }
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-csrf-token')
+    })
+  })
 })

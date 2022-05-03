@@ -354,4 +354,63 @@ describe('/account/subscriptions/create-billing-profile', function () {
       assert.strictEqual(result.redirect, '/account/subscriptions')
     })
   })
+  
+  describe('errors', () =>{ 
+    it('invalid-xss-input', async function () {
+      global.stripeJS = false
+      const user = await TestHelper.createUser()
+      await TestHelper.createCustomer(user, {
+        email: user.profile.contactEmail
+      })
+      const req = TestHelper.createRequest('/account/subscriptions/create-billing-profile')
+      req.account = user.account
+      req.session = user.session
+      req.body = {
+        email: user.profile.contactEmail,
+        description: 'Chase Sapphire',
+        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        'cvc-container': { type: true, value: '111' },
+        'card-container': { type: true, value: '4111111111111111' },
+        'expiry-container': { type: true, value: '12' + ((new Date().getFullYear() + 1).toString()).substring(2) },
+        address_line1: '285 Fulton St',
+        address_line2: '<script>',
+        address_city: 'New York',
+        address_state: 'NY',
+        'zip-container': { type: true, value: '10007' },
+        address_country: 'US'
+      }
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-xss-input')
+    })
+
+    it('invalid-csrf-token', async function () {
+      const user = await TestHelper.createUser()
+      const req = TestHelper.createRequest('/account/subscriptions/create-billing-profile')
+      req.puppeteer = false
+      req.account = user.account
+      req.session = user.session
+      req.body = {
+        email: user.profile.contactEmail,
+        description: 'Chase Sapphire',
+        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        'cvc-container': { type: true, value: '111' },
+        'card-container': { type: true, value: '4111111111111111' },
+        'expiry-container': { type: true, value: '12' + ((new Date().getFullYear() + 1).toString()).substring(2) },
+        address_line1: '285 Fulton St',
+        address_line2: 'Apt 893',
+        address_city: 'New York',
+        address_state: 'NY',
+        'zip-container': { type: true, value: '10007' },
+        address_country: 'US'
+      }
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-csrf-token')
+    })
+  })
 })

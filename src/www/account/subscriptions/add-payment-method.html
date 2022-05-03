@@ -16,6 +16,7 @@
       <h1 translate="yes">Add payment method</h1>
       <div id="message-container"></div>
       <form id="form-stripejs-v3" method="post" class="input-form" action="/account/subscriptions/add-payment-method?customerid=${customer.customerid}" name="form-stripejs-v3">
+        <input type="hidden" name="csrf-token" />
         <input type="hidden" id="stripe-publishable-key" />
         <input type="hidden" name="token" id="token">
         <div id="card-errors"></div>
@@ -97,6 +98,7 @@
         </div>
       </form>
       <form id="form-nojs" method="post" class="input-form" action="/account/subscriptions/add-payment-method?customerid=${customer.customerid}" name="form-nojs">
+        <input type="hidden" name="csrf-token" />
         <input type="hidden" id="stripe-publishable-key" />
         <div class="input-fields">
           <label class="field-label" for="description" translate="yes">Profile description</label>
@@ -239,6 +241,16 @@
     <template id="unknown-error">
       <div class="error message" translate="yes">
         Error! An error occurred updating your information
+      </div>
+    </template>
+    <template id="invalid-csrf-token">
+      <div class="error message" translate="yes">
+        Error! This form was not submitted correctly
+      </div>
+    </template>
+    <template id="invalid-xss-input">
+      <div class="error message" translate="yes">
+        Error! Invalid value(s) were posted to the server
       </div>
     </template>
   </body>

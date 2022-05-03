@@ -18,21 +18,30 @@ describe('/account/subscriptions', function () {
     const owner = await TestStripeAccounts.createOwnerWithPlan()
     cachedPlans.push(owner.plan.planid)
     const user = await TestStripeAccounts.createUserWithPaymentMethod()
-    const req1 = TestHelper.createRequest('/account/subscriptions/start-subscription')
-    req1.account = user.account
-    req1.session = user.session
-    req1.filename = __filename
-    req1.screenshots = [
+    const req = TestHelper.createRequest('/account/subscriptions/start-subscription')
+    req.account = user.account
+    req.session = user.session
+    req.filename = __filename
+    req.screenshots = [
       { hover: '#account-menu-container' },
       { click: '/account/subscriptions' },
       { click: '/account/subscriptions/plans' },
       { click: `/account/subscriptions/plan?planid=${owner.plan.planid}` },
       { click: `/account/subscriptions/start-subscription?planid=${owner.plan.planid}` }
     ]
-    await req1.route.api.before(req1)
-    cachedResponses.before = req1.data
+    await req.route.api.before(req)
+    cachedResponses.before = req.data
+    // csrf
+    req.body = {
+      'csrf-token': ''
+    }
+    req.puppeteer = false
+    cachedResponses.csrf = await req.post()
+    delete (req.puppeteer)
+    delete (req.body)
+    // submit
     global.pageSize = 50
-    cachedResponses.returns = await req1.get()
+    cachedResponses.returns = await req.get()
     cachedResponses.finished = true
   }
   describe('before', () => {
@@ -50,6 +59,17 @@ describe('/account/subscriptions', function () {
       const doc = TestHelper.extractDoc(result.html)
       const planOption = doc.getElementById(cachedPlans[0])
       assert.strictEqual(planOption.tag, 'option')
+    })
+  })
+
+  describe('errors', () => {
+    it('invalid-csrf-token', async function () {
+      await bundledData(this.test.currentRetry())
+      const result = cachedResponses.csrf
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-csrf-token')
     })
   })
 })

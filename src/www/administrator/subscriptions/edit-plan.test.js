@@ -148,4 +148,30 @@ describe('/administrator/subscriptions/edit-plan', function () {
       assert.strictEqual(message.attr.template, 'success')
     })
   })
+
+  describe('errors', () => {
+    it('invalid-csrf-token', async () => {
+      const administrator = await TestStripeAccounts.createOwnerWithPlan({
+        amount: '1000',
+        trial_period_days: '0',
+        interval: 'month',
+        usage_type: 'licensed'
+      })
+      const product2 = await TestHelper.createProduct(administrator, {
+        publishedAt: 'true'
+      })
+      const req = TestHelper.createRequest(`/administrator/subscriptions/edit-plan?planid=${administrator.plan.planid}`)
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        productid: await product2.productid,
+        'csrf-token': ''
+      }
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-csrf-token')
+    })
+  })
 })

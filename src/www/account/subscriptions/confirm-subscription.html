@@ -10,6 +10,7 @@
   <body>
     <div class="container">
       <form id="submit-form" method="post" class="input-form" action="/account/subscriptions/confirm-subscription?planid=${plan.planid}" name="submit-form">
+        <input type="hidden" name="csrf-token" />
         <h1 translate="yes">Confirm subscription</h1>
         <div id="message-container"></div>
         <div id="existing-container">
@@ -67,6 +68,16 @@
     <template id="invalid-customerid">
       <div class="error message" translate="yes">
         Error! An invalid billing profile was selected
+      </div>
+    </template>
+    <template id="invalid-csrf-token">
+      <div class="error message" translate="yes">
+        Error! This form was not submitted correctly
+      </div>
+    </template>
+    <template id="invalid-xss-input">
+      <div class="error message" translate="yes">
+        Error! Invalid value(s) were posted to the server
       </div>
     </template>
   </body>

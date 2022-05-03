@@ -387,4 +387,56 @@ describe('/administrator/subscriptions/create-plan', function () {
       assert.strictEqual(true, result.redirect.startsWith('/administrator/subscriptions/plan?planid='))
     })
   })
+
+  describe('errors', () => {
+    it('invalid-xss-input', async () => {
+      const administrator = await TestHelper.createOwner()
+      await TestHelper.createProduct(administrator, {
+        publishedAt: 'true'
+      })
+      const req = TestHelper.createRequest('/administrator/subscriptions/create-plan')
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        planid: '<script>',
+        usage_type: 'licensed',
+        amount: '1000',
+        interval: 'month',
+        interval_count: '1',
+        currency: 'usd',
+        productid: administrator.product.productid
+      }
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-xss-input')
+    })
+
+    it('invalid-csrf-token', async () => {
+      const administrator = await TestHelper.createOwner()
+      await TestHelper.createProduct(administrator, {
+        publishedAt: 'true'
+      })
+      const req = TestHelper.createRequest('/administrator/subscriptions/create-plan')
+      req.puppeteer = false
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        planid: 'CUSTOM13',
+        usage_type: 'licensed',
+        amount: '1000',
+        interval: 'month',
+        interval_count: '1',
+        currency: 'usd',
+        productid: administrator.product.productid,
+        'csrf-token': 'invalid'
+      }
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-csrf-token')
+    })
+  })
 })

@@ -13,6 +13,7 @@
       <h1 translate="yes">Edit product</h1>
       <div id="message-container"></div>
       <form id="submit-form" method="post" class="input-form" action="/administrator/subscriptions/edit-product?productid=${product.id}" name="submit-form">
+        <input type="hidden" name="csrf-token" />
         <div class="input-fields">
           <label class="field-label" for="name" translate="yes">Name</label>
           <div class="field">
@@ -64,6 +65,16 @@
     <template id="invalid-unit_label">
       <div class="error message" translate="yes">
         Error! Invalid or missing unit label
+      </div>
+    </template>
+    <template id="invalid-csrf-token">
+      <div class="error message" translate="yes">
+        Error! This form was not submitted correctly
+      </div>
+    </template>
+    <template id="invalid-xss-input">
+      <div class="error message" translate="yes">
+        Error! Invalid value(s) were posted to the server
       </div>
     </template>
   </body>

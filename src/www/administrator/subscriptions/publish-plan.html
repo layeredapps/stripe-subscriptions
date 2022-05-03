@@ -14,6 +14,7 @@
       <p translate="yes">Users will be able to view and subscribe to this plan.</p>
       <div id="message-container"></div>
       <form id="submit-form" method="post" class="input-form" action="/administrator/subscriptions/publish-plan?planid=${plan.planid}" name="submit-form">
+        <input type="hidden" name="csrf-token" />
         <button id="submit-button" class="button" type="submit" translate="yes">Publish plan</button>
       </form>
     </div>
@@ -25,6 +26,16 @@
     <template id="unknown-error">
       <div class="error message" translate="yes">
         Error! An error occurred publishing the plan
+      </div>
+    </template>
+    <template id="invalid-csrf-token">
+      <div class="error message" translate="yes">
+        Error! This form was not submitted correctly
+      </div>
+    </template>
+    <template id="invalid-xss-input">
+      <div class="error message" translate="yes">
+        Error! Invalid value(s) were posted to the server
       </div>
     </template>
   </body>

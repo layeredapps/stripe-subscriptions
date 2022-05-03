@@ -81,6 +81,15 @@ describe('/account/subscriptions/change-plan', function () {
     const req4 = TestHelper.createRequest(`/account/subscriptions/change-plan?subscriptionid=${user2.subscription.subscriptionid}`)
     req4.account = user2.account
     req4.session = user2.session
+    // csrf
+    req4.puppeteer = false
+    req4.body = {
+      [plan2.planid]: true,
+      'csrf-token': ''
+    }
+    cachedResponses.csrf = await req4.post()
+    delete (req4.puppeteer)
+    // invalid payment method
     req4.body = {
       [plan2.planid]: true
     }
@@ -127,13 +136,22 @@ describe('/account/subscriptions/change-plan', function () {
   })
 
   describe('errors', () => {
-    it('should reject paid plan without payment information', async function () {
+    it('invalid-paymentmethodid', async function () {
       await bundledData(this.test.currentRetry())
       const result = cachedResponses.invalidPaymentMethod
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
       const message = messageContainer.child[0]
       assert.strictEqual(message.attr.template, 'invalid-paymentmethodid')
+    })
+
+    it('invalid-csrf-token', async function () {
+      await bundledData(this.test.currentRetry())
+      const result = cachedResponses.csrf
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-csrf-token')
     })
   })
 })

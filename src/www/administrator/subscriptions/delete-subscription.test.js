@@ -115,6 +115,15 @@ describe('/administrator/subscriptions/delete-subscription', function () {
     }
     req.url = `/administrator/subscriptions/delete-subscription?subscriptionid=${paidSubscription3.subscriptionid}`
     cachedResponses.submitPaidCredit = await req.post()
+    // csrf
+    req.body = {
+      refund: 'refund',
+      'csrf-token': ''
+    }
+    req.puppeteer = false
+    cachedResponses.csrf = await req.post()
+    delete (req.puppeteer)
+    delete (req.body['csrf-token'])
     // refund
     req.body = {
       refund: 'refund'
@@ -267,6 +276,17 @@ describe('/administrator/subscriptions/delete-subscription', function () {
       const messageContainer = doc.getElementById('message-container')
       const message = messageContainer.child[0]
       assert.strictEqual(message.attr.template, 'success-refund')
+    })
+  })
+
+  describe('errors', () => {
+    it('invalid-csrf-token', async function () {
+      await bundledData(this.test.currentRetry())
+      const result = cachedResponses.csrf
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-csrf-token')
     })
   })
 })

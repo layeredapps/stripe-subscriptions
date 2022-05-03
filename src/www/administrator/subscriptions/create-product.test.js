@@ -95,4 +95,42 @@ describe('/administrator/subscriptions/create-product', function () {
       assert.strictEqual(true, result.redirect.startsWith('/administrator/subscriptions/product?productid='))
     })
   })
+
+  describe('errors', () => {
+    it('invalid-xss-input', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/create-product')
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        name: 'product' + new Date().getTime(),
+        statement_descriptor: 'description',
+        unit_label: '<script>'
+      }
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-xss-input')
+    })
+
+    it('invalid-csrf-token', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/create-product')
+      req.puppeteer = false
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        name: 'product' + new Date().getTime(),
+        statement_descriptor: 'description',
+        unit_label: 'thing',
+        'csrf-token': ''
+      }
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-csrf-token')
+    })
+  })
 })

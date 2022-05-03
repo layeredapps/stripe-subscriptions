@@ -41,6 +41,13 @@ describe('/account/subscriptions/pay-invoice', function () {
     req2.session = user.session
     cachedResponses.returns = await req2.get()
     await req.route.api.before(req)
+    // crsf
+    req.puppeteer = false
+    req.body['csrf-token'] = 'invalid'
+    cachedResponses.csrf = await req.post()
+    delete (req.puppeteer)
+    delete (req.body['csrf-token'])
+    // submit
     cachedResponses.before = req.data
     global.pageSize = 50
     cachedResponses.submit = await req.post()
@@ -113,6 +120,17 @@ describe('/account/subscriptions/pay-invoice', function () {
       const messageContainer = doc.getElementById('message-container')
       const message = messageContainer.child[0]
       assert.strictEqual(message.attr.template, 'success')
+    })
+  })
+
+  describe('errors', () => {
+    it('invalid-csrf-token', async function () {
+      await bundledData(this.test.currentRetry())
+      const result = cachedResponses.csrf
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-csrf-token')
     })
   })
 })

@@ -265,4 +265,70 @@ describe('/account/subscriptions/add-payment-method', function () {
     //   assert.strictEqual(message.attr.template, 'success')
     // })
   })
+
+  describe('errors', () => {
+    it('invalid-xss-input', async function () {
+      global.stripeJS = false
+      const user = await TestHelper.createUser()
+      await TestHelper.createCustomer(user, {
+        email: user.profile.contactEmail
+      })
+      const req = TestHelper.createRequest(`/account/subscriptions/add-payment-method?customerid=${user.customer.customerid}`)
+      req.account = user.account
+      req.session = user.session
+      req.body = {
+        email: user.profile.contactEmail,
+        description: 'Chase Sapphire',
+        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        cvc: '123',
+        number: '4111111111111111',
+        exp_month: '1',
+        exp_year: (new Date().getFullYear() + 1).toString().substring(2),
+        address_line1: '285 Fulton St',
+        address_line2: 'Apt 893',
+        address_city: 'New York',
+        address_state: 'NY',
+        address_zip: '10007',
+        address_country: '<script>'
+      }
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-xss-input')
+    })
+
+    it('invalid-csrf-token', async function () {
+      global.stripeJS = false
+      const user = await TestHelper.createUser()
+      await TestHelper.createCustomer(user, {
+        email: user.profile.contactEmail
+      })
+      const req = TestHelper.createRequest(`/account/subscriptions/add-payment-method?customerid=${user.customer.customerid}`)
+      req.puppeteer = false
+      req.account = user.account
+      req.session = user.session
+      req.body = {
+        email: user.profile.contactEmail,
+        description: 'Chase Sapphire',
+        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        cvc: '123',
+        number: '4111111111111111',
+        exp_month: '1',
+        exp_year: (new Date().getFullYear() + 1).toString().substring(2),
+        address_line1: '285 Fulton St',
+        address_line2: 'Apt 893',
+        address_city: 'New York',
+        address_state: 'NY',
+        address_zip: '10007',
+        address_country: '<script>',
+        'csrf-token': 'invalid'
+      }
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-csrf-token')
+    })
+  })
 })

@@ -13,6 +13,7 @@
       <h1 translate="yes">Edit coupon</h1>
       <div id="message-container"></div>
       <form id="submit-form" method="post" class="input-form" action="/administrator/subscriptions/edit-coupon?couponid=${coupon.id}" name="submit-form">
+        <input type="hidden" name="csrf-token" />
         <div class="input-fields">
           <label class="field-label" for="name" translate="yes">Name</label>
           <div class="field">
@@ -37,6 +38,16 @@
     <template id="invalid-name">
       <div class="error message" translate="yes">
         Error! Invalid coupon name
+      </div>
+    </template>
+    <template id="invalid-csrf-token">
+      <div class="error message" translate="yes">
+        Error! This form was not submitted correctly
+      </div>
+    </template>
+    <template id="invalid-xss-input">
+      <div class="error message" translate="yes">
+        Error! Invalid value(s) were posted to the server
       </div>
     </template>
   </body>

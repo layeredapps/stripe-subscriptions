@@ -69,6 +69,12 @@ describe('/administrator/subscriptions/apply-subscription-coupon', function () {
     cachedResponses.before = req4.data
     // get
     cachedResponses.get = await req4.get()
+    //csrf
+    req4.puppeteer = false
+    req4.body['csrf-token'] = ''
+    cachedResponses.csrf = await req.post()
+    delete (req4.puppeteer)
+    delete (req4.body['csrf-token'])
     // post
     req4.filename = __filename
     req4.body = {
@@ -149,6 +155,17 @@ describe('/administrator/subscriptions/apply-subscription-coupon', function () {
       const messageContainer = doc.getElementById('message-container')
       const message = messageContainer.child[0]
       assert.strictEqual(message.attr.template, 'success')
+    })
+  })
+
+  describe('errors', () => {
+    it('invalid-csrf-token', async function () {
+      await bundledData(this.test.currentRetry())
+      const result = cachedResponses.csrf
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-csrf-token')
     })
   })
 })

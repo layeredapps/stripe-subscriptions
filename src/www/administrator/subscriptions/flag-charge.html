@@ -14,6 +14,7 @@
       <p translate="yes">If you think a charge is fraudulent flagging it may help Stripe block similar charges later.</p>
       <div id="message-container"></div>
       <form id="submit-form" method="post" class="input-form" action="/administrator/subscriptions/flag-charge?chargeid=${charge.id}" name="submit-form">
+        <input type="hidden" name="csrf-token" />
         <button id="submit-button" class="button" type="submit" translate="yes">Flag charge</button>
       </form>
     </div>
@@ -25,6 +26,16 @@
     <template id="unknown-error">
       <div class="error message" translate="yes">
         Error! An error occurred flagging the charge
+      </div>
+    </template>
+    <template id="invalid-csrf-token">
+      <div class="error message" translate="yes">
+        Error! This form was not submitted correctly
+      </div>
+    </template>
+    <template id="invalid-xss-input">
+      <div class="error message" translate="yes">
+        Error! Invalid value(s) were posted to the server
       </div>
     </template>
   </body>

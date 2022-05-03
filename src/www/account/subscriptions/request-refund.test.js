@@ -45,6 +45,11 @@ describe('/account/subscriptions/request-refund', function () {
     } catch (error) {
       cachedResponses.invalidAccount = error.message
     }
+    // xss
+    req2.body = {
+      reason: '<script>'
+    }
+    cachedResponses.xss = await req2.post()
     req2.filename = __filename
     req2.screenshots = [
       { hover: '#account-menu-container' },
@@ -54,6 +59,13 @@ describe('/account/subscriptions/request-refund', function () {
       { click: `/account/subscriptions/request-refund?invoiceid=${user.invoice.invoiceid}` },
       { fill: '#submit-form' }
     ]
+    // csrf
+    req2.puppeteer = false
+    req2.body['csrf-token'] = ''
+    cachedResponses.csrf = await req2.post()
+    delete (req2.puppeteer)
+    delete (req2.body['csrf-token'])
+    // submit
     req2.body = {
       reason: 'this is a reason'
     }
@@ -112,6 +124,26 @@ describe('/account/subscriptions/request-refund', function () {
       const messageContainer = doc.getElementById('message-container')
       const message = messageContainer.child[0]
       assert.strictEqual(message.attr.template, 'success')
+    })
+  })
+
+  describe('errors', () => {
+    it('invalid-xss-input', async function () {
+      await bundledData(this.test.currentRetry())
+      const result = cachedResponses.csrf
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-xss-input')
+    })
+
+    it('invalid-csrf-token', async function () {
+      await bundledData(this.test.currentRetry())
+      const result = cachedResponses.csrf
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-csrf-token')
     })
   })
 })

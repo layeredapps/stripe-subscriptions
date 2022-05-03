@@ -14,6 +14,7 @@
       <p translate="yes">This will return the money to the original account in 5 - 10 business days.</p>
       <div id="message-container"></div>
       <form id="submit-form" method="post" class="input-form" action="/administrator/subscriptions/refund-charge?chargeid=${charge.id}" name="submit-form">
+        <input type="hidden" name="csrf-token" />
         <div class="input-fields">
           <label class="field-label" for="amount" translate="yes">Amount</label>
           <div class="field">
@@ -38,6 +39,16 @@
     <template id="invalid-amount">
       <div class="error message" translate="yes">
         Error! The refund amount cannot be negative or exceed the charge balance
+      </div>
+    </template>
+    <template id="invalid-csrf-token">
+      <div class="error message" translate="yes">
+        Error! This form was not submitted correctly
+      </div>
+    </template>
+    <template id="invalid-xss-input">
+      <div class="error message" translate="yes">
+        Error! Invalid value(s) were posted to the server
       </div>
     </template>
   </body>

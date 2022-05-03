@@ -43,6 +43,14 @@ describe('/administrator/subscriptions/revoke-subscription-coupon', function () 
     cachedResponses.before = req2.data
     // get
     cachedResponses.get = await req.get()
+    // csrf
+    req.puppeteer = false
+    req.body = {
+      'csrf-token': ''
+    }
+    cachedResponses.csrf = await req.post()
+    delete (req.puppeteer)
+    delete (req.body)
     // post
     req.filename = __filename
     req.screenshots = [
@@ -108,6 +116,17 @@ describe('/administrator/subscriptions/revoke-subscription-coupon', function () 
       const messageContainer = doc.getElementById('message-container')
       const message = messageContainer.child[0]
       assert.strictEqual(message.attr.template, 'success')
+    })
+  })
+
+  describe('errors', () => {
+    it('invalid-csrf-token', async function () {
+      await bundledData(this.test.currentRetry())
+      const result = cachedResponses.csrf
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-csrf-token')
     })
   })
 })
