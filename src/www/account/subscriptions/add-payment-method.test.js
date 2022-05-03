@@ -276,6 +276,7 @@ describe('/account/subscriptions/add-payment-method', function () {
       const req = TestHelper.createRequest(`/account/subscriptions/add-payment-method?customerid=${user.customer.customerid}`)
       req.account = user.account
       req.session = user.session
+      req.fill = '#form-nojs'
       req.body = {
         email: user.profile.contactEmail,
         description: 'Chase Sapphire',
@@ -286,10 +287,10 @@ describe('/account/subscriptions/add-payment-method', function () {
         exp_year: (new Date().getFullYear() + 1).toString().substring(2),
         address_line1: '285 Fulton St',
         address_line2: 'Apt 893',
-        address_city: 'New York',
-        address_state: 'NY',
+        address_city: '<script>',
+        address_state: 'New York',
         address_zip: '10007',
-        address_country: '<script>'
+        address_country: 'US'
       }
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
@@ -308,6 +309,7 @@ describe('/account/subscriptions/add-payment-method', function () {
       req.puppeteer = false
       req.account = user.account
       req.session = user.session
+      req.fill = '#form-nojs'
       req.body = {
         email: user.profile.contactEmail,
         description: 'Chase Sapphire',
@@ -321,7 +323,7 @@ describe('/account/subscriptions/add-payment-method', function () {
         address_city: 'New York',
         address_state: 'NY',
         address_zip: '10007',
-        address_country: '<script>',
+        address_country: 'US',
         'csrf-token': 'invalid'
       }
       const result = await req.post()

@@ -52,10 +52,12 @@ describe('/administrator/subscriptions/forgive-invoice', function () {
     cachedResponses.view = await req.get()
     // csrf
     req.puppeteer = false
-    req.body['csrf-token'] = ''
+    req.body = {
+      'csrf-token': ''
+    }
     cachedResponses.csrf = await req.post()
     delete (req.puppeteer)
-    delete (req.body['csrf-token'])
+    delete (req.body)
     // submit
     req.filename = __filename
     req.screenshots = [

@@ -365,13 +365,14 @@ describe('/account/subscriptions/create-billing-profile', function () {
       const req = TestHelper.createRequest('/account/subscriptions/create-billing-profile')
       req.account = user.account
       req.session = user.session
+      req.fill = '#form-nojs'
       req.body = {
         email: user.profile.contactEmail,
         description: 'Chase Sapphire',
         name: `${user.profile.firstName} ${user.profile.lastName}`,
-        'cvc-container': { type: true, value: '111' },
-        'card-container': { type: true, value: '4111111111111111' },
-        'expiry-container': { type: true, value: '12' + ((new Date().getFullYear() + 1).toString()).substring(2) },
+        'cvc-container': '111',
+        'card-container': '4111111111111111',
+        'expiry-container': '12' + ((new Date().getFullYear() + 1).toString()).substring(2),
         address_line1: '285 Fulton St',
         address_line2: '<script>',
         address_city: 'New York',
@@ -392,6 +393,7 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.puppeteer = false
       req.account = user.account
       req.session = user.session
+      req.fill = '#form-nojs'
       req.body = {
         email: user.profile.contactEmail,
         description: 'Chase Sapphire',

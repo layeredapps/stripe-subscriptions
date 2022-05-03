@@ -41,7 +41,7 @@ describe('/account/subscriptions/pay-invoice', function () {
     req2.session = user.session
     cachedResponses.returns = await req2.get()
     await req.route.api.before(req)
-    // crsf
+    // csrf
     req.puppeteer = false
     req.body['csrf-token'] = 'invalid'
     cachedResponses.csrf = await req.post()

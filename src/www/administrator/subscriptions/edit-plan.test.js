@@ -161,6 +161,7 @@ describe('/administrator/subscriptions/edit-plan', function () {
         publishedAt: 'true'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/edit-plan?planid=${administrator.plan.planid}`)
+      req.puppeteer = false
       req.account = administrator.account
       req.session = administrator.session
       req.body = {

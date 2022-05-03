@@ -137,7 +137,7 @@ describe('/administrator/subscriptions/deny-refund', function () {
   describe('errors', () => {
     it('invalid-xss-input', async function () {
       await bundledData(this.test.currentRetry())
-      const result = cachedResponses.csrf
+      const result = cachedResponses.xss
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
       const message = messageContainer.child[0]

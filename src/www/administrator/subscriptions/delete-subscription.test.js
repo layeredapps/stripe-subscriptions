@@ -43,8 +43,6 @@ describe('/administrator/subscriptions/delete-subscription', function () {
     const paidSubscription2 = user.subscription
     await TestStripeAccounts.createUserWithPaidSubscription(paidPlan, user)
     const paidSubscription3 = user.subscription
-    await TestStripeAccounts.createUserWithPaidSubscription(paidPlan, user)
-    const paidSubscription4 = user.subscription
     await TestStripeAccounts.createUserWithFreeSubscription(freePlan, user)
     const freeSubscription1 = cachedSubscription = user.subscription
     await TestStripeAccounts.createUserWithFreeSubscription(freePlan, user)
@@ -54,7 +52,7 @@ describe('/administrator/subscriptions/delete-subscription', function () {
     await TestStripeAccounts.createUserWithFreeTrialSubscription(freeTrialPlan, user)
     const trialSubscription2 = user.subscription
     // test before with a missing subscriptionid
-    const req = TestHelper.createRequest('/administrator/subscriptions/delete-subscription')
+    let req = TestHelper.createRequest('/administrator/subscriptions/delete-subscription')
     req.account = administrator.account
     req.session = administrator.session
     try {
@@ -75,23 +73,34 @@ describe('/administrator/subscriptions/delete-subscription', function () {
     }
     await req.route.api.before(req)
     cachedResponses.before = req.data
-    delete (req.query)
     // test get
-    req.url = `/administrator/subscriptions/delete-subscription?subscriptionid=${freeSubscription1.subscriptionid}`
+    req = TestHelper.createRequest(`/administrator/subscriptions/delete-subscription?subscriptionid=${freeSubscription1.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     cachedResponses.returnsFreePlan = await req.get()
-    req.url = `/administrator/subscriptions/delete-subscription?subscriptionid=${trialSubscription1.subscriptionid}`
+    req = TestHelper.createRequest(`/administrator/subscriptions/delete-subscription?subscriptionid=${trialSubscription1.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     cachedResponses.returnsFreeTrial = await req.get()
-    req.url = `/administrator/subscriptions/delete-subscription?subscriptionid=${paidSubscription1.subscriptionid}`
+    req = TestHelper.createRequest(`/administrator/subscriptions/delete-subscription?subscriptionid=${paidSubscription1.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     cachedResponses.returnsPaidPlan = await req.get()
     // test submit 'at period end'
-    req.url = `/administrator/subscriptions/delete-subscription?subscriptionid=${freeSubscription1.subscriptionid}`
+    req = TestHelper.createRequest(`/administrator/subscriptions/delete-subscription?subscriptionid=${freeSubscription1.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     req.body = {
       refund: 'at_period_end'
     }
     cachedResponses.submitFreeAtPeriodEnd = await req.post()
-    req.url = `/administrator/subscriptions/delete-subscription?subscriptionid=${trialSubscription1.subscriptionid}`
+    req = TestHelper.createRequest(`/administrator/subscriptions/delete-subscription?subscriptionid=${trialSubscription1.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     cachedResponses.submitFreeTrialAtPeriodEnd = await req.post()
-    req.url = `/administrator/subscriptions/delete-subscription?subscriptionid=${paidSubscription1.subscriptionid}`
+    req = TestHelper.createRequest(`/administrator/subscriptions/delete-subscription?subscriptionid=${paidSubscription1.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     cachedResponses.submitPaidAtPeriodEnd = await req.post()
     // already-deleted error
     req.query = {
@@ -103,39 +112,45 @@ describe('/administrator/subscriptions/delete-subscription', function () {
     req.body = {
       refund: 'immediate'
     }
-    req.url = `/administrator/subscriptions/delete-subscription?subscriptionid=${trialSubscription2.subscriptionid}`
+    req = TestHelper.createRequest(`/administrator/subscriptions/delete-subscription?subscriptionid=${trialSubscription2.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     cachedResponses.submitFreeTrialImmediate = await req.post()
-    req.url = `/administrator/subscriptions/delete-subscription?subscriptionid=${paidSubscription2.subscriptionid}`
+    req = TestHelper.createRequest(`/administrator/subscriptions/delete-subscription?subscriptionid=${paidSubscription2.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     cachedResponses.submitPaidImmediate = await req.post()
-    req.url = `/administrator/subscriptions/delete-subscription?subscriptionid=${freeSubscription2.subscriptionid}`
+    // immediate
+    req = TestHelper.createRequest(`/administrator/subscriptions/delete-subscription?subscriptionid=${freeSubscription2.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     cachedResponses.submitFreeImmedate = await req.post()
-    // credit
-    req.body = {
-      refund: 'credit'
-    }
-    req.url = `/administrator/subscriptions/delete-subscription?subscriptionid=${paidSubscription3.subscriptionid}`
-    cachedResponses.submitPaidCredit = await req.post()
     // csrf
+    req = TestHelper.createRequest(`/administrator/subscriptions/delete-subscription?subscriptionid=${paidSubscription3.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     req.body = {
       refund: 'refund',
       'csrf-token': ''
     }
     req.puppeteer = false
     cachedResponses.csrf = await req.post()
-    delete (req.puppeteer)
-    delete (req.body['csrf-token'])
+    // credit
+    req.body = {
+      refund: 'credit'
+    }
+    cachedResponses.submitPaidCredit = await req.post()
     // refund
     req.body = {
       refund: 'refund'
     }
-    req.url = `/administrator/subscriptions/delete-subscription?subscriptionid=${paidSubscription4.subscriptionid}`
     req.filename = __filename
     req.screenshots = [
       { hover: '#administrator-menu-container' },
       { click: '/administrator/subscriptions' },
       { click: '/administrator/subscriptions/subscriptions' },
-      { click: `/administrator/subscriptions/subscription?subscriptionid=${paidSubscription4.subscriptionid}` },
-      { click: `/administrator/subscriptions/delete-subscription?subscriptionid=${paidSubscription4.subscriptionid}` },
+      { click: `/administrator/subscriptions/subscription?subscriptionid=${paidSubscription3.subscriptionid}` },
+      { click: `/administrator/subscriptions/delete-subscription?subscriptionid=${paidSubscription3.subscriptionid}` },
       { fill: '#submit-form' }
     ]
     global.pageSize = 50

@@ -30,22 +30,17 @@ describe('/administrator/subscriptions/flag-charge', function () {
     const req = TestHelper.createRequest(`/administrator/subscriptions/flag-charge?chargeid=${user.charge.chargeid}`)
     req.account = administrator.account
     req.session = administrator.session
-    req.body = {
-      amount: '1000'
-    }
     await req.route.api.before(req)
     cachedResponses.before = req.data
     cachedResponses.returns = await req.get()
-    // xss
-    req.body.amount = '<script>'
-    cachedResponses.xss = await req.post()
-    req.body.amount = '1000'
     // csrf
     req.puppeteer = false
-    req.body['csrf-token'] = 'invalid'
+    req.body = {
+      'csrf-token': 'invalid'
+    }
     cachedResponses.csrf = await req.post()
     delete (req.puppeteer)
-    delete (req.body['csrf-token'])
+    delete (req.body)
     // submit
     req.filename = __filename
     req.screenshots = [
@@ -120,15 +115,6 @@ describe('/administrator/subscriptions/flag-charge', function () {
   })
 
   describe('errors', () => {
-    it('invalid-xss-input', async function () {
-      await bundledData(this.test.currentRetry())
-      const result = cachedResponses.csrf
-      const doc = TestHelper.extractDoc(result.html)
-      const messageContainer = doc.getElementById('message-container')
-      const message = messageContainer.child[0]
-      assert.strictEqual(message.attr.template, 'invalid-xss-input')
-    })
-
     it('invalid-csrf-token', async function () {
       await bundledData(this.test.currentRetry())
       const result = cachedResponses.csrf

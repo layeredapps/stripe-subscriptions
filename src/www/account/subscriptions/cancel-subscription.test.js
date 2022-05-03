@@ -123,16 +123,11 @@ describe('/account/subscriptions/cancel-subscription', function () {
       refund: 'credit'
     }
     cachedResponses.viewFreeTrial = await req.get()
-    // xss
-    req.body = {
-      refund: '<script>'
-    }
-    cachedResponses.xss = await req.post()
     // csrf
     req.puppeteer = false
     req.body = {
       refund: 'credit',
-      'crsf-token': ''
+      'csrf-token': ''
     }
     cachedResponses.csrf = await req.post()
     delete (req.puppeteer)
@@ -149,7 +144,6 @@ describe('/account/subscriptions/cancel-subscription', function () {
       refund: 'at_period_end'
     }
     cachedResponses.submitFreeTrial2 = await req.post()
-
     cachedResponses.finished = true
   }
   describe('exceptions', () => {
@@ -295,15 +289,6 @@ describe('/account/subscriptions/cancel-subscription', function () {
   })
 
   describe('errors', () => {
-    it('invalid-xss-input', async function () {
-      await bundledData(this.test.currentRetry())
-      const result = cachedResponses.xss
-      const doc = TestHelper.extractDoc(result.html)
-      const messageContainer = doc.getElementById('message-container')
-      const message = messageContainer.child[0]
-      assert.strictEqual(message.attr.template, 'invalid-xss-input')
-    })
-
     it('invalid-csrf-token', async function () {
       await bundledData(this.test.currentRetry())
       const result = cachedResponses.csrf
