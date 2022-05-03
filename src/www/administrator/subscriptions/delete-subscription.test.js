@@ -60,7 +60,9 @@ describe('/administrator/subscriptions/delete-subscription', function () {
     } catch (error) {
       cachedResponses.missingQueryString = error.message
     }
-    req.url = '/administrator/subscriptions/delete-subscription?subscriptionid=invalid'
+    req = TestHelper.createRequest('/administrator/subscriptions/delete-subscription')
+    req.account = administrator.account
+    req.session = administrator.session
     req.query = {
       subscriptionid: 'invalid'
     }
