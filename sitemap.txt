@@ -1,4 +1,4 @@
-@layeredapps/dashboard 0.0.84
+@layeredapps/dashboard 0.0.88
 http://localhost:8000
 
 Administrator menu:
@@ -16,6 +16,14 @@ Special HTML files:
 
 Dashboard modules:
 @layeredapps/maxmind-geoip (1.0.23)
+
+Content handlers:
+@layeredapps/dashboard/src/content/insert-csrf-token.js
+@layeredapps/dashboard/src/content/set-form-return-url.js
+
+Server handlers:
+@layeredapps/dashboard/src/server/check-csrf-token.js
+@layeredapps/dashboard/src/server/check-xss-injection.js
 
 URL -------------------------------------------------------------- AUTH - TEMPLATE - HTTP REQUESTS - NODEJS ----------------------- HTML ---------------------
 /                                                                  GUEST  FULLSCREEN                 static-page                    /src/www                  
@@ -67,7 +75,7 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /account/subscriptions/start-subscription                                            GET POST        /src/www                       /src/www                  
 /account/subscriptions/subscription                                                  GET             /src/www                       /src/www                  
 /account/subscriptions/subscriptions                                                 GET             /src/www                       /src/www                  
-/account/verify                                                    GUEST  FULLSCREEN GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
+/account/verify                                                           FULLSCREEN GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
 /administrator                                                                       GET             @layeredapps/dashboard         @layeredapps/dashboard    
 /administrator/account                                                               GET             @layeredapps/dashboard         @layeredapps/dashboard    
 /administrator/account-profiles                                                      GET             @layeredapps/dashboard         @layeredapps/dashboard    
@@ -324,4 +332,4 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /home                                                                                                static-page                    /src/www                  
 /webhooks/subscriptions/index-subscription-data                    GUEST             POST            /src/www                       /src/www                  
 
-2022-05-02T23:48:16.154Z
+2022-05-03T12:12:07.237Z
