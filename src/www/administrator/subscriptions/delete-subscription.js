@@ -10,49 +10,97 @@ module.exports = {
 
 async function beforeRequest (req) {
   if (!req.query || !req.query.subscriptionid) {
-    throw new Error('invalid-subscriptionid')
-  }
-  if (req.query.message === 'success') {
+    req.error = 'invalid-subscriptionid'
+    req.removeContents = true
     req.data = {
       subscription: {
-        id: req.query.subscriptionid,
-        object: 'subscription',
-        plan: {}
+        subscriptionid: ''
       }
     }
     return
   }
-  let subscription
-  try {
-    const subscriptionRaw = await global.api.administrator.subscriptions.Subscription.get(req)
-    subscription = formatStripeObject(subscriptionRaw)
-  } catch (error) {
-    req.error = error.message
-  }
-  if (req.error) {
+  if (req.query.message === 'success') {
+    req.removeContents = true
+    req.data = {
+      subscription: {
+        subscriptionid: req.query.subscriptionid
+      }
+    }
     return
   }
+  let subscriptionRaw
+  try {
+    subscriptionRaw = await global.api.administrator.subscriptions.Subscription.get(req)
+  } catch (error) {
+    req.removeContents = true
+    if (error.message === 'invalid-subscriptionid') {
+      req.error = error.message
+    } else {
+      req.error = 'unknown-error'
+    }
+    req.data = {
+      subscription: {
+        subscriptionid: ''
+      }
+    }
+    return
+  }
+  const subscription = formatStripeObject(subscriptionRaw)
   if ((subscription.status !== 'active' && subscription.status !== 'trialing') ||
       subscription.cancel_at_period_end) {
     req.error = 'invalid-subscription'
   }
   req.query.planid = subscription.planid
-  const planRaw = await global.api.administrator.subscriptions.Plan.get(req)
+  let planRaw
+  try {
+    planRaw = await global.api.administrator.subscriptions.Plan.get(req)
+  } catch (error) {
+    req.removeContents = true
+    if (error.message === 'invalid-planid' || error.message === 'invalid-plan') {
+      req.error = error.message
+    } else {
+      req.error = 'unknown-error'
+    }
+    req.data = {
+      subscription: {
+        subscriptionid: req.query.subscriptionid
+      }
+    }
+    return
+  }
   const plan = formatStripeObject(planRaw)
   req.query.invoiceid = subscription.latest_invoice
-  const invoiceRaw = await global.api.administrator.subscriptions.Invoice.get(req)
+  let invoiceRaw
+  try {
+    invoiceRaw = await global.api.administrator.subscriptions.Invoice.get(req)
+  } catch (error) {
+    if (error.message === 'invalid-invoiceid' || error.message === 'invalid-invoice') {
+      req.error = error.message
+    } else {
+      req.error = 'unknown-error'
+    }
+    req.removeContents = true
+    req.data = {
+      subscription: {
+        subscriptionid: req.query.subscriptionid
+      }
+    }
+    return
+  }
   const invoice = formatStripeObject(invoiceRaw)
   req.data = { subscription, plan, invoice }
 }
 
 async function renderPage (req, res, messageTemplate) {
-  messageTemplate = messageTemplate || (req.query ? req.query.message : null)
+  messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.subscription, 'subscription')
   navbar.setup(doc, req.data.subscription)
+  const removeElements = []
   if (messageTemplate) {
-    if (messageTemplate === 'success') {
-      const submitForm = doc.getElementById('submit-form')
-      submitForm.parentNode.removeChild(submitForm)
+    if (req.removeContents) {
+      removeElements.push('submit-form')
+    }
+    if (req.query.message === 'success') {
       if (req.query.refund === 'credit') {
         dashboard.HTML.renderTemplate(doc, null, 'success-credit', 'message-container')
       } else if (req.query.refund === 'refund') {
@@ -60,19 +108,19 @@ async function renderPage (req, res, messageTemplate) {
       } else {
         dashboard.HTML.renderTemplate(doc, null, 'success', 'message-container')
       }
-      return dashboard.Response.end(req, res, doc)
+    } else {
+      dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
     }
-    dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
-  }
-  const removeElements = []
-  if (!req.data.plan.amount) {
-    removeElements.push('refund-label', 'credit-label')
-  } else if (req.data.subscription.trial_start && req.data.subscription.trial_end === req.data.subscription.current_period_end) {
-    removeElements.push('refund-label', 'credit-label')
   } else {
-    if (req.method === 'GET') {
-      const ending = doc.getElementById('delay-checkbox')
-      ending.setAttribute('checked', true)
+    if (!req.data.plan.amount) {
+      removeElements.push('refund-label', 'credit-label')
+    } else if (req.data.subscription.trial_start && req.data.subscription.trial_end === req.data.subscription.current_period_end) {
+      removeElements.push('refund-label', 'credit-label')
+    } else {
+      if (req.method === 'GET') {
+        const ending = doc.getElementById('delay-checkbox')
+        ending.setAttribute('checked', true)
+      }
     }
   }
   for (const id of removeElements) {

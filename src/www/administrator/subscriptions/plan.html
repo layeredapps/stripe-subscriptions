@@ -11,6 +11,7 @@
   <body>
     <div class="container">
       <h1 translate="yes">View plan</h1>
+      <div id="message-container"></div>
       <table id="plans-table" class="data-table">
         <tbody id="${plan.planid}">
           <tr>
@@ -44,5 +45,20 @@
         </tbody>
       </table>
     </div>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! An unknown error occurred
+      </div>
+    </template>
+    <template id="invalid-planid">
+      <div class="error message" translate="yes">
+        Error! An invalid plan was specified
+      </div>
+    </template>
+    <template id="invalid-plan">
+      <div class="error message" translate="yes">
+        Error! An invalid plan was specified
+      </div>
+    </template>
   </body>
 </html>

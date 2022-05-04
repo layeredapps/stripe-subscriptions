@@ -9,9 +9,32 @@ module.exports = {
 
 async function beforeRequest (req) {
   if (!req.query || !req.query.invoiceid) {
-    throw new Error('invalid-invoiceid')
+    req.error = 'invalid-invoiceid'
+    req.removeContents = true
+    req.data = {
+      invoice: {
+        invoiceid: ''
+      }
+    }
+    return
   }
-  const invoiceRaw = await global.api.user.subscriptions.Invoice.get(req)
+  let invoiceRaw
+  try {
+    invoiceRaw = await global.api.user.subscriptions.Invoice.get(req)
+  } catch (error) {
+    req.removeContents = true
+    req.data = {
+      invoice: {
+        invoiceid: ''
+      }
+    }
+    if (error.message === 'invalid-invoiceid' || error.message === 'invalid-account') {
+      req.error = error.message
+    } else {
+      req.error = 'unknown-error'
+    }
+    return
+  }
   const invoice = formatStripeObject(invoiceRaw)
   let charge
   if (invoice.charge) {
@@ -40,21 +63,31 @@ async function beforeRequest (req) {
   req.data = { invoice, charge, refunds }
 }
 
-async function renderPage (req, res) {
+async function renderPage (req, res, messageTemplate) {
+  messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.invoice, 'invoice')
   await navbar.setup(doc, req.data.invoice)
-  dashboard.HTML.renderTable(doc, req.data.invoice.lines.data, 'line_item-row', 'line_items-table')
-  if (req.data.charge) {
-    dashboard.HTML.renderTemplate(doc, req.data.charge, 'charge-row', 'charges-table')
+  if (messageTemplate) {
+    dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
+    if (req.removeContents) {
+      const invoicesTable = doc.getElementById('invoices-table')
+      invoicesTable.parentNode.removeChild(invoicesTable)
+      return dashboard.Response.end(req, res, doc)
+    }
   } else {
-    const chargeContainer = doc.getElementById('charge-container')
-    chargeContainer.parentNode.removeChild(chargeContainer)
-  }
-  if (req.data.refunds && req.data.refunds.length) {
-    dashboard.HTML.renderTable(doc, req.data.refunds, 'refund-row', 'refunds-table')
-  } else {
-    const refundContainer = doc.getElementById('refund-container')
-    refundContainer.parentNode.removeChild(refundContainer)
+    dashboard.HTML.renderTable(doc, req.data.invoice.lines.data, 'line_item-row', 'line_items-table')
+    if (req.data.charge) {
+      dashboard.HTML.renderTemplate(doc, req.data.charge, 'charge-row', 'charges-table')
+    } else {
+      const chargeContainer = doc.getElementById('charge-container')
+      chargeContainer.parentNode.removeChild(chargeContainer)
+    }
+    if (req.data.refunds && req.data.refunds.length) {
+      dashboard.HTML.renderTable(doc, req.data.refunds, 'refund-row', 'refunds-table')
+    } else {
+      const refundContainer = doc.getElementById('refund-container')
+      refundContainer.parentNode.removeChild(refundContainer)
+    }
   }
   return dashboard.Response.end(req, res, doc)
 }

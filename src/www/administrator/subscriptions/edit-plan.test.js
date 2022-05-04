@@ -6,34 +6,6 @@ const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/edit-plan', function () {
   describe('before', () => {
-    it('should reject invalid planid', async () => {
-      const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/edit-plan?planid=invalid')
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-planid')
-    })
-
-    it('should reject unpublished plan', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithUnpublishedPlan()
-      const req = TestHelper.createRequest(`/administrator/subscriptions/edit-plan?planid=${administrator.plan.planid}`)
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-plan')
-    })
-
     it('should bind data to req', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPlan({
         amount: '1000',
@@ -150,6 +122,24 @@ describe('/administrator/subscriptions/edit-plan', function () {
   })
 
   describe('errors', () => {
+    it('invalid-planid', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/edit-plan?planid=invalid')
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-planid')
+    })
+
+    it('unpublished-plan', async () => {
+      const administrator = await TestStripeAccounts.createOwnerWithUnpublishedPlan()
+      const req = TestHelper.createRequest(`/administrator/subscriptions/edit-plan?planid=${administrator.plan.planid}`)
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'unpublished-plan')
+    })
+
     it('invalid-csrf-token', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPlan({
         amount: '1000',

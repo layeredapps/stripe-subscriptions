@@ -10,32 +10,68 @@ module.exports = {
 
 async function beforeRequest (req) {
   if (!req.query || !req.query.invoiceid) {
-    throw new Error('invalid-invoiceid')
-  }
-  if (req.query.message === 'success') {
+    req.error = 'invalid-invoiceid'
+    req.removeContents = true
     req.data = {
       invoice: {
-        id: req.query.invoiceid,
-        object: 'invoice'
+        invoiceid: ''
       }
     }
     return
   }
-  const invoiceRaw = await global.api.administrator.subscriptions.Invoice.get(req)
+  if (req.query.message === 'success') {
+    req.removeContents = true
+    req.data = {
+      invoice: {
+        invoiceid: req.query.invoiceid
+      }
+    }
+    return
+  }
+  let invoiceRaw
+  try {
+    invoiceRaw = await global.api.administrator.subscriptions.Invoice.get(req)
+  } catch (error) {
+    if (error.message === 'invalid-invoiceid' || error.message === 'invalid-invoice') {
+      req.error = error.message
+    } else {
+      req.error = 'unknown-error'
+    }
+    req.removeContents = true
+    req.data = {
+      invoice: {
+        invoiceid: req.query.invoiceid
+      }
+    }
+    return
+  }
   const invoice = formatStripeObject(invoiceRaw)
   if (invoice.status !== 'open' && invoice.status !== 'draft') {
-    throw new Error('invalid-invoice')
+    if (invoice.status === 'uncollectible') {
+      req.error = 'already-forgiven'
+    } else if (invoice.status === 'paid') {
+      req.error = 'already-paid'
+    } else {
+      req.error = 'invalid-invoice'
+    }
+    req.removeContents = true
+    req.data = {
+      invoice: {
+        invoiceid: ''
+      }
+    }
+    return
   }
   req.data = { invoice }
 }
 
 async function renderPage (req, res, messageTemplate) {
-  messageTemplate = messageTemplate || (req.query ? req.query.message : null)
+  messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.invoice, 'invoice')
   navbar.setup(doc, req.data.invoice)
   if (messageTemplate) {
     dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
-    if (messageTemplate === 'success') {
+    if (req.removeContents) {
       const submitForm = doc.getElementById('submit-form')
       submitForm.parentNode.removeChild(submitForm)
     }

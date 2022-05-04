@@ -11,6 +11,7 @@
   <body>
     <div class="container">
       <h1 translate="yes">View product</h1>
+      <div id="message-container"></div>
       <table id="products-table" class="data-table">
         <tbody id="${product.id}">
           <tr>
@@ -36,5 +37,20 @@
         </tbody>
       </table>
     </div>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! An unknown error occurred
+      </div>
+    </template>
+    <template id="invalid-productid">
+      <div class="error message" translate="yes">
+        Error! An invalid product was specified
+      </div>
+    </template>
+    <template id="invalid-product">
+      <div class="error message" translate="yes">
+        Error! An invalid product was specified
+      </div>
+    </template>
   </body>
 </html>

@@ -10,30 +10,64 @@ module.exports = {
 
 async function beforeRequest (req) {
   if (!req.query || !req.query.planid) {
-    throw new Error('invalid-planid')
+    req.error = 'invalid-planid'
+    req.removeContents = true
+    req.data = {
+      plan: {
+        planid: ''
+      }
+    }
+    return
   }
-  const planRaw = await global.api.administrator.subscriptions.Plan.get(req)
+  let planRaw
+  try {
+    planRaw = await global.api.administrator.subscriptions.Plan.get(req)
+  } catch (error) {
+    req.removeContents = true
+    if (error.message === 'invalid-planid' || error.message === 'invalid-plan') {
+      req.error = error.message
+    } else {
+      req.error = 'unknown-error'
+    }
+    req.data = {
+      plan: {
+        planid: req.query.planid
+      }
+    }
+    return
+  }
   const plan = formatStripeObject(planRaw)
   if (req.query.message === 'success') {
+    req.removeContents = true
     req.data = {
       plan
     }
     return
   }
   if (!plan.publishedAt || plan.unpublishedAt) {
-    throw new Error('invalid-plan')
+    if (plan.unpublishedAt) {
+      req.error = 'already-unpublished'
+    } else {
+      req.error = 'not-published'
+    }
+    req.removeContents = true
+    req.data = {
+      plan: {
+        planid: ''
+      }
+    }
+    return
   }
   req.data = { plan }
 }
 
 async function renderPage (req, res, messageTemplate) {
-  messageTemplate = messageTemplate || (req.query ? req.query.message : null)
+  messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.plan, 'plan')
   navbar.setup(doc, req.data.plan)
-
   if (messageTemplate) {
     dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
-    if (messageTemplate === 'success') {
+    if (req.removeContents) {
       const submitForm = doc.getElementById('submit-form')
       submitForm.parentNode.removeChild(submitForm)
     }

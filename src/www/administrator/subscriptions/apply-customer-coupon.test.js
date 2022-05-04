@@ -4,50 +4,6 @@ const TestHelper = require('../../../../test-helper.js')
 const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/apply-customer-coupon', function () {
-  describe('exceptions', () => {
-    it('should reject invalid customer', async () => {
-      const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/apply-customer-coupon?customerid=invalid')
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-customerid')
-    })
-
-    it('should reject customer with coupon', async () => {
-      const administrator = await TestHelper.createOwner()
-      await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
-        duration: 'repeating',
-        duration_in_months: '3'
-      })
-      const user = await TestHelper.createUser()
-      await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        country: 'US'
-      })
-      await TestHelper.createCustomerDiscount(administrator, user.customer, administrator.coupon)
-      const req = TestHelper.createRequest(`/administrator/subscriptions/apply-customer-coupon?customerid=${user.customer.customerid}`)
-      req.account = administrator.account
-      req.session = administrator.session
-      req.body = {
-        couponid: administrator.coupon.couponid
-      }
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-customer')
-    })
-  })
-
   describe('before', () => {
     it('should bind data to req', async () => {
       const administrator = await TestHelper.createOwner()
@@ -122,6 +78,38 @@ describe('/administrator/subscriptions/apply-customer-coupon', function () {
   })
 
   describe('errors', () => {
+    it('invalid-customerid', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/apply-customer-coupon?customerid=invalid')
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-customerid')
+    })
+
+    it('invalid-customer', async () => {
+      const administrator = await TestHelper.createOwner()
+      await TestHelper.createCoupon(administrator, {
+        publishedAt: 'true',
+        duration: 'repeating',
+        duration_in_months: '3'
+      })
+      const user = await TestHelper.createUser()
+      await TestHelper.createCustomer(user, {
+        email: user.profile.contactEmail,
+        country: 'US'
+      })
+      await TestHelper.createCustomerDiscount(administrator, user.customer, administrator.coupon)
+      const req = TestHelper.createRequest(`/administrator/subscriptions/apply-customer-coupon?customerid=${user.customer.customerid}`)
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        couponid: administrator.coupon.couponid
+      }
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-customer')
+    })
+
     it('invalid-csrf-token', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {

@@ -10,29 +10,64 @@ module.exports = {
 
 async function beforeRequest (req) {
   if (!req.query || !req.query.productid) {
-    throw new Error('invalid-productid')
+    req.error = 'invalid-productid'
+    req.removeContents = true
+    req.data = {
+      product: {
+        productid: ''
+      }
+    }
+    return
   }
-  const productRaw = await global.api.administrator.subscriptions.Product.get(req)
+  let productRaw
+  try {
+    productRaw = await global.api.administrator.subscriptions.Product.get(req)
+  } catch (error) {
+    if (error.message === 'invalid-productid' || error.message === 'invalid-product') {
+      req.error = error.message
+    } else {
+      req.error = 'unknown-error'
+    }
+    req.removeContents = true
+    req.data = {
+      product: {
+        productid: req.query.productid
+      }
+    }
+    return
+  }
   const product = formatStripeObject(productRaw)
   if (req.query.message === 'success') {
+    req.removeContents = true
     req.data = {
       product
     }
     return
   }
   if (product.publishedAt) {
-    throw new Error('invalid-product')
+    if (product.unpublishedAt) {
+      req.error = 'already-unpublished'
+    } else {
+      req.error = 'already-published'
+    }
+    req.removeContents = true
+    req.data = {
+      product: {
+        productid: ''
+      }
+    }
+    return
   }
   req.data = { product }
 }
 
 async function renderPage (req, res, messageTemplate) {
-  messageTemplate = messageTemplate || (req.query ? req.query.message : null)
+  messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.product, 'product')
   navbar.setup(doc, req.data.product)
   if (messageTemplate) {
     dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
-    if (messageTemplate === 'success') {
+    if (req.removeContents) {
       const submitForm = doc.getElementById('submit-form')
       submitForm.parentNode.removeChild(submitForm)
     }

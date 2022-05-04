@@ -11,6 +11,7 @@
   <body>
     <div class="container">
       <h1 translate="yes">View payment method</h1>
+      <div id="message-container"></div>
       <table id="payment_methods-table" class="data-table">
         <tbody id="${payment_method.id}">
           <tr>
@@ -40,5 +41,20 @@
         </tbody>
       </table>
     </div>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! An unknown error occurred
+      </div>
+    </template>
+    <template id="invalid-paymentmethodid">
+      <div class="error message" translate="yes">
+        Error! An invalid payment method was specified
+      </div>
+    </template>
+    <template id="invalid-paymentmethod">
+      <div class="error message" translate="yes">
+        Error! An invalid payment method was specified
+      </div>
+    </template>
   </body>
 </html>

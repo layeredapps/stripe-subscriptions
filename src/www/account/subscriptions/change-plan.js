@@ -9,7 +9,14 @@ module.exports = {
 
 async function beforeRequest (req) {
   if (!req.query || !req.query.subscriptionid) {
-    throw new Error('invalid-subscriptionid')
+    req.error = 'invalid-subscriptionid'
+    req.removeContents = true
+    req.data = {
+      subscription: {
+        subscriptionid: ''
+      }
+    }
+    return
   }
   if (req.body && req.body.planid) {
     req.query.planid = req.body.planid
@@ -21,20 +28,45 @@ async function beforeRequest (req) {
       const subscription = await global.api.user.subscriptions.Subscription.get(req)
       req.query.customerid = subscription.customerid
     } catch (error) {
-      switch (error.message) {
-        case 'invalid-planid':
-        case 'invalid-plan':
-          req.error = error.message
-          break
-        default:
-          throw new Error('unknown-error')
+      if (error.message === 'invalid-plan' || error.message === 'invalid-planid') {
+        req.error = error.message
+      } else {
+        req.error = 'unknown-error'
+      }
+      req.data = {
+        subscription: {
+          subscriptionid: req.query.subscriptionid
+        }
       }
     }
   }
-  const subscriptionRaw = await global.api.user.subscriptions.Subscription.get(req)
+  let subscriptionRaw
+  try {
+    subscriptionRaw = await global.api.user.subscriptions.Subscription.get(req)
+  } catch (error) {
+    req.removeContents = true
+    if (error.message === 'invalid-subscriptionid' || error.message === 'invalid-account') {
+      req.error = error.message
+    } else {
+      req.error = 'unknown-error'
+    }
+    req.data = {
+      subscription: {
+        subscriptionid: req.query.subscriptionid
+      }
+    }
+    return
+  }
   const subscription = formatStripeObject(subscriptionRaw)
   if (subscription.status !== 'active') {
-    throw new Error('invalid-subscription')
+    req.removeContents = true
+    req.error = 'invalid-subscription'
+    req.data = {
+      subscription: {
+        subscriptionid: req.query.subscriptionid
+      }
+    }
+    return
   }
   req.query.planid = subscription.planid
   req.query.all = true
@@ -62,14 +94,15 @@ async function beforeRequest (req) {
 }
 
 async function renderPage (req, res, messageTemplate) {
-  messageTemplate = messageTemplate || (req.query ? req.query.message : null)
+  messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   if (!req.data.plans || !req.data.plans.length) {
     messageTemplate = 'no-plans'
+    req.removeContents = true
   }
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.subscription, 'subscription')
   if (messageTemplate) {
     dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
-    if (messageTemplate === 'success' || messageTemplate === 'no-plans') {
+    if (req.removeContents) {
       const submitForm = doc.getElementById('submit-form')
       submitForm.parentNode.removeChild(submitForm)
       return dashboard.Response.end(req, res, doc)

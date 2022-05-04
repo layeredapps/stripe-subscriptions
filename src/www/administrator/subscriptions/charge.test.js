@@ -45,20 +45,6 @@ describe('/administrator/subscriptions/charge', function () {
   }
 
   describe('before', () => {
-    it('should reject invalid charge', async () => {
-      const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/charge?chargeid=invalid')
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-chargeid')
-    })
-
     it('should bind data to req', async function () {
       await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
@@ -73,6 +59,17 @@ describe('/administrator/subscriptions/charge', function () {
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('charges-table')
       assert.strictEqual(table.tag, 'table')
+    })
+  })
+
+  describe('errors', () => {
+    it('invalid-chargeid', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/charge?chargeid=invalid')
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-chargeid')
     })
   })
 })

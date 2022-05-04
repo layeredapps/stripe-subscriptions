@@ -10,33 +10,64 @@ module.exports = {
 
 async function beforeRequest (req) {
   if (!req.query || !req.query.subscriptionid) {
-    throw new Error('invalid-subscriptionid')
+    req.error = 'invalid-subscriptionid'
+    req.removeContents = true
+    req.data = {
+      subscription: {
+        subscriptionid: ''
+      }
+    }
+    return
   }
-  const subscriptionRaw = await global.api.administrator.subscriptions.Subscription.get(req)
+  let subscriptionRaw
+  try {
+    subscriptionRaw = await global.api.administrator.subscriptions.Subscription.get(req)
+  } catch (error) {
+    req.removeContents = true
+    if (error.message === 'invalid-subscriptionid') {
+      req.error = error.message
+    } else {
+      req.error = 'unknown-error'
+    }
+    req.data = {
+      subscription: {
+        subscriptionid: req.query.subscriptionid
+      }
+    }
+    return
+  }
   const subscription = formatStripeObject(subscriptionRaw)
   req.data = { subscription }
 }
 
-async function renderPage (req, res) {
+async function renderPage (req, res, messageTemplate) {
+  messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.subscription, 'subscription')
   navbar.setup(doc, req.data.subscription)
   const removeElements = []
-  if (req.data.subscription.cancel_at_period_end) {
-    req.data.subscription.status = 'canceling'
-  }
-  for (const status of statuses) {
-    if (req.data.subscription.status === status) {
-      continue
+  if (messageTemplate) {
+    dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
+    if (req.removeContents) {
+      removeElements.push('subscriptions-table')
     }
-    removeElements.push(`${status}-subscription-${req.data.subscription.id}`)
-  }
-  if (req.data.subscription.status === 'active') {
-    removeElements.push(`canceling-subscription-${req.data.subscription.id}`)
   } else {
     if (req.data.subscription.cancel_at_period_end) {
-      removeElements.push(`change-plan-link-${req.data.subscription.getElementById}`, `cancel-subscription-link-${req.data.subscription.id}`)
-    } else {
+      req.data.subscription.status = 'canceling'
+    }
+    for (const status of statuses) {
+      if (req.data.subscription.status === status) {
+        continue
+      }
+      removeElements.push(`${status}-subscription-${req.data.subscription.id}`)
+    }
+    if (req.data.subscription.status === 'active') {
       removeElements.push(`canceling-subscription-${req.data.subscription.id}`)
+    } else {
+      if (req.data.subscription.cancel_at_period_end) {
+        removeElements.push(`change-plan-link-${req.data.subscription.getElementById}`, `cancel-subscription-link-${req.data.subscription.id}`)
+      } else {
+        removeElements.push(`canceling-subscription-${req.data.subscription.id}`)
+      }
     }
   }
   for (const id of removeElements) {

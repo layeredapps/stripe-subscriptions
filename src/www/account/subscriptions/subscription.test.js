@@ -43,39 +43,10 @@ describe('/account/subscriptions/subscription', function () {
     const user2 = await TestHelper.createUser()
     req.account = user2.account
     req.session = user2.session
-    try {
-      await req.route.api.before(req)
-    } catch (error) {
-      cachedResponses.invalidAccount = error.message
-    }
+    await req.route.api.before(req)
+    cachedResponses.invalidAccount = req.error
     cachedResponses.finished = true
   }
-
-  describe('exceptions', () => {
-    it('invalid-subscriptionid', async () => {
-      const user = await TestHelper.createUser()
-      await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        country: 'US'
-      })
-      const req = TestHelper.createRequest('/account/subscriptions/subscription?subscriptionid=invalid')
-      req.account = user.account
-      req.session = user.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-subscriptionid')
-    })
-
-    it('invalid-account', async function () {
-      await bundledData(this.test.currentRetry())
-      const errorMessage = cachedResponses.invalidAccount
-      assert.strictEqual(errorMessage, 'invalid-account')
-    })
-  })
 
   describe('before', () => {
     it('should bind data to req', async function () {
@@ -92,6 +63,27 @@ describe('/account/subscriptions/subscription', function () {
       const doc = TestHelper.extractDoc(result.html)
       const tbody = doc.getElementById(cachedSubscription.subscriptionid)
       assert.strictEqual(tbody.tag, 'tbody')
+    })
+  })
+
+  describe('errors', () => {
+    it('invalid-subscriptionid', async () => {
+      const user = await TestHelper.createUser()
+      await TestHelper.createCustomer(user, {
+        email: user.profile.contactEmail,
+        country: 'US'
+      })
+      const req = TestHelper.createRequest('/account/subscriptions/subscription?subscriptionid=invalid')
+      req.account = user.account
+      req.session = user.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-subscriptionid')
+    })
+
+    it('invalid-account', async function () {
+      await bundledData(this.test.currentRetry())
+      const errorMessage = cachedResponses.invalidAccount
+      assert.strictEqual(errorMessage, 'invalid-account')
     })
   })
 })

@@ -6,20 +6,6 @@ const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/plan', function () {
   describe('before', () => {
-    it('should reject invalid planid', async () => {
-      const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/plan?planid=invalid')
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-planid')
-    })
-
     it('should bind data to req', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPlan({
         amount: '1000',
@@ -60,6 +46,17 @@ describe('/administrator/subscriptions/plan', function () {
       const doc = TestHelper.extractDoc(result.html)
       const tbody = doc.getElementById(administrator.plan.planid)
       assert.strictEqual(tbody.tag, 'tbody')
+    })
+  })
+
+  describe('errors', () => {
+    it('invalid-planid', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/plan?planid=invalid')
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-planid')
     })
   })
 })

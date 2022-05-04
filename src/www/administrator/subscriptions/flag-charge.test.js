@@ -55,35 +55,10 @@ describe('/administrator/subscriptions/flag-charge', function () {
     global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)
     global.packageJSON.dashboard.server.push(ScreenshotData.administratorCharges)
     cachedResponses.submit = await req.post()
-    try {
-      await req.route.api.before(req)
-    } catch (error) {
-      cachedResponses.invalidCharge = error.message
-    }
+    await req.route.api.before(req)
+    cachedResponses.invalidCharge = req.error
     cachedResponses.finished = true
   }
-
-  describe('exceptions', () => {
-    it('should reject invalid chargeid', async () => {
-      const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/flag-charge?chargeid=invalid')
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-chargeid')
-    })
-
-    it('should reject flagged charge', async function () {
-      await bundledData(this.test.currentRetry())
-      const errorMessage = cachedResponses.invalidCharge
-      assert.strictEqual(errorMessage, 'invalid-charge')
-    })
-  })
 
   describe('before', () => {
     it('should bind data to req', async function () {
@@ -115,6 +90,21 @@ describe('/administrator/subscriptions/flag-charge', function () {
   })
 
   describe('errors', () => {
+    it('invalid-chargeid', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/flag-charge?chargeid=invalid')
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-chargeid')
+    })
+
+    it('invalid-charge', async function () {
+      await bundledData(this.test.currentRetry())
+      const errorMessage = cachedResponses.invalidCharge
+      assert.strictEqual(errorMessage, 'invalid-charge')
+    })
+
     it('invalid-csrf-token', async function () {
       await bundledData(this.test.currentRetry())
       const result = cachedResponses.csrf

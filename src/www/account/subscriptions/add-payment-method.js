@@ -11,15 +11,38 @@ module.exports = {
 
 async function beforeRequest (req) {
   if (!req.query || !req.query.customerid) {
-    throw new Error('invalid-customerid')
+    req.removeContents = true
+    req.error = 'invalid-customerid'
+    req.data = {
+      customer: {
+        customerid: ''
+      }
+    }
+    return
   }
-  const customerRaw = await global.api.user.subscriptions.Customer.get(req)
+  let customerRaw
+  try {
+    customerRaw = await global.api.user.subscriptions.Customer.get(req)
+  } catch (error) {
+    req.removeContents = true
+    req.data = {
+      customer: {
+        customerid: ''
+      }
+    }
+    if (error.message === 'invalid-customerid' || error.message === 'invalid-account') {
+      req.error = error.message
+    } else {
+      req.error = 'unknown-error'
+    }
+    return
+  }
   const customer = formatStripeObject(customerRaw)
   req.data = { customer }
 }
 
 async function renderPage (req, res, messageTemplate) {
-  messageTemplate = messageTemplate || (req.query ? req.query.message : null)
+  messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   let doc
   const removeElements = []
   if (global.stripeJS === false) {
@@ -42,7 +65,7 @@ async function renderPage (req, res, messageTemplate) {
 
   if (messageTemplate) {
     dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
-    if (messageTemplate === 'success') {
+    if (req.removeContents) {
       removeElements.push('form-stripejs-v3', 'form-nojs')
     }
   }
@@ -53,7 +76,7 @@ async function renderPage (req, res, messageTemplate) {
     }
     element.parentNode.removeChild(element)
   }
-  if (messageTemplate === 'success') {
+  if (req.removeContents) {
     return dashboard.Response.end(req, res, doc)
   }
   req.query = req.query || {}

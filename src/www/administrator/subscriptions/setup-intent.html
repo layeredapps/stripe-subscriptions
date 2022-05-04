@@ -10,7 +10,8 @@
   </head>
   <body>
     <div class="container">
-      <h1 translate="yes">View setup intent</h1>P
+      <h1 translate="yes">View setup intent</h1>
+      <div id="message-container"></div>
       <table id="setup_intents-table" class="data-table">
         <tbody id="${setup_intent.id}">
           <tr>
@@ -39,5 +40,20 @@
         </tbody>
       </table>
     </div>
-</body>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! An unknown error occurred
+      </div>
+    </template>
+    <template id="invalid-setupintentid">
+      <div class="error message" translate="yes">
+        Error! An invalid setup intent was specified
+      </div>
+    </template>
+    <template id="invalid-setupintent">
+      <div class="error message" translate="yes">
+        Error! An invalid setup intent was specified
+      </div>
+    </template>
+  </body>
 </html>

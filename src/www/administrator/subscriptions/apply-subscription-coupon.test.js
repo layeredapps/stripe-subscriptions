@@ -25,22 +25,16 @@ describe('/administrator/subscriptions/apply-subscription-coupon', function () {
     const req = TestHelper.createRequest(`/administrator/subscriptions/apply-subscription-coupon?subscriptionid=${user.subscription.subscriptionid}`)
     req.account = administrator.account
     req.session = administrator.session
-    try {
-      await req.route.api.before(req)
-    } catch (error) {
-      cachedResponses.cancelingSubscription = error.message
-    }
+    await req.route.api.before(req)
+    cachedResponses.cancelingSubscription = req.error
     // free subscription
     const administrator2 = await TestStripeAccounts.createOwnerWithPlan({ amount: 0 })
     const user2 = await TestStripeAccounts.createUserWithFreeSubscription(administrator2.plan)
     const req2 = TestHelper.createRequest(`/administrator/subscriptions/apply-subscription-coupon?subscriptionid=${user2.subscription.subscriptionid}`)
     req2.account = administrator.account
     req2.session = administrator.session
-    try {
-      await req2.route.api.before(req2)
-    } catch (error) {
-      cachedResponses.freeSubscription = error.message
-    }
+    await req2.route.api.before(req2)
+    cachedResponses.freeSubscription = req2.error
     // has coupon
     const user3 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
     await TestHelper.createCoupon(administrator, {
@@ -55,11 +49,8 @@ describe('/administrator/subscriptions/apply-subscription-coupon', function () {
     req3.body = {
       couponid: administrator.coupon.couponid
     }
-    try {
-      await req3.route.api.before(req3)
-    } catch (error) {
-      cachedResponses.existingCoupon = error.message
-    }
+    await req3.route.api.before(req3)
+    cachedResponses.existingCoupon = req3.error
     // before
     await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan, user)
     const req4 = TestHelper.createRequest(`/administrator/subscriptions/apply-subscription-coupon?subscriptionid=${user.subscription.subscriptionid}`)
@@ -70,7 +61,6 @@ describe('/administrator/subscriptions/apply-subscription-coupon', function () {
     // get
     cachedResponses.get = await req4.get()
     // csrf
-
     req4.puppeteer = false
     req4.body = {
       'csrf-token': ''
@@ -97,40 +87,6 @@ describe('/administrator/subscriptions/apply-subscription-coupon', function () {
     cachedResponses.returns = await req4.post()
     cachedResponses.finished = true
   }
-
-  describe('exceptions', () => {
-    it('should reject invalid subscription', async () => {
-      const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/apply-subscription-coupon?subscriptionid=invalid')
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-subscriptionid')
-    })
-
-    it('should reject canceling subscription', async function () {
-      await bundledData(this.test.currentRetry())
-      const errorMessage = cachedResponses.cancelingSubscription
-      assert.strictEqual(errorMessage, 'invalid-subscription')
-    })
-
-    it('should reject free subscription', async function () {
-      await bundledData(this.test.currentRetry())
-      const errorMessage = cachedResponses.freeSubscription
-      assert.strictEqual(errorMessage, 'invalid-subscription')
-    })
-
-    it('should reject subscription with coupon', async function () {
-      await bundledData(this.test.currentRetry())
-      const errorMessage = cachedResponses.existingCoupon
-      assert.strictEqual(errorMessage, 'invalid-subscription')
-    })
-  })
 
   describe('before', () => {
     it('should bind data to req', async function () {
@@ -162,6 +118,33 @@ describe('/administrator/subscriptions/apply-subscription-coupon', function () {
   })
 
   describe('errors', () => {
+    it('invalid-subscriptionid', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/apply-subscription-coupon?subscriptionid=invalid')
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-subscriptionid')
+    })
+
+    it('invalid-subscription-canceling', async function () {
+      await bundledData(this.test.currentRetry())
+      const errorMessage = cachedResponses.cancelingSubscription
+      assert.strictEqual(errorMessage, 'invalid-subscription-canceling')
+    })
+
+    it('invalid-subscription-free', async function () {
+      await bundledData(this.test.currentRetry())
+      const errorMessage = cachedResponses.freeSubscription
+      assert.strictEqual(errorMessage, 'invalid-subscription-free')
+    })
+
+    it('already-discounted', async function () {
+      await bundledData(this.test.currentRetry())
+      const errorMessage = cachedResponses.existingCoupon
+      assert.strictEqual(errorMessage, 'already-discounted')
+    })
+
     it('invalid-csrf-token', async function () {
       await bundledData(this.test.currentRetry())
       const result = cachedResponses.csrf

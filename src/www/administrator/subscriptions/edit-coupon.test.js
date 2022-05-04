@@ -5,40 +5,6 @@ const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/edit-coupon', function () {
   describe('before', () => {
-    it('should reject invalid couponid', async () => {
-      const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/edit-coupon?planid=invalid')
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-couponid')
-    })
-
-    it('should reject unpublished coupon', async () => {
-      const administrator = await TestHelper.createOwner()
-      await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
-        unpublishedAt: 'true',
-        duration: 'repeating',
-        duration_in_months: '3'
-      })
-      const req = TestHelper.createRequest(`/administrator/subscriptions/edit-coupon?couponid=${administrator.coupon.couponid}`)
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-coupon')
-    })
-
     it('should bind data to req', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
@@ -127,6 +93,30 @@ describe('/administrator/subscriptions/edit-coupon', function () {
   })
 
   describe('errors', () => {
+    it('invalid-couponid', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/edit-coupon?planid=invalid')
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-couponid')
+    })
+
+    it('invalid-coupon', async () => {
+      const administrator = await TestHelper.createOwner()
+      await TestHelper.createCoupon(administrator, {
+        publishedAt: 'true',
+        unpublishedAt: 'true',
+        duration: 'repeating',
+        duration_in_months: '3'
+      })
+      const req = TestHelper.createRequest(`/administrator/subscriptions/edit-coupon?couponid=${administrator.coupon.couponid}`)
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-coupon')
+    })
+
     it('invalid-xss-input', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {

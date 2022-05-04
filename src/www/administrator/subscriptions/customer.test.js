@@ -5,24 +5,6 @@ const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/customer', function () {
   describe('before', () => {
-    it('should reject invalid customer', async () => {
-      const administrator = await TestHelper.createOwner()
-      const user = await TestHelper.createUser()
-      await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail
-      })
-      const req = TestHelper.createRequest('/administrator/subscriptions/customer?customerid=invalid')
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-customerid')
-    })
-
     it('should bind data to req', async () => {
       const administrator = await TestHelper.createOwner()
       const user = await TestHelper.createUser()
@@ -61,6 +43,21 @@ describe('/administrator/subscriptions/customer', function () {
       const doc = TestHelper.extractDoc(result.html)
       const tbody = doc.getElementById(user.customer.customerid)
       assert.strictEqual(tbody.tag, 'tbody')
+    })
+  })
+
+  describe('errors', () => {
+    it('invalid-customerid', async () => {
+      const administrator = await TestHelper.createOwner()
+      const user = await TestHelper.createUser()
+      await TestHelper.createCustomer(user, {
+        email: user.profile.contactEmail
+      })
+      const req = TestHelper.createRequest('/administrator/subscriptions/customer?customerid=invalid')
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-customerid')
     })
   })
 })

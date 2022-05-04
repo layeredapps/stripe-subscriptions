@@ -10,11 +10,34 @@ module.exports = {
 
 async function beforeRequest (req) {
   if (!req.query || !req.query.subscriptionid) {
-    throw new Error('invalid-subscriptionid')
+    req.error = 'invalid-subscriptionid'
+    req.removeContents = true
+    req.data = {
+      subscription: {
+        subscriptionid: ''
+      }
+    }
+    return
   }
   let subscription
   try {
-    const subscriptionRaw = await global.api.user.subscriptions.Subscription.get(req)
+    let subscriptionRaw
+    try {
+      subscriptionRaw = await global.api.user.subscriptions.Subscription.get(req)
+    } catch (error) {
+      req.removeContents = true
+      if (error.message === 'invalid-subscriptionid' || error.message === 'invalid-account') {
+        req.error = error.message
+      } else {
+        req.error = 'unknown-error'
+      }
+      req.data = {
+        subscription: {
+          subscriptionid: req.query.subscriptionid
+        }
+      }
+      return
+    }
     subscription = formatStripeObject(subscriptionRaw)
   } catch (error) {
     req.error = error.message
@@ -29,7 +52,7 @@ async function beforeRequest (req) {
 }
 
 async function renderPage (req, res, messageTemplate) {
-  messageTemplate = messageTemplate || (req.query ? req.query.message : null)
+  messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.subscription, 'subscription')
   navbar.setup(doc, req.data.subscription)
   if (messageTemplate) {

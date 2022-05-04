@@ -8,7 +8,7 @@ module.exports = {
 }
 
 async function renderPage (req, res, messageTemplate) {
-  messageTemplate = messageTemplate || (req.query ? req.query.message : null)
+  messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   let doc
   const unusedVersions = []
   if (global.stripeJS === false) {

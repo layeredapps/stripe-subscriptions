@@ -44,34 +44,10 @@ describe('/account/subscriptions/invoice', function () {
     const req2 = TestHelper.createRequest(`/account/subscriptions/invoice?invoiceid=${user.invoice.invoiceid}`)
     req2.account = user2.account
     req2.session = user2.session
-    try {
-      await req2.route.api.before(req2)
-    } catch (error) {
-      cachedResponses.invalidAccount = error.message
-    }
+    await req2.route.api.before(req2)
+    cachedResponses.invalidAccount = req2.error
     cachedResponses.finished = true
   }
-  describe('exceptions', () => {
-    it('invalid-invoiceid', async () => {
-      const user = await TestHelper.createUser()
-      const req = TestHelper.createRequest('/account/subscriptions/invoice?invoiceid=invalid')
-      req.account = user.account
-      req.session = user.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-invoiceid')
-    })
-
-    it('invalid-account', async function () {
-      await bundledData(this.test.currentRetry())
-      const errorMessage = cachedResponses.invalidAccount
-      assert.strictEqual(errorMessage, 'invalid-account')
-    })
-  })
 
   describe('before', () => {
     it('should bind data to req', async function () {
@@ -88,6 +64,23 @@ describe('/account/subscriptions/invoice', function () {
       const doc = TestHelper.extractDoc(result.html)
       const tbody = doc.getElementById(cachedInvoice.invoiceid)
       assert.strictEqual(tbody.tag, 'tbody')
+    })
+  })
+
+  describe('errors', () => {
+    it('invalid-invoiceid', async () => {
+      const user = await TestHelper.createUser()
+      const req = TestHelper.createRequest('/account/subscriptions/invoice?invoiceid=invalid')
+      req.account = user.account
+      req.session = user.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-invoiceid')
+    })
+
+    it('invalid-account', async function () {
+      await bundledData(this.test.currentRetry())
+      const errorMessage = cachedResponses.invalidAccount
+      assert.strictEqual(errorMessage, 'invalid-account')
     })
   })
 })

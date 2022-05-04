@@ -5,46 +5,6 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/revoke-customer-coupon', function () {
-  describe('exceptions', () => {
-    it('should reject invalid customer', async () => {
-      const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/revoke-customer-coupon?customerid=invalid')
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-customerid')
-    })
-
-    it('should reject customer without discount', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPlan({ amount: '1000' })
-      await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
-        duration: 'repeating',
-        duration_in_months: '3'
-      })
-      const user = await TestHelper.createUser()
-      await TestHelper.createCustomer(user, {
-        email: user.profile.contactEmail,
-        country: 'US'
-      })
-      const req = TestHelper.createRequest(`/administrator/subscriptions/revoke-customer-coupon?customerid=${user.customer.customerid}`)
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-customer')
-    })
-  })
-
   describe('before', () => {
     it('should bind data to req', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPlan({
@@ -147,6 +107,34 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
   })
 
   describe('errors', () => {
+    it('invalid-customerid', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/revoke-customer-coupon?customerid=invalid')
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-customerid')
+    })
+
+    it('no-discount', async () => {
+      const administrator = await TestStripeAccounts.createOwnerWithPlan({ amount: '1000' })
+      await TestHelper.createCoupon(administrator, {
+        publishedAt: 'true',
+        duration: 'repeating',
+        duration_in_months: '3'
+      })
+      const user = await TestHelper.createUser()
+      await TestHelper.createCustomer(user, {
+        email: user.profile.contactEmail,
+        country: 'US'
+      })
+      const req = TestHelper.createRequest(`/administrator/subscriptions/revoke-customer-coupon?customerid=${user.customer.customerid}`)
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'no-discount')
+    })
+
     it('invalid-csrf-token', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPlan({
         amount: '1000',

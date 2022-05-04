@@ -9,31 +9,58 @@ module.exports = {
 
 async function beforeRequest (req) {
   if (!req.query || !req.query.productid) {
-    throw new Error('invalid-productid')
+    req.error = 'invalid-productid'
+    req.removeContents = true
+    req.data = {
+      product: {
+        productid: ''
+      }
+    }
+    return
   }
-  const productRaw = await global.api.administrator.subscriptions.Product.get(req)
+  let productRaw
+  try {
+    productRaw = await global.api.administrator.subscriptions.Product.get(req)
+  } catch (error) {
+    if (error.message === 'invalid-productid' || error.message === 'invalid-product') {
+      req.error = error.message
+    } else {
+      req.error = 'unknown-error'
+    }
+    req.removeContents = true
+    req.data = {
+      product: {
+        productid: req.query.productid
+      }
+    }
+    return
+  }
   const product = formatStripeObject(productRaw)
   req.data = { product }
 }
 
-async function renderPage (req, res) {
+async function renderPage (req, res, messageTemplate) {
+  messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.product, 'product')
   navbar.setup(doc, req.data.product)
-  if (req.data.product.unpublishedAt) {
-    const published = doc.getElementById('published')
-    published.parentNode.removeChild(published)
-    const notPublished = doc.getElementById('not-published')
-    notPublished.parentNode.removeChild(notPublished)
-  } else if (req.data.product.publishedAt) {
-    const unpublished = doc.getElementById('unpublished')
-    unpublished.parentNode.removeChild(unpublished)
-    const notPublished = doc.getElementById('not-published')
-    notPublished.parentNode.removeChild(notPublished)
+  const removeElements = []
+  if (messageTemplate) {
+    dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
+    if (req.removeContents) {
+      removeElements.push('products-table')
+    }
   } else {
-    const published = doc.getElementById('published')
-    published.parentNode.removeChild(published)
-    const unpublished = doc.getElementById('unpublished')
-    unpublished.parentNode.removeChild(unpublished)
+    if (req.data.product.unpublishedAt) {
+      removeElements.push('published', 'not-published')
+    } else if (req.data.product.publishedAt) {
+      removeElements.push('unpublished', 'not-published')
+    } else {
+      removeElements.push('published', 'unpublished')
+    }
+  }
+  for (const id of removeElements) {
+    const element = doc.getElementById(id)
+    element.parentNode.removeChild(element)
   }
   return dashboard.Response.end(req, res, doc)
 }

@@ -28,21 +28,15 @@ describe('/administrator/subscriptions/forgive-invoice', function () {
     let req = TestHelper.createRequest(`/administrator/subscriptions/forgive-invoice?invoiceid=${user.invoice.invoiceid}`)
     req.account = administrator.account
     req.session = administrator.session
-    try {
-      await req.route.api.before(req)
-    } catch (error) {
-      cachedResponses.paidInvoice = error.message
-    }
+    await req.route.api.before(req)
+    cachedResponses.paidInvoice = req.error
     await TestHelper.createAmountOwed(user)
     await TestHelper.forgiveInvoice(administrator, user.invoice.invoiceid)
     req = TestHelper.createRequest(`/administrator/subscriptions/forgive-invoice?invoiceid=${user.invoice.invoiceid}`)
     req.account = administrator.account
     req.session = administrator.session
-    try {
-      await req.route.api.before(req)
-    } catch (error) {
-      cachedResponses.forgivenInvoice = error.message
-    }
+    await req.route.api.before(req)
+    cachedResponses.forgivenInvoice = req.error
     await TestHelper.createAmountOwed(user)
     req = TestHelper.createRequest(`/administrator/subscriptions/forgive-invoice?invoiceid=${user.invoice.invoiceid}`)
     req.account = administrator.account
@@ -75,34 +69,6 @@ describe('/administrator/subscriptions/forgive-invoice', function () {
     cachedResponses.finished = true
   }
 
-  describe('exceptions', () => {
-    it('should reject invalid invoiceid', async () => {
-      const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/forgive-invoice?invoiceid=invalid')
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-invoiceid')
-    })
-
-    it('should reject paid invoice', async function () {
-      await bundledData(this.test.currentRetry())
-      const errorMessage = cachedResponses.paidInvoice
-      assert.strictEqual(errorMessage, 'invalid-invoice')
-    })
-
-    it('should reject uncollectible invoice', async function () {
-      await bundledData(this.test.currentRetry())
-      const errorMessage = cachedResponses.forgivenInvoice
-      assert.strictEqual(errorMessage, 'invalid-invoice')
-    })
-  })
-
   describe('before', () => {
     it('should bind data to req', async function () {
       await bundledData(this.test.currentRetry())
@@ -133,6 +99,27 @@ describe('/administrator/subscriptions/forgive-invoice', function () {
   })
 
   describe('errors', () => {
+    it('invalid-invoiceid', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/forgive-invoice?invoiceid=invalid')
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-invoiceid')
+    })
+
+    it('already-paid', async function () {
+      await bundledData(this.test.currentRetry())
+      const errorMessage = cachedResponses.paidInvoice
+      assert.strictEqual(errorMessage, 'already-paid')
+    })
+
+    it('already-forgiven', async function () {
+      await bundledData(this.test.currentRetry())
+      const errorMessage = cachedResponses.forgivenInvoice
+      assert.strictEqual(errorMessage, 'already-forgiven')
+    })
+
     it('invalid-csrf-token', async function () {
       await bundledData(this.test.currentRetry())
       const result = cachedResponses.csrf

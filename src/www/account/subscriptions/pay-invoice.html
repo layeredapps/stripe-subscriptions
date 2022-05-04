@@ -36,7 +36,27 @@
     </template>
     <template id="unknown-error">
       <div class="error message" translate="yes">
-        Error! An error occurred paying the invoice
+        Error! An unknown error occurred
+      </div>
+    </template>
+    <template id="invalid-account">
+      <div class="error message" translate="yes">
+        Error! You cannot pay invoices from someone else's account
+      </div>
+    </template>
+    <template id="invalid-invoiceid">
+      <div class="error message" translate="yes">
+        Error! An invalid invoice was specified
+      </div>
+    </template>
+    <template id="invoice-paid">
+      <div class="error message" translate="yes">
+        This invoice has been paid
+      </div>
+    </template>
+    <template id="invalid-customerid">
+      <div class="error message" translate="yes">
+        Error! An invalid customer it attached to this invoice
       </div>
     </template>
     <template id="invalid-csrf-token">

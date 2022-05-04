@@ -10,34 +10,67 @@ module.exports = {
 
 async function beforeRequest (req) {
   if (!req.query || !req.query.chargeid) {
-    throw new Error('invalid-chargeid')
-  }
-  if (req.query.message === 'success') {
+    req.error = 'invalid-chargeid'
+    req.removeContents = true
     req.data = {
       charge: {
-        id: req.query.chargeid,
-        object: 'charge',
+        chargeid: '',
         fraud_details: {}
       }
     }
     return
   }
-  const chargeRaw = await global.api.administrator.subscriptions.Charge.get(req)
+  if (req.query.message === 'success') {
+    req.removeContents = true
+    req.data = {
+      charge: {
+        chargeid: req.query.chargeid,
+        fraud_details: {}
+      }
+    }
+    return
+  }
+  let chargeRaw
+  try {
+    chargeRaw = await global.api.administrator.subscriptions.Charge.get(req)
+  } catch (error) {
+    req.removeContents = true
+    req.data = {
+      charge: {
+        chargeid: '',
+        fraud_details: {}
+      }
+    }
+    if (error.message === 'invalid-chargeid' || error.message === 'invalid-charge') {
+      req.error = error.message
+    } else {
+      req.error = 'unknown-error'
+    }
+    return
+  }
   const charge = formatStripeObject(chargeRaw)
   if (!charge.paid || charge.refunded ||
     (charge.fraud_details && charge.fraud_details.user_report === 'fraudulent')) {
-    throw new Error('invalid-charge')
+    req.error = 'invalid-charge'
+    req.removeContents = true
+    req.data = {
+      charge: {
+        chargeid: '',
+        fraud_details: {}
+      }
+    }
+    return
   }
   req.data = { charge }
 }
 
 async function renderPage (req, res, messageTemplate) {
-  messageTemplate = messageTemplate || (req.query ? req.query.message : null)
+  messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.charge, 'charge')
   navbar.setup(doc, req.data.charge)
   if (messageTemplate) {
     dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
-    if (messageTemplate === 'success') {
+    if (req.removeContents) {
       const submitForm = doc.getElementById('submit-form')
       submitForm.parentNode.removeChild(submitForm)
     }

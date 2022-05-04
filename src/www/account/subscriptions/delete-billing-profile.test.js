@@ -30,11 +30,8 @@ describe('/account/subscriptions/delete-billing-profile', function () {
     const user2 = await TestHelper.createUser()
     req1.account = user2.account
     req1.session = user2.session
-    try {
-      await req1.route.api.before(req1)
-    } catch (error) {
-      cachedResponses.invalidAccount = error.message
-    }
+    await req1.route.api.before(req1)
+    cachedResponses.invalidAccount = req1.error
     const req2 = TestHelper.createRequest(`/account/subscriptions/delete-billing-profile?customerid=${user.customer.customerid}`)
     req2.account = user.account
     req2.session = user.session
@@ -60,27 +57,6 @@ describe('/account/subscriptions/delete-billing-profile', function () {
     cachedResponses.submit = await req2.post()
     cachedResponses.finished = true
   }
-  describe('exceptions', () => {
-    it('invalid-customerid', async () => {
-      const user = await TestHelper.createUser()
-      const req = TestHelper.createRequest('/account/subscriptions/delete-billing-profile?customerid=invalid')
-      req.account = user.account
-      req.session = user.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-customerid')
-    })
-
-    it('invalid-account', async function () {
-      await bundledData(this.test.currentRetry())
-      const errorMessage = cachedResponses.invalidAccount
-      assert.strictEqual(errorMessage, 'invalid-account')
-    })
-  })
 
   describe('before', () => {
     it('should bind data to req', async function () {
@@ -112,6 +88,21 @@ describe('/account/subscriptions/delete-billing-profile', function () {
   })
 
   describe('errors', () => {
+    it('invalid-customerid', async () => {
+      const user = await TestHelper.createUser()
+      const req = TestHelper.createRequest('/account/subscriptions/delete-billing-profile?customerid=invalid')
+      req.account = user.account
+      req.session = user.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-customerid')
+    })
+
+    it('invalid-account', async function () {
+      await bundledData(this.test.currentRetry())
+      const errorMessage = cachedResponses.invalidAccount
+      assert.strictEqual(errorMessage, 'invalid-account')
+    })
+
     it('invalid-csrf-token', async function () {
       await bundledData(this.test.currentRetry())
       const result = cachedResponses.csrf

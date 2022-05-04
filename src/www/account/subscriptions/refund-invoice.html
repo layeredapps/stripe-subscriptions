@@ -44,7 +44,22 @@
     </template>
     <template id="unknown-error">
       <div class="error message" translate="yes">
-        Error! An error occurred refunding the invoice
+        Error! An unknown error occurred
+      </div>
+    </template>
+    <template id="invalid-account">
+      <div class="error message" translate="yes">
+        Error! You cannot refund invoices from someone else's account
+      </div>
+    </template>
+    <template id="invalid-invoiceid">
+      <div class="error message" translate="yes">
+        Error! An invalid invoice was specified
+      </div>
+    </template>
+    <template id="invoice-unpaid">
+      <div class="error message" translate="yes">
+        This invoice has not been paid
       </div>
     </template>
     <template id="invalid-csrf-token">

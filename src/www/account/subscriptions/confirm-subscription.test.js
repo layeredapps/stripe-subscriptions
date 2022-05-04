@@ -39,27 +39,18 @@ describe('/account/subscriptions/confirm-subscription', function () {
     const req = TestHelper.createRequest('/account/subscriptions/confirm-subscription?planid=invalid')
     req.account = user.account
     req.session = user.session
-    try {
-      await req.route.api.before(req)
-    } catch (error) {
-      cachedResponses.invalidPlan = error.message
-    }
+    await req.route.api.before(req)
+    cachedResponses.invalidPlan = req.error
     const req2 = TestHelper.createRequest(`/account/subscriptions/confirm-subscription?planid=${unpublishedPlan.planid}`)
     req2.account = user.account
     req2.session = user.session
-    try {
-      await req2.route.api.before(req2)
-    } catch (error) {
-      cachedResponses.unpublishedAtPlan = error.message
-    }
+    await req2.route.api.before(req2)
+    cachedResponses.unpublishedAtPlan = req2.error
     const req3 = TestHelper.createRequest(`/account/subscriptions/confirm-subscription?planid=${notPublishedPlan.planid}`)
     req3.account = user.account
     req3.session = user.session
-    try {
-      await req3.route.api.before(req3)
-    } catch (error) {
-      cachedResponses.notPublishedPlan = error.message
-    }
+    await req3.route.api.before(req3)
+    cachedResponses.notPublishedPlan = req3.error
     const req4 = TestHelper.createRequest(`/account/subscriptions/confirm-subscription?planid=${publishedPlan.planid}`)
     req4.account = user.account
     req4.session = user.session
@@ -121,21 +112,6 @@ describe('/account/subscriptions/confirm-subscription', function () {
     cachedResponses.submit = await req6.post()
     cachedResponses.finished = true
   }
-  describe('exceptions', () => {
-    it('invalid-planid', async function () {
-      await bundledData(this.test.currentRetry())
-      const errorMessage = cachedResponses.invalidPlan
-      assert.strictEqual(errorMessage, 'invalid-planid')
-    })
-
-    it('invalid-plan', async function () {
-      await bundledData(this.test.currentRetry())
-      let errorMessage = cachedResponses.unpublishedAtPlan
-      assert.strictEqual(errorMessage, 'invalid-plan')
-      errorMessage = cachedResponses.notPublishedPlan
-      assert.strictEqual(errorMessage, 'invalid-plan')
-    })
-  })
 
   describe('before', () => {
     it('should bind data to req', async function () {
@@ -171,6 +147,20 @@ describe('/account/subscriptions/confirm-subscription', function () {
       const messageContainer = doc.getElementById('message-container')
       const message = messageContainer.child[0]
       assert.strictEqual(message.attr.template, 'invalid-paymentmethodid')
+    })
+
+    it('invalid-planid', async function () {
+      await bundledData(this.test.currentRetry())
+      const errorMessage = cachedResponses.invalidPlan
+      assert.strictEqual(errorMessage, 'invalid-planid')
+    })
+
+    it('invalid-plan', async function () {
+      await bundledData(this.test.currentRetry())
+      let errorMessage = cachedResponses.unpublishedAtPlan
+      assert.strictEqual(errorMessage, 'invalid-plan')
+      errorMessage = cachedResponses.notPublishedPlan
+      assert.strictEqual(errorMessage, 'invalid-plan')
     })
 
     it('invalid-csrf-token', async function () {

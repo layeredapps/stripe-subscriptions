@@ -43,6 +43,8 @@ describe('/administrator/subscriptions/delete-subscription', function () {
     const paidSubscription2 = user.subscription
     await TestStripeAccounts.createUserWithPaidSubscription(paidPlan, user)
     const paidSubscription3 = user.subscription
+    await TestStripeAccounts.createUserWithPaidSubscription(paidPlan, user)
+    const paidSubscription4 = user.subscription
     await TestStripeAccounts.createUserWithFreeSubscription(freePlan, user)
     const freeSubscription1 = cachedSubscription = user.subscription
     await TestStripeAccounts.createUserWithFreeSubscription(freePlan, user)
@@ -55,11 +57,8 @@ describe('/administrator/subscriptions/delete-subscription', function () {
     let req = TestHelper.createRequest('/administrator/subscriptions/delete-subscription')
     req.account = administrator.account
     req.session = administrator.session
-    try {
-      await req.route.api.before(req)
-    } catch (error) {
-      cachedResponses.missingQueryString = error.message
-    }
+    await req.route.api.before(req)
+    cachedResponses.missingQueryString = req.error
     req = TestHelper.createRequest('/administrator/subscriptions/delete-subscription')
     req.account = administrator.account
     req.session = administrator.session
@@ -137,12 +136,16 @@ describe('/administrator/subscriptions/delete-subscription', function () {
     }
     req.puppeteer = false
     cachedResponses.csrf = await req.post()
+    delete (req.puppeteer)
     // credit
     req.body = {
       refund: 'credit'
     }
     cachedResponses.submitPaidCredit = await req.post()
     // refund
+    req = TestHelper.createRequest(`/administrator/subscriptions/delete-subscription?subscriptionid=${paidSubscription4.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     req.body = {
       refund: 'refund'
     }
@@ -151,8 +154,8 @@ describe('/administrator/subscriptions/delete-subscription', function () {
       { hover: '#administrator-menu-container' },
       { click: '/administrator/subscriptions' },
       { click: '/administrator/subscriptions/subscriptions' },
-      { click: `/administrator/subscriptions/subscription?subscriptionid=${paidSubscription3.subscriptionid}` },
-      { click: `/administrator/subscriptions/delete-subscription?subscriptionid=${paidSubscription3.subscriptionid}` },
+      { click: `/administrator/subscriptions/subscription?subscriptionid=${paidSubscription4.subscriptionid}` },
+      { click: `/administrator/subscriptions/delete-subscription?subscriptionid=${paidSubscription4.subscriptionid}` },
       { fill: '#submit-form' }
     ]
     global.pageSize = 50
@@ -161,24 +164,6 @@ describe('/administrator/subscriptions/delete-subscription', function () {
     cachedResponses.submitPaidRefund = await req.post()
     cachedResponses.finished = true
   }
-
-  describe('exceptions', () => {
-    it('should reject missing subscription', async function () {
-      await bundledData(this.test.currentRetry())
-      const errorMessage = cachedResponses.missingQueryString
-      assert.strictEqual(errorMessage, 'invalid-subscriptionid')
-    })
-    it('should reject invalid subscription', async function () {
-      await bundledData(this.test.currentRetry())
-      const errorMessage = cachedResponses.invalidQuerystring
-      assert.strictEqual(errorMessage, 'invalid-subscriptionid')
-    })
-    it('should reject canceled subscription', async function () {
-      await bundledData(this.test.currentRetry())
-      const errorMessage = cachedResponses.invalidSubscription
-      assert.strictEqual(errorMessage, 'invalid-subscription')
-    })
-  })
 
   describe('before', () => {
     it('should bind data to req', async function () {
@@ -297,6 +282,18 @@ describe('/administrator/subscriptions/delete-subscription', function () {
   })
 
   describe('errors', () => {
+    it('invalid-subscriptionid', async function () {
+      await bundledData(this.test.currentRetry())
+      const errorMessage = cachedResponses.invalidQuerystring
+      assert.strictEqual(errorMessage, 'invalid-subscriptionid')
+    })
+
+    it('invalid-subscription', async function () {
+      await bundledData(this.test.currentRetry())
+      const errorMessage = cachedResponses.invalidSubscription
+      assert.strictEqual(errorMessage, 'invalid-subscription')
+    })
+
     it('invalid-csrf-token', async function () {
       await bundledData(this.test.currentRetry())
       const result = cachedResponses.csrf

@@ -28,11 +28,8 @@ describe('/account/subscriptions/restore-subscription', function () {
     let req = TestHelper.createRequest('/account/subscriptions/restore-subscription')
     req.account = user.account
     req.session = user.session
-    try {
-      await req.route.api.before(req)
-    } catch (error) {
-      cachedResponses.missingSubscription = error.message
-    }
+    await req.route.api.before(req)
+    cachedResponses.missingSubscription = req.error
     req = TestHelper.createRequest('/account/subscriptions/restore-subscription?subscriptionid=invalid')
     req.account = user.account
     req.session = user.session
@@ -72,31 +69,6 @@ describe('/account/subscriptions/restore-subscription', function () {
     cachedResponses.submit = await req.post()
     cachedResponses.finished = true
   }
-  describe('exceptions', () => {
-    it('should reject missing subscription', async function () {
-      await bundledData(this.test.currentRetry())
-      const errorMessage = cachedResponses.missingSubscription
-      assert.strictEqual(errorMessage, 'invalid-subscriptionid')
-    })
-
-    it('should reject invalid subscription', async function () {
-      await bundledData(this.test.currentRetry())
-      const errorMessage = cachedResponses.invalidSubscription
-      assert.strictEqual(errorMessage, 'invalid-subscriptionid')
-    })
-
-    it('should reject non-canceled subscription', async function () {
-      await bundledData(this.test.currentRetry())
-      const errorMessage = cachedResponses.uncanceledSubscription
-      assert.strictEqual(errorMessage, 'invalid-subscription')
-    })
-
-    it('should reject other account\'s subscription', async function () {
-      await bundledData(this.test.currentRetry())
-      const errorMessage = cachedResponses.invalidAccount
-      assert.strictEqual(errorMessage, 'invalid-account')
-    })
-  })
 
   describe('before', () => {
     it('should bind data to req', async function () {
@@ -128,6 +100,24 @@ describe('/account/subscriptions/restore-subscription', function () {
   })
 
   describe('errors', () => {
+    it('invalid-subscriptionid', async function () {
+      await bundledData(this.test.currentRetry())
+      const errorMessage = cachedResponses.invalidSubscription
+      assert.strictEqual(errorMessage, 'invalid-subscriptionid')
+    })
+
+    it('invalid-subscription', async function () {
+      await bundledData(this.test.currentRetry())
+      const errorMessage = cachedResponses.uncanceledSubscription
+      assert.strictEqual(errorMessage, 'invalid-subscription')
+    })
+
+    it('invalid-account', async function () {
+      await bundledData(this.test.currentRetry())
+      const errorMessage = cachedResponses.invalidAccount
+      assert.strictEqual(errorMessage, 'invalid-account')
+    })
+
     it('invalid-csrf-token', async function () {
       await bundledData(this.test.currentRetry())
       const result = cachedResponses.csrf

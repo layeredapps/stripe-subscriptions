@@ -9,27 +9,75 @@ module.exports = {
 
 async function beforeRequest (req) {
   if (!req.query || !req.query.invoiceid) {
-    throw new Error('invalid-invoiceid')
+    req.removeContents = true
+    req.data = {
+      invoice: {
+        invoiceid: ''
+      }
+    }
+    req.error = 'invalid-invoiceid'
+    return
   }
-  const invoiceRaw = await global.api.user.subscriptions.Invoice.get(req)
+  let invoiceRaw
+  try {
+    invoiceRaw = await global.api.user.subscriptions.Invoice.get(req)
+  } catch (error) {
+    req.removeContents = true
+    req.data = {
+      invoice: {
+        invoiceid: ''
+      }
+    }
+    if (error.message === 'invalid-invoiceid' || error.message === 'invalid-account') {
+      req.error = error.message
+    } else {
+      req.error = 'unknown-error'
+    }
+    return
+  }
   const invoice = formatStripeObject(invoiceRaw)
   if (!invoice.paid) {
-    throw new Error('invalid-invoice')
+    req.error = 'invalid-invoice'
+    return
   }
   req.query.chargeid = invoice.charge
-  const chargeRaw = await global.api.user.subscriptions.Charge.get(req)
+  let chargeRaw
+  try {
+    chargeRaw = await global.api.user.subscriptions.Charge.get(req)
+  } catch (error) {
+    req.removeContents = true
+    req.data = {
+      invoice: {
+        invoiceid: ''
+      }
+    }
+    if (error.message === 'invalid-chargeid' || error.message === 'invalid-account') {
+      req.error = error.message
+    } else {
+      req.error = 'unknown-error'
+    }
+    return
+  }
   const charge = formatStripeObject(chargeRaw)
   if (req.query.message === 'success') {
+    req.removeContents = true
     req.data = { invoice, charge }
     return
   } if (!charge.amount || !charge.paid || (charge.refunded && req.query.messageTemplate !== 'success')) {
-    throw new Error('invalid-charge')
+    req.error = 'invalid-charge'
+    req.removeContents = true
+    req.data = {
+      invoice: {
+        invoiceid: ''
+      }
+    }
+    return
   }
   req.data = { invoice, charge }
 }
 
 async function renderPage (req, res, messageTemplate) {
-  messageTemplate = messageTemplate || (req.query ? req.query.message : null)
+  messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.invoice, 'invoice')
   if (req.data.charge.refundRequested && messageTemplate !== 'success') {
     messageTemplate = 'refund-requested'
@@ -43,7 +91,7 @@ async function renderPage (req, res, messageTemplate) {
   }
   if (messageTemplate) {
     dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
-    if (messageTemplate === 'success') {
+    if (req.removeContents) {
       const submitForm = doc.getElementById('submit-form')
       submitForm.parentNode.removeChild(submitForm)
       return dashboard.Response.end(req, res, doc)

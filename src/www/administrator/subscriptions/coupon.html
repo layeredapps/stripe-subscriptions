@@ -11,6 +11,7 @@
   <body>
     <div class="container">
       <h1 translate="yes">View coupon</h1>
+      <div id="message-container"></div>
       <table id="coupons-table" class="data-table">
         <tbody id="${coupon.id}">
           <tr>
@@ -88,6 +89,21 @@
         <td id="unpaid-subscription-${subscription.id}">Unpaid</td>
         <td>${subscription.createdAtFormatted}</td>
       </tr>
+    </template>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! An unknown error occurred
+      </div>
+    </template>
+    <template id="invalid-couponid">
+      <div class="error message" translate="yes">
+        Error! An invalid coupon was specified
+      </div>
+    </template>
+    <template id="invalid-couponid">
+      <div class="error message" translate="yes">
+        Error! An invalid coupon was specified
+      </div>
     </template>
   </body>
 </html>

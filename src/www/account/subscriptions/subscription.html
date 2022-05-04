@@ -11,6 +11,7 @@
   <body>
     <div class="container">
       <h1 translate="yes">View subscription</h1>
+      <div id="message-container"></div>
       <table id="subscriptions-table" class="data-table">
         <tbody id="${subscription.subscriptionid}">
           <tr>
@@ -78,6 +79,26 @@
         <td>${invoice.statement_descriptor}</td>
         <td>${invoice.createdAtFormatted}</td>
       </tr>
+    </template>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! An unknown error occurred
+      </div>
+    </template>
+    <template id="invalid-subscriptionid">
+      <div class="error message" translate="yes">
+        Error! An invalid subscription was specified
+      </div>
+    </template>
+    <template id="invalid-subscription">
+      <div class="error message" translate="yes">
+        Error! An invalid subscription was specified
+      </div>
+    </template>
+    <template id="invalid-account">
+      <div class="error message" translate="yes">
+        Error! You cannot view someone else's subscription
+      </div>
     </template>
   </body>
 </html>

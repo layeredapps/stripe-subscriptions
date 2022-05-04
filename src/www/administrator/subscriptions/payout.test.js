@@ -5,19 +5,6 @@ const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/payout', function () {
   describe('before', () => {
-    it('should reject invalid payoutid', async () => {
-      const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/payout?payoutid=invalid')
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-payoutid')
-    })
     if (!process.env.DISABLE_PAYOUT_TESTS) {
       it('should bind data to req', async () => {
         const administrator = await TestHelper.createOwner()
@@ -53,5 +40,16 @@ describe('/administrator/subscriptions/payout', function () {
         assert.strictEqual(tbody.tag, 'tbody')
       })
     }
+  })
+
+  describe('errors', () => {
+    it('invalid-payoutid', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/payout?payoutid=invalid')
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-payoutid')
+    })
   })
 })

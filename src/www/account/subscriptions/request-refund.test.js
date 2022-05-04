@@ -40,11 +40,8 @@ describe('/account/subscriptions/request-refund', function () {
     const req3 = TestHelper.createRequest(`/account/subscriptions/request-refund?invoiceid=${user.invoice.invoiceid}`)
     req3.account = user2.account
     req3.session = user2.session
-    try {
-      await req3.route.api.before(req3)
-    } catch (error) {
-      cachedResponses.invalidAccount = error.message
-    }
+    await req3.route.api.before(req3)
+    cachedResponses.invalidAccount = req3.error
     // xss
     req2.body = {
       reason: '<script>'
@@ -73,29 +70,6 @@ describe('/account/subscriptions/request-refund', function () {
     cachedResponses.submit = await req2.post()
     cachedResponses.finished = true
   }
-  describe('exceptions', () => {
-    it('invalid-invoice', async () => {
-      const user = await TestHelper.createUser()
-      const req = TestHelper.createRequest('/account/subscriptions/request-refund?invoiceid=invalid')
-      req.account = user.account
-      req.session = user.session
-      req.body = {
-        reason: 'this is a reason'
-      }
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-invoiceid')
-    })
-    it('invalid-account', async function () {
-      await bundledData(this.test.currentRetry())
-      const errorMessage = cachedResponses.invalidAccount
-      assert.strictEqual(errorMessage, 'invalid-account')
-    })
-  })
 
   describe('before', () => {
     it('should bind data to req', async function () {
@@ -128,6 +102,24 @@ describe('/account/subscriptions/request-refund', function () {
   })
 
   describe('errors', () => {
+    it('invalid-invoice', async () => {
+      const user = await TestHelper.createUser()
+      const req = TestHelper.createRequest('/account/subscriptions/request-refund?invoiceid=invalid')
+      req.account = user.account
+      req.session = user.session
+      req.body = {
+        reason: 'this is a reason'
+      }
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-invoiceid')
+    })
+
+    it('invalid-account', async function () {
+      await bundledData(this.test.currentRetry())
+      const errorMessage = cachedResponses.invalidAccount
+      assert.strictEqual(errorMessage, 'invalid-account')
+    })
+
     it('invalid-xss-input', async function () {
       await bundledData(this.test.currentRetry())
       const result = cachedResponses.xss

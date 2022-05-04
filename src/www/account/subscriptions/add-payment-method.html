@@ -70,9 +70,7 @@
           <label class="field-label" for="address_state" translate="yes">State or province</label>
           <div class="field">
             <select id="address_state" name="address_state">
-              <option value="" translate="yes">
-                Select state
-              </option>
+              <option value="" translate="yes">Select state</option>
             </select>
           </div>
         </div>
@@ -86,9 +84,7 @@
           <label class="field-label" for="address_country" translate="yes">Country</label>
           <div class="field">
             <select id="address_country" name="address_country">
-              <option value="" translate="yes">
-                Select country
-              </option>
+              <option value="" translate="yes">Select country</option>
             </select>
             </div>
           </div>
@@ -205,7 +201,7 @@
     </template>
     <template id="invalid-token">
       <div class="error message" translate="yes">
-        Error! An error occurred saving your card
+        Error! An unknown error occurred
       </div>
     </template>
     <template id="invalid-name">
@@ -240,7 +236,17 @@
     </template>
     <template id="unknown-error">
       <div class="error message" translate="yes">
-        Error! An error occurred updating your information
+        Error! An unknown error occurred
+      </div>
+    </template>
+    <template id="invalid-account">
+      <div class="error message" translate="yes">
+        Error! You cannot add payment methods to someone else's account
+      </div>
+    </template>
+    <template id="invalid-customerid">
+      <div class="error message" translate="yes">
+        Error! An invalid customer was specified
       </div>
     </template>
     <template id="invalid-csrf-token">

@@ -10,18 +10,49 @@ module.exports = {
 
 async function beforeRequest (req) {
   if (!req.query || !req.query.customerid) {
-    throw new Error('invalid-customerid')
+    req.error = 'invalid-customerid'
+    req.removeContents = true
+    req.data = {
+      customer: {
+        customerid: ''
+      }
+    }
+    return
   }
-  const customerRaw = await global.api.administrator.subscriptions.Customer.get(req)
+  let customerRaw
+  try {
+    customerRaw = await global.api.administrator.subscriptions.Customer.get(req)
+  } catch (error) {
+    req.removeContents = true
+    req.data = {
+      customer: {
+        customerid: ''
+      }
+    }
+    if (error.message === 'invalid-customerid') {
+      req.error = error.message
+    } else {
+      req.error = 'unknown-error'
+    }
+    return
+  }
   const customer = formatStripeObject(customerRaw)
   if (req.query.message === 'success') {
+    req.removeContents = true
     req.data = {
       customer
     }
     return
   }
   if (customer.discount && customer.discount.coupon && customer.discount.coupon.id) {
-    throw new Error('invalid-customer')
+    req.error = 'invalid-customer'
+    req.removeContents = true
+    req.data = {
+      customer: {
+        customerid: ''
+      }
+    }
+    return
   }
   req.query.all = true
   const coupons = await global.api.administrator.subscriptions.Coupons.get(req)
@@ -41,21 +72,20 @@ async function beforeRequest (req) {
   req.data = { customer, coupons: published }
 }
 
-function renderPage (req, res, messageTemplate) {
-  messageTemplate = messageTemplate || (req.query ? req.query.message : null)
+async function renderPage (req, res, messageTemplate) {
+  messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.customer, 'customer')
   navbar.setup(doc, req.data.customer)
   if (messageTemplate) {
     dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
-    if (messageTemplate === 'success') {
+    if (req.removeContents) {
       const submitForm = doc.getElementById('submit-form')
       submitForm.parentNode.removeChild(submitForm)
-      return dashboard.Response.end(req, res, doc)
     }
-  }
-
-  if (req.data.coupons && req.data.coupons.length) {
-    dashboard.HTML.renderList(doc, req.data.coupons, 'coupon-option', 'couponid')
+  } else {
+    if (req.data.coupons && req.data.coupons.length) {
+      dashboard.HTML.renderList(doc, req.data.coupons, 'coupon-option', 'couponid')
+    }
   }
   return dashboard.Response.end(req, res, doc)
 }

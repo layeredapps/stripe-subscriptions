@@ -11,6 +11,7 @@
   <body>
     <div class="container">
       <h1 translate="yes">View customer</h1>
+      <div id="message-container"></div>
       <table id="customers-table" class="data-table">
         <tbody id="${customer.id}">
           <tr>
@@ -113,6 +114,21 @@
         <td id="unpaid-subscription-${subscription.id}">Unpaid</td>
         <td>${subscription.createdAtFormatted}</td>
       </tr>
+    </template>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! An unknown error occurred
+      </div>
+    </template>
+    <template id="invalid-customerid">
+      <div class="error message" translate="yes">
+        Error! An invalid customer was specified
+      </div>
+    </template>
+    <template id="invalid-customer">
+      <div class="error message" translate="yes">
+        Error! An invalid customer was specified
+      </div>
     </template>
   </body>
 </html>

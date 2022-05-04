@@ -7,7 +7,7 @@
     <link href="/public/content.css" rel="stylesheet">
     <link href="/public/content-additional.css" rel="stylesheet">
     <script id="stripe-v3" src="https://js.stripe.com/v3/"></script>
-    <script>
+    <script id="javascript">
       window.addEventListener('load', function (event) {
         stripe = Stripe('${payment_intent.stripePublishableKey}')
         return stripe.confirmCardPayment('${payment_intent.client_secret}', {
@@ -20,7 +20,38 @@
   </head>
   <body class="entry">
     <div class="container">
+      <div id="message-container"></div>
       <p translate="yes">Please wait while your payment completes.</p>
     </div>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! An unknown error occurred
+      </div>
+    </template>
+    <template id="invalid-account">
+      <div class="error message" translate="yes">
+        Error! You cannot change someone else's subscription plan
+      </div>
+    </template>
+    <template id="invalid-planid">
+      <div class="error message" translate="yes">
+        Error! An invalid plan was specified
+      </div>
+    </template>
+    <template id="invalid-plan">
+      <div class="error message" translate="yes">
+        Error! An invalid plan was specified
+      </div>
+    </template>
+    <template id="invalid-subscriptionid">
+      <div class="error message" translate="yes">
+        Error! An invalid subscription was specified
+      </div>
+    </template>
+    <template id="invalid-subscription">
+      <div class="error message" translate="yes">
+        Error! This subscription is canceled or canceling
+      </div>
+    </template>
   </body>
 </html>

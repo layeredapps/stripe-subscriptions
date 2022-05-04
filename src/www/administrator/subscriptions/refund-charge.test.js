@@ -27,7 +27,7 @@ describe('/administrator/subscriptions/refund-charge', function () {
     })
     const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
     cachedCharge = user.charge
-    const req = TestHelper.createRequest(`/administrator/subscriptions/refund-charge?chargeid=${user.charge.chargeid}`)
+    let req = TestHelper.createRequest(`/administrator/subscriptions/refund-charge?chargeid=${user.charge.chargeid}`)
     req.account = administrator.account
     req.session = administrator.session
     req.body = {
@@ -56,35 +56,19 @@ describe('/administrator/subscriptions/refund-charge', function () {
     global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)
     global.packageJSON.dashboard.server.push(ScreenshotData.administratorCharges)
     cachedResponses.submit = await req.post()
-    try {
-      await req.route.api.before(req)
-    } catch (error) {
-      cachedResponses.invalidCharge = error.message
-    }
+    await req.route.api.before(req)
+    // already refunded
+    cachedResponses.alreadyRefunded = req.error
+    // not paid
+    // const user2 = await TestStripeAccounts.createUserWithPaymentMethod()
+    // await TestHelper.createAmountOwed(user2)
+    // req = TestHelper.createRequest(`/administrator/subscriptions/refund-charge?chargeid=${user2.charge.chargeid}`)
+    // req.account = administrator.account
+    // req.session = administrator.session
+    // await req.route.api.before(req)
+    // cachedResponses.notPaid = req.error
     cachedResponses.finished = true
   }
-
-  describe('exceptions', () => {
-    it('should reject invalid chargeid', async () => {
-      const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/refund-charge?chargeid=invalid')
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-chargeid')
-    })
-
-    it('should reject refunded charge', async function () {
-      await bundledData(this.test.currentRetry())
-      const errorMessage = cachedResponses.invalidCharge
-      assert.strictEqual(errorMessage, 'invalid-charge')
-    })
-  })
 
   describe('before', () => {
     it('should bind data to req', async function () {
@@ -116,6 +100,27 @@ describe('/administrator/subscriptions/refund-charge', function () {
   })
 
   describe('errors', () => {
+    it('invalid-chargeid', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/refund-charge?chargeid=invalid')
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-chargeid')
+    })
+
+    it('already-refunded', async function () {
+      await bundledData(this.test.currentRetry())
+      const errorMessage = cachedResponses.alreadyRefunded
+      assert.strictEqual(errorMessage, 'already-refunded')
+    })
+
+    // it('not-paid', async function () {
+    //   await bundledData(this.test.currentRetry())
+    //   const errorMessage = cachedResponses.notPaid
+    //   assert.strictEqual(errorMessage, 'not-paid')
+    // })
+
     it('invalid-csrf-token', async function () {
       await bundledData(this.test.currentRetry())
       const result = cachedResponses.csrf

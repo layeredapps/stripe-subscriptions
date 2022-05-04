@@ -8,14 +8,45 @@ module.exports = {
 
 async function beforeRequest (req) {
   if (!req.query || !req.query.refundid) {
-    throw new Error('invalid-refundid')
+    req.error = 'invalid-refundid'
+    req.removeContents = true
+    req.data = {
+      refund: {
+        refundid: ''
+      }
+    }
+    return
   }
-  const refundRaw = await global.api.administrator.subscriptions.Refund.get(req)
+  let refundRaw
+  try {
+    refundRaw = await global.api.administrator.subscriptions.Refund.get(req)
+  } catch (error) {
+    req.removeContents = true
+    req.data = {
+      refund: {
+        refundid: ''
+      }
+    }
+    if (error.message === 'invalid-refund' || error.message === 'invalid-refundid') {
+      req.error = error.message
+    } else {
+      req.error = 'unknown-error'
+    }
+    return 
+  }
   const refund = formatStripeObject(refundRaw)
   req.data = { refund }
 }
 
-async function renderPage (req, res) {
+async function renderPage (req, res, messageTemplate) {
+  messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.refund, 'refund')
+  if (messageTemplate) {
+    dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
+    if (req.removeContents) {
+      const refundsTable = doc.getElementById('refunds-table')
+      refundsTable.parentNode.removeChild(refundsTable)
+    }
+  }
   return dashboard.Response.end(req, res, doc)
 }

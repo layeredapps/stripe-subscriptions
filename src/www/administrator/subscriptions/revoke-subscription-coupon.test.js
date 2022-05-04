@@ -24,11 +24,8 @@ describe('/administrator/subscriptions/revoke-subscription-coupon', function () 
     const req = TestHelper.createRequest(`/administrator/subscriptions/revoke-subscription-coupon?subscriptionid=${user.subscription.subscriptionid}`)
     req.account = administrator.account
     req.session = administrator.session
-    try {
-      await req.route.api.before(req)
-    } catch (error) {
-      cachedResponses.invalidSubscription = error.message
-    }
+    await req.route.api.before(req)
+    cachedResponses.noDiscount = req.error
     // before
     await TestHelper.createCoupon(administrator, {
       publishedAt: 'true',
@@ -68,28 +65,6 @@ describe('/administrator/subscriptions/revoke-subscription-coupon', function () 
     cachedResponses.finished = true
   }
 
-  describe('exceptions', () => {
-    it('should reject invalid subscription', async () => {
-      const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/revoke-subscription-coupon?subscriptionid=invalid')
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-subscriptionid')
-    })
-
-    it('should reject subscription without discount', async function () {
-      await bundledData(this.test.currentRetry())
-      const errorMessage = cachedResponses.invalidSubscription
-      assert.strictEqual(errorMessage, 'invalid-subscription')
-    })
-  })
-
   describe('before', () => {
     it('should bind data to req', async function () {
       await bundledData(this.test.currentRetry())
@@ -120,6 +95,21 @@ describe('/administrator/subscriptions/revoke-subscription-coupon', function () 
   })
 
   describe('errors', () => {
+    it('invalid-subscriptionid', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/revoke-subscription-coupon?subscriptionid=invalid')
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-subscriptionid')
+    })
+
+    it('no-discount', async function () {
+      await bundledData(this.test.currentRetry())
+      const errorMessage = cachedResponses.noDiscount
+      assert.strictEqual(errorMessage, 'no-discount')
+    })
+
     it('invalid-csrf-token', async function () {
       await bundledData(this.test.currentRetry())
       const result = cachedResponses.csrf

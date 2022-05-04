@@ -6,20 +6,6 @@ const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/coupon', function () {
   describe('before', () => {
-    it('should reject invalid coupon', async () => {
-      const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/coupon?couponid=invalid')
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-couponid')
-    })
-
     it('should bind data to req', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
@@ -71,6 +57,17 @@ describe('/administrator/subscriptions/coupon', function () {
       const doc = TestHelper.extractDoc(result.html)
       const tbody = doc.getElementById(administrator.coupon.couponid)
       assert.strictEqual(tbody.tag, 'tbody')
+    })
+  })
+
+  describe('errors', () => {
+    it('should reject invalid coupon', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/coupon?couponid=invalid')
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-couponid')
     })
   })
 })

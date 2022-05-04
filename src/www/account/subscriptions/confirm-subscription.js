@@ -9,15 +9,42 @@ module.exports = {
 
 async function beforeRequest (req) {
   if (!req.query || !req.query.planid) {
-    throw new Error('invalid-planid')
+    req.error = 'invalid-planid'
+    req.removeContents = true
+    req.data = {
+      plan: {
+        planid: ''
+      }
+    }
+    return
   }
-  const planRaw = await global.api.user.subscriptions.PublishedPlan.get(req)
+  let planRaw
+  try {
+    planRaw = await global.api.user.subscriptions.PublishedPlan.get(req)
+  } catch (error) {
+    req.removeContents = true
+    req.data = {
+      invoice: {
+        planid: ''
+      }
+    }
+    if (error.message === 'invalid-planid' || error.message === 'invalid-plan') {
+      req.error = error.message
+    } else {
+      req.error = 'unknown-error'
+    }
+    return
+  }
   if (!planRaw) {
-    throw new Error('invalid-planid')
+    req.removeContents = true
+    req.error = 'invalid-planid'
+    return
   }
   const plan = formatStripeObject(planRaw)
   if (plan.unpublishedAt) {
-    throw new Error('invalid-plan')
+    req.removeContents = true
+    req.error = 'invalid-plan'
+    return
   }
   req.query.accountid = req.account.accountid
   req.query.all = true
@@ -29,10 +56,16 @@ async function beforeRequest (req) {
   req.data = { plan, customers }
 }
 
-function renderPage (req, res, messageTemplate) {
+async function renderPage (req, res, messageTemplate) {
+  messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.plan, 'plan')
   if (messageTemplate) {
     dashboard.HTML.renderTemplate(doc, {}, messageTemplate, 'message-container')
+    if (req.removeContents) {
+      const submitForm = doc.getElementById('submit-form')
+      submitForm.parentNode.removeChild(submitForm)
+      return dashboard.Response.end(req, res, doc)
+    }
   }
   dashboard.HTML.renderTemplate(doc, req.data.plan, 'plan-row', 'plan-table')
   if (req.data.plan.trial_period_days) {
@@ -84,7 +117,6 @@ async function submitForm (req, res) {
   }
   req.query.customerid = req.body.customerid
   req.body.planid = req.query.planid
-
   try {
     await global.api.user.subscriptions.CreateSubscription.post(req)
     return dashboard.Response.redirect(req, res, global.homePath || '/home')

@@ -4,22 +4,6 @@ const TestHelper = require('../../../../test-helper.js')
 const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/delete-product', function () {
-  describe('exceptions', () => {
-    it('should reject invalid productid', async () => {
-      const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/delete-product?productid=invalid')
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-productid')
-    })
-  })
-
   describe('before', () => {
     it('should bind data to req', async () => {
       const administrator = await TestHelper.createOwner()
@@ -80,6 +64,15 @@ describe('/administrator/subscriptions/delete-product', function () {
   })
 
   describe('errors', () => {
+    it('invalid-productid', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/delete-product?productid=invalid')
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-productid')
+    })
+
     it('invalid-csrf-token', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {

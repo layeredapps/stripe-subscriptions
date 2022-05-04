@@ -48,20 +48,6 @@ describe('/administrator/subscriptions/subscription', function () {
   }
 
   describe('before', () => {
-    it('should reject invalid subscriptionid', async () => {
-      const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/subscription?subscriptionid=invalid')
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-subscriptionid')
-    })
-
     it('should bind data to req', async function () {
       await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
@@ -76,6 +62,17 @@ describe('/administrator/subscriptions/subscription', function () {
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('subscriptions-table')
       assert.strictEqual(table.tag, 'table')
+    })
+  })
+
+  describe('errors', () => {
+    it('invalid-subscriptionid', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/subscription?subscriptionid=invalid')
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-subscriptionid')
     })
   })
 })

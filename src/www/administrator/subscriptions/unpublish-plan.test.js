@@ -5,50 +5,6 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/unpublish-plan', function () {
-  describe('exceptions', () => {
-    it('should reject invalid planid', async () => {
-      const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/unpublish-plan?planid=invalid')
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-planid')
-    })
-
-    it('should never published plan', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithNotPublishedPlan()
-      const req = TestHelper.createRequest(`/administrator/subscriptions/unpublish-plan?planid=${administrator.plan.planid}`)
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-plan')
-    })
-
-    it('should reject unpublished plan', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithUnpublishedPlan()
-      const req = TestHelper.createRequest(`/administrator/subscriptions/unpublish-plan?planid=${administrator.plan.planid}`)
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-plan')
-    })
-  })
-
   describe('before', () => {
     it('should bind data to req', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPlan({
@@ -115,6 +71,33 @@ describe('/administrator/subscriptions/unpublish-plan', function () {
   })
 
   describe('errors', () => {
+    it('invalid-planid', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/unpublish-plan?planid=invalid')
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-planid')
+    })
+
+    it('not-published', async () => {
+      const administrator = await TestStripeAccounts.createOwnerWithNotPublishedPlan()
+      const req = TestHelper.createRequest(`/administrator/subscriptions/unpublish-plan?planid=${administrator.plan.planid}`)
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'not-published')
+    })
+
+    it('already-unpublished', async () => {
+      const administrator = await TestStripeAccounts.createOwnerWithUnpublishedPlan()
+      const req = TestHelper.createRequest(`/administrator/subscriptions/unpublish-plan?planid=${administrator.plan.planid}`)
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'already-unpublished')
+    })
+
     it('invalid-csrf-token', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPlan({
         amount: '1000',

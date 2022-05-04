@@ -10,32 +10,66 @@ module.exports = {
 
 async function beforeRequest (req) {
   if (!req.query || !req.query.couponid) {
-    throw new Error('invalid-couponid')
+    req.error = 'invalid-couponid'
+    req.removeContents = true
+    req.data = {
+      coupon: {
+        couponid: ''
+      }
+    }
+    return
   }
-  const couponRaw = await global.api.administrator.subscriptions.Coupon.get(req)
+  let couponRaw
+  try {
+    couponRaw = await global.api.administrator.subscriptions.Coupon.get(req)
+  } catch (error) {
+    req.removeContents = true
+    req.data = {
+      coupon: {
+        couponid: ''
+      }
+    }
+    if (error.message === 'invalid-couponid' || error.message === 'invalid-coupon') {
+      req.error = error.message
+    } else {
+      req.error = 'unknown-error'
+    }
+    return
+  }
   const coupon = formatStripeObject(couponRaw)
   if (req.query.message === 'success') {
+    req.removeContents = true
     req.data = {
       coupon
     }
     return
   }
   if (coupon.publishedAt) {
-    throw new Error('invalid-coupon')
+    if (coupon.unpublishedAt) {
+      req.error = 'already-unpublished'
+    } else {
+      req.error = 'already-published'
+    }
+    req.removeContents = true
+    req.data = {
+      coupon: {
+        couponid: ''
+      }
+    }
+    return
   }
   req.data = { coupon }
 }
 
 async function renderPage (req, res, messageTemplate) {
-  messageTemplate = messageTemplate || (req.query ? req.query.message : null)
+  messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.coupon, 'coupon')
   navbar.setup(doc, req.data.coupon)
   if (messageTemplate) {
     dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
-    if (messageTemplate === 'success') {
+    if (req.removeContents) {
       const submitForm = doc.getElementById('submit-form')
       submitForm.parentNode.removeChild(submitForm)
-      return dashboard.Response.end(req, res, doc.toString())
     }
   }
   return dashboard.Response.end(req, res, doc.toString())

@@ -39,11 +39,6 @@
         Success! The plan has been updated
       </div>
     </template>
-    <template id="unknown-error">
-      <div class="error message" translate="yes">
-        Error! An error occurred updating the plan information
-      </div>
-    </template>
     <template id="product-option-template">
       <option value="${product.id}">
         ${product.name}
@@ -67,6 +62,26 @@
     <template id="invalid-trial_period_days">
       <div class="error message" translate="yes">
         Error! Invalid trial period value
+      </div>
+    </template>   
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! An unknown error occurred
+      </div>
+    </template>
+    <template id="invalid-planid">
+      <div class="error message" translate="yes">
+        Error! An invalid plan was specified
+      </div>
+    </template>
+    <template id="invalid-plan">
+      <div class="error message" translate="yes">
+        Error! An invalid plan was specified
+      </div>
+    </template>
+    <template id="unpublished-plan">
+      <div class="error message" translate="yes">
+        The selected plan has been unpublished
       </div>
     </template>
     <template id="invalid-csrf-token">

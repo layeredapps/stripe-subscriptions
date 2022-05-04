@@ -5,38 +5,6 @@ const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/edit-product', function () {
   describe('before', () => {
-    it('should reject invalid productid', async () => {
-      const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/edit-product?productid=invalid')
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-productid')
-    })
-
-    it('should reject unpublished product', async () => {
-      const administrator = await TestHelper.createOwner()
-      await TestHelper.createProduct(administrator, {
-        publishedAt: 'true',
-        unpublishedAt: 'true'
-      })
-      const req = TestHelper.createRequest(`/administrator/subscriptions/edit-product?productid=${administrator.product.productid}`)
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-product')
-    })
-
     it('should bind data to req', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
@@ -179,6 +147,28 @@ describe('/administrator/subscriptions/edit-product', function () {
   })
 
   describe('errors', () => {
+    it('invalid-productid', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/edit-product?productid=invalid')
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-productid')
+    })
+
+    it('unpublished-product', async () => {
+      const administrator = await TestHelper.createOwner()
+      await TestHelper.createProduct(administrator, {
+        publishedAt: 'true',
+        unpublishedAt: 'true'
+      })
+      const req = TestHelper.createRequest(`/administrator/subscriptions/edit-product?productid=${administrator.product.productid}`)
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'unpublished-product')
+    })
+
     it('invalid-xss-input', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {

@@ -18,7 +18,13 @@ async function beforeRequest (req) {
       const subscription = formatStripeObject(subscriptions[i])
       subscriptions[i] = subscription
       req.query.planid = subscription.planid
-      const planRaw = await global.api.user.subscriptions.PublishedPlan.get(req)
+      let planRaw
+      try {
+        planRaw = await global.api.user.subscriptions.PublishedPlan.get(req)
+      } catch (error) {
+        subscription.nextChargeFormatted = 'plan-missing'
+        continue
+      }
       const plan = formatStripeObject(planRaw)
       subscription.amountFormatted = dashboard.Format.money(plan.amount || 0, plan.currency)
       subscription.currency = plan.currency

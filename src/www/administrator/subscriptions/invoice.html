@@ -11,6 +11,7 @@
   <body>
     <div class="container">
       <h1 translate="yes">View invoice</h1>
+      <div id="message-container"></div>
       <table id="invoices-table" class="data-table">
         <tbody id="${invoice.id}">
           <tr>
@@ -56,5 +57,20 @@
         </tbody>
       </table>
     </div>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! An unknown error occurred
+      </div>
+    </template>
+    <template id="invalid-invoiceid">
+      <div class="error message" translate="yes">
+        Error! An invalid invoice was specified
+      </div>
+    </template>
+    <template id="invalid-invoice">
+      <div class="error message" translate="yes">
+        Error! An invalid invoice was specified
+      </div>
+    </template>
   </body>
 </html>

@@ -11,6 +11,7 @@
   <body>
     <div class="container">
       <h1 translate="yes">View refund</h1>
+      <div id="message-container"></div>
       <table id="refunds-table" class="data-table">
         <tbody id="${refund.id}">
           <tr>
@@ -32,5 +33,20 @@
         </tbody>
       </table>
     </div>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! An unknown error occurred
+      </div>
+    </template>
+    <template id="invalid-refundid">
+      <div class="error message" translate="yes">
+        Error! An invalid refund was specified
+      </div>
+    </template>
+    <template id="invalid-refund">
+      <div class="error message" translate="yes">
+        Error! An invalid refund was specified
+      </div>
+    </template>
   </body>
 </html>

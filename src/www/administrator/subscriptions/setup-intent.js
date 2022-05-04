@@ -11,19 +11,50 @@ module.exports = {
 
 async function beforeRequest (req) {
   if (!req.query || !req.query.setupintentid) {
-    throw new Error('invalid-setupIntentid')
+    req.error = 'invalid-setupintentid'
+    req.removeContents = true
+    req.data = {
+      setupIntent: {
+        setupintentid: ''
+      }
+    }
+    return
   }
-  const setupIntentRaw = await global.api.administrator.subscriptions.SetupIntent.get(req)
+  let setupIntentRaw
+  try {
+    setupIntentRaw = await global.api.administrator.subscriptions.SetupIntent.get(req)
+  } catch (error) {
+    req.removeContents = true
+    req.data = {
+      setupIntent: {
+        setupintentid: ''
+      }
+    }
+    if (error.message === 'invalid-setupintentid' || error.message === 'invalid-setupintent') {
+      req.error = error.message
+    } else {
+      req.error = 'unknown-error'
+    }
+    return
+  }
   const setupIntent = formatStripeObject(setupIntentRaw)
   req.data = { setupIntent }
 }
 
-async function renderPage (req, res) {
+async function renderPage (req, res, messageTemplate) {
+  messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.setupIntent, 'setup_intent')
   const removeElements = []
-  for (const status of statusFields) {
-    if (req.data.setupIntent.status !== status) {
-      removeElements.push(status)
+  if (messageTemplate) {
+    dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
+    if (req.removeContents) {
+      removeElements.push('setup_intents-table')
+    }
+  } else {
+    for (const status of statusFields) {
+      if (req.data.setupIntent.status !== status) {
+        removeElements.push(status)
+      }
     }
   }
   for (const id of removeElements) {

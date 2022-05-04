@@ -33,11 +33,8 @@ describe('/account/subscriptions/refund-invoice', function () {
     const user2 = await TestHelper.createUser()
     req2.account = user2.account
     req2.session = user2.session
-    try {
-      await req2.route.api.before(req2)
-    } catch (error) {
-      cachedResponses.invalidAccount = error.message
-    }
+    await req2.route.api.before(req2)
+    cachedResponses.invalidAccount = req2.error
     const req = TestHelper.createRequest(`/account/subscriptions/refund-invoice?invoiceid=${user.invoice.invoiceid}`)
     req.account = user.account
     req.session = user.session
@@ -65,27 +62,6 @@ describe('/account/subscriptions/refund-invoice', function () {
     cachedResponses.submit = await req.post()
     cachedResponses.finished = true
   }
-  describe('exceptions', () => {
-    it('invalid-invoiceid', async () => {
-      const user = await TestHelper.createUser()
-      const req = TestHelper.createRequest('/account/subscriptions/refund-invoice?invoiceid=invalid')
-      req.account = user.account
-      req.session = user.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-invoiceid')
-    })
-
-    it('invalid-account', async function () {
-      await bundledData(this.test.currentRetry())
-      const errorMessage = cachedResponses.invalidAccount
-      assert.strictEqual(errorMessage, 'invalid-account')
-    })
-  })
 
   describe('before', () => {
     it('should bind data to req', async function () {
@@ -118,6 +94,21 @@ describe('/account/subscriptions/refund-invoice', function () {
   })
 
   describe('errors', () => {
+    it('invalid-invoiceid', async () => {
+      const user = await TestHelper.createUser()
+      const req = TestHelper.createRequest('/account/subscriptions/refund-invoice?invoiceid=invalid')
+      req.account = user.account
+      req.session = user.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-invoiceid')
+    })
+
+    it('invalid-account', async function () {
+      await bundledData(this.test.currentRetry())
+      const errorMessage = cachedResponses.invalidAccount
+      assert.strictEqual(errorMessage, 'invalid-account')
+    })
+
     it('invalid-csrf-token', async function () {
       await bundledData(this.test.currentRetry())
       const result = cachedResponses.csrf

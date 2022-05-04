@@ -5,20 +5,6 @@ const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions/product', function () {
   describe('before', () => {
-    it('should reject invalid productid', async () => {
-      const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/product?productid=invalid')
-      req.account = administrator.account
-      req.session = administrator.session
-      let errorMessage
-      try {
-        await req.route.api.before(req)
-      } catch (error) {
-        errorMessage = error.message
-      }
-      assert.strictEqual(errorMessage, 'invalid-productid')
-    })
-
     it('should bind data to req', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
@@ -55,6 +41,17 @@ describe('/administrator/subscriptions/product', function () {
       const doc = TestHelper.extractDoc(result.html)
       const tbody = doc.getElementById(administrator.product.productid)
       assert.strictEqual(tbody.tag, 'tbody')
+    })
+  })
+
+  describe('errors', () => {
+    it('invalid-productid', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/product?productid=invalid')
+      req.account = administrator.account
+      req.session = administrator.session
+      await req.route.api.before(req)
+      assert.strictEqual(req.error, 'invalid-productid')
     })
   })
 })

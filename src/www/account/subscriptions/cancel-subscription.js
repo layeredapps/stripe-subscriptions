@@ -10,49 +10,60 @@ module.exports = {
 
 async function beforeRequest (req) {
   if (!req.query || !req.query.subscriptionid) {
-    throw new Error('invalid-subscriptionid')
+    req.error = 'invalid-subscriptionid'
+    req.removeContents = true
+    req.data = {
+      subscription: {
+        subscriptionid: ''
+      }
+    }
+    return
   }
   if (req.query.message === 'success') {
+    req.removeContents = true
     req.data = {
       subscription: {
-        subscriptionid: req.query.subscriptionid,
-        object: 'subscription',
-        stripeObject: {
-          id: req.query.subscriptionid,
-          object: 'subscription'
-        }
-      },
-      plan: {
-        stripeObject: {}
+        subscriptionid: req.query.subscriptionid
       }
     }
     return
   }
-  let subscription
+  let subscriptionRaw
   try {
-    const subscriptionRaw = await global.api.user.subscriptions.Subscription.get(req)
-    subscription = formatStripeObject(subscriptionRaw)
+    subscriptionRaw = await global.api.user.subscriptions.Subscription.get(req)
   } catch (error) {
-    req.error = error.message
-  }
-  if (req.error) {
+    req.removeContents = true
+    if (error.message === 'invalid-subscriptionid' || error.message === 'invalid-account') {
+      req.error = error.message
+    } else {
+      req.error = 'unknown-error'
+    }
     req.data = {
       subscription: {
-        subscriptionid: req.query.subscriptionid,
-        object: 'subscription',
-        stripeObject: {
-          id: req.query.subscriptionid,
-          object: 'subscription'
-        }
-      },
-      plan: {
-        stripeObject: {}
+        subscriptionid: req.query.subscriptionid
       }
     }
     return
   }
+  const subscription = formatStripeObject(subscriptionRaw)
   req.query.planid = subscription.planid
-  const planRaw = await global.api.user.subscriptions.PublishedPlan.get(req)
+  let planRaw
+  try {
+    planRaw = await global.api.user.subscriptions.PublishedPlan.get(req)
+  } catch (error) {
+    req.removeContents = true
+    req.data = {
+      subscription: {
+        subscriptionid: req.query.subscriptionid
+      }
+    }
+    if (error.message === 'invalid-planid' || error.message === 'invalid-plan') {
+      req.error = error.message
+    } else {
+      req.error = 'unknown-error'
+    }
+    return
+  }
   const plan = formatStripeObject(planRaw)
   if (plan.amount) {
     plan.amountFormatted = dashboard.Format.money(plan.amount, plan.currency)
@@ -64,11 +75,11 @@ async function beforeRequest (req) {
 }
 
 async function renderPage (req, res, messageTemplate) {
-  messageTemplate = messageTemplate || req.error || (req.query ? req.query.message : null)
+  messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.subscription, 'subscription')
   navbar.setup(doc, req.data.subscription)
   if (messageTemplate) {
-    if (messageTemplate === 'success') {
+    if (req.removeContents) {
       const submitForm = doc.getElementById('submit-form')
       submitForm.parentNode.removeChild(submitForm)
       if (req.query.refund === 'credit') {
