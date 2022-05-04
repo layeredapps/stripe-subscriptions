@@ -31,7 +31,10 @@ module.exports = {
       return res.end()
     }
     Log.info('stripe event', stripeEvent.type)
-    res.statusCode = 200
+    if (!stripeEvent.data || !stripeEvent.data.object || !stripeEvent.data.object.id) {
+      // TODO: should upcoming invoices (for free trials) be ignored until they have an id?
+      return res.end()
+    }
     switch (stripeEvent.type) {
       case 'setup_intent.canceled':
       case 'setup_intent.created':
