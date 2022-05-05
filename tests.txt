@@ -1,6 +1,6 @@
 
-> @layeredapps/stripe-subscriptions@1.0.31 test
-> NODE_ENV=testing STORAGE=sqlite SQLITE_DATABASE=subscriptions mocha --retries 3 --ignore 'node_modules/**/*' --timeout 480000 --slow 480000 --recursive --extension .test.js .
+> @layeredapps/stripe-subscriptions@1.0.39 test
+> PORT=50012 NODE_ENV=testing STORAGE=sqlite SQLITE_DATABASE=subscriptions mocha --ignore 'node_modules/**/*' --timeout 480000 --slow 480000 --recursive --extension .test.js .
 
 
 
@@ -68,14 +68,18 @@
       ✔ should require expiration month for no stripe.js
       ✔ should require expiration year for no stripe.js
       ✔ should add payment information no stripe.js (screenshots)
+    errors
+      ✔ invalid-xss-input
+      ✔ invalid-csrf-token
 
   /account/subscriptions/billing-profile
     before
-      ✔ should reject invalid customer
-      ✔ should reject other account's customer
       ✔ should bind data to req
     view
       ✔ should have row for customer (screenshots)
+    errors
+      ✔ invalid-customerid
+      ✔ invalid-account
 
   /account/subscriptions/billing-profiles
     before
@@ -86,11 +90,6 @@
       ✔ should change offset
 
   /account/subscriptions/cancel-subscription
-    exceptions
-      ✔ should reject missing subscription
-      ✔ should reject invalid subscription
-      ✔ should reject canceled subscription
-      ✔ should reject other account's subscription
     before
       ✔ should bind data to req
     view
@@ -105,6 +104,12 @@
       ✔ should cancel free trial at period end
       ✔ should cancel paid subscription and credit account
       ✔ should cancel paid subscription and show refund
+    errors
+      ✔ invalid-csrf-token
+    error
+      ✔ invalid-subscriptionid
+      ✔ invalid-subscription
+      ✔ invalid-account
 
   /account/subscriptions/change-plan
     before
@@ -115,16 +120,14 @@
     submit
       ✔ should apply plan update (screenshots)
     errors
-      ✔ should reject paid plan without payment information
+      ✔ invalid-paymentmethodid
+      ✔ invalid-csrf-token
 
   /account/subscriptions/confirm-payment
     view
       ✔ should display stripe.js confirmation
 
   /account/subscriptions/confirm-subscription
-    exceptions
-      ✔ invalid-planid
-      ✔ invalid-plan
     before
       ✔ should bind data to req
     view
@@ -133,6 +136,9 @@
       ✔ should start subscription (screenshots)
     errors
       ✔ invalid-paymentmethodid
+      ✔ invalid-planid
+      ✔ invalid-plan
+      ✔ invalid-csrf-token
 
   /account/subscriptions/create-billing-profile
     view
@@ -150,17 +156,21 @@
       ✔ should require email for stripe.js v3
       ✔ should create billing profile for no stripe.js
       ✔ should create billing profile for stripe.js v3 (screenshots)
+    errors
+      ✔ invalid-xss-input
+      ✔ invalid-csrf-token
 
   /account/subscriptions/delete-billing-profile
-    exceptions
-      ✔ invalid-customerid
-      ✔ invalid-account
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should delete billing profile (screenshots)
+    errors
+      ✔ invalid-customerid
+      ✔ invalid-account
+      ✔ invalid-csrf-token
 
   /account/subscriptions
     before
@@ -171,13 +181,13 @@
       ✔ should have row for each subscription
 
   /account/subscriptions/invoice
-    exceptions
-      ✔ invalid-invoiceid
-      ✔ invalid-account
     before
       ✔ should bind data to req
     view
       ✔ should have row for invoice (screenshots)
+    errors
+      ✔ invalid-invoiceid
+      ✔ invalid-account
 
   /account/subscriptions/invoices
     before
@@ -188,25 +198,27 @@
       ✔ should change offset
 
   /account/subscriptions/pay-invoice
-    exceptions
-      ✔ should reject invalid invoice
-      ✔ invalid-account
-      ✔ should reject paid invoice
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should pay invoice (screenshots)
+    errors
+      ✔ invalid-invoiceid
+      ✔ invalid-account
+      ✔ invoice-paid
+      ✔ invalid-csrf-token
 
   /account/subscriptions/plan
     before
-      ✔ should reject invalid plan
-      ✔ should reject never published plan
-      ✔ should reject unpublished plan
       ✔ should bind data to req
     view
       ✔ should have row for plan (screenshots)
+    errors
+      ✔ invalid-planid
+      ✔ invalid-plan
+      ✔ unpublished-plan
 
   /account/subscriptions/plans
     before
@@ -217,15 +229,16 @@
       ✔ should change offset
 
   /account/subscriptions/refund-invoice
-    exceptions
-      ✔ invalid-invoiceid
-      ✔ invalid-account
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should cancel subscription (screenshots)
+    errors
+      ✔ invalid-invoiceid
+      ✔ invalid-account
+      ✔ invalid-csrf-token
 
   /account/subscriptions/refund
     before
@@ -242,43 +255,47 @@
       ✔ should change offset
 
   /account/subscriptions/request-refund
-    exceptions
-      ✔ invalid-invoice
-      ✔ invalid-account
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should create refund request (screenshots)
+    errors
+      ✔ invalid-invoice
+      ✔ invalid-account
+      ✔ invalid-xss-input
+      ✔ invalid-csrf-token
 
   /account/subscriptions/restore-subscription
-    exceptions
-      ✔ should reject missing subscription
-      ✔ should reject invalid subscription
-      ✔ should reject non-canceled subscription
-      ✔ should reject other account's subscription
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should restore subscription (screenshots)
+    errors
+      ✔ invalid-subscriptionid
+      ✔ invalid-subscription
+      ✔ invalid-account
+      ✔ invalid-csrf-token
 
   /account/subscriptions
     before
       ✔ should bind data to req
     view
       ✔ should have option for each plan (screenshots)
+    errors
+      ✔ invalid-csrf-token
 
   /account/subscriptions/subscription
-    exceptions
-      ✔ invalid-subscriptionid
-      ✔ invalid-account
     before
       ✔ should bind data to req
     view
       ✔ should present the subscription table (screenshots)
+    errors
+      ✔ invalid-subscriptionid
+      ✔ invalid-account
 
   /account/subscriptions/subscriptions
     before
@@ -289,35 +306,38 @@
       ✔ should change offset
 
   /administrator/subscriptions/apply-customer-coupon
-    exceptions
-      ✔ should reject invalid customer
-      ✔ should reject customer with coupon
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should apply coupon (screenshots)
+    errors
+      ✔ invalid-customerid
+      ✔ invalid-customer
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/apply-subscription-coupon
-    exceptions
-      ✔ should reject invalid subscription
-      ✔ should reject canceling subscription
-      ✔ should reject free subscription
-      ✔ should reject subscription with coupon
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should apply coupon (screenshots)
+    errors
+      ✔ invalid-subscriptionid
+      ✔ invalid-subscription-canceling
+      ✔ invalid-subscription-free
+      ✔ already-discounted
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/charge
     before
-      ✔ should reject invalid charge
       ✔ should bind data to req
     view
       ✔ should present the charge table (screenshots)
+    errors
+      ✔ invalid-chargeid
 
   /administrator/subscriptions/charges
     before
@@ -329,10 +349,11 @@
 
   /administrator/subscriptions/coupon
     before
-      ✔ should reject invalid coupon
       ✔ should bind data to req
     view
       ✔ should present the coupon table (screenshots)
+    errors
+      ✔ should reject invalid coupon
 
   /administrator/subscriptions/coupons
     before
@@ -358,6 +379,9 @@
       ✔ should require valid duration in months if repeating
       ✔ should require valid redeem_by if provided
       ✔ should create coupon (screenshots)
+    errors
+      ✔ invalid-xss-input
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/create-plan
     view
@@ -378,6 +402,9 @@
       ✔ should reject invalid interval_count
       ✔ should reject invalid trial_period_days
       ✔ should create plan (screenshots)
+    errors
+      ✔ invalid-xss-input
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/create-product
     view
@@ -387,13 +414,17 @@
       ✔ should enforce name length
       ✔ should reject missing statement_descriptor
       ✔ should create product (screenshots)
+    errors
+      ✔ invalid-xss-input
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/customer
     before
-      ✔ should reject invalid customer
       ✔ should bind data to req
     view
       ✔ should present the customer table (screenshots)
+    errors
+      ✔ invalid-customerid
 
   /administrator/subscriptions/customers
     before
@@ -404,40 +435,39 @@
       ✔ should change offset
 
   /administrator/subscriptions/delete-coupon
-    exceptions
-      ✔ should reject invalid couponid
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should delete coupon (screenshots)
+    errors
+      ✔ invalid-couponid
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/delete-plan
-    exceptions
-      ✔ should reject invalid planid
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should delete plan (screenshots)
+    errors
+      ✔ invalid-planid
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/delete-product
-    exceptions
-      ✔ should reject invalid productid
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should delete product (screenshots)
+    errors
+      ✔ invalid-productid
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/delete-subscription
-    exceptions
-      ✔ should reject missing subscription
-      ✔ should reject invalid subscription
-      ✔ should reject canceled subscription
     before
       ✔ should bind data to req
     view
@@ -452,34 +482,41 @@
       ✔ should cancel free trial at period end
       ✔ should cancel paid subscription and credit account
       ✔ should cancel paid subscription and show refund
+    errors
+      ✔ invalid-subscriptionid
+      ✔ invalid-subscription
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/deny-refund
-    exceptions
-      ✔ should reject invalid chargeid
-      ✔ should reject charge without refund request
-      ✔ should reject denied refund
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should deny refund (screenshots)
+    errors
+      ✔ invalid-chargeid
+      ✔ no-refund-request
+      ✔ already-denied
+      ✔ invalid-xss-input
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/edit-coupon
     before
-      ✔ should reject invalid couponid
-      ✔ should reject unpublished coupon
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should reject missing name
       ✔ should update coupon (screenshots)
+    errors
+      ✔ invalid-couponid
+      ✔ invalid-coupon
+      ✔ invalid-xss-input
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/edit-plan
     before
-      ✔ should reject invalid planid
-      ✔ should reject unpublished plan
       ✔ should bind data to req
     view
       ✔ should present the form
@@ -487,11 +524,13 @@
       ✔ should reject missing productid
       ✔ should reject invalid trial period
       ✔ should update plan (screenshots)
+    errors
+      ✔ invalid-planid
+      ✔ unpublished-plan
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/edit-product
     before
-      ✔ should reject invalid productid
-      ✔ should reject unpublished product
       ✔ should bind data to req
     view
       ✔ should present the form
@@ -501,29 +540,36 @@
       ✔ should reject missing statement_descriptor
       ✔ should reject invalid unit_label
       ✔ should update product (screenshots)
+    errors
+      ✔ invalid-productid
+      ✔ unpublished-product
+      ✔ invalid-xss-input
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/flag-charge
-    exceptions
-      ✔ should reject invalid chargeid
-      ✔ should reject flagged charge
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should flag charge (screenshots)
+    errors
+      ✔ invalid-chargeid
+      ✔ invalid-charge
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/forgive-invoice
-    exceptions
-      ✔ should reject invalid invoiceid
-      ✔ should reject paid invoice
-      ✔ should reject uncollectible invoice
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should forgive invoice (screenshots)
+    errors
+      ✔ invalid-invoiceid
+      ✔ already-paid
+      ✔ already-forgiven
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions
     before
@@ -535,10 +581,11 @@
 
   /administrator/subscriptions/invoice
     before
-      ✔ should reject invalid invoiceid
       ✔ should bind data to req
     view
       ✔ should present the invoice table (screenshots)
+    error
+      ✔ invalid-invoiceid
 
   /administrator/subscriptions/invoices
     before
@@ -550,10 +597,11 @@
 
   /administrator/subscriptions/payment-intent
     before
-      ✔ should reject invalid paymentintentid
       ✔ should bind data to req
     view
       ✔ should have row for payment intent (screenshots)
+    errors
+      ✔ invalid-paymentintentid
 
   /administrator/subscriptions/payment-intents
     before
@@ -565,10 +613,11 @@
 
   /administrator/subscriptions/payment-method
     before
-      ✔ should reject invalid paymentmethodid
       ✔ should bind data to req
     view
       ✔ should have row for payment method (screenshots)
+    error
+      ✔ invalid-paymentmethodid
 
   /administrator/subscriptions/payment-methods
     before
@@ -579,15 +628,16 @@
       ✔ should change offset
 
   /administrator/subscriptions/payout
-    before
-      ✔ should reject invalid payoutid
+    errors
+      ✔ invalid-payoutid
 
   /administrator/subscriptions/plan
     before
-      ✔ should reject invalid planid
       ✔ should bind data to req
     view
       ✔ should present the plan table (screenshots)
+    errors
+      ✔ invalid-planid
 
   /administrator/subscriptions/plans
     before
@@ -599,10 +649,11 @@
 
   /administrator/subscriptions/product
     before
-      ✔ should reject invalid productid
       ✔ should bind data to req
     view
       ✔ should have row for product (screenshots)
+    errors
+      ✔ invalid-productid
 
   /administrator/subscriptions/products
     before
@@ -613,48 +664,55 @@
       ✔ should change offset
 
   /administrator/subscriptions/publish-coupon
-    exceptions
-      ✔ should reject invalid couponid
-      ✔ should reject published coupon
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should publish coupon (screenshots)
+    errors
+      ✔ invalid-couponid
+      ✔ already-published
+      ✔ already-unpublished
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/publish-plan
-    exceptions
-      ✔ should reject invalid planid
-      ✔ should reject published plan
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should publish plan (screenshots)
+    errors
+      ✔ invalid-planid
+      ✔ already-published
+      ✔ already-unpublished
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/publish-product
-    exceptions
-      ✔ should reject invalid productid
-      ✔ should reject published product
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should publish product (screenshots)
+    errors
+      ✔ invalid-productid
+      ✔ already-published
+      ✔ already-unpublished
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/refund-charge
-    exceptions
-      ✔ should reject invalid chargeid
-      ✔ should reject refunded charge
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should refund charge (screenshots)
+    errors
+      ✔ invalid-chargeid
+      ✔ already-refunded
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/refund-requests
     before
@@ -666,10 +724,11 @@
 
   /administrator/subscriptions/refund
     before
-      ✔ should reject invalid refundid
       ✔ should bind data to req
     view
       ✔ should have row for refund (screenshots)
+    errors
+      ✔ invalid-refundid
 
   /administrator/subscriptions/refunds
     before
@@ -680,33 +739,36 @@
       ✔ should change offset
 
   /administrator/subscriptions/revoke-customer-coupon
-    exceptions
-      ✔ should reject invalid customer
-      ✔ should reject customer without discount
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should remove coupon (screenshots)
+    errors
+      ✔ invalid-customerid
+      ✔ no-discount
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/revoke-subscription-coupon
-    exceptions
-      ✔ should reject invalid subscription
-      ✔ should reject subscription without discount
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should remove coupon (screenshots)
+    errors
+      ✔ invalid-subscriptionid
+      ✔ no-discount
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/setup-intent
     before
-      ✔ should reject invalid setupintentid
       ✔ should bind data to req
     view
       ✔ should have row for setup intent (screenshots)
+    errors
+      ✔ invalid-setupintentid
 
   /administrator/subscriptions/setup-intents
     before
@@ -718,10 +780,11 @@
 
   /administrator/subscriptions/subscription
     before
-      ✔ should reject invalid subscriptionid
       ✔ should bind data to req
     view
       ✔ should present the subscription table (screenshots)
+    errors
+      ✔ invalid-subscriptionid
 
   /administrator/subscriptions/subscriptions
     before
@@ -732,40 +795,43 @@
       ✔ should change offset
 
   /administrator/subscriptions/unpublish-coupon
-    exceptions
-      ✔ should reject invalid couponid
-      ✔ should reject never published coupon
-      ✔ should reject unpublished coupon
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should unpublish coupon (screenshots)
+    errors
+      ✔ invalid-couponid
+      ✔ not-published
+      ✔ already-unpublished
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/unpublish-plan
-    exceptions
-      ✔ should reject invalid planid
-      ✔ should never published plan
-      ✔ should reject unpublished plan
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should unpublish plan (screenshots)
+    errors
+      ✔ invalid-planid
+      ✔ not-published
+      ✔ already-unpublished
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/unpublish-product
-    exceptions
-      ✔ should reject invalid productid
-      ✔ should never published product
-      ✔ should reject unpublished product
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
       ✔ should unpublish product (screenshots)
+    errors
+      ✔ invalid-productid
+      ✔ not-published
+      ✔ already-unpublished
+      ✔ invalid-csrf-token
 
   /api/administrator/subscriptions/charge
     exceptions
@@ -2063,5 +2129,5 @@
       ✔ environment PAGE_SIZE
 
 
-  983 passing (3h)
+  1027 passing (3h)
 

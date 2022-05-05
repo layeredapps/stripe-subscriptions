@@ -71,7 +71,7 @@
     "start": "node main.js",
     "deploy-check": "standard --fix && npm test | tee tests.txt && npm run generate",
     "generate": "PORT=50011 NODE_ENV=testing EXIT_ON_START=true GENERATE_SITEMAP_TXT=true GENERATE_API_TXT=true GENERATE_ENV_TXT=true node main.js",
-    "test": "PORT=50012 NODE_ENV=testing STORAGE=sqlite SQLITE_DATABASE=subscriptions mocha --retries 3 --ignore 'node_modules/**/*' --timeout 480000 --slow 480000 --recursive --extension .test.js .",
+    "test": "PORT=50012 NODE_ENV=testing STORAGE=sqlite SQLITE_DATABASE=subscriptions mocha --ignore 'node_modules/**/*' --timeout 480000 --slow 480000 --recursive --extension .test.js .",
     "test-sqlite": "NODE_ENV=testing STORAGE=sqlite SQLITE_DATABASE=subscriptions SQLITE_FILE=`pwd`/db.sqlite mocha --ignore 'node_modules/**/*' --timeout 480000 --recursive --extension .test.js .",
     "test-sqlite-node-cache": "NODE_ENV=testing CACHE=node STORAGE=sqlite SQLITE_DATABASE=subscriptions SQLITE_FILE=`pwd`/db.sqlite mocha --ignore 'node_modules/**/*' --timeout 480000 --recursive --extension .test.js .",
     "test-sqlite-redis-cache": "NODE_ENV=testing CACHE=redis STORAGE=sqlite SQLITE_DATABASE=subscriptions SQLITE_FILE=`pwd`/db.sqlite mocha --ignore 'node_modules/**/*' --timeout 480000 --recursive --extension .test.js .",
