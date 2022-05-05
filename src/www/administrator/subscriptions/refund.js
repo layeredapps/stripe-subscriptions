@@ -32,7 +32,7 @@ async function beforeRequest (req) {
     } else {
       req.error = 'unknown-error'
     }
-    return 
+    return
   }
   const refund = formatStripeObject(refundRaw)
   req.data = { refund }

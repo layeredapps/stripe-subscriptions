@@ -27,7 +27,7 @@ describe('/administrator/subscriptions/refund-charge', function () {
     })
     const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
     cachedCharge = user.charge
-    let req = TestHelper.createRequest(`/administrator/subscriptions/refund-charge?chargeid=${user.charge.chargeid}`)
+    const req = TestHelper.createRequest(`/administrator/subscriptions/refund-charge?chargeid=${user.charge.chargeid}`)
     req.account = administrator.account
     req.session = administrator.session
     req.body = {
