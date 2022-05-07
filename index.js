@@ -10,11 +10,11 @@ global.maximumStripeRetries = parseInt(process.env.MAXIMUM_STRIPE_RETRIES || '0'
 global.overdueInvoiceThreshold = parseInt(process.env.OVERDUE_INVOICE_THRESHOLD || '1', 10)
 global.startSubscriptionPath = process.env.START_SUBSCRIPTION_PATH || '/account/subscriptions/start-subscription'
 global.stripeAPIVersion = '2020-08-27'
-global.stripeKey = process.env.SUBSCRIPTIONS_STRIPE_KEY || process.env.STRIPE_KEY
+global.stripeKey = global.stripeKey || process.env.SUBSCRIPTIONS_STRIPE_KEY || process.env.STRIPE_KEY
 if (!global.stripeKey) {
   throw new Error('invalid-stripe-key')
 }
-global.stripePublishableKey = process.env.SUBSCRIPTIONS_STRIPE_PUBLISHABLE_KEY || process.env.STRIPE_PUBLISHABLE_KEY
+global.stripePublishableKey = global.stripePublishableKey = process.env.SUBSCRIPTIONS_STRIPE_PUBLISHABLE_KEY || process.env.STRIPE_PUBLISHABLE_KEY
 if (global.stripeJS > 0 && !global.stripePublishableKey) {
   throw new Error('invalid-stripe-publishable-key')
 }
