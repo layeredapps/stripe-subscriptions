@@ -11,28 +11,32 @@ const properties = [
   { camelCase: 'startSubscriptionPath', raw: 'START_SUBSCRIPTION_PATH', description: 'Alternate URL path to your start subscription flow', value: '/start-subscription', default: '/account/subscriptions/start-subscription', valueDescription: 'String' }
 ]
 
-const stripeKey = process.env.SUBSCRIPTIONS_STRIPE_KEY || process.env.STRIPE_KEY
-const stripePublishableKey = process.env.SUBSCRIPTIONS_STRIPE_PUBLISHABLE_KEY || process.env.STRIPE_PUBLISHABLE_KEY
-
 describe('index', () => {
-  let webhookSecret
+  let webhookSecret, stripeKey, stripePublishableKey
   before(async () => {
     const testHelper = require('./test-helper.js')
     await testHelper.setupBefore()
     webhookSecret = global.subscriptionWebhookEndPointSecret
+    stripeKey = global.stripeKey
+    stripePublishableKey = global.stripePublishableKey
+  })
+
+  beforeEach(async () => {
+    delete (global.stripeKey)
+    delete (global.stripePublishableKey)
+    delete (global.subscriptionWebhookEndPointSecret)
   })
   afterEach(() => {
+    global.stripeKey = stripeKey
+    global.stripePublishableKey = stripePublishableKey
+    global.subscriptionWebhookEndPointSecret = webhookSecret
+    process.env.SUBSCRIPTIONS_WEBHOOK_ENDPOINT_SECRET = webhookSecret
     process.env.SUBSCRIPTIONS_STRIPE_KEY = stripeKey
     process.env.SUBSCRIPTIONS_STRIPE_PUBLISHABLE_KEY = stripePublishableKey
-    process.env.SUBSCRIPTIONS_WEBHOOK_ENDPOINT_SECRET = webhookSecret
-    global.subscriptionWebhookEndPointSecret = webhookSecret
     delete (require.cache[require.resolve('./index.js')])
     require('./index.js').setup(global.applicationPath)
   })
   after(() => {
-    process.env.SUBSCRIPTIONS_STRIPE_KEY = stripeKey
-    process.env.SUBSCRIPTIONS_STRIPE_PUBLISHABLE_KEY = stripePublishableKey
-    process.env.SUBSCRIPTIONS_WEBHOOK_ENDPOINT_SECRET = webhookSecret
     delete (require.cache[require.resolve('./index.js')])
     require('./index.js').setup(global.applicationPath)
   })
