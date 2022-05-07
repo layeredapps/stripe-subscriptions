@@ -14,7 +14,7 @@ global.stripeKey = global.stripeKey || process.env.SUBSCRIPTIONS_STRIPE_KEY || p
 if (!global.stripeKey) {
   throw new Error('invalid-stripe-key')
 }
-global.stripePublishableKey = global.stripePublishableKey = process.env.SUBSCRIPTIONS_STRIPE_PUBLISHABLE_KEY || process.env.STRIPE_PUBLISHABLE_KEY
+global.stripePublishableKey = global.stripePublishableKey || process.env.SUBSCRIPTIONS_STRIPE_PUBLISHABLE_KEY || process.env.STRIPE_PUBLISHABLE_KEY
 if (global.stripeJS > 0 && !global.stripePublishableKey) {
   throw new Error('invalid-stripe-publishable-key')
 }
