@@ -71,11 +71,6 @@ describe('index', () => {
           assert.strictEqual(global[property.camelCase].toString(), property.value)
         })
       })
-      process.env.SUBSCRIPTIONS_WEBHOOK_ENDPOINT_SECRET = webhookSecret
-      process.env.SUBSCRIPTIONS_STRIPE_KEY = stripeKey
-      process.env.SUBSCRIPTIONS_STRIPE_PUBLISHABLE_KEY = stripePublishableKey
-      delete (require.cache[require.resolve('./index.js')])
-      require('./index.js').setup(global.applicationPath)
     })
   }
 })
