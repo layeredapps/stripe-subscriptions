@@ -349,6 +349,9 @@ async function setupWebhook () {
       global.testConfiguration.subscriptionWebhookEndPointSecret = webhook.secret
     } catch (error) {
     }
+    if (!webhook) {
+      await wait(100)
+    }
   }
 }
 
