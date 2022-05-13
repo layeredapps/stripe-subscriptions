@@ -1,4 +1,4 @@
-const { Model, DataTypes } = require('sequelize')
+const { Sequelize, Model, DataTypes } = require('sequelize')
 const metrics = require('@layeredapps/dashboard/src/metrics.js')
 const Log = require('@layeredapps/dashboard/src/log.js')('sequelize-stripe-subscriptions')
 
