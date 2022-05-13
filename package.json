@@ -91,5 +91,5 @@
     "test-mssql-node-cache": "NODE_ENV=testing CACHE=node STORAGE=mssql DATABASE_URL=\"Server=localhost;Database=tempdb;User Id=sa;Password=yourStrong\\(\\!\\)Password;\" mocha --ignore 'node_modules/**/*' --timeout 480000 --recursive --extension .test.js .",
     "test-mssql-redis-cache": "NODE_ENV=testing CACHE=redis STORAGE=mssql DATABASE_URL=\"Server=localhost;Database=tempdb;User Id=sa;Password=yourStrong\\(\\!\\)Password;\" mocha --ignore 'node_modules/**/*' --timeout 480000 --recursive --extension .test.js ."
   },
-  "version": "1.0.46"
+  "version": "1.0.47"
 }
