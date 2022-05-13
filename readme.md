@@ -97,6 +97,14 @@ By default this module will share whatever storage you use for Dashboard.  You c
     SUBSCRIPTIONS_STORAGE=mysql
     SUBSCRIPTIONS_DATABASE_URL=mysql://username:password@host:port/db
 
+If your Dashboard is configured with database read replication servers this module will follow that configuration.  You can also specify module-specific read replication:
+
+    SUBSCRIPTIONS_STORAGE_REPLICATION=true
+    SUBSCRIPTIONS_DATABASE_URL=postgres://1.0.0.0:5432/subscriptions
+    SUBSCRIPTIONS_READ_DATABASE_URL1=postgres://1.0.0.1:5432/subscriptions
+    SUBSCRIPTIONS_READ_DATABASE_URL2=postgres://1.0.0.2:5432/subscriptions
+    SUBSCRIPTIONS_READ_DATABASE_URL3=postgres://1.0.0.3:5432/subscriptions
+
 ### Access the API
 
 Dashboard and official modules are completely API-driven and you can access the same APIs on behalf of the user making requests.  You perform `GET`, `POST`, `PATCH`, and `DELETE` HTTP requests against the API endpoints to fetch or modify data.  This example fetches the user's subscriptions using NodeJS, you can do this with any language:
