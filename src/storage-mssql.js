@@ -2,12 +2,8 @@ const { Sequelize } = require('sequelize')
 const Log = require('@layeredapps/dashboard/src/log.js')('sequelize-stripe-subscriptions-mssql')
 
 module.exports = async () => {
-  const prefixedDatabase = process.env.SUBSCRIPTIONS_MSSQL_DATABASE || process.env.MSSQL_DATABASE
-  const prefixedUsername = process.env.SUBSCRIPTIONS_MSSQL_USERNAME || process.env.MSSQL_USERNAME
-  const prefixedPassword = process.env.SUBSCRIPTIONS_MSSQL_PASSWORD || process.env.MSSQL_PASSWORD
-  const prefixedHost = process.env.SUBSCRIPTIONS_MSSQL_HOST || process.env.MSSQL_HOST
-  const prefixedPort = process.env.SUBSCRIPTIONS_MSSQL_PORT || process.env.MSSQL_PORT
-  const sequelize = new Sequelize(prefixedDatabase, prefixedUsername, prefixedPassword, {
+  const prefixedDatabaseURL = process.env.SUBSCRIPTIONS_DATABASE_URL || process.env.DATABASE_URL
+  const sequelize = new Sequelize(prefixedDatabaseURL, {
     logging: (sql) => {
       return Log.info(sql)
     },
@@ -15,8 +11,6 @@ module.exports = async () => {
     dialectOptions: {
       driver: 'SQL Server Native Client 11.0'
     },
-    host: prefixedHost,
-    port: prefixedPort,
     pool: {
       max: process.env.SUBSCRIPTIONS_MAX_CONNECTIONS || process.env.MAX_CONNECTIONS || 10,
       min: 0,

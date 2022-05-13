@@ -2,7 +2,7 @@ const { Sequelize } = require('sequelize')
 const Log = require('@layeredapps/dashboard/src/log.js')('sequelize-stripe-connect-postgresql')
 
 module.exports = async () => {
-  let url = process.env.SUBSCRIPTIONS_POSTGRESQL_DATABASE_URL || process.env.POSTGRESQL_DATABASE_URL
+  let url = process.env.SUBSCRIPTIONS_DATABASE_URL || process.env.DATABASE_URL
   const sslModeRequiredIndex = url.indexOf('?sslmode=require')
   let dialectOptions
   if (sslModeRequiredIndex > -1) {

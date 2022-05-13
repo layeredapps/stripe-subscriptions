@@ -2,18 +2,12 @@ const { Sequelize } = require('sequelize')
 const Log = require('@layeredapps/dashboard/src/log.js')('sequelize-stripe-subscriptions-mysql')
 
 module.exports = async () => {
-  const prefixedDatabase = process.env.SUBSCRIPTIONS_MYSQL_DATABASE || process.env.MYSQL_DATABASE
-  const prefixedUsername = process.env.SUBSCRIPTIONS_MYSQL_USERNAME || process.env.MYSQL_USERNAME
-  const prefixedPassword = process.env.SUBSCRIPTIONS_MYSQL_PASSWORD || process.env.MYSQL_PASSWORD
-  const prefixedHost = process.env.SUBSCRIPTIONS_MYSQL_HOST || process.env.MYSQL_HOST
-  const prefixedPort = process.env.SUBSCRIPTIONS_MYSQL_PORT || process.env.MYSQL_PORT
-  const sequelize = new Sequelize(prefixedDatabase, prefixedUsername, prefixedPassword, {
+  const prefixedDatabaseURL = process.env.SUBSCRIPTIONS_DATABASE_URL || process.env.DATABASE_URL
+  const sequelize = new Sequelize(prefixedDatabaseURL, {
     logging: (sql) => {
       return Log.info(sql)
     },
     dialect: 'mysql',
-    host: prefixedHost,
-    port: prefixedPort,
     pool: {
       max: process.env.SUBSCRIPTIONS_MAX_CONNECTIONS || process.env.MAX_CONNECTIONS || 10,
       min: 0,

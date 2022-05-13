@@ -95,11 +95,7 @@ This module comes with some convenience scripts you can add to your `package.jso
 By default this module will share whatever storage you use for Dashboard.  You can specify nothing, specify an alternate storage backend, or specify the same type with a separate database.
 
     SUBSCRIPTIONS_STORAGE=mysql
-    SUBSCRIPTIONS_MARIADB_HOST=localhost
-    SUBSCRIPTIONS_MARIADB_PORT=1234
-    SUBSCRIPTIONS_MARIADB_DATABASE=connect
-    SUBSCRIPTIONS_MARIADB_USERNAME=user
-    SUBSCRIPTIONS_MARIADB_PASSWORD=password
+    SUBSCRIPTIONS_DATABASE_URL=mysql://username:password@host:port/db
 
 ### Access the API
 
