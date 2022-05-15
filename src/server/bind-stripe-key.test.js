@@ -1,9 +1,9 @@
 /* eslint-env mocha */
 const assert = require('assert')
-const BindStripeKey = require('./bind-stripekey.js')
+const BindStripeKey = require('./bind-stripe-key.js')
 const TestHelper = require('../../test-helper.js')
 
-describe('server/stripe-subscriptions/bind-stripekey', () => {
+describe('server/stripe-subscriptions/bind-stripe-key', () => {
   describe('after', () => {
     it('should bind data to req', async () => {
       const user = await TestHelper.createUser()

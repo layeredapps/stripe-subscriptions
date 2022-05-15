@@ -25,6 +25,14 @@
   const dashboard = require('@layeredapps/dashboard')
   await dashboard.start(__dirname)
   require('./index.js').setup()
+  global.packageJSON.dashboard.server = global.packageJSON.dashboard.server || []
+  global.packageJSON.dashboard.server.push(
+    require('./src/server/bind-stripe-key.js')
+  )
+  global.packageJSON.dashboard.serverFilePaths = global.packageJSON.dashboard.serverFilePaths || []
+  global.packageJSON.dashboard.serverFilePaths.push(
+    require.resolve('./src/server/bind-stripe-key.js')
+  )
   if (process.env.NODE_ENV === 'testing') {
     const helperRoutes = require('./test-helper-routes.js')
     global.sitemap['/api/create-fake-payout'] = helperRoutes.createFakePayout
