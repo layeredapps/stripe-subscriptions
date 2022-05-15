@@ -205,8 +205,11 @@
             <input placeholder="yyyy-mm-dd hh:mm:ss" type="text" id="redeem_by" name="redeem_by" />
           </div>
         </div>
-        <div class="form-buttons">
-          <button id="submit-button" class="button" type="submit" translate="yes">Create coupon</button>
+        <div class="input-fields">
+          <label class="field-label"></label>
+          <div class="form-buttons">
+            <button id="submit-button" type="submit" class="button" translate="yes">Create coupon</button>
+          </div>
         </div>
       </form>
     </div>
@@ -267,7 +270,7 @@
     </template>
     <template id="unknown-error">
       <div class="error message" translate="yes">
-        Error! An unknown error occurred
+        Error! Something went wrong submitting the form
       </div>
     </template>
     <template id="invalid-csrf-token">

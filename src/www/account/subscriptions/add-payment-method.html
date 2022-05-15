@@ -183,9 +183,12 @@
             </select>
           </div>
         </div>
-        <div class="form-buttons spaced-buttons">
-          <button id="submit-button" class="button" type="submit" translate="yes">Save profile</button>
-          <button class="button" type="submit" name="refresh" value="true" translate="yes" formnovalidate="formnovalidate">Change country</button>
+        <div class="input-fields">
+          <label class="field-label"></label>
+          <div class="form-buttons spaced-buttons">
+            <button id="submit-button" class="button" type="submit" translate="yes">Save profile</button>
+            <button class="button" type="submit" name="refresh" value="true" translate="yes" formnovalidate="formnovalidate">Change country</button>
+          </div>
         </div>
       </form>
     </div>
@@ -201,7 +204,7 @@
     </template>
     <template id="invalid-token">
       <div class="error message" translate="yes">
-        Error! An unknown error occurred
+        Error! An error occurred submiting your payment information
       </div>
     </template>
     <template id="invalid-name">
@@ -236,7 +239,7 @@
     </template>
     <template id="unknown-error">
       <div class="error message" translate="yes">
-        Error! An unknown error occurred
+        Error! Something went wrong submitting the form
       </div>
     </template>
     <template id="invalid-account">
