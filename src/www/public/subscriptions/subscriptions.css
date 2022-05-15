@@ -2,13 +2,6 @@
 
 /* color settings */
 :root {
-  --stripe-element-background-color: rgba(0, 0, 0, 0.125);
-  --stripe-element-text-color: #2F365F;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --stripe-element-background-color: rgba(255, 255, 255, 0.25);
-    --stripe-element-text-color: rgba(247, 241, 237, 0.75);
-  }
+  --stripe-element-background-color: var(--content-light);
+  --stripe-element-text-color: var(--content-dark);
 }
