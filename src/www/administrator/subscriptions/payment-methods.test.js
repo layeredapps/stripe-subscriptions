@@ -65,7 +65,9 @@ describe('/administrator/subscriptions/payment-methods', function () {
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('payment-methods-table')
       const rows = table.getElementsByTagName('tr')
-      assert.strictEqual(rows.length, global.pageSize + 1)
+      assert.strictEqual(rows.length, 5)
+      // 4 created in loop
+      // 1 table heading
     })
 
     it('should change page size', async function () {
