@@ -1,6 +1,6 @@
 
-> @layeredapps/stripe-subscriptions@1.0.45 test
-> PORT=50012 NODE_ENV=testing STORAGE=sqlite SQLITE_DATABASE=subscriptions mocha --ignore 'node_modules/**/*' --timeout 480000 --slow 480000 --recursive --extension .test.js .
+> @layeredapps/stripe-subscriptions@1.0.47 test
+> PORT=50012 NODE_ENV=testing STORAGE=sqlite DATABASE=subscriptions mocha --ignore 'node_modules/**/*' --timeout 480000 --slow 480000 --recursive --extension .test.js .
 
 
 
@@ -35,7 +35,7 @@
         ✔ default 3600
         ✔ Integer
 
-  server/stripe-subscriptions/bind-stripekey
+  server/stripe-subscriptions/bind-stripe-key
     after
       ✔ should bind data to req
 
