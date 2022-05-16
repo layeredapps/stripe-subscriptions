@@ -34,8 +34,8 @@ describe('/administrator/subscriptions/products', function () {
     ]
     await req1.route.api.before(req1)
     cachedResponses.before = req1.data
-    cachedResponses.returns = await req1.get()
     global.pageSize = 50
+    cachedResponses.returns = await req1.get()
     global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)
     global.packageJSON.dashboard.server.push(ScreenshotData.administratorProducts)
     global.pageSize = 3

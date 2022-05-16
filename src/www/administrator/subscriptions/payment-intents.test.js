@@ -41,6 +41,7 @@ describe('/administrator/subscriptions/payment-intents', function () {
     await req1.route.api.before(req1)
     cachedResponses.before = req1.data
     global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)
+    global.pageSize = 50
     cachedResponses.returns = await req1.get()
     global.pageSize = 3
     delete (req1.screenshots)

@@ -43,6 +43,7 @@ describe('/account/subscriptions/refunds', function () {
     cachedResponses.before = req1.data
     global.pageSize = 50
     cachedResponses.returns = await req1.get()
+    delete (req1.screenshots)
     global.pageSize = 3
     cachedResponses.pageSize = await req1.get()
     global.pageSize = 2
