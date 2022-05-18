@@ -58,7 +58,7 @@ module.exports = {
         return a.toLowerCase() < b.toLowerCase() ? -1 : 1
       })
     }
-    if (process.env.STRIPE_JS === 3) {
+    if (global.stripeJS === 3) {
       global.packageJSON.dashboard.contentFilePaths.push(
         require.resolve('./src/content/embed-stripe-element-style.js')
       )
