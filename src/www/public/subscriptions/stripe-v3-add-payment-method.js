@@ -5,7 +5,7 @@ window.onload = function () {
   const stripePublishableKey = document.getElementById('stripe-publishable-key')
   stripe = window.Stripe(stripePublishableKey.value)
   const elements = stripe.elements()
-  const style = {
+  const style = window.stripeElementStyle || {
     base: {
       color: '#666666',
       fontFamily: '"Helvetica Neue", Helvetica, sans-serif',

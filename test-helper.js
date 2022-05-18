@@ -305,6 +305,12 @@ async function setupBeforeEach () {
     global.packageJSON.dashboard.serverFilePaths.push(bindCountry)
     global.packageJSON.dashboard.server.push(require(bindCountry))
   }
+  global.packageJSON.dashboard.contentFilePaths.push(
+    require.resolve('./src/content/embed-stripe-element-style.js')
+  )
+  global.packageJSON.dashboard.content.push(
+    require('./src/content/embed-stripe-element-style.js')
+  )
   await subscriptions.Storage.flush()
   await deleteOldData()
   if (!global.webhooks || global.webhooks.length) {
