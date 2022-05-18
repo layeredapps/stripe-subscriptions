@@ -1,15 +1,32 @@
 {
-  "base": {
-    "color": "#666666",
-    "fontFamily": "\"Helvetica Neue\", Helvetica, sans-serif",
-    "fontSmoothing": "antialiased",
-    "fontSize": "16px",
-    "::placeholder": {
-      "color": "#EEEEEE"
+  "light": {
+    "base": {
+      "color": "#666666",
+      "fontFamily": "\"Helvetica Neue\", Helvetica, sans-serif",
+      "fontSmoothing": "antialiased",
+      "fontSize": "16px",
+      "::placeholder": {
+        "color": "#EEEEEE"
+      }
+    },
+    "invalid": {
+      "color": "#990000",
+      "iconColor": "#fa755a"
     }
   },
-  "invalid": {
-    "color": "#990000",
-    "iconColor": "#fa755a"
+  "dark": {
+    "base": {
+      "color": "#666666",
+      "fontFamily": "\"Helvetica Neue\", Helvetica, sans-serif",
+      "fontSmoothing": "antialiased",
+      "fontSize": "16px",
+      "::placeholder": {
+        "color": "#EEEEEE"
+      }
+    },
+    "invalid": {
+      "color": "#990000",
+      "iconColor": "#fa755a"
+    }
   }
 }

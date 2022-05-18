@@ -5,20 +5,11 @@ window.onload = function () {
   const stripePublishableKey = document.getElementById('stripe-publishable-key')
   stripe = window.Stripe(stripePublishableKey.value)
   const elements = stripe.elements()
-  const style = window.stripeElementStyle || {
-    base: {
-      color: '#666666',
-      fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-      fontSmoothing: 'antialiased',
-      fontSize: '16px',
-      '::placeholder': {
-        color: '#EEEEEE'
-      }
-    },
-    invalid: {
-      color: '#990000',
-      iconColor: '#fa755a'
-    }
+  let style
+  if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+    style = window.stripeElementStyle.dark || {}
+  } else {
+    style = window.stripeElementStyle.light || {}
   }
   const zipNumber = elements.create('postalCode', { style })
   zipNumber.mount('#zip-container')
