@@ -8,7 +8,7 @@ module.exports = {
   template: embedElementStyle
 }
 
-async function embedElementStyle(_, __, doc) {
+async function embedElementStyle (_, __, doc) {
   const scriptTags = doc.getElementsByTagName('script')
   if (!scriptTags || !scriptTags.length) {
     return
@@ -17,7 +17,7 @@ async function embedElementStyle(_, __, doc) {
     if (!scriptTag.attr || !scriptTag.attr.src) {
       continue
     }
-    if (scriptTag.attr.src !== '/public/subscriptions/stripe-v3-add-payment-method.js' && 
+    if (scriptTag.attr.src !== '/public/subscriptions/stripe-v3-add-payment-method.js' &&
         scriptTag.attr.src !== '/public/subscriptions/stripe-v3-create-billing-profile.js') {
       continue
     }
