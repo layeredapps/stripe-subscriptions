@@ -277,7 +277,7 @@ const createRequest = module.exports.createRequest = (rawURL) => {
   return req
 }
 
-let webhook, subscriptions
+let webhook, subscriptions, createdCustomer, createdProduct, createdPlan, createdCoupon
 
 // direct webhook access is set up before the tests a single time
 async function setupBefore () {
@@ -295,6 +295,10 @@ async function setupBefore () {
 
 async function setupBeforeEach () {
   Log.info('setupBeforeEach')
+  createdCustomer = false
+  createdCoupon = false
+  createdPlan = false
+  createdProduct = false
   const bindStripeKey = require.resolve('./src/server/bind-stripe-key.js')
   if (global.packageJSON.dashboard.serverFilePaths.indexOf(bindStripeKey) === -1) {
     global.packageJSON.dashboard.serverFilePaths.push(bindStripeKey)
@@ -402,6 +406,9 @@ async function deleteOldWebhooks () {
 
 async function deleteOldData () {
   Log.info('deleteOldData')
+  if (!createdCustomer && !createdPlan && !createdProduct && !createdCoupon) {
+    return
+  }
   for (const field of ['subscriptions', 'customers', 'plans', 'products', 'coupons']) {
     try {
       const objects = await stripe[field].list({ limit: 100 }, stripeKey)
@@ -423,6 +430,7 @@ async function deleteOldData () {
 let productNumber = 0
 async function createProduct (administrator, properties) {
   Log.info('createProduct', administrator, properties)
+  createdProduct = true
   productNumber++
   const req = createRequest('/api/administrator/subscriptions/create-product')
   req.session = administrator.session
@@ -451,6 +459,7 @@ async function createProduct (administrator, properties) {
 let planNumber = 0
 async function createPlan (administrator, properties) {
   Log.info('createPlan', administrator, properties)
+  createdPlan = true
   planNumber++
   const req = createRequest('/api/administrator/subscriptions/create-plan')
   req.session = administrator.session
@@ -482,6 +491,7 @@ let couponNumber = 0
 let percentOff = 0
 async function createCoupon (administrator, properties) {
   Log.info('createCoupon', administrator, properties)
+  createdCoupon = true
   couponNumber++
   const req = createRequest('/api/administrator/subscriptions/create-coupon')
   req.session = administrator.session
@@ -635,6 +645,7 @@ const cardTypes = [
 
 async function createCustomer (user, properties) {
   Log.info('createCustomer', user, properties)
+  createdCustomer = true
   const req = createRequest(`/api/user/subscriptions/create-customer?accountid=${user.account.accountid}`)
   req.session = user.session
   req.account = user.account
