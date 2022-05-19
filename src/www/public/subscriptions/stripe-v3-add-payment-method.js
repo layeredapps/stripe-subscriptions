@@ -8,7 +8,7 @@ window.onload = function () {
   let style
   if (!window.stripeElementStyle) {
     style = {}
-  } else if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+  } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
     style = window.stripeElementStyle.dark || {}
   } else {
     style = window.stripeElementStyle.light || {}
