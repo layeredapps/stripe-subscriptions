@@ -14,7 +14,7 @@
       <div id="message-container"></div>
       <div id="subscriptions-container">
         <h2 translate="yes">Subscriptions</h2>
-        <div id="no-subscriptions">
+        <div id="no-subscriptions" class="no-buttons">
           <p translate="yes">You do not have any subscriptions.</p>
         </div>
         <div class="list-table-wrapper">
@@ -34,9 +34,8 @@
       </div>
       <div id="invoices-container">
         <h2 translate="yes">Recent invoices</h2>
-        <p translate="yes">Invoices are created each time a subscription's billing period occurs, even when free.</p>
         <div id="no-invoices">
-          <p translate="yes">You do not have any invoices.</p>
+          <p translate="yes" class="no-buttons">You do not have any invoices.</p>
         </div>
         <div class="list-table-wrapper">
           <table id="invoices-table" class="list-table">
@@ -54,9 +53,11 @@
       </div>
       <div id="customers-container">
         <h2 translate="yes">Billing profiles</h2>
-        <p translate="yes">Pay for subscriptions with different billing information.</p>
         <div id="no-customers">
-          <p translate="yes">You do not have any billing profiles.</p>
+          <p translate="yes">You do not have any billing information added.</p>
+          <menu class="single-button">
+            <a class="button" href="/account/subscriptions/create-billing-profile">Create profile</a>
+          </menu>    
         </div>
         <div class="list-table-wrapper">
           <table id="customers-table" class="list-table">
@@ -76,9 +77,7 @@
     </div>
     <template id="customer-row">
       <tr id="${customer.id}">
-        <td>
-          <a href="/account/subscriptions/billing-profile?customerid=${customer.id}">${customer.id}</a>
-        </td>
+        <td><a href="/account/subscriptions/billing-profile?customerid=${customer.id}">${customer.id}</a></td>
         <td>${customer.description}</td>
         <td><a href="mailto:${customer.email}">${customer.email}</a></td>
         <td id="no-payment-method-${customer.id}" colspan="3">
@@ -92,9 +91,7 @@
     </template>
     <template id="subscription-row">
       <tr id="${subscription.id}">
-        <td>
-          <a href="/account/subscriptions/subscription?subscriptionid=${subscription.id}">${subscription.id}</a>
-        </td>
+        <td><a href="/account/subscriptions/subscription?subscriptionid=${subscription.id}">${subscription.id}</a></td>
         <td id="active-subscription-${subscription.id}">Active</td>
         <td id="canceling-subscription-${subscription.id}">Active (canceling)</td>
         <td id="trialing-subscription-${subscription.id}">Free trial</td>
