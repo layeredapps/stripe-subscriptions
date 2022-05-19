@@ -3,7 +3,7 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8" /> 
-    <title translate="yes">Dashboard + Stripe Subscriptions landing page</title>
+    <title translate="yes">Dashboard landing page</title>
     <link rel="icon" href="/public/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="/public/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/public/favicon-16x16.png" />
@@ -11,26 +11,21 @@
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#000000">
     <style>
-      body { background-color: #2F365F; font-family: sans-serif; padding: 0; margin: 0 }
-      h1 { line-height: 2.2rem; font-size: 1.2rem; color: #FFF; margin: 0; padding: 1rem 1rem 1rem 0.5rem; font-weight: normal }
+      body { background-color: var(--content-body); font-family: var(--content-font-sans-serif); padding: 0; margin: 0 }
+      h1 { line-height: 2.2rem; font-size: 1.2rem; color: var(--content-text); margin: 0; padding: 1rem 1rem 1rem 0.5rem; font-weight: normal }
       h1 a.button { float: right }
-      a.button { font-size: 1rem; margin-left: 0.5rem; color: rgba(255, 255, 255, 0.5); padding: 0.25rem 0.75rem; border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 0.5rem; text-decoration: none; line-height: 1.5rem }
-      a.button:hover {  background-color: rgba(255, 255, 255, 0.125); color: #FFF; border-color: #FFF }
+      a.button { font-size: 1rem; margin-left: 0.5rem; color: var(--content-blue); padding: 0.25rem 0.75rem; border: 1px solid var(--content-blue); border-radius: 0.5rem; text-decoration: none; line-height: 1.5rem }
+      a.button:hover {  background-color: var(--content-blue); color: var(--content-body); border-color: var(--content-blue) }
       a.button:active,
-      a.button:focus { border-color: #FFF }
-      .mast { padding: 2rem; margin-bottom: 2rem; background-color: rgba(0, 0, 0, 0.25) }
-      .mast h2 { color: #FFF; font-size: 5rem; font-weight: normal; padding: 0; margin: 0 }
-      .intro { padding: 0 2rem; display: grid; grid-template-columns: 1fr 1fr; grid-gap: 2rem }
-      .intro p { color: rgba(255, 255, 255, 0.75); padding: 0 }
-      .intro p a { font-weight: bold; color: #FFF }
-      .intro a.button { background-color: rgba(255, 255, 255, 0.75); border: none; color: rgba(0, 0, 0, 0.75); display: inline-block; margin-bottom: 2rem }
-      .intro a.button:hover { background-color: rgba(255, 255, 255, 0.5) }
-      .intro pre { color: rgba( 255, 255, 255, 0.5); font-family: monospace; width: 100%; overflow: auto }
-      .intro table { margin-bottom: 4rem; border-collapse: collapse; border: 1px solid rgba(255, 255, 255, 0.125) }
-      .intro th,
-      .intro td { border: 1px solid rgba(255, 255, 255, 0.125); text-align: left; padding: 0.25rem 0.5rem }
-      .intro th { color: #FFF; text-transform: uppercase }
-      .intro td { color: rgba(255, 255, 255, 0.75) }
+      a.button:focus { border-color: var(--content-text) }
+      .mast { padding: 2rem; margin-bottom: 2rem; background-color: var(--content-dark); color: var(--content-body) }
+      .mast h2 { color: var(--content-body); font-size: 5rem; font-weight: normal; padding: 0; margin: 0 }
+      .intro { font-size: 1rem; padding: 0 2rem; display: grid; grid-template-columns: 1fr 1fr; grid-gap: 2rem }
+      .intro p { color: var(--content-text); padding: 0 }
+      .intro p a { font-weight: bold; color: var(--content-text) }
+      .intro li { line-height: 2rem; color: var(--content-text) }
+      .intro a.link { padding: 0; border: none; color: var(--content-blue); display: inline-block; margin-right: 1rem }
+      .intro a.link:hover { text-decoration: underline; color: var(--content-text); background-color: transparent }
       .tree-body { display: table; margin: 0 auto }
       .tree-body .devices { margin-top: 1rem }
       .tree-body #sitemap { margin-top: 5rem }
@@ -42,12 +37,12 @@
       .tree ul { display: table }
       .tree ul { width: 100% }
       .tree li { display: table-cell; padding: 1rem 0 0 0; vertical-align: top }
-      .tree li:before { border-bottom: 2px dotted rgba(255, 255, 255, 0.25); content: ""; left: 0; position: absolute; right: 0; top: 0 }
+      .tree li:before { border-bottom: 2px dotted var(--content-dark); content: ""; left: 0; position: absolute; right: 0; top: 0 }
       .tree li:first-child:before { left: 50% }
       .tree li:last-child:before { right: 50% }
-      .tree span { display: inline-block; margin: 0 1rem 1rem; padding: 0.5rem 1rem; position: relative; border-radius: 0.5rem; color: #FFF; background-color: rgba(255, 255, 255, 0.125); font-weight: normal; font-size: 1.2rem; line-height: 2rem }
+      .tree span { display: inline-block; margin: 0 1rem 1rem; padding: 0.5rem 1rem; position: relative; border-radius: 0.5rem; color: var(--content-body); background-color: var(--content-dark); font-weight: normal; font-size: 1.2rem; line-height: 2rem }
       .tree ul:before,
-      .tree span:before { border-left: 2px dotted rgba(255, 255, 255, 0.25); content: ""; height: 1rem; left: 50%; position: absolute }
+      .tree span:before { border-left: 2px dotted var(--content-dark); content: ""; height: 1rem; left: 50%; position: absolute }
       .tree ul:before { top: -1rem }
       .tree span:before { top: -1rem }
       .tree>li { margin-top: 0 }
@@ -60,13 +55,32 @@
         h1 a { font-size: 0.9rem }
         td { font-size: 0.6rem }
       }
+
+      :root {
+        --content-body: #F1F1F1;
+        --content-blue: #0d6efd;
+        --content-text: #212529;
+        --content-dark: #212529;
+        --content-light: #CCC;
+        --content-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --content-body: #22222B;
+          --content-blue: #a9b6c2;
+          --content-text: #F1F1F1;
+          --content-dark: rgba(255, 255, 255, 0.5);
+          --content-light: rgba(255, 255, 255, 0.25);
+        }
+      }
     </style>
   </head>
   <body>
     <h1>
       <a class="button" href="/account/signin">Sign in</a>
       <a class="button" href="/account/register">Register</a> 
-      Dashboard + Stripe Subscriptions module
+      Dashboard
     </h1>
     <div class="mast">
       <h2>Build web apps faster with Dashboard</h2>
@@ -99,90 +113,16 @@
       <div class="text">
         <p>Dashboard provides your web application with an entire user and administrative interface, completely API-driven, and open source.</p>
         <p>It has optional modules for Stripe integrations, OAuth and more, everything a web application needs.  The server is stateless and scales horizontally by running multiple instances of your Dashboard server.</p>
-        <p>The Stripe Subscriptions module adds a complete custom <a href="https://stripe.com/billing">Stripe Subscriptions</a> integration for recurring billing for your SaaS, ready for you to integrate with your application.</p>
-        <a href="https://layeredapps.github.io/stripe-subscriptions-module" class="button">Documentation</a>
-        <a href="https://layeredapps.github.io/stripe-subscriptions-ui" class="button">UI</a>
-        <a href="https://layeredapps.github.io/stripe-subscriptions-configuration" class="button">Environment</a>
-        <a href="https://layeredapps.github.io/stripe-subscriptions-api" class="button">API</a>
-        <a href="https://github.com/layeredapps/stripe-subscriptions" class="button">Source on GitHub</a>
+        <p>The Stripe Subscriptions module adds a complete custom <a href="https://stripe.com/billing">Stripe</a> integration for recurring billing for your SaaS, ready for you to integrate with your application.</p>
+        <ul>
+          <li><a href="https://layeredapps.github.io/stripe-subscriptions-module" class="link">Documentation</a></li>
+          <li><a href="https://layeredapps.github.io/stripe-subscriptions-ui" class="link">Explore the UI</a></li>
+          <li><a href="https://layeredapps.github.io/stripe-subscriptions-configuration" class="link">View environment variables</a></li>
+          <li><a href="https://layeredapps.github.io/stripe-subscriptions-api" class="link">API documentation</a></li>
+          <li><a href="https://github.com/layeredapps/stripe-subscriptions" class="link">Source on GitHub</a></li>
+        </ul>
         <p>If you want to support this project you can use our managed, hosted service:</p>
         <a href="https://layeredapps.com" class="button">Layered Apps</a>
-        <p>You can style Dashboard content by having your application serve a <em>/public/template-additional.css</em> with header and navigation styling, or <em>/public/content-additional.css</em> for content and form styling.</p>
-        <p>You can replace this page when you have a "/" ready on your application server:</p>
-        <pre><code>const dashboard = require('@layeredapps/dashboard')
-dashboard.start(__dirname)</code></pre>
-        <p>You can use NodeJS for caching if you only have one Dashboard server, or <em>Redis</em> as a shared-cache if you have multiple instances of Dashboard.</p>
-        <pre><code>export CACHE=redis|node
-export REDIS_URL=redis://localhost:6379 
-node main.js</code></pre>
-        <p>Dashboard supports five different database platforms, <em>PostgreSQL</em>, <em>MySQL</em>, <em>MariaDB</em>, <em>Microsoft SQL Server</em>, <em>IBM DB2</em> and if you're developing or understand the ramifications you can use <em>SQLITE</em> too!  Just install the required driver and set the environment to use your preferred backend:</p>
-<pre><code>npm install mysql2 # mysql and mariadb
-npm install pg pg-hstore # postgresql
-npm install sqlite3
-npm install tedious # mssql
-npm install ibm_db</code></pre>
-        <table>
-          <thead>
-            <tr>
-              <th>Storage</th>
-              <th>Environment variables</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>SQLITE</td>
-              <td>STORAGE=sqlite</td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>DATABASE=dashboard</td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>DATABASE_FILE=/path/file.sqlite</td>
-            </tr>
-            <tr>
-              <td>POSTGRESQL</td>
-              <td>STORAGE=postgresql</td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>DATABASE_URL=...</td>
-            </tr>
-            <tr>
-              <td>MariaDB</td>
-              <td>STORAGE=mariadb</td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>DATABASE_URL=...</td>
-            </tr>
-            <tr>
-              <td>MYSQL</td>
-              <td>STORAGE=mysql</td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>DATABASE_URL=...</td>
-            </tr>
-            <tr>
-              <td>MSSQL</td>
-              <td>STORAGE=mssql</td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>DATABASE_URL=...</td>
-            </tr>
-            <tr>
-              <td>DB2</td>
-              <td>STORAGE=db2</td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>DATABASE_URL=...</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </div>
   </body>
