@@ -1,4 +1,12 @@
-.StripeElement { padding: 0.5rem; border-radius: 0.25rem; border: none; background-color: var(--stripe-element-background-color); color: var(--stripe-element-text-color) }
+.StripeElement { padding: 0.5rem; border-radius: 0.25rem; border: 1px solid var(--content-input-border-color); background-color: var(--stripe-element-background-color); color: var(--stripe-element-text-color) }
+.StripeElement:active,
+.StripeElement:focus-within
+.StripeElement:first-child:active,
+.StripeElement:first-child:focus-within {
+	box-shadow: 0 0 0 0.2rem var(--content-focus-color);
+	position: relative;
+	z-index: 999;
+}
 
 /* color settings */
 :root {

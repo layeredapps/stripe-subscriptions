@@ -68,6 +68,46 @@ You can use links for users to create a subscription to a specific plan:
 
     /account/subscriptions/start-subscription?planid=X
 
+### Styling the Stripe elements
+
+Using StripeJS version 3 sensitive fields like credit card numbers are created by Stripe in nested iframes and styled using a JavaScript object passed to their script.
+
+You can specify your own JavaScript styling on your application server at `/stripe-element-style.json`.  This module will automatically detect if the browser is in light or dark mode, or switched mode, and apply your settings:
+
+    {
+        "light": {
+            "base": {
+                "color": "#666666",
+                "fontFamily": "\"Helvetica Neue\", Helvetica, sans-serif",
+                "fontSmoothing": "antialiased",
+                "fontSize": "16px",
+                "::placeholder": {
+                    "color": "#EEEEEE"
+                }
+            },
+            "invalid": {
+                "color": "#990000",
+                "iconColor": "#fa755a"
+            }
+        },
+        "dark": {
+            "base": {
+                "color": "#666666",
+                "fontFamily": "\"Helvetica Neue\", Helvetica, sans-serif",
+                "fontSmoothing": "antialiased",
+                "fontSize": "16px",
+                "::placeholder": {
+                    "color": "#EEEEEE"
+                }
+            },
+            "invalid": {
+                "color": "#990000",
+                "iconColor": "#fa755a"
+            }
+        }
+    }
+
+
 # Provided server, content and proxy handlers
 
 This module comes with some convenience scripts you can add to your `package.json`:

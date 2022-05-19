@@ -1,31 +1,41 @@
 {
   "light": {
     "base": {
-      "color": "#666666",
-      "fontFamily": "\"Helvetica Neue\", Helvetica, sans-serif",
+      "color": "#212529",
+      "borderColor": "#A9B6C2",
+      "backgroundColor": "#F8F9FA",
+      "fontFamily": "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", \"Liberation Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
       "fontSmoothing": "antialiased",
       "fontSize": "16px",
       "::placeholder": {
-        "color": "#EEEEEE"
+        "color": "#6C757D"
+      },
+      ":focus": {
+        "boxShadow": "0 0 0 0.2rem #0DCAF0"
       }
     },
     "invalid": {
-      "color": "#990000",
+      "color": "#dc3545",
       "iconColor": "#fa755a"
     }
   },
   "dark": {
     "base": {
-      "color": "#666666",
-      "fontFamily": "\"Helvetica Neue\", Helvetica, sans-serif",
+      "color": "#F8F9FA",
+      "borderColor": "#343A40",
+      "backgroundColor": "#11111B",
+      "fontFamily": "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", \"Liberation Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
       "fontSmoothing": "antialiased",
       "fontSize": "16px",
       "::placeholder": {
-        "color": "#EEEEEE"
+        "color": "#6c757D"
+      },
+      ":focus": {
+        "boxShadow": "0 0 0 0.2rem #6C757D"
       }
     },
     "invalid": {
-      "color": "#990000",
+      "color": "#ff5062",
       "iconColor": "#fa755a"
     }
   }

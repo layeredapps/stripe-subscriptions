@@ -6,7 +6,9 @@ window.onload = function () {
   stripe = window.Stripe(stripePublishableKey.value)
   const elements = stripe.elements()
   let style
-  if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+  if (!window.stripeElementStyle) {
+    style = {}
+  } else if(window.matchMedia('(prefers-color-scheme: dark)').matches){
     style = window.stripeElementStyle.dark || {}
   } else {
     style = window.stripeElementStyle.light || {}
