@@ -1,4 +1,4 @@
-@layeredapps/dashboard 0.0.122
+@layeredapps/dashboard 0.0.129
 http://localhost:8000
 
 Administrator menu:
@@ -15,7 +15,7 @@ Special HTML files:
 @layeredapps/dashboard/redirect.html
 
 Dashboard modules:
-@layeredapps/maxmind-geoip (1.0.25)
+@layeredapps/maxmind-geoip (1.0.26)
 
 Content handlers:
 @layeredapps/dashboard/src/content/insert-csrf-token.js
@@ -332,4 +332,4 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /home                                                                                                static-page                    /src/www                  
 /webhooks/subscriptions/index-subscription-data                    GUEST             POST            /src/www                       /src/www                  
 
-2022-05-19T06:38:59.282Z
+2022-05-20T03:40:32.538Z
