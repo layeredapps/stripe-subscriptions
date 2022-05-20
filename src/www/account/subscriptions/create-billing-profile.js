@@ -20,7 +20,8 @@ async function renderPage (req, res, messageTemplate) {
     stripePublishableKey.setAttribute('value', global.stripePublishableKey)
     unusedVersions.push('form-nojs')
     res.setHeader('content-security-policy',
-      'default-src * \'unsafe-inline\'; ' +
+      'default-src * \'unsafe-inline\' \'self\'; ' +
+      'img-src \'self\' data:; ' +
       `style-src https://m.stripe.com/ https://m.stripe.network/ https://js.stripe.com/v3/ https://js.stripe.com/v2/ ${global.dashboardServer}/public/ 'unsafe-inline'; ` +
       `script-src * https://q.stripe.com/ https://m.stripe.com/ https://m.stripe.network/ https://js.stripe.com/v3/ https://js.stripe.com/v2/ ${global.dashboardServer}/public/ 'unsafe-inline' 'unsafe-eval'; ` +
       'frame-src https://m.stripe.com/ https://m.stripe.network/ https://js.stripe.com/ \'unsafe-inline\'; ' +

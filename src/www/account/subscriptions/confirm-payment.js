@@ -84,11 +84,12 @@ async function renderPage (req, res, messageTemplate) {
     }
   } else {
     res.setHeader('content-security-policy',
-      'default-src * \'unsafe-inline\'; ' +
-    `style-src https://m.stripe.com/ https://m.stripe.network/ https://js.stripe.com/v2/ ${global.dashboardServer}/public/ 'unsafe-inline'; ` +
-    `script-src * https://m.stripe.com/ https://m.stripe.network/  https://js.stripe.com/v2/ ${global.dashboardServer}/public/ 'unsafe-inline' 'unsafe-eval'; ` +
-    'frame-src https://m.stripe.com/ https://m.stripe.network/  https://js.stripe.com/ \'unsafe-inline\' ; ' +
-    'connect-src https://m.stripe.com/ https://m.stripe.network/ https://js.stripe.com/ \'unsafe-inline\' ; ')
+      'default-src * \'unsafe-inline\' \'self\'; ' +
+      'img-src \'self\' data:; ' +
+      `style-src https://m.stripe.com/ https://m.stripe.network/ https://js.stripe.com/v3/ https://js.stripe.com/v2/ ${global.dashboardServer}/public/ 'unsafe-inline'; ` +
+      `script-src * https://q.stripe.com/ https://m.stripe.com/ https://m.stripe.network/ https://js.stripe.com/v3/ https://js.stripe.com/v2/ ${global.dashboardServer}/public/ 'unsafe-inline' 'unsafe-eval'; ` +
+      'frame-src https://m.stripe.com/ https://m.stripe.network/ https://js.stripe.com/ \'unsafe-inline\'; ' +
+      'connect-src https://m.stripe.com/ https://m.stripe.network/ https://js.stripe.com/ \'unsafe-inline\'; ')
   }
   return dashboard.Response.end(req, res, doc)
 }
