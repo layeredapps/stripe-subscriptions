@@ -1,5 +1,6 @@
 const dashboard = require('@layeredapps/dashboard')
 const formatStripeObject = require('../../../stripe-object.js')
+const stripeContentSecurityPolicy = "img-src 'self' data:; font-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https://*.stripe.com; script-src 'unsafe-inline' https://*.stripe.com; frame-src https://*.stripe.com https://*.stripe.network; connect-src https://*.stripe.com;"
 
 module.exports = {
   before: beforeRequest,
@@ -83,13 +84,7 @@ async function renderPage (req, res, messageTemplate) {
       return dashboard.Response.end(req, res, doc)
     }
   } else {
-    res.setHeader('content-security-policy',
-      'default-src * \'unsafe-inline\' \'self\'; ' +
-      'img-src \'self\' data:; ' +
-      `style-src https://m.stripe.com/ https://m.stripe.network/ https://js.stripe.com/v3/ https://js.stripe.com/v2/ ${global.dashboardServer}/public/ 'unsafe-inline'; ` +
-      `script-src * https://q.stripe.com/ https://m.stripe.com/ https://m.stripe.network/ https://js.stripe.com/v3/ https://js.stripe.com/v2/ ${global.dashboardServer}/public/ 'unsafe-inline' 'unsafe-eval'; ` +
-      'frame-src https://m.stripe.com/ https://m.stripe.network/ https://js.stripe.com/ \'unsafe-inline\'; ' +
-      'connect-src https://m.stripe.com/ https://m.stripe.network/ https://js.stripe.com/ \'unsafe-inline\'; ')
+    req.contentSecurityPolicy = req.contentSecurityPolicy || global.contentSecurityPolicy || stripeContentSecurityPolicy
   }
   return dashboard.Response.end(req, res, doc)
 }

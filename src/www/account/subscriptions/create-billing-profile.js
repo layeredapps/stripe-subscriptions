@@ -1,6 +1,7 @@
 const countries = require('../../../../countries.json')
 const countryDivisions = require('../../../../country-divisions.json')
 const dashboard = require('@layeredapps/dashboard')
+const stripeContentSecurityPolicy = "img-src 'self' data:; font-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https://*.stripe.com; script-src 'unsafe-inline' https://*.stripe.com; frame-src https://*.stripe.com https://*.stripe.network; connect-src https://*.stripe.com;"
 
 module.exports = {
   get: renderPage,
@@ -19,13 +20,7 @@ async function renderPage (req, res, messageTemplate) {
     const stripePublishableKey = doc.getElementById('stripe-publishable-key')
     stripePublishableKey.setAttribute('value', global.stripePublishableKey)
     unusedVersions.push('form-nojs')
-    res.setHeader('content-security-policy',
-      'default-src * \'unsafe-inline\' \'self\'; ' +
-      'img-src \'self\' data:; ' +
-      `style-src https://m.stripe.com/ https://m.stripe.network/ https://js.stripe.com/v3/ https://js.stripe.com/v2/ ${global.dashboardServer}/public/ 'unsafe-inline'; ` +
-      `script-src * https://q.stripe.com/ https://m.stripe.com/ https://m.stripe.network/ https://js.stripe.com/v3/ https://js.stripe.com/v2/ ${global.dashboardServer}/public/ 'unsafe-inline' 'unsafe-eval'; ` +
-      'frame-src https://m.stripe.com/ https://m.stripe.network/ https://js.stripe.com/ \'unsafe-inline\'; ' +
-      'connect-src https://m.stripe.com/ https://m.stripe.network/ https://js.stripe.com/ \'unsafe-inline\'; ')
+    req.contentSecurityPolicy = req.contentSecurityPolicy || global.contentSecurityPolicy || stripeContentSecurityPolicy
   }
   for (const elementid of unusedVersions) {
     const element = doc.getElementById(elementid)
