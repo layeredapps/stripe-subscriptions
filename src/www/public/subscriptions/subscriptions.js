@@ -18,7 +18,10 @@ window.renderError = function (templateid) {
   }
   const messageContainer = document.getElementById('message-container')
   messageContainer.innerHTML = ''
+  const message = document.createElement('div')
+  message.className = 'message error'
   const node = document.importNode(template.content, true)
-  messageContainer.appendChild(node)
+  message.appendChild(node)
+  messageContainer.appendChild(message)
   messageContainer.firstChild.setAttribute('template', templateid)
 }
