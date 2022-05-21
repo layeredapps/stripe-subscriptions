@@ -33,14 +33,19 @@ async function renderPage (req, res, messageTemplate) {
       return dashboard.Response.end(req, res, doc)
     }
   }
-  req.query = req.query || {}
-  req.query.ip = req.ip
-  const defaultCountry = await global.api.user.geoip.Country.get(req)
   let countryCode
   if (req.body) {
     countryCode = req.body.address_country
+  } else {
+    if (req.country) {
+      countryCode = req.country.country.iso_code
+    } else {
+      req.query = req.query || {}
+      req.query.ip = req.ip
+      const defaultCountry = await global.api.user.geoip.Country.get(req)
+      countryCode = defaultCountry.country.iso_code
+    }
   }
-  countryCode = countryCode || defaultCountry.country.iso_code
   const country = countryDivisions[countryCode]
   const states = []
   for (const code in country.divisions) {
