@@ -14,16 +14,18 @@ async function embedElementStyle (_, __, doc) {
     return
   }
   for (const scriptTag of scriptTags) {
-    if (!scriptTag.attr || !scriptTag.attr.src) {
+    if (!scriptTag.attr || (!scriptTag.attr.src && !scriptTag.attr['data-src'])) {
       continue
     }
     if (scriptTag.attr.src !== '/public/subscriptions/stripe-v3-add-payment-method.js' &&
-        scriptTag.attr.src !== '/public/subscriptions/stripe-v3-create-billing-profile.js') {
+        scriptTag.attr.src !== '/public/subscriptions/stripe-v3-create-billing-profile.js' &&
+        scriptTag.attr['data-src'] !== '/public/subscriptions/stripe-v3-add-payment-method.js' &&
+        scriptTag.attr['data-src'] !== '/public/subscriptions/stripe-v3-create-billing-profile.js') {
       continue
     }
     const now = new Date()
     if (lastFetched) {
-      if (now.getTime() - lastFetched.getTime() > 60000) {
+      if (global.hotReload || now.getTime() - lastFetched.getTime() > 60000) {
         cache = null
       }
     }
