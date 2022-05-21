@@ -17,6 +17,10 @@ async function addXHasCustomerBillingHeader (req, proxyRequestOptions) {
       proxyRequestOptions.headers['x-has-customer-billing'] = 'true'
       return
     }
+    if (customers[i].stripeObject.invoice_settings && customers[i].stripeObject.invoice_settings.default_payment_method) {
+      proxyRequestOptions.headers['x-has-customer-billing'] = 'true'
+      return
+    }
   }
   proxyRequestOptions.headers['x-has-customer-billing'] = 'false'
 }
