@@ -8,6 +8,9 @@ module.exports = {
 }
 
 async function beforeRequest (req) {
+  if (global.viewSubscriptionPlans === false) {
+    return
+  }
   req.query = req.query || {}
   req.query.all = true
   const plans = await global.api.user.subscriptions.PublishedPlans.get(req)
@@ -21,6 +24,9 @@ async function beforeRequest (req) {
 }
 
 async function renderPage (req, res, messageTemplate) {
+  if (global.viewSubscriptionPlans === false) {
+    return dashboard.Response.redirect(req, res, '/account/subscriptions')
+  }
   messageTemplate = messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html)
   if (messageTemplate) {

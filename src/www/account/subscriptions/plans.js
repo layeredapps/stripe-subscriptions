@@ -1,5 +1,6 @@
 const dashboard = require('@layeredapps/dashboard')
 const formatStripeObject = require('../../../stripe-object.js')
+const navbar = require('./navbar.s')
 
 module.exports = {
   before: beforeRequest,
@@ -7,6 +8,9 @@ module.exports = {
 }
 
 async function beforeRequest (req) {
+  if (global.viewSubscriptionPlans === false) {
+    return
+  }
   const total = await global.api.user.subscriptions.PublishedPlansCount.get(req)
   const plans = await global.api.user.subscriptions.PublishedPlans.get(req)
   for (const i in plans) {
@@ -18,7 +22,11 @@ async function beforeRequest (req) {
 }
 
 async function renderPage (req, res) {
+  if (global.viewSubscriptionPlans === false) {
+    return dashboard.Response.redirect(req, res, '/account/subscriptions')
+  }
   const doc = dashboard.HTML.parse(req.html || req.route.html)
+  await navbar.setup(doc)
   const removeElements = []
   if (req.data.plans && req.data.plans.length) {
     dashboard.HTML.renderTable(doc, req.data.plans, 'plan-row', 'plans-table')

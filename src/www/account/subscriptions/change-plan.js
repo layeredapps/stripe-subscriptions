@@ -1,5 +1,6 @@
 const dashboard = require('@layeredapps/dashboard')
 const formatStripeObject = require('../../../stripe-object.js')
+const navbar = require('./navbar.s')
 
 module.exports = {
   before: beforeRequest,
@@ -100,6 +101,7 @@ async function renderPage (req, res, messageTemplate) {
     req.removeContents = true
   }
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.subscription, 'subscription')
+  await navbar.setup(doc)
   if (messageTemplate) {
     dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
     if (req.removeContents) {

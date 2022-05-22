@@ -1,5 +1,6 @@
 const dashboard = require('@layeredapps/dashboard')
 const formatStripeObject = require('../../../stripe-object.js')
+const navbar = require('./navbar.s')
 
 module.exports = {
   before: beforeRequest,
@@ -23,6 +24,7 @@ async function beforeRequest (req) {
 
 async function renderPage (req, res) {
   const doc = dashboard.HTML.parse(req.html || req.route.html)
+  await navbar.setup(doc)
   if (req.data.refunds && req.data.refunds.length) {
     dashboard.HTML.renderTable(doc, req.data.refunds, 'refund-row', 'refunds-table')
     if (req.data.total <= global.pageSize) {
