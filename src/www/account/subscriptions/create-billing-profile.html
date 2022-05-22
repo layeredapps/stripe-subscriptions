@@ -17,9 +17,11 @@
       <form id="form-stripejs-v3" method="post" class="input-form" action="/account/subscriptions/create-billing-profile" name="form-stripejs-v3">
         <input type="hidden" name="csrf-token" />
         <input type="hidden" id="stripe-publishable-key" />
-        <h1 translate="yes">Create billing profile</h1><input type="hidden" name="token" id="token">
+        <input type="hidden" name="token" id="token" />
+        <h1 translate="yes">Create billing profile</h1>
+
         <div id="message-container"></div>
-        <div class="input-fields">
+        <div id="profile-description-container" class="input-fields">
           <label class="field-label" for="description" translate="yes">Profile description</label>
           <div class="field">
             <input required="" id="description" name="description" type="text" maxlength="100">
@@ -29,6 +31,7 @@
           <label class="field-label" for="email" translate="yes">Contact email</label>
           <div class="field">
             <input required="" id="email" name="email" type="text" maxlength="100">
+            <span id="note-container-contact-email"></span>
           </div>
         </div>
         <div class="input-fields">
@@ -59,34 +62,45 @@
           <label class="field-label" for="name" translate="yes">Name on card</label>
           <div class="field">
             <input required="" id="name" name="name" type="text" maxlength="1000">
+            <span id="note-container-full-name"></span>
           </div>
-        </div>
-        <div class="input-fields">
-          <label class="field-label" for="address_line1" translate="yes">Address line 1</label>
-          <div class="field">
-            <input id="address_line1" name="address_line1" type="text" maxlength="1000">
+        </div>"
+        <div class="address-container">
+          <div class="input-fields">
+            <label class="field-label" for="line1" translate="yes">Address line 1</label>
+            <div class="field">
+              <input id="line1" name="line1" type="text" maxlength="1000">
+            </div>
           </div>
-        </div>
-        <div class="input-fields">
-          <label class="field-label" for="address_line2" translate="yes">Address line 2</label>
-          <div class="field">
-            <input id="address_line2" name="address_line2" type="text" maxlength="1000">
+          <div class="input-fields">
+            <label class="field-label" for="line2" translate="yes">Address line 2</label>
+            <div class="field">
+              <input id="line2" name="line2" type="text" maxlength="1000">
+            </div>
           </div>
-        </div>
-        <div class="input-fields">
-          <label class="field-label" for="address_city" translate="yes">City</label>
-          <div class="field">
-            <input id="address_city" name="address_city" type="text" maxlength="1000">
+          <div class="input-fields">
+            <label class="field-label" for="city" translate="yes">City</label>
+            <div class="field">
+              <input id="city" name="city" type="text" maxlength="1000">
+            </div>
           </div>
-        </div>
-        <div class="input-fields">
-          <label class="field-label" for="address_state" translate="yes">State or province</label>
-          <div class="field">
-            <select id="address_state" name="address_state">
-              <option value="" translate="yes">
-                Select state
-              </option>
-            </select>
+          <div class="input-fields">
+            <label class="field-label" for="state" translate="yes">State or province</label>
+            <div class="field">
+              <select id="state" name="state">
+                <option value="" translate="yes">
+                  Select state
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="input-fields">
+            <label class="field-label" for="country" translate="yes">Country</label>
+            <div class="field">
+              <select id="country" name="country">
+                <option value="" translate="yes">Select country</option>
+              </select>
+            </div>
           </div>
         </div>
         <div class="input-fields">
@@ -96,15 +110,7 @@
               <div id="zip-container"></div>
             </div>
           </div>
-        </div>
-        <div class="input-fields">
-          <label class="field-label" for="address_country" translate="yes">Country</label>
-          <div class="field">
-            <select id="address_country" name="address_country">
-              <option value="" translate="yes">Select country</option>
-            </select>
-          </div>
-        </div>
+        </div>        
         <div class="form-buttons spaced-buttons">
           <button id="submit-button" type="submit" class="button" translate="yes">Save profile</button>
           <button type="submit" class="button" name="refresh" value="true" translate="yes" formnovalidate="formnovalidate">Change country</button>
@@ -114,7 +120,7 @@
         <input type="hidden" name="csrf-token" />
         <input type="hidden" id="stripe-publishable-key" />
         <div id="message-container"></div>
-        <div class="input-fields">
+        <div id="profile-description-container" class="input-fields">
           <label class="field-label" for="description" translate="yes">Profile description</label>
           <div class="field">
             <input required="" id="description" name="description" type="text" maxlength="100">
@@ -124,6 +130,7 @@
           <label class="field-label" for="email" translate="yes">Contact email</label>
           <div class="field">
             <input required="" id="email" name="email" type="text" maxlength="100">
+            <span id="note-container-contact-email"></span>
           </div>
         </div>
         <div class="input-fields">
@@ -154,51 +161,54 @@
           <div class="field">
             <div class="normal-field">
               <input required="" id="name" name="name" type="text" maxlength="1000">
+              <span id="note-container-full-name"></span>
             </div>
           </div>
         </div>
-        <div class="input-fields">
-          <label class="field-label" for="address_line1" translate="yes">Address line 1</label>
-          <div class="field">
-            <input id="address_line1" name="address_line1" type="text" maxlength="1000">
-          </div>
-        </div>
-        <div class="input-fields">
-          <label class="field-label" for="address_line2" translate="yes">Address line 2</label>
-          <div class="field">
-            <input id="address_line2" name="address_line2" type="text" maxlength="1000">
-          </div>
-        </div>
-        <div class="input-fields">
-          <label class="field-label" for="address_city" translate="yes">City</label>
-          <div class="field">
-            <input id="address_city" name="address_city" type="text" maxlength="1000">
-          </div>
-        </div>
-        <div class="input-fields">
-          <label class="field-label" for="address_state" translate="yes">State or province</label>
-          <div class="field">
-            <select id="address_state" name="address_state">
-              <option value="" translate="yes">
-                Select state
-              </option>
-            </select>
-          </div>
-        </div>
-        <div id="zip-container" class="input-fields">
-          <label class="field-label" for="address_zip">ZIP</label>
-          <div class="field">
-            <div class="tiny-field">
-              <input id="address_zip" name="address_zip" type="text" maxlength="1000">
+        <div id="address-container">
+          <div class="input-fields">
+            <label class="field-label" for="line1" translate="yes">Address line 1</label>
+            <div class="field">
+              <input id="line1" name="line1" type="text" maxlength="1000">
             </div>
           </div>
-        </div>
-        <div class="input-fields">
-          <label class="field-label" for="address_country" translate="yes">Country</label>
-          <div class="field">
-            <select name="address_country" id="address_country">
-              <option value="" translate="yes">Select country</option>
-            </select>
+          <div class="input-fields">
+            <label class="field-label" for="line2" translate="yes">Address line 2</label>
+            <div class="field">
+              <input id="line2" name="line2" type="text" maxlength="1000">
+            </div>
+          </div>
+          <div class="input-fields">
+            <label class="field-label" for="city" translate="yes">City</label>
+            <div class="field">
+              <input id="city" name="city" type="text" maxlength="1000">
+            </div>
+          </div>
+          <div class="input-fields">
+            <label class="field-label" for="state" translate="yes">State or province</label>
+            <div class="field">
+              <select id="state" name="state">
+                <option value="" translate="yes">
+                  Select state
+                </option>
+              </select>
+            </div>
+          </div>
+          <div id="zip-container" class="input-fields">
+            <label class="field-label" for="zip">ZIP</label>
+            <div class="field">
+              <div class="tiny-field">
+                <input id="zip" name="zip" type="text" maxlength="1000">
+              </div>
+            </div>
+          </div>
+          <div class="input-fields">
+            <label class="field-label" for="country" translate="yes">Country</label>
+            <div class="field">
+              <select name="country" id="country">
+                <option value="" translate="yes">Select country</option>
+              </select>
+            </div>
           </div>
         </div>
         <div class="form-buttons spaced-buttons">
@@ -207,6 +217,16 @@
         </div>
       </form>
     </div>
+    <template id="update-profile-contact-email">
+      <span class="field-note">
+        Update your <a href="/account/edit-profile?profileid=${profile.profileid}">profile</a> to change your contact email
+      </span>
+    </template>
+    <template id="update-profile-full-name">
+      <span class="field-note">
+        Update your <a href="/account/edit-profile?profileid=${profile.profileid}">profile</a> if this does not match your card
+      </span>
+    </template>
     <template id="country-option">
       <option value="${country.code}">
         ${country.name}

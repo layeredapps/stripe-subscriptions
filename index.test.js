@@ -9,6 +9,11 @@ const properties = [
   { camelCase: 'stripePublishableKey', raw: 'STRIPE_PUBLISHABLE_KEY', description: 'The `pk_test_xxx` key from Stripe', value: 'pk_test_xxx', valueDescription: 'String', noDefaultValue: true },
   { camelCase: 'overdueInvoiceThreshold', raw: 'OVERDUE_INVOICE_THRESHOLD', description: 'Duration in days to allow open invoices before enforcing payment', value: '6', default: '1', valueDescription: 'Integer' },
   { camelCase: 'startSubscriptionPath', raw: 'START_SUBSCRIPTION_PATH', description: 'Alternate URL path to your start subscription flow', value: '/start-subscription', default: '/account/subscriptions/start-subscription', valueDescription: 'String' },
+  { camelCase: 'subscriptionRefundPeriod', raw: 'SUBSCRIPTION_REFUND_PERIOD', description: 'Time in seconds after an invoice is paid that users may refund a charge', value: '7200', default: '3600', defaultDescription: 'seconds', valueDescription: 'Integer' },
+  { camelCase: 'automaticBillingProfileDescription', raw: 'AUTOMATIC_BILLING_PROFILE_DESCRIPTION', description: 'Use billing information for profile description', value: 'true', noDefaultValue: true, valueDescription: 'Boolean' },
+  { camelCase: 'automaticBillingProfileFullName', raw: 'AUTOMATIC_BILLING_PROFILE_FULL_NAME', description: 'Use profile full name as billing full name', value: 'true', noDefaultValue: true, valueDescription: 'Boolean' },
+  { camelCase: 'automaticBillingProfileEmail', raw: 'AUTOMATIC_BILLING_PROFILE_EMAIL', description: 'Use profile contact email as billing email', value: 'true', noDefaultValue: true, valueDescription: 'Boolean' },
+  { camelCase: 'requireBillingProfileAddress', raw: 'REQUIRE_BILLING_PROFILE_ADDRESS', description: 'Require address with billing information', value: 'true', noDefaultValue: true, valueDescription: 'Boolean' },
   { camelCase: 'viewSubscriptionPlans', raw: 'VIEW_SUBSCRIPTION_PLANS', description: 'Allow users to browse published plans', value: 'true', noDefaultValue: true, valueDescription: 'Boolean' },
 ]
 

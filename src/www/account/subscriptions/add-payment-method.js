@@ -2,6 +2,7 @@ const dashboard = require('@layeredapps/dashboard')
 const countries = require('../../../../countries.json')
 const countryDivisions = require('../../../../country-divisions.json')
 const formatStripeObject = require('../../../stripe-object.js')
+const addressFields = ['line1', 'line2', 'city', 'state', 'country']
 const stripeContentSecurityPolicy = "img-src 'self' data:; font-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https://*.stripe.com; script-src 'unsafe-inline' https://*.stripe.com; frame-src https://*.stripe.com https://*.stripe.network; connect-src https://*.stripe.com;"
 
 module.exports = {
@@ -38,8 +39,16 @@ async function beforeRequest (req) {
     }
     return
   }
+  let profile
+  if (req.account.profileid) {
+    try {
+      req.query.profileid = req.account.profileid
+      profile = await global.api.user.Profile.get(req)
+    } catch (error) {
+    }
+  }
   const customer = formatStripeObject(customerRaw)
-  req.data = { customer }
+  req.data = { customer, profile }
 }
 
 async function renderPage (req, res, messageTemplate) {
@@ -58,7 +67,6 @@ async function renderPage (req, res, messageTemplate) {
     removeElements.push('form-nojs')
     req.contentSecurityPolicy = req.contentSecurityPolicy || global.contentSecurityPolicy || stripeContentSecurityPolicy
   }
-
   if (messageTemplate) {
     dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
     if (req.removeContents) {
@@ -75,37 +83,55 @@ async function renderPage (req, res, messageTemplate) {
   if (req.removeContents) {
     return dashboard.Response.end(req, res, doc)
   }
-  let countryCode
-  if (req.body) {
-    countryCode = req.body.address_country
-  } else {
-    if (req.country) {
-      countryCode = req.country.country.iso_code
-    } else {
-      req.query = req.query || {}
-      req.query.ip = req.ip
-      const defaultCountry = await global.api.user.geoip.Country.get(req)
-      countryCode = defaultCountry.country.iso_code
+  if (req.data.profile && req.data.profile.firstName && req.data.profile.lastName && global.automaticBillingProfileFullName) {
+    const nameField = doc.getElementById('name')
+    nameField.setAttribute('value', req.data.profile.firstName + ' ' + req.data.profile.lastName)
+    nameField.setAttribute('readonly', 'readonly')
+    dashboard.HTML.renderTemplate(doc, req.data.profile, 'update-profile-full-name', 'note-container-full-name')
+  }
+  if (!global.requireBillingProfileAddress) {
+    for (const addressField of addressFields) {
+      const element = doc.getElementById(addressField)
+      element.parentNode.removeChild(element)
     }
+  } else {
+    let countryCode
+    if (req.body) {
+      countryCode = req.body.country
+    } else {
+      if (req.country) {
+        countryCode = req.country.country.iso_code
+      } else {
+        req.query = req.query || {}
+        req.query.ip = req.ip
+        const defaultCountry = await global.api.user.geoip.Country.get(req)
+        countryCode = defaultCountry.country.iso_code
+      }
+    }
+    const country = countryDivisions[countryCode]
+    const states = []
+    for (const code in country.divisions) {
+      states.push({ code, name: country.divisions[code], object: 'state' })
+    }
+    states.sort(sortStates)
+    dashboard.HTML.renderList(doc, states, 'state-option', 'state')
+    if (req.body && req.body.state) {
+      dashboard.HTML.setSelectedOptionByValue(doc, 'state', req.body.state)
+    }
+    dashboard.HTML.renderList(doc, countries, 'country-option', 'country')
+    dashboard.HTML.setSelectedOptionByValue(doc, 'country', countryCode)
   }
-  const country = countryDivisions[countryCode]
-  const states = []
-  for (const code in country.divisions) {
-    states.push({ code, name: country.divisions[code], object: 'state' })
-  }
-  states.sort(sortStates)
-  dashboard.HTML.renderList(doc, states, 'state-option', 'address_state')
-  if (req.body && req.body.address_state) {
-    dashboard.HTML.setSelectedOptionByValue(doc, 'address_state', req.body.address_state)
-  }
-  dashboard.HTML.renderList(doc, countries, 'country-option', 'address_country')
-  dashboard.HTML.setSelectedOptionByValue(doc, 'address_country', countryCode)
   return dashboard.Response.end(req, res, doc)
 }
 
 async function submitForm (req, res) {
   if (!req.body) {
     return renderPage(req, res)
+  }
+  if (req.data.profile && req.data.profile.firstName && req.data.profile.lastName && global.automaticBillingProfileFullName) {
+    req.body.name = req.data.profile.firstName + ' ' + req.data.profile.lastName
+  } else if (!req.body.name || !req.body.name.length) {
+    return renderPage(req, res, 'invalid-name')
   }
   if (!global.stripeJS) {
     if (!req.body.name || !req.body.name.length) {

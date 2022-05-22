@@ -9,6 +9,10 @@ global.subscriptionRefundPeriod = parseInt(process.env.SUBSCRIPTION_REFUND_PERIO
 global.maximumStripeRetries = parseInt(process.env.MAXIMUM_STRIPE_RETRIES || '0', 10)
 global.overdueInvoiceThreshold = parseInt(process.env.OVERDUE_INVOICE_THRESHOLD || '1', 10)
 global.startSubscriptionPath = process.env.START_SUBSCRIPTION_PATH || '/account/subscriptions/start-subscription'
+global.automaticBillingProfileDescription = process.env.AUTOMATIC_BILLING_PROFILE_DESCRIPTION === 'true'
+global.automaticBillingProfileFullName = process.env.AUTOMATIC_BILLING_PROFILE_FULL_NAME === 'true'
+global.automaticBillingProfileEmail = process.env.AUTOMATIC_BILLING_PROFILE_EMAIL === 'true'
+global.requireBillingProfileAddress = process.env.REQUIRE_BILLING_PROFILE_ADDRESS === 'true'
 global.viewSubscriptionPlans = process.env.VIEW_SUBSCRIPTION_PLANS !== 'false'
 global.stripeAPIVersion = '2020-08-27'
 global.stripeKey = global.stripeKey || process.env.SUBSCRIPTIONS_STRIPE_KEY || process.env.STRIPE_KEY

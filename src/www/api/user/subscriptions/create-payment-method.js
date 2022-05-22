@@ -77,7 +77,7 @@ module.exports = {
     }
     for (const field of ['line1', 'line2', 'city', 'state', 'zip', 'country']) {
       if (req.body[field] && req.body[field].length) {
-        billingInfo.address[field] = req.body[`address_${field}`]
+        billingInfo.address[field] = req.body[field]
       }
     }
     const paymentMethodInfo = {

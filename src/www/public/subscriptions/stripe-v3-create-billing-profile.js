@@ -42,7 +42,7 @@ function convertCard (e) {
     return
   }
   const additionalData = {}
-  const fields = ['name', 'address_line1', 'address_line2', 'address_city', 'address_state', 'address_country']
+  const fields = ['name', 'line1', 'line2', 'city', 'state', 'country']
   for (let i = 0, len = fields.length; i < len; i++) {
     const input = document.getElementById(fields[i])
     if (input.value) {

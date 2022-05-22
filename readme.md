@@ -68,6 +68,33 @@ You can use links for users to create a subscription to a specific plan:
 
     /account/subscriptions/start-subscription?planid=X
 
+### Customizing billing information entry
+
+You can adjust certain parts of the payment information collection with environment variables.
+
+Use `AUTOMATIC_BILLING_PROFILE_DESCRIPTION=true` to skip customers assigning a desciption to their profiles.
+
+Use `AUTOMATIC_BILLING_PROFILE_FULL_NAME=true` to use the full name from the user's profile which you can collect at registration.  The user can update their profile to keep these matched.
+
+Use `AUTOMATIC_BILLING_PROFILE_EMAIL=true` to use the contact email from the user's profile which you can collect at registration.  The user can update their profile with a different email address if necessary.
+
+Use `REQUIRE_BILLING_PROFILE_ADDRESS=false` to disable the address collection.  You can enable it on a per-request basis by creating a `server` script and overriding the global setting:
+
+    module.exports = {
+        after: (req) => {
+            if (!req.account) {
+                return
+            }
+            if (some condition you determine) {
+                req.requireBillingProfileAddress = true
+            }
+        }
+    }
+
+If you use `AUTOMATIC_BILLING_PROFILE_EMAIL` and `AUTOMATIC_BILLING_PROFILE_FULL_NAME` but the user does not have a profile they provide those values as normal.  To ensure the user has a profile with this information use `REQUIRE_PROFILE=true` and `USER_PROFILE_FIELDS=contact-email,full-name` to collect it at registration.
+
+Use `VIEW_SUBSCRIPTION_PLANS=false` to prevent users from browsing published plans.  By default they can see which plans are published to subscribe or change between them.  If you do this the `/account/subscriptions/start-subscription` page will also be disabled as it lists plans for the user's selection. You can link users directly to `/account/subscriptions/confirm-subscription?planid=xxxx`.
+
 ### Styling the Stripe elements
 
 Using StripeJS version 3 sensitive fields like credit card numbers are created by Stripe in nested iframes and styled using a JavaScript object passed to their script.

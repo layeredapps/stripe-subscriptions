@@ -20,6 +20,14 @@ module.exports = {
       email: req.body.email,
       description: req.body.description
     }
+    if (global.requireBillingProfileAddress && !global.stripeJS) {
+      customerInfo.address = {}
+      for (const field of ['line1', 'line2', 'city', 'state', 'zip', 'country']) {
+        if (req.body[field] && req.body[field].length) {
+          customerInfo.address[field] = req.body[`address_${field}`]
+        }
+      }
+    }
     const customer = await stripeCache.execute('customers', 'create', customerInfo, req.stripeKey)
     await subscriptions.Storage.Customer.create({
       appid: req.appid || global.appid,
