@@ -49,16 +49,16 @@ describe('/api/user/subscriptions/create-payment-method', function () {
         req.account = user2.account
         req.session = user2.session
         req.body = {
-          name: `${user2.profile.firstName} ${user2.profile.lastName}`,
+          name: user2.profile.fullName,
           cvc: '111',
           number: '4111111111111111',
           exp_month: '1',
           exp_year: (new Date().getFullYear() + 1).toString().substring(2),
-          address_line1: 'A street address',
-          address_city: 'City',
-          address_state: 'NY',
-          address_zip: '90120',
-          address_country: 'US',
+          line1: 'A street address',
+          city: 'City',
+          state: 'NY',
+          postal_code: '90120',
+          country: 'US',
           default: 'true'
         }
         let errorMessage
@@ -112,7 +112,7 @@ describe('/api/user/subscriptions/create-payment-method', function () {
       req.body = {
         email: user.profile.contactEmail,
         description: 'Chase Sapphire',
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         cvc: '0',
         number: '4111111111111111',
         exp_month: '1',
@@ -139,7 +139,7 @@ describe('/api/user/subscriptions/create-payment-method', function () {
       req.body = {
         email: user.profile.contactEmail,
         description: 'Chase Sapphire',
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         cvc: '123',
         number: '',
         exp_month: '1',
@@ -166,7 +166,7 @@ describe('/api/user/subscriptions/create-payment-method', function () {
       req.body = {
         email: user.profile.contactEmail,
         description: 'Chase Sapphire',
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         cvc: '123',
         number: '4111111111111111',
         exp_month: '',
@@ -193,7 +193,7 @@ describe('/api/user/subscriptions/create-payment-method', function () {
       req.body = {
         email: user.profile.contactEmail,
         description: 'Chase Sapphire',
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         cvc: '123',
         number: '4111111111111111',
         exp_month: '1',
@@ -220,7 +220,7 @@ describe('/api/user/subscriptions/create-payment-method', function () {
       req.body = {
         email: user.profile.contactEmail,
         description: 'Chase Sapphire',
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         token: ''
       }
       let errorMessage
@@ -244,16 +244,16 @@ describe('/api/user/subscriptions/create-payment-method', function () {
       req.account = user.account
       req.session = user.session
       req.body = {
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         cvc: '111',
         number: '4111111111111111',
         exp_month: '1',
         exp_year: (new Date().getFullYear() + 1).toString().substring(2),
-        address_line1: 'A street address',
-        address_city: 'City',
-        address_state: 'NY',
-        address_zip: '90120',
-        address_country: 'US',
+        line1: 'A street address',
+        city: 'City',
+        state: 'NY',
+        postal_code: '90120',
+        country: 'US',
         default: 'true'
       }
       req.filename = __filename
@@ -274,16 +274,16 @@ describe('/api/user/subscriptions/create-payment-method', function () {
       req.account = user.account
       req.session = user.session
       req.body = {
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         cvc: '111',
         number: '4111111111111111',
         exp_month: '1',
         exp_year: (new Date().getFullYear() + 1).toString().substring(2),
-        address_line1: 'A street address',
-        address_city: 'City',
-        address_state: 'NY',
-        address_zip: '90120',
-        address_country: 'US',
+        line1: 'A street address',
+        city: 'City',
+        state: 'NY',
+        postal_code: '90120',
+        country: 'US',
         default: 'true'
       }
       let errorMessage

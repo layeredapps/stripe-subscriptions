@@ -13,15 +13,15 @@ window.onload = function () {
   } else {
     style = window.stripeElementStyle.light || {}
   }
-  const zipNumber = elements.create('postalCode', { style })
-  zipNumber.mount('#zip-container')
+  const postalCode = elements.create('postalCode', { style })
+  postalCode.mount('#postal_code-container')
   const cvcNumber = elements.create('cardCvc', { style })
   cvcNumber.mount('#cvc-container')
   const expiryNumber = elements.create('cardExpiry', { style })
   expiryNumber.mount('#expiry-container')
   cardNumber = elements.create('cardNumber', { style })
   cardNumber.mount('#card-container')
-  stripeElements.push(zipNumber, cvcNumber, expiryNumber, cardNumber)
+  stripeElements.push(postalCode, cvcNumber, expiryNumber, cardNumber)
   const submit = document.getElementById('form-stripejs-v3')
   submit.addEventListener('submit', convertCard)
   window.loaded = true
@@ -45,14 +45,18 @@ function convertCard (e) {
   const fields = ['name', 'line1', 'line2', 'city', 'state', 'country']
   for (let i = 0, len = fields.length; i < len; i++) {
     const input = document.getElementById(fields[i])
-    if (input.value) {
-      additionalData[fields[i]] = input.value
+    if (input && input.value) {
+      if (i === 0) {
+        additionalData[fields[i]] = input.value
+      } else {
+        additionalData[`address_${fields[i]}`] = input.value
+      }
     }
   }
   return stripe.createToken(cardNumber, additionalData).then(function (result) {
     if (result.error) {
       const errorElement = document.getElementById('message-container')
-      errorElement.textContent = result.error.message
+      errorElement.innerHTML = `<div class="error message">${result.error.message}</div>`
       window.submitted = true
       return
     }

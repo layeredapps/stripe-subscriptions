@@ -966,8 +966,8 @@ function createCharge (subscription, invoice) {
         card: {
           brand: 'visa',
           checks: {
-            address_line1_check: null,
-            address_postal_code_check: null,
+            line1_check: null,
+            postal_code_check: null,
             cvc_check: 'pass'
           },
           country: 'US',

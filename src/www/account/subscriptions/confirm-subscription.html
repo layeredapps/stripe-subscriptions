@@ -42,11 +42,17 @@
         </label>
       </div>
     </template>
-    <template id="charge-now">
+    <template id="licensed-charge-now">
       <p translate="yes">You will be billed ${plan.amountFormatted} now and each ${plan.interval}.</p>
     </template>
-    <template id="charge-later">
+    <template id="licensed-charge-later">
       <p translate="yes">Recurring charges of ${plan.amountFormatted} begin in ${plan.trial_period_days} days.</p>
+    </template>
+    <template id="metered-charge-now">
+      <p translate="yes">You will be billed ${plan.amountFormatted} now and each ${plan.interval}.  Additional fees may be incurred based on usage.</p>
+    </template>
+    <template id="metered-charge-later">
+      <p translate="yes">Recurring charges of ${plan.amountFormatted} begin in ${plan.trial_period_days} days.  Additional fees may be incurred based on usage.</p>
     </template>
     <template id="plan-row">
       <tr>

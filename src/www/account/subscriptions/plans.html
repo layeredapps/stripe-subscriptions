@@ -22,6 +22,7 @@
               <th translate="yes">Name</th>
               <th translate="yes">Price</th>
               <th translate="yes">Trial</th>
+              <th></th>
             </tr>
           </thead>
         </table>
@@ -43,6 +44,8 @@
         <td id="free-plan-${plan.planid}">Free</td>
         <td id="trial-plan-${plan.planid}">${plan.trial_period_days} days</td>
         <td id="no-trial-plan-${plan.planid}">None</td>
+        <td id="start-subscription-${plan.planid}"><a class="small-button" href="/account/subscriptions/confirm-subscription?planid=${plan.planid}">Start subscription</a></td>
+        <td id="requires-billing-${plan.planid}"><a class="small-button" href="/account/subscriptions/create-billing-profile?return-url=/account/subscriptions/confirm-subscription?planid=${plan.planid}">Start subscription</a></td>
       </tr>
     </template>
   </body>

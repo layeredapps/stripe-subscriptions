@@ -83,9 +83,9 @@ async function renderPage (req, res, messageTemplate) {
   if (req.removeContents) {
     return dashboard.Response.end(req, res, doc)
   }
-  if (req.data.profile && req.data.profile.firstName && req.data.profile.lastName && global.automaticBillingProfileFullName) {
+  if (req.data.profile && req.data.profile.fullName && global.automaticBillingProfileFullName) {
     const nameField = doc.getElementById('name')
-    nameField.setAttribute('value', req.data.profile.firstName + ' ' + req.data.profile.lastName)
+    nameField.setAttribute('value', req.data.profile.fullName)
     nameField.setAttribute('readonly', 'readonly')
     dashboard.HTML.renderTemplate(doc, req.data.profile, 'update-profile-full-name', 'note-container-full-name')
   }
@@ -128,8 +128,8 @@ async function submitForm (req, res) {
   if (!req.body) {
     return renderPage(req, res)
   }
-  if (req.data.profile && req.data.profile.firstName && req.data.profile.lastName && global.automaticBillingProfileFullName) {
-    req.body.name = req.data.profile.firstName + ' ' + req.data.profile.lastName
+  if (req.data.profile && req.data.profile.fullName && global.automaticBillingProfileFullName) {
+    req.body.name = req.data.profile.fullName
   } else if (!req.body.name || !req.body.name.length) {
     return renderPage(req, res, 'invalid-name')
   }

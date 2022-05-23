@@ -49,14 +49,27 @@ async function beforeRequest (req) {
   req.query.accountid = req.account.accountid
   req.query.all = true
   const customers = await global.api.user.subscriptions.Customers.get(req)
+  let hasPaymentMethod, defaultCustomer
   for (const i in customers) {
     const customer = formatStripeObject(customers[i])
     customers[i] = customer
+    hasPaymentMethod = hasPaymentMethod || customer.default_source || (customer.invoice_settings && customer.invoice_settings.default_payment_method)
+    defualtCustomer = defaultCustomer || customer
+  }
+  if (plan.amount && !hasPaymentMethod) {
+    req.error = 'invalid-paymentmethodid'
+    return
   }
   req.data = { plan, customers }
 }
 
 async function renderPage (req, res, messageTemplate) {
+  if (global.automaticConfirmSubscription) {
+    req.body = {
+      customerid: req.data.defaultCustomer.customerid
+    }
+    return submitForm(req, res)
+  }
   messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.plan, 'plan')
   if (messageTemplate) {
@@ -69,9 +82,9 @@ async function renderPage (req, res, messageTemplate) {
   }
   dashboard.HTML.renderTemplate(doc, req.data.plan, 'plan-row', 'plan-table')
   if (req.data.plan.trial_period_days) {
-    dashboard.HTML.renderTemplate(doc, req.data.plan, 'charge-later', 'charge')
+    dashboard.HTML.renderTemplate(doc, req.data.plan, `${req.data.plan.usage_type}-charge-later`, 'charge')
   } else {
-    dashboard.HTML.renderTemplate(doc, req.data.plan, 'charge-now', 'charge')
+    dashboard.HTML.renderTemplate(doc, req.data.plan, `${req.data.plan.usage_type}-charge-now`, 'charge')
   }
   if (req.data.customers && req.data.customers.length) {
     dashboard.HTML.renderList(doc, req.data.customers, 'customer-option', 'customerid')
@@ -103,11 +116,11 @@ async function submitForm (req, res) {
   for (const customer of req.data.customers) {
     found = customer.id === req.body.customerid
     if (found) {
-      if (req.data.plan.amount && (!customer.invoice_settings || !customer.invoice_settings.default_payment_method)) {
+      if (req.data.plan.amount && !customer.default_source && (!customer.invoice_settings || !customer.invoice_settings.default_payment_method)) {
         return renderPage(req, res, 'invalid-paymentmethodid')
       }
       if (req.data.plan.amount) {
-        req.body.paymentmethodid = customer.invoice_settings.default_payment_method
+        req.body.paymentmethodid = customer.default_source || customer.invoice_settings.default_payment_method
       }
       break
     }

@@ -140,7 +140,7 @@ describe('/api/user/subscriptions/create-cancelation-refund', function () {
       //   const user = await TestHelper.createUser()
       //   await TestHelper.createCustomer(user, {
       //     email: user.profile.contactEmail,
-      //     description: user.profile.firstName
+      //     description: user.profile.fullName
       //   })
       //   await TestHelper.createSubscription(user, administrator.plan.planid)
       //   const req2 = TestHelper.createRequest(`/api/user/subscriptions/create-cancelation-refund?subscriptionid=${user.subscription.subscriptionid}`)

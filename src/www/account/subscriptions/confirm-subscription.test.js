@@ -77,7 +77,7 @@ describe('/account/subscriptions/confirm-subscription', function () {
       { click: '/account/subscriptions' },
       { click: '/account/subscriptions/plans' },
       { click: `/account/subscriptions/plan?planid=${publishedPlan.planid}` },
-      { click: `/account/subscriptions/start-subscription?planid=${publishedPlan.planid}` },
+      { click: `/account/subscriptions/confirm-subscription?planid=${publishedPlan.planid}` },
       {
         click: '#submit-button',
         waitAfter: async (page) => {

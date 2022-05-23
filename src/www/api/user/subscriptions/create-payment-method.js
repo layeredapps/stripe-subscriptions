@@ -75,7 +75,7 @@ module.exports = {
       name: req.body.name,
       address: {}
     }
-    for (const field of ['line1', 'line2', 'city', 'state', 'zip', 'country']) {
+    for (const field of ['line1', 'line2', 'city', 'state', 'postal_code', 'country']) {
       if (req.body[field] && req.body[field].length) {
         billingInfo.address[field] = req.body[field]
       }

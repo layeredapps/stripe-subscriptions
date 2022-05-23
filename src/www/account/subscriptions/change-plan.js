@@ -1,6 +1,6 @@
 const dashboard = require('@layeredapps/dashboard')
 const formatStripeObject = require('../../../stripe-object.js')
-const navbar = require('./navbar.s')
+const navbar = require('./navbar.js')
 
 module.exports = {
   before: beforeRequest,

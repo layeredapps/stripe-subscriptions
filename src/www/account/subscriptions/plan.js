@@ -44,13 +44,24 @@ async function beforeRequest (req) {
 async function renderPage (req, res, messageTemplate) {
   messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.plan, 'plan')
+  const removeElements = []
   if (messageTemplate) {
     dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
     if (req.removeContents) {
-      const plansTable = doc.getElementById('plans-table')
-      plansTable.parentNode.removeChild(plansTable)
-      return dashboard.Response.end(req, res, doc)
+      removeElements.push('plans-table')
     }
+  }
+  if (!req.data.plan.trial_period_days) {
+    removeElements.push('trial')
+  }
+  if (req.data.plan.usage_type === 'metered') {
+    removeElements.push('licensed')
+  } else {
+    removeElements.push('metered')
+  }
+  for (const id of removeElements) {
+    const element = doc.getElementById(id)
+    element.parentNode.removeChild(element)
   }
   return dashboard.Response.end(req, res, doc)
 }

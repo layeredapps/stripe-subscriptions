@@ -13,6 +13,8 @@ const properties = [
   { camelCase: 'automaticBillingProfileDescription', raw: 'AUTOMATIC_BILLING_PROFILE_DESCRIPTION', description: 'Use billing information for profile description', value: 'true', noDefaultValue: true, valueDescription: 'Boolean' },
   { camelCase: 'automaticBillingProfileFullName', raw: 'AUTOMATIC_BILLING_PROFILE_FULL_NAME', description: 'Use profile full name as billing full name', value: 'true', noDefaultValue: true, valueDescription: 'Boolean' },
   { camelCase: 'automaticBillingProfileEmail', raw: 'AUTOMATIC_BILLING_PROFILE_EMAIL', description: 'Use profile contact email as billing email', value: 'true', noDefaultValue: true, valueDescription: 'Boolean' },
+  { camelCase: 'automaticBillingProfileEmail', raw: 'AUTOMATIC_BILLING_PROFILE_EMAIL', description: 'Use profile contact email as billing email', value: 'true', noDefaultValue: true, valueDescription: 'Boolean' },
+  { camelCase: 'skipConfirmSubscription', raw: 'SKIP_CONFIRM_SUBSCRIPTION', description: 'Automatically submit the "confirm subscription" screen', value: 'true', noDefaultValue: true, valueDescription: 'Boolean' },
   { camelCase: 'requireBillingProfileAddress', raw: 'REQUIRE_BILLING_PROFILE_ADDRESS', description: 'Require address with billing information', value: 'true', noDefaultValue: true, valueDescription: 'Boolean' },
   { camelCase: 'viewSubscriptionPlans', raw: 'VIEW_SUBSCRIPTION_PLANS', description: 'Allow users to browse published plans', value: 'true', noDefaultValue: true, valueDescription: 'Boolean' }
 ]

@@ -175,17 +175,17 @@ describe('/account/subscriptions/add-payment-method', function () {
       req.body = {
         email: user.profile.contactEmail,
         description: 'Chase Sapphire',
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         cvc: '123',
         number: '4111111111111111',
         exp_month: '1',
         exp_year: (new Date().getFullYear() + 1).toString().substring(2),
-        address_line1: '285 Fulton St',
-        address_line2: 'Apt 893',
-        address_city: 'New York',
-        address_state: 'NY',
-        address_zip: '10007',
-        address_country: 'US'
+        line1: '285 Fulton St',
+        line2: 'Apt 893',
+        city: 'New York',
+        state: 'NY',
+        postal_code: '10007',
+        country: 'US'
       }
       req.filename = __filename
       req.screenshots = [
@@ -247,16 +247,16 @@ describe('/account/subscriptions/add-payment-method', function () {
     //   req.body = {
     //     email: user.profile.contactEmail,
     //     description: 'description',
-    //     name: `${user.profile.firstName} ${user.profile.astName}`,
+    //     name: user.profile.fullName,
     //     'cvc-container': '111',
     //     'card-container': '4111111111111111',
     //     'expiry-container': '12' + ((new Date().getFullYear() + 1).toString()).substring(2),
-    //     address_line1: '285 Fulton St',
-    //     address_line2: 'Apt 893',
-    //     address_city: 'New York',
-    //     address_state: 'NY',
-    //     'zip-container': '10007',
-    //     address_country: 'US'
+    //     line1: '285 Fulton St',
+    //     line2: 'Apt 893',
+    //     city: 'New York',
+    //     state: 'NY',
+    //     'postal_code-container': '10007',
+    //     country: 'US'
     //   }
     //   const result = await req.post()
     //   const doc = TestHelper.extractDoc(result.html)
@@ -280,17 +280,17 @@ describe('/account/subscriptions/add-payment-method', function () {
       req.body = {
         email: user.profile.contactEmail,
         description: 'Chase Sapphire',
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         cvc: '123',
         number: '4111111111111111',
         exp_month: '1',
         exp_year: (new Date().getFullYear() + 1).toString().substring(2),
-        address_line1: '285 Fulton St',
-        address_line2: 'Apt 893',
-        address_city: '<script>',
-        address_state: 'New York',
-        address_zip: '10007',
-        address_country: 'US'
+        line1: '285 Fulton St',
+        line2: 'Apt 893',
+        city: '<script>',
+        state: 'New York',
+        postal_code: '10007',
+        country: 'US'
       }
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
@@ -313,17 +313,17 @@ describe('/account/subscriptions/add-payment-method', function () {
       req.body = {
         email: user.profile.contactEmail,
         description: 'Chase Sapphire',
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         cvc: '123',
         number: '4111111111111111',
         exp_month: '1',
         exp_year: (new Date().getFullYear() + 1).toString().substring(2),
-        address_line1: '285 Fulton St',
-        address_line2: 'Apt 893',
-        address_city: 'New York',
-        address_state: 'NY',
-        address_zip: '10007',
-        address_country: 'US',
+        line1: '285 Fulton St',
+        line2: 'Apt 893',
+        city: 'New York',
+        state: 'NY',
+        postal_code: '10007',
+        country: 'US',
         'csrf-token': 'invalid'
       }
       const result = await req.post()

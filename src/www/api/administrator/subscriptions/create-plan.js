@@ -77,6 +77,7 @@ module.exports = {
     }
     const planInfo = {
       id: req.body.planid,
+      nickname: req.body.nickname,
       product: req.body.productid,
       currency: req.body.currency,
       amount: req.body.amount || 0,

@@ -12,7 +12,8 @@ global.startSubscriptionPath = process.env.START_SUBSCRIPTION_PATH || '/account/
 global.automaticBillingProfileDescription = process.env.AUTOMATIC_BILLING_PROFILE_DESCRIPTION === 'true'
 global.automaticBillingProfileFullName = process.env.AUTOMATIC_BILLING_PROFILE_FULL_NAME === 'true'
 global.automaticBillingProfileEmail = process.env.AUTOMATIC_BILLING_PROFILE_EMAIL === 'true'
-global.requireBillingProfileAddress = process.env.REQUIRE_BILLING_PROFILE_ADDRESS === 'true'
+global.skipConfirmSubscription = process.env.SKIP_CONFIRM_SUBSCRIPTION === 'true'
+global.requireBillingProfileAddress = process.env.REQUIRE_BILLING_PROFILE_ADDRESS !== 'false'
 global.viewSubscriptionPlans = process.env.VIEW_SUBSCRIPTION_PLANS !== 'false'
 global.stripeAPIVersion = '2020-08-27'
 global.stripeKey = global.stripeKey || process.env.SUBSCRIPTIONS_STRIPE_KEY || process.env.STRIPE_KEY

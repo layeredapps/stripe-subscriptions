@@ -24,13 +24,14 @@
           </tr>
           <tr>
             <th translate="yes">Price</th>
-            <td>${plan.amountFormatted}</td>
+            <td id="licensed">${plan.amountFormatted}</td>
+            <td id="metered">${plan.amountFormatted} + usage</td>
           </tr>
           <tr>
             <th translate="yes">Billing inteval</th>
             <td>${plan.interval_count} ${plan.interval}(s)</td>
           </tr>
-          <tr>
+          <tr id="trial">
             <th translate="yes">Trial period</th>
             <td>${plan.trial_period_days} day(s)</td>
           </tr>

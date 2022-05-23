@@ -46,6 +46,7 @@ async function renderPage (req, res, messageTemplate) {
     amountField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.amount || ''))
     dashboard.HTML.setSelectedOptionByValue(doc, 'interval_count', dashboard.Format.replaceQuotes(req.body.interval_count || ''))
     dashboard.HTML.setSelectedOptionByValue(doc, 'interval', dashboard.Format.replaceQuotes(req.body.interval || ''))
+    dashboard.HTML.setSelectedOptionByValue(doc, 'usage_type', dashboard.Format.replaceQuotes(req.body.usage_type || ''))
     const trialPeriodDaysField = doc.getElementById('trial_period_days')
     trialPeriodDaysField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.trial_period_days || ''))
   }

@@ -22,9 +22,9 @@ module.exports = {
     }
     if (global.requireBillingProfileAddress && !global.stripeJS) {
       customerInfo.address = {}
-      for (const field of ['line1', 'line2', 'city', 'state', 'zip', 'country']) {
+      for (const field of ['line1', 'line2', 'city', 'state', 'postal_code', 'country']) {
         if (req.body[field] && req.body[field].length) {
-          customerInfo.address[field] = req.body[`address_${field}`]
+          customerInfo.address[field] = req.body[`${field}`]
         }
       }
     }

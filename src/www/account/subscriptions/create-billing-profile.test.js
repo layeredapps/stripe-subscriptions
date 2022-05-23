@@ -52,7 +52,7 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.body = {
         email: user.profile.contactEmail,
         description: '',
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         cvc: '111',
         number: '4111111111111111',
         exp_month: '1',
@@ -75,7 +75,7 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.body = {
         email: '',
         description: 'Chase Sapphire',
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         cvc: '111',
         number: '4111111111111111',
         exp_month: '1',
@@ -121,7 +121,7 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.body = {
         email: user.profile.contactEmail,
         description: 'Chase Sapphire',
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         cvc: '0',
         number: '4111111111111111',
         exp_month: '1',
@@ -144,7 +144,7 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.body = {
         email: user.profile.contactEmail,
         description: 'Chase Sapphire',
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         cvc: '123',
         number: '',
         exp_month: '1',
@@ -167,7 +167,7 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.body = {
         email: user.profile.contactEmail,
         description: 'Chase Sapphire',
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         cvc: '123',
         number: '4111111111111111',
         exp_month: '',
@@ -190,7 +190,7 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.body = {
         email: user.profile.contactEmail,
         description: 'Chase Sapphire',
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         cvc: '123',
         number: '4111111111111111',
         exp_month: '1',
@@ -227,16 +227,16 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.body = {
         email: user.profile.contactEmail,
         description: '',
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         'cvc-container': '111',
         'card-container': '4111111111111111',
         'expiry-container': '12' + ((new Date().getFullYear() + 1).toString()).substring(2),
-        address_line1: '285 Fulton St',
-        address_line2: 'Apt 893',
-        address_city: 'New York',
-        address_state: 'NY',
-        'zip-container': '10007',
-        address_country: 'US'
+        line1: '285 Fulton St',
+        line2: 'Apt 893',
+        city: 'New York',
+        state: 'NY',
+        'postal_code-container': '10007',
+        country: 'US'
       }
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
@@ -269,16 +269,16 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.body = {
         email: '',
         description: 'Chase Sapphire',
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         'cvc-container': '111',
         'card-container': '4111111111111111',
         'expiry-container': '12' + ((new Date().getFullYear() + 1).toString()).substring(2),
-        address_line1: '285 Fulton St',
-        address_line2: 'Apt 893',
-        address_city: 'New York',
-        address_state: 'NY',
-        'zip-container': '10007',
-        address_country: 'US'
+        line1: '285 Fulton St',
+        line2: 'Apt 893',
+        city: 'New York',
+        state: 'NY',
+        'postal_code-container': '10007',
+        country: 'US'
       }
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
@@ -297,7 +297,7 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.body = {
         email: user.profile.contactEmail,
         description: 'Chase Sapphire',
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         cvc: '111',
         number: '4111111111111111',
         exp_month: '1',
@@ -316,16 +316,16 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.body = {
         email: user.profile.contactEmail,
         description: 'Chase Sapphire',
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         'cvc-container': { type: true, value: '111' },
         'card-container': { type: true, value: '4111111111111111' },
         'expiry-container': { type: true, value: '12' + ((new Date().getFullYear() + 1).toString()).substring(2) },
-        address_line1: '285 Fulton St',
-        address_line2: 'Apt 893',
-        address_city: 'New York',
-        address_state: 'NY',
-        'zip-container': { type: true, value: '10007' },
-        address_country: 'US'
+        line1: '285 Fulton St',
+        line2: 'Apt 893',
+        city: 'New York',
+        state: 'NY',
+        'postal_code-container': { type: true, value: '10007' },
+        country: 'US'
       }
       req.filename = __filename
       req.screenshots = [
@@ -369,16 +369,16 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.body = {
         email: user.profile.contactEmail,
         description: 'Chase Sapphire',
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         'cvc-container': '111',
         'card-container': '4111111111111111',
         'expiry-container': '12' + ((new Date().getFullYear() + 1).toString()).substring(2),
-        address_line1: '285 Fulton St',
-        address_line2: '<script>',
-        address_city: 'New York',
-        address_state: 'NY',
-        'zip-container': { type: true, value: '10007' },
-        address_country: 'US'
+        line1: '285 Fulton St',
+        line2: '<script>',
+        city: 'New York',
+        state: 'NY',
+        'postal_code-container': { type: true, value: '10007' },
+        country: 'US'
       }
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
@@ -397,16 +397,16 @@ describe('/account/subscriptions/create-billing-profile', function () {
       req.body = {
         email: user.profile.contactEmail,
         description: 'Chase Sapphire',
-        name: `${user.profile.firstName} ${user.profile.lastName}`,
+        name: user.profile.fullName,
         'cvc-container': { type: true, value: '111' },
         'card-container': { type: true, value: '4111111111111111' },
         'expiry-container': { type: true, value: '12' + ((new Date().getFullYear() + 1).toString()).substring(2) },
-        address_line1: '285 Fulton St',
-        address_line2: 'Apt 893',
-        address_city: 'New York',
-        address_state: 'NY',
-        'zip-container': { type: true, value: '10007' },
-        address_country: 'US'
+        line1: '285 Fulton St',
+        line2: 'Apt 893',
+        city: 'New York',
+        state: 'NY',
+        'postal_code-container': { type: true, value: '10007' },
+        country: 'US'
       }
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)

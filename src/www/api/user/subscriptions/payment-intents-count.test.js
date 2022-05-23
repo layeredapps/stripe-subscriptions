@@ -18,13 +18,13 @@ describe('/api/user/subscriptions/payment-intents-count', function () {
           number: '4111111111111111',
           exp_month: '1',
           exp_year: (new Date().getFullYear() + 1).toString().substring(2),
-          name: user.profile.firstName + ' ' + user.profile.lastName,
-          address_line1: '285 Fulton St',
-          address_line2: 'Apt 893',
-          address_city: 'New York',
-          address_state: 'NY',
-          address_zip: '10007',
-          address_country: 'US',
+          name: user.profile.fullName,
+          line1: '285 Fulton St',
+          line2: 'Apt 893',
+          city: 'New York',
+          state: 'NY',
+          postal_code: '10007',
+          country: 'US',
           default: 'true'
         })
         await TestHelper.createPaymentIntent(user, {

@@ -1,6 +1,6 @@
 const dashboard = require('@layeredapps/dashboard')
 const formatStripeObject = require('../../../stripe-object.js')
-const navbar = require('./navbar.s')
+const navbar = require('./navbar.js')
 
 module.exports = {
   before: beforeRequest,
@@ -17,8 +17,18 @@ async function beforeRequest (req) {
     const plan = formatStripeObject(plans[i])
     plans[i] = plan
   }
+  req.query = req.query || {}
+  req.query.accountid = req.account.accountid
+  req.query.all = true
+  const customers = await global.api.user.subscriptions.Customers.get(req)
+  let hasPaymentMethod
+  for (const i in customers) {
+    const customer = formatStripeObject(customers[i])
+    customers[i] = customer
+    hasPaymentMethod = hasPaymentMethod || (customer.invoice_settings && customer.invoice_settings.default_payment_method)
+  }
   const offset = req.query ? req.query.offset || 0 : 0
-  req.data = { plans, total, offset }
+  req.data = { plans, total, offset, hasPaymentMethod }
 }
 
 async function renderPage (req, res) {
@@ -37,9 +47,14 @@ async function renderPage (req, res) {
         removeElements.push(`no-trial-plan-${plan.planid}`)
       }
       if (!plan.amount) {
-        removeElements.push(`amount-plan-${plan.planid}`)
+        removeElements.push(`amount-plan-${plan.planid}`, `requires-billing-${plan.planid}`)
       } else {
         removeElements.push(`free-plan-${plan.planid}`)
+        if (req.data.hasPaymentMethod) {
+          removeElements.push(`requires-billing-${plan.planid}`)
+        } else {
+          removeElements.push(`start-subscription-${plan.planid}`)
+        }
       }
     }
     if (req.data.total <= global.pageSize) {
