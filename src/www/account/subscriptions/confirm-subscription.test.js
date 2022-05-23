@@ -139,6 +139,25 @@ describe('/account/subscriptions/confirm-subscription', function () {
     })
   })
 
+  describe('configuration', () => {
+    it('environment SKIP_CONFIRM_SUBSCRIPTION', async () => {
+      global.skipConfirmSubscription = true
+      const administrator = await TestStripeAccounts.createOwnerWithPlan({
+        amount: '1000',
+        trial_period_days: '0',
+        interval: 'month',
+        usage_type: 'licensed',
+        publishedAt: 'true'
+      })
+      const user = await TestStripeAccounts.createUserWithPaymentMethod()
+      const req = TestHelper.createRequest(`/account/subscriptions/confirm-subscription?planid=${administrator.plan.planid}`)
+      req.account = user.account
+      req.session = user.session
+      const result = await req.get()
+      assert.strictEqual(result.redirect, '/home')
+    })
+  })
+
   describe('errors', () => {
     it('invalid-paymentmethodid', async function () {
       await bundledData(this.test.currentRetry())

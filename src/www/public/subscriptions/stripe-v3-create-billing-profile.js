@@ -30,7 +30,7 @@ window.onload = function () {
 function convertCard (e) {
   e.preventDefault()
   const description = document.getElementById('description')
-  if (!description.value) {
+  if (description && !description.value) {
     window.renderError('invalid-description')
     window.submitted = true
     return

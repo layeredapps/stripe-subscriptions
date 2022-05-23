@@ -355,6 +355,176 @@ describe('/account/subscriptions/create-billing-profile', function () {
     })
   })
 
+  describe('configuration', () => {
+    it('environment STRIPE_JS', async () => {
+      global.stripeJS = false
+      const user = await TestHelper.createUser()
+      const req = TestHelper.createRequest('/account/subscriptions/create-billing-profile')
+      req.account = user.account
+      req.session = user.session
+      const result = await req.get()
+      const doc = TestHelper.extractDoc(result.html)
+      const forms = doc.getElementsByTagName('form')
+      assert.strictEqual(forms.length, 1)
+      assert.strictEqual(forms[0].attr.id, 'form-nojs')
+      global.stripeJS = 3
+      const result2 = await req.get()
+      const doc2 = TestHelper.extractDoc(result2.html)
+      const forms2 = doc2.getElementsByTagName('form')
+      assert.strictEqual(forms2.length, 1)
+      assert.strictEqual(forms2[0].attr.id, 'form-stripejs-v3')
+    })
+
+    it('environment AUTOMATIC_BILLING_PROFILE_DESCRIPTION', async () => {
+      global.automaticBillingProfileDescription = true
+      global.stripeJS = false
+      const user = await TestHelper.createUser()
+      const req = TestHelper.createRequest('/account/subscriptions/create-billing-profile')
+      req.account = user.account
+      req.session = user.session
+      const result = await req.get()
+      const doc = TestHelper.extractDoc(result.html)
+      const profileDescriptionContainer = doc.getElementById('profileDescriptionContainer')
+      assert.strictEqual(profileDescriptionContainer, undefined)
+      req.fill = '#form-nojs'
+      req.body = {
+        email: user.profile.contactEmail,
+        name: user.profile.fullName,
+        cvc: '111',
+        number: '4111111111111111',
+        exp_month: '12',
+        exp_year: ((new Date().getFullYear() + 1).toString()).substring(2),
+        line1: '285 Fulton St',
+        line2: 'New York',
+        city: 'New York',
+        state: 'NY',
+        postal_code: '10007',
+        country: 'US'
+      }
+      req.waitAfter = async (page) => {
+        while (true) {
+          try {
+            const location = await page.url()
+            if (location.endsWith('/account/subscriptions')) {
+              return
+            }
+          } catch (error) {
+          }
+          await TestHelper.wait(100)
+        }
+      }
+      const result2 = await req.post()
+      assert.strictEqual(result2.redirect, '/account/subscriptions')
+      global.stripeJS = 3
+      req.fill = '#form-stripejs-v3'
+      req.body = {
+        email: user.profile.contactEmail,
+        name: user.profile.fullName,
+        'cvc-container': { type: true, value: '111' },
+        'card-container': { type: true, value: '4111111111111111' },
+        'expiry-container': { type: true, value: '12' + ((new Date().getFullYear() + 1).toString()).substring(2) },
+        line1: '285 Fulton St',
+        line2: 'Apt 893',
+        city: 'New York',
+        state: 'NY',
+        'postal_code-container': { type: true, value: '10007' },
+        country: 'US'
+      }
+      const result3 = await req.post()
+      assert.strictEqual(result3.redirect, '/account/subscriptions')
+    })
+
+    it('environment AUTOMATIC_BILLING_PROFILE_FULL_NAME', async () => {
+      global.automaticBillingProfileFullName = true
+      global.stripeJS = false
+      const user = await TestHelper.createUser()
+      const req = TestHelper.createRequest('/account/subscriptions/create-billing-profile')
+      req.account = user.account
+      req.session = user.session
+      const result = await req.get()
+      const doc = TestHelper.extractDoc(result.html)
+      const nameContainer = doc.getElementById('note-container-full-name')
+      const message = nameContainer.child[0]
+      assert.strictEqual(message.attr.template, 'update-profile-full-name')
+      global.stripeJS = 3
+      const result2 = await req.get()
+      const doc2 = TestHelper.extractDoc(result2.html)
+      const nameContainer2 = doc2.getElementById('note-container-full-name')
+      const message2 = nameContainer2.child[0]
+      assert.strictEqual(message2.attr.template, 'update-profile-full-name')
+    })
+
+    it('environment AUTOMATIC_BILLING_PROFILE_EMAIL', async () => {
+      global.automaticBillingProfileEmail = true
+      global.stripeJS = false
+      const user = await TestHelper.createUser()
+      const req = TestHelper.createRequest('/account/subscriptions/create-billing-profile')
+      req.account = user.account
+      req.session = user.session
+      const result = await req.get()
+      const doc = TestHelper.extractDoc(result.html)
+      const emailContainer = doc.getElementById('note-container-contact-email')
+      const message = emailContainer.child[0]
+      assert.strictEqual(message.attr.template, 'update-profile-contact-email')
+      global.stripeJS = 3
+      const result2 = await req.get()
+      const doc2 = TestHelper.extractDoc(result2.html)
+      const nameContainer2 = doc2.getElementById('note-container-contact-email')
+      const message2 = nameContainer2.child[0]
+      assert.strictEqual(message2.attr.template, 'update-profile-contact-email')
+    })
+
+    it('environment REQUIRE_BILLING_PROFILE_ADDRESS', async () => {
+      global.requireBillingProfileAddress = false
+      global.stripeJS = false
+      const user = await TestHelper.createUser()
+      const req = TestHelper.createRequest('/account/subscriptions/create-billing-profile')
+      req.account = user.account
+      req.session = user.session
+      const result = await req.get()
+      const doc = TestHelper.extractDoc(result.html)
+      const profileDescriptionContainer = doc.getElementById('profileDescriptionContainer')
+      assert.strictEqual(profileDescriptionContainer, undefined)
+      req.fill = '#form-nojs'
+      req.body = {
+        description: 'Chase Sapphire',
+        email: user.profile.contactEmail,
+        name: user.profile.fullName,
+        cvc: '111',
+        number: '4111111111111111',
+        exp_month: '12',
+        exp_year: ((new Date().getFullYear() + 1).toString()).substring(2)
+      }
+      req.waitAfter = async (page) => {
+        while (true) {
+          try {
+            const location = await page.url()
+            if (location.endsWith('/account/subscriptions')) {
+              return
+            }
+          } catch (error) {
+          }
+          await TestHelper.wait(100)
+        }
+      }
+      const result2 = await req.post()
+      assert.strictEqual(result2.redirect, '/account/subscriptions')
+      global.stripeJS = 3
+      req.fill = '#form-stripejs-v3'
+      req.body = {
+        description: 'Chase Sapphire',
+        email: user.profile.contactEmail,
+        name: user.profile.fullName,
+        'cvc-container': { type: true, value: '111' },
+        'card-container': { type: true, value: '4111111111111111' },
+        'expiry-container': { type: true, value: '12' + ((new Date().getFullYear() + 1).toString()).substring(2) },
+        'postal_code-container': { type: true, value: '10007' }
+      }
+      const result3 = await req.post()
+      assert.strictEqual(result3.redirect, '/account/subscriptions')
+    })
+  })
+
   describe('errors', () => {
     it('invalid-xss-input', async function () {
       global.stripeJS = false

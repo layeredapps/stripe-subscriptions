@@ -64,7 +64,7 @@ async function beforeRequest (req) {
 }
 
 async function renderPage (req, res, messageTemplate) {
-  if (global.automaticConfirmSubscription && req.data.defaultCustomer) {
+  if (global.skipConfirmSubscription && req.data.defaultCustomer) {
     req.body = {
       customerid: req.data.defaultCustomer.customerid
     }

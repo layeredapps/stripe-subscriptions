@@ -266,6 +266,114 @@ describe('/account/subscriptions/add-payment-method', function () {
     // })
   })
 
+  describe('configuration', () => {
+    it('environment STRIPE_JS', async () => {
+      global.stripeJS = false
+      const user = await TestHelper.createUser()
+      await TestHelper.createCustomer(user, {
+        email: user.profile.contactEmail
+      })
+      const req = TestHelper.createRequest(`/account/subscriptions/add-payment-method?customerid=${user.customer.customerid}`)
+      req.account = user.account
+      req.session = user.session
+      const result = await req.get()
+      const doc = TestHelper.extractDoc(result.html)
+      const forms = doc.getElementsByTagName('form')
+      assert.strictEqual(forms.length, 1)
+      assert.strictEqual(forms[0].attr.id, 'form-nojs')
+      global.stripeJS = 3
+      const result2 = await req.get()
+      const doc2 = TestHelper.extractDoc(result2.html)
+      const forms2 = doc2.getElementsByTagName('form')
+      assert.strictEqual(forms2.length, 1)
+      assert.strictEqual(forms2[0].attr.id, 'form-stripejs-v3')
+    })
+
+    it('environment AUTOMATIC_BILLING_PROFILE_FULL_NAME', async () => {
+      global.automaticBillingProfileFullName = true
+      global.stripeJS = false
+      const user = await TestHelper.createUser()
+      await TestHelper.createCustomer(user, {
+        email: user.profile.contactEmail
+      })
+      const req = TestHelper.createRequest(`/account/subscriptions/add-payment-method?customerid=${user.customer.customerid}`)
+      req.account = user.account
+      req.session = user.session
+      const result = await req.get()
+      const doc = TestHelper.extractDoc(result.html)
+      const nameContainer = doc.getElementById('note-container-full-name')
+      const message = nameContainer.child[0]
+      assert.strictEqual(message.attr.template, 'update-profile-full-name')
+      global.stripeJS = 3
+      const result2 = await req.get()
+      const doc2 = TestHelper.extractDoc(result2.html)
+      const nameContainer2 = doc2.getElementById('note-container-full-name')
+      const message2 = nameContainer2.child[0]
+      assert.strictEqual(message2.attr.template, 'update-profile-full-name')
+    })
+
+    it('environment REQUIRE_BILLING_PROFILE_ADDRESS', async () => {
+      global.requireBillingProfileAddress = false
+      global.stripeJS = false
+      const user = await TestHelper.createUser()
+      await TestHelper.createCustomer(user, {
+        email: user.profile.contactEmail
+      })
+      const req = TestHelper.createRequest(`/account/subscriptions/add-payment-method?customerid=${user.customer.customerid}`)
+      req.account = user.account
+      req.session = user.session
+      const result = await req.get()
+      const doc = TestHelper.extractDoc(result.html)
+      const profileDescriptionContainer = doc.getElementById('profileDescriptionContainer')
+      assert.strictEqual(profileDescriptionContainer, undefined)
+      req.fill = '#form-nojs'
+      req.body = {
+        description: 'Chase Sapphire',
+        email: user.profile.contactEmail,
+        name: user.profile.fullName,
+        cvc: '111',
+        number: '4111111111111111',
+        exp_month: '12',
+        exp_year: ((new Date().getFullYear() + 1).toString()).substring(2)
+      }
+      req.waitAfter = async (page) => {
+        while (true) {
+          try {
+            const loaded = await page.evaluate(() => {
+              return document.getElementById('message-container').children.length
+            })
+            if (loaded) {
+              break
+            }
+          } catch (error) {
+          }
+          await TestHelper.wait(100)
+        }
+      }
+      const result2 = await req.post()
+      const doc2 = TestHelper.extractDoc(result2.html)
+      const messageContainer = doc2.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'success')
+      global.stripeJS = 3
+      req.fill = '#form-stripejs-v3'
+      req.body = {
+        description: 'Chase Sapphire',
+        email: user.profile.contactEmail,
+        name: user.profile.fullName,
+        'cvc-container': { type: true, value: '111' },
+        'card-container': { type: true, value: '4111111111111111' },
+        'expiry-container': { type: true, value: '12' + ((new Date().getFullYear() + 1).toString()).substring(2) },
+        'postal_code-container': { type: true, value: '10007' }
+      }
+      const result3 = await req.post()
+      const doc3 = TestHelper.extractDoc(result3.html)
+      const messageContainer2 = doc3.getElementById('message-container')
+      const message2 = messageContainer2.child[0]
+      assert.strictEqual(message2.attr.template, 'success')
+    })
+  })
+
   describe('errors', () => {
     it('invalid-xss-input', async function () {
       global.stripeJS = false

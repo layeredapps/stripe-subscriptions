@@ -14,6 +14,7 @@ async function beforeRequest (req) {
   let profile
   if (req.account.profileid) {
     try {
+      req.query = req.query || {}
       req.query.profileid = req.account.profileid
       profile = await global.api.user.Profile.get(req)
     } catch (error) {
@@ -51,6 +52,7 @@ async function renderPage (req, res, messageTemplate) {
     const descriptionContainer = doc.getElementById('profile-description-container')
     descriptionContainer.parentNode.removeChild(descriptionContainer)
   }
+
   if (req.data.profile && req.data.profile.fullName && global.automaticBillingProfileFullName) {
     const nameField = doc.getElementById('name')
     nameField.setAttribute('value', req.data.profile.fullName)
@@ -85,7 +87,11 @@ async function renderPage (req, res, messageTemplate) {
     const country = countryDivisions[countryCode]
     const states = []
     for (const code in country.divisions) {
-      states.push({ code, name: country.divisions[code], object: 'state' })
+      states.push({
+        code: code.split('-').slice(1).join(''),
+        name: country.divisions[code],
+        object: 'state'
+      })
     }
     states.sort(sortStates)
     dashboard.HTML.renderList(doc, states, 'state-option', 'state')

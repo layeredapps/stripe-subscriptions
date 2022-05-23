@@ -111,7 +111,11 @@ async function renderPage (req, res, messageTemplate) {
     const country = countryDivisions[countryCode]
     const states = []
     for (const code in country.divisions) {
-      states.push({ code, name: country.divisions[code], object: 'state' })
+      states.push({
+        code: code.split('-').slice(1).join(''),
+        name: country.divisions[code],
+        object: 'state'
+      })
     }
     states.sort(sortStates)
     dashboard.HTML.renderList(doc, states, 'state-option', 'state')
