@@ -54,17 +54,17 @@ async function beforeRequest (req) {
     const customer = formatStripeObject(customers[i])
     customers[i] = customer
     hasPaymentMethod = hasPaymentMethod || customer.default_source || (customer.invoice_settings && customer.invoice_settings.default_payment_method)
-    defualtCustomer = defaultCustomer || customer
+    defaultCustomer = defaultCustomer || customer
   }
   if (plan.amount && !hasPaymentMethod) {
     req.error = 'invalid-paymentmethodid'
     return
   }
-  req.data = { plan, customers }
+  req.data = { plan, customers, defaultCustomer }
 }
 
 async function renderPage (req, res, messageTemplate) {
-  if (global.automaticConfirmSubscription) {
+  if (global.automaticConfirmSubscription && req.data.defaultCustomer) {
     req.body = {
       customerid: req.data.defaultCustomer.customerid
     }
