@@ -90,10 +90,8 @@ async function renderPage (req, res, messageTemplate) {
     dashboard.HTML.renderTemplate(doc, req.data.profile, 'update-profile-full-name', 'note-container-full-name')
   }
   if (!global.requireBillingProfileAddress) {
-    for (const addressField of addressFields) {
-      const element = doc.getElementById(addressField)
-      element.parentNode.removeChild(element)
-    }
+    const addressContainer = doc.getElementById('address-container')
+    addressContainer.parentNode.removeChild(addressContainer)
   } else {
     let countryCode
     if (req.body) {
