@@ -3,7 +3,7 @@ const assert = require('assert')
 const TestHelper = require('../../../../test-helper.js')
 const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 
-describe('/account/subscriptions', function () {
+describe('/account/subscriptions/start-subscription', function () {
   let cachedResponses, cachedPlans
   async function bundledData (retryNumber) {
     if (retryNumber > 0) {
@@ -25,9 +25,7 @@ describe('/account/subscriptions', function () {
     req.screenshots = [
       { hover: '#account-menu-container' },
       { click: '/account/subscriptions' },
-      { click: '/account/subscriptions/plans' },
-      { click: `/account/subscriptions/plan?planid=${owner.plan.planid}` },
-      { click: `/account/subscriptions/start-subscription?planid=${owner.plan.planid}` }
+      { click: '/account/subscriptions/start-subscription' }
     ]
     await req.route.api.before(req)
     cachedResponses.before = req.data
