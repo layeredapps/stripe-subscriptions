@@ -95,6 +95,8 @@ If you use `AUTOMATIC_BILLING_PROFILE_EMAIL` and `AUTOMATIC_BILLING_PROFILE_FULL
 
 Use `VIEW_SUBSCRIPTION_PLANS=false` to prevent users from browsing published plans.  By default they can see which plans are published to subscribe or change between them.  If you do this the `/account/subscriptions/start-subscription` page will also be disabled as it lists plans for the user's selection. You can link users directly to `/account/subscriptions/confirm-subscription?planid=xxxx`.
 
+Use `SKIP_CONFIRM_SUBSCRIPTION=true` to automatically submit the `/account/subscription/confirm-subscription` page.  With this enabled the user can create their subscription directly after entering billing information by linking `/account/subscriptions/create-billing-profile?return-url=/account/subscriptions/confirm-subscription%3Fplanid=xxxx`.
+
 ### Styling the Stripe elements
 
 Using StripeJS version 3 sensitive fields like credit card numbers are created by Stripe in nested iframes and styled using a JavaScript object passed to their script.
