@@ -59,7 +59,7 @@ async function renderPage (req, res, messageTemplate) {
     dashboard.HTML.renderTemplate(doc, req.data.profile, 'update-profile-full-name', 'note-container-full-name')
   }
   if (req.data.profile && req.data.profile.contactEmail && global.automaticBillingProfileEmail) {
-    const emailField = doc.getElementById('name')
+    const emailField = doc.getElementById('email')
     emailField.setAttribute('value', req.data.profile.contactEmail)
     emailField.setAttribute('readonly', 'readonly')
     dashboard.HTML.renderTemplate(doc, req.data.profile, 'update-profile-contact-email', 'note-container-contact-email')
