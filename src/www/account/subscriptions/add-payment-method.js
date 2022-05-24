@@ -2,7 +2,6 @@ const dashboard = require('@layeredapps/dashboard')
 const countries = require('../../../../countries.json')
 const countryDivisions = require('../../../../country-divisions.json')
 const formatStripeObject = require('../../../stripe-object.js')
-const addressFields = ['line1', 'line2', 'city', 'state', 'country']
 const stripeContentSecurityPolicy = "img-src 'self' data:; font-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https://*.stripe.com; script-src 'unsafe-inline' https://*.stripe.com; frame-src https://*.stripe.com https://*.stripe.network; connect-src https://*.stripe.com;"
 
 module.exports = {
