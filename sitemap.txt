@@ -1,4 +1,4 @@
-@layeredapps/dashboard 0.0.135
+@layeredapps/dashboard 0.0.136
 http://localhost:8000
 
 Administrator menu:
@@ -332,4 +332,4 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /home                                                                                                static-page                    /src/www                  
 /webhooks/subscriptions/index-subscription-data                    GUEST             POST            /src/www                       /src/www                  
 
-2022-05-21T02:24:38.235Z
+2022-05-24T01:34:31.735Z
