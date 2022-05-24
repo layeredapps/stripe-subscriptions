@@ -365,6 +365,7 @@ describe('/administrator/subscriptions/create-plan', function () {
       req.session = administrator.session
       req.body = {
         planid: 'CUSTOM13',
+        nickname: 'Custom plan',
         usage_type: 'licensed',
         amount: '1000',
         interval: 'month',
