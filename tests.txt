@@ -1,5 +1,5 @@
 
-> @layeredapps/stripe-subscriptions@1.0.47 test
+> @layeredapps/stripe-subscriptions@1.0.59 test
 > PORT=50012 NODE_ENV=testing STORAGE=sqlite DATABASE=subscriptions mocha --ignore 'node_modules/**/*' --timeout 480000 --slow 480000 --recursive --extension .test.js .
 
 
@@ -34,6 +34,24 @@
       Time in seconds after an invoice is paid that users may refund a charge
         ✔ default 3600
         ✔ Integer
+    AUTOMATIC_BILLING_PROFILE_DESCRIPTION
+      Use billing information for profile description
+        ✔ Boolean
+    AUTOMATIC_BILLING_PROFILE_FULL_NAME
+      Use profile full name as billing full name
+        ✔ Boolean
+    AUTOMATIC_BILLING_PROFILE_EMAIL
+      Use profile contact email as billing email
+        ✔ Boolean
+    SKIP_CONFIRM_SUBSCRIPTION
+      Auto-submit "confirm subscription" if the user has billing information
+        ✔ Boolean
+    REQUIRE_BILLING_PROFILE_ADDRESS
+      Require address with billing information
+        ✔ Boolean
+    VIEW_SUBSCRIPTION_PLANS
+      Allow users to browse published plans
+        ✔ Boolean
 
   server/stripe-subscriptions/bind-stripe-key
     after
@@ -72,6 +90,10 @@
       ✔ should require expiration month for no stripe.js
       ✔ should require expiration year for no stripe.js
       ✔ should add payment information no stripe.js (screenshots)
+    configuration
+      ✔ environment STRIPE_JS
+      ✔ environment AUTOMATIC_BILLING_PROFILE_FULL_NAME
+      ✔ environment REQUIRE_BILLING_PROFILE_ADDRESS
     errors
       ✔ invalid-xss-input
       ✔ invalid-csrf-token
@@ -138,6 +160,8 @@
       ✔ should present the form
     submit
       ✔ should start subscription (screenshots)
+    configuration
+      ✔ environment SKIP_CONFIRM_SUBSCRIPTION
     errors
       ✔ invalid-paymentmethodid
       ✔ invalid-planid
@@ -160,6 +184,12 @@
       ✔ should require email for stripe.js v3
       ✔ should create billing profile for no stripe.js
       ✔ should create billing profile for stripe.js v3 (screenshots)
+    configuration
+      ✔ environment STRIPE_JS
+      ✔ environment AUTOMATIC_BILLING_PROFILE_DESCRIPTION
+      ✔ environment AUTOMATIC_BILLING_PROFILE_FULL_NAME
+      ✔ environment AUTOMATIC_BILLING_PROFILE_EMAIL
+      ✔ environment REQUIRE_BILLING_PROFILE_ADDRESS
     errors
       ✔ invalid-xss-input
       ✔ invalid-csrf-token
@@ -284,7 +314,7 @@
       ✔ invalid-account
       ✔ invalid-csrf-token
 
-  /account/subscriptions
+  /account/subscriptions/start-subscription
     before
       ✔ should bind data to req
     view
@@ -2133,5 +2163,5 @@
       ✔ environment PAGE_SIZE
 
 
-  1029 passing (3h)
+  1044 passing (2h)
 
