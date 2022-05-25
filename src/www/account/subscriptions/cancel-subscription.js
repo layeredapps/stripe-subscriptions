@@ -79,9 +79,7 @@ async function renderPage (req, res, messageTemplate) {
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.subscription, 'subscription')
   navbar.setup(doc, req.data.subscription)
   if (messageTemplate) {
-    if (req.removeContents) {
-      const submitForm = doc.getElementById('submit-form')
-      submitForm.parentNode.removeChild(submitForm)
+    if (messageTemplate === 'success') {
       if (req.query.refund === 'credit') {
         dashboard.HTML.renderTemplate(doc, null, 'success-credit', 'message-container')
       } else if (req.query.refund === 'refund') {
@@ -89,7 +87,12 @@ async function renderPage (req, res, messageTemplate) {
       } else {
         dashboard.HTML.renderTemplate(doc, null, 'success', 'message-container')
       }
-      return dashboard.Response.end(req, res, doc)
+    } else {
+      dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
+    }
+    if (req.removeContents) {
+      const submitForm = doc.getElementById('submit-form')
+      submitForm.parentNode.removeChild(submitForm)
     }
     dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
   }
