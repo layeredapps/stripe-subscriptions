@@ -27,6 +27,52 @@ const waitForWebhook = util.promisify(async (webhookType, matching, callback) =>
 })
 
 const TestStripeAccounts = module.exports = {
+  createOwnerWithPrice: async (priceData) => {
+    const owner = await TestHelper.createOwner()
+    await TestHelper.createProduct(owner, {
+      publishedAt: 'true'
+    })
+    priceData = priceData || {}
+    await TestHelper.createPrice(owner, {
+      productid: owner.product.productid,
+      publishedAt: 'true',
+      unit_amount: priceData.unit_amount !== undefined ? priceData.unit_amount : 1000,
+      recurring_interval: priceData.recurring_interval || 'month',
+      recurring_usage_type: priceData.recurring_usage_type || 'licensed'
+    })
+    return owner
+  },
+  createOwnerWithUnpublishedPrice: async (priceData) => {
+    const owner = await TestHelper.createOwner()
+    const product = await TestHelper.createProduct(owner, {
+      publishedAt: 'true'
+    })
+    priceData = priceData || {}
+    await TestHelper.createPrice(owner, {
+      productid: product.productid,
+      publishedAt: 'true',
+      unpublishedAt: 'true',
+      unit_amount: priceData.unit_amount !== undefined ? priceData.unit_amount : 1000,
+      recurring_interval: priceData.recurring_interval || 'month',
+      recurring_usage_type: priceData.recurring_usage_type || 'licensed'
+    })
+    return owner
+  },
+  createOwnerWithNotPublishedPrice: async (priceData) => {
+    const owner = await TestHelper.createOwner()
+    const product = await TestHelper.createProduct(owner, {
+      publishedAt: 'true'
+    })
+    priceData = priceData || {}
+    await TestHelper.createPrice(owner, {
+      productid: product.productid,
+      unit_amount: priceData.unit_amount !== undefined ? priceData.unit_amount : 1000,
+      recurring_interval: priceData.recurring_interval || 'month',
+      recurring_usage_type: priceData.recurring_usage_type || 'licensed'
+    })
+    return owner
+  },
+
   createOwnerWithPlan: async (planData) => {
     const owner = await TestHelper.createOwner()
     await TestHelper.createProduct(owner, {

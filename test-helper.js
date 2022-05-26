@@ -242,6 +242,7 @@ module.exports = {
   createCustomerDiscount,
   createPayout,
   createPlan,
+  createPrice,
   createProduct,
   createRefund,
   createUsageRecord,
@@ -258,6 +259,8 @@ module.exports = {
   forgiveInvoice,
   setPlanPublished,
   setPlanUnpublished,
+  setPricePublished,
+  setPriceUnpublished,
   setProductPublished,
   setProductUnpublished,
   setCouponPublished,
@@ -460,6 +463,35 @@ async function createProduct (administrator, properties) {
   }
   administrator.product = product
   return product
+}
+
+async function createPrice (administrator, properties) {
+  Log.info('createPrice', administrator, properties)
+  const req = createRequest('/api/administrator/subscriptions/create-price')
+  req.session = administrator.session
+  req.account = administrator.account
+  req.body = {
+    currency: 'USD',
+    recurring_interval: 'month',
+    recurring_interval_count: '1',
+    recurring_aggregate_usage: 'sum',
+    usage_type: 'licensed',
+    unit_amount: '0'
+  }
+  if (properties) {
+    for (const property in properties) {
+      req.body[property] = properties[property].toString()
+    }
+  }
+  let price = await req.post()
+  if (properties && properties.unpublishedAt) {
+    const req2 = createRequest(`/api/administrator/subscriptions/set-price-unpublished?priceid=${price.priceid}`)
+    req2.session = req.session
+    req2.account = req.account
+    price = await req2.patch(req2)
+  }
+  administrator.price = price
+  return price
 }
 
 let planNumber = 0
@@ -861,6 +893,24 @@ async function cancelSubscription (user) {
   req.stripeKey = stripeKey
   user.subscription = await req.patch()
   return user.subscription
+}
+
+async function setPricePublished (administrator, price) {
+  Log.info('setPricePublished', administrator, price)
+  const req = createRequest(`/api/administrator/subscriptions/set-price-published?priceid=${price.priceid}`)
+  req.session = administrator.session
+  req.account = administrator.account
+  req.stripeKey = stripeKey
+  return req.patch()
+}
+
+async function setPriceUnpublished (administrator, price) {
+  Log.info('setPriceUnpublished', administrator, price)
+  const req = createRequest(`/api/administrator/subscriptions/set-price-unpublished?priceid=${price.priceid}`)
+  req.session = administrator.session
+  req.account = administrator.account
+  req.stripeKey = stripeKey
+  return req.patch()
 }
 
 async function setPlanPublished (administrator, plan) {

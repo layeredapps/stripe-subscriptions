@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/administrator/subscriptions/navbar.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" /> 
+    <title translate="yes">Prices</title>
+    <link rel="stylesheet" href="/public/content.css">
+    <link rel="stylesheet" href="/public/content-additional.css">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">Prices</h1>
+      <p translate="yes">Users create subscriptions to published prices.</p>
+      <p><a href="/administrator/subscriptions/create-price" class="button" translate="yes">Create price</a></p>
+      <div id="no-prices">
+        <p translate="yes">No prices have been created yet.</p>
+      </div>
+      <div class="list-table-wrapper">
+        <table id="prices-table" class="list-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th translate="yes">Product</th>
+              <th translate="yes">Price</th>
+              <th translate="yes">Trial</th>
+              <th translate="yes">Status</th>
+              <th translate="yes">Created</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <ul id="page-links" class="pagination"></ul>
+    </div>
+    <template id="page-link">
+      <li>
+        <a href="/administrator/subscriptions/charges?prices=${page.offset}" id="page-link-${page.pageNumber}">${page.pageNumber}</a>
+      </li>
+    </template>
+    <template id="price-row">
+      <tr id="${price.priceid}">
+        <td><a href="/administrator/subscriptions/price?priceid=${price.priceid}">${price.priceid}</a></td>
+        <td><a href="/administrator/subscriptions/product?productid=${price.product}">${price.product}</a></td>
+        <td id="amount-price-${price.priceid}">${price.amountFormatted}${price.currency} x  ${price.interval}</td>
+        <td id="free-price-${price.priceid}">Free</td>
+        <td id="trial-price-${price.priceid}">${price.trial_period_days} days</td>
+        <td id="no-trial-price-${price.priceid}">None</td>
+        <td id="draft-price-${price.priceid}" translate="yes">Draft</td>
+        <td id="published-price-${price.priceid}" translate="yes">Published</td>
+        <td id="unpublished-price-${price.priceid}" translate="yes">Unpublished</td>
+        <td>${price.createdAtFormatted}</td>
+      </tr>
+    </template>
+  </body>
+</html>

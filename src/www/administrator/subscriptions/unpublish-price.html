@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/administrator/subscriptions/navbar-price.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" /> 
+    <title translate="yes">Unpublish price</title>
+    <link href="/public/content.css" rel="stylesheet">
+    <link href="/public/content-additional.css" rel="stylesheet">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">Unpublish price</h1>
+      <p translate="yes">The price will immediately become unsubscribable by users.</p>
+      <div id="message-container"></div>
+      <form id="submit-form" method="post" class="input-form" action="/administrator/subscriptions/unpublish-price?priceid=${price.priceid}" name="submit-form">
+        <input type="hidden" name="csrf-token" />
+        <button id="submit-button" type="submit" class="button" translate="yes">Unpublish price</button>
+      </form>
+    </div>
+    <template id="success">
+      <div class="success message" translate="yes">
+        Success! The price has been unpublished
+      </div>
+    </template>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! Something went wrong submitting the form
+      </div>
+    </template>
+    <template id="invalid-priceid">
+      <div class="error message" translate="yes">
+        Error! An invalid price was specified
+      </div>
+    </template>
+    <template id="invalid-price">
+      <div class="error message" translate="yes">
+        Error! An invalid price was specified
+      </div>
+    </template>
+    <template id="not-published">
+      <div class="error message" translate="yes">
+        The selected price is not published
+      </div>
+    </template>
+    <template id="already-unpublished">
+      <div class="error message" translate="yes">
+        The selected price is already unpublished
+      </div>
+    </template>
+    <template id="invalid-csrf-token">
+      <div class="error message" translate="yes">
+        Error! This form was not submitted correctly
+      </div>
+    </template>
+    <template id="invalid-xss-input">
+      <div class="error message" translate="yes">
+        Error! Invalid value(s) were posted to the server
+      </div>
+    </template>
+  </body>
+</html>
