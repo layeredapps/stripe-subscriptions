@@ -496,6 +496,11 @@
       "jsFilePath": "/src/www/account/subscriptions/add-payment-method.js",
       "verbs": "GET POST"
     },
+    "/account/subscriptions/add-tax-id": {
+      "htmlFilePath": "/src/www/account/subscriptions/add-tax-id.html",
+      "jsFilePath": "/src/www/account/subscriptions/add-tax-id.js",
+      "verbs": "GET POST"
+    },
     "/account/subscriptions/billing-profile": {
       "htmlFilePath": "/src/www/account/subscriptions/billing-profile.html",
       "jsFilePath": "/src/www/account/subscriptions/billing-profile.js",
@@ -511,20 +516,10 @@
       "jsFilePath": "/src/www/account/subscriptions/cancel-subscription.js",
       "verbs": "GET POST"
     },
-    "/account/subscriptions/change-plan": {
-      "htmlFilePath": "/src/www/account/subscriptions/change-plan.html",
-      "jsFilePath": "/src/www/account/subscriptions/change-plan.js",
-      "verbs": "GET POST"
-    },
     "/account/subscriptions/confirm-payment": {
       "htmlFilePath": "/src/www/account/subscriptions/confirm-payment.html",
       "jsFilePath": "/src/www/account/subscriptions/confirm-payment.js",
       "verbs": "GET"
-    },
-    "/account/subscriptions/confirm-subscription": {
-      "htmlFilePath": "/src/www/account/subscriptions/confirm-subscription.html",
-      "jsFilePath": "/src/www/account/subscriptions/confirm-subscription.js",
-      "verbs": "GET POST"
     },
     "/account/subscriptions/create-billing-profile": {
       "htmlFilePath": "/src/www/account/subscriptions/create-billing-profile.html",
@@ -556,21 +551,6 @@
       "jsFilePath": "/src/www/account/subscriptions/pay-invoice.js",
       "verbs": "GET POST"
     },
-    "/account/subscriptions/plan": {
-      "htmlFilePath": "/src/www/account/subscriptions/plan.html",
-      "jsFilePath": "/src/www/account/subscriptions/plan.js",
-      "verbs": "GET"
-    },
-    "/account/subscriptions/plans": {
-      "htmlFilePath": "/src/www/account/subscriptions/plans.html",
-      "jsFilePath": "/src/www/account/subscriptions/plans.js",
-      "verbs": "GET"
-    },
-    "/account/subscriptions/refund-invoice": {
-      "htmlFilePath": "/src/www/account/subscriptions/refund-invoice.html",
-      "jsFilePath": "/src/www/account/subscriptions/refund-invoice.js",
-      "verbs": "GET POST"
-    },
     "/account/subscriptions/refund": {
       "htmlFilePath": "/src/www/account/subscriptions/refund.html",
       "jsFilePath": "/src/www/account/subscriptions/refund.js",
@@ -581,6 +561,11 @@
       "jsFilePath": "/src/www/account/subscriptions/refunds.js",
       "verbs": "GET"
     },
+    "/account/subscriptions/remove-tax-id": {
+      "htmlFilePath": "/src/www/account/subscriptions/remove-tax-id.html",
+      "jsFilePath": "/src/www/account/subscriptions/remove-tax-id.js",
+      "verbs": "GET POST"
+    },
     "/account/subscriptions/request-refund": {
       "htmlFilePath": "/src/www/account/subscriptions/request-refund.html",
       "jsFilePath": "/src/www/account/subscriptions/request-refund.js",
@@ -589,11 +574,6 @@
     "/account/subscriptions/restore-subscription": {
       "htmlFilePath": "/src/www/account/subscriptions/restore-subscription.html",
       "jsFilePath": "/src/www/account/subscriptions/restore-subscription.js",
-      "verbs": "GET POST"
-    },
-    "/account/subscriptions/start-subscription": {
-      "htmlFilePath": "/src/www/account/subscriptions/start-subscription.html",
-      "jsFilePath": "/src/www/account/subscriptions/start-subscription.js",
       "verbs": "GET POST"
     },
     "/account/subscriptions/subscription": {
@@ -641,9 +621,9 @@
       "jsFilePath": "/src/www/administrator/subscriptions/create-coupon.js",
       "verbs": "GET POST"
     },
-    "/administrator/subscriptions/create-plan": {
-      "htmlFilePath": "/src/www/administrator/subscriptions/create-plan.html",
-      "jsFilePath": "/src/www/administrator/subscriptions/create-plan.js",
+    "/administrator/subscriptions/create-price": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/create-price.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/create-price.js",
       "verbs": "GET POST"
     },
     "/administrator/subscriptions/create-product": {
@@ -666,9 +646,9 @@
       "jsFilePath": "/src/www/administrator/subscriptions/delete-coupon.js",
       "verbs": "GET POST"
     },
-    "/administrator/subscriptions/delete-plan": {
-      "htmlFilePath": "/src/www/administrator/subscriptions/delete-plan.html",
-      "jsFilePath": "/src/www/administrator/subscriptions/delete-plan.js",
+    "/administrator/subscriptions/delete-price": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/delete-price.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/delete-price.js",
       "verbs": "GET POST"
     },
     "/administrator/subscriptions/delete-product": {
@@ -691,9 +671,9 @@
       "jsFilePath": "/src/www/administrator/subscriptions/edit-coupon.js",
       "verbs": "GET POST"
     },
-    "/administrator/subscriptions/edit-plan": {
-      "htmlFilePath": "/src/www/administrator/subscriptions/edit-plan.html",
-      "jsFilePath": "/src/www/administrator/subscriptions/edit-plan.js",
+    "/administrator/subscriptions/edit-price": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/edit-price.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/edit-price.js",
       "verbs": "GET POST"
     },
     "/administrator/subscriptions/edit-product": {
@@ -756,14 +736,14 @@
       "jsFilePath": "/src/www/administrator/subscriptions/payouts.js",
       "verbs": "GET"
     },
-    "/administrator/subscriptions/plan": {
-      "htmlFilePath": "/src/www/administrator/subscriptions/plan.html",
-      "jsFilePath": "/src/www/administrator/subscriptions/plan.js",
+    "/administrator/subscriptions/price": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/price.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/price.js",
       "verbs": "GET"
     },
-    "/administrator/subscriptions/plans": {
-      "htmlFilePath": "/src/www/administrator/subscriptions/plans.html",
-      "jsFilePath": "/src/www/administrator/subscriptions/plans.js",
+    "/administrator/subscriptions/prices": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/prices.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/prices.js",
       "verbs": "GET"
     },
     "/administrator/subscriptions/product": {
@@ -781,9 +761,9 @@
       "jsFilePath": "/src/www/administrator/subscriptions/publish-coupon.js",
       "verbs": "GET POST"
     },
-    "/administrator/subscriptions/publish-plan": {
-      "htmlFilePath": "/src/www/administrator/subscriptions/publish-plan.html",
-      "jsFilePath": "/src/www/administrator/subscriptions/publish-plan.js",
+    "/administrator/subscriptions/publish-price": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/publish-price.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/publish-price.js",
       "verbs": "GET POST"
     },
     "/administrator/subscriptions/publish-product": {
@@ -846,9 +826,9 @@
       "jsFilePath": "/src/www/administrator/subscriptions/unpublish-coupon.js",
       "verbs": "GET POST"
     },
-    "/administrator/subscriptions/unpublish-plan": {
-      "htmlFilePath": "/src/www/administrator/subscriptions/unpublish-plan.html",
-      "jsFilePath": "/src/www/administrator/subscriptions/unpublish-plan.js",
+    "/administrator/subscriptions/unpublish-price": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/unpublish-price.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/unpublish-price.js",
       "verbs": "GET POST"
     },
     "/administrator/subscriptions/unpublish-product": {
@@ -888,8 +868,8 @@
       "jsFilePath": "/src/www/api/administrator/subscriptions/create-coupon.js",
       "verbs": "POST"
     },
-    "/api/administrator/subscriptions/create-plan": {
-      "jsFilePath": "/src/www/api/administrator/subscriptions/create-plan.js",
+    "/api/administrator/subscriptions/create-price": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/create-price.js",
       "verbs": "POST"
     },
     "/api/administrator/subscriptions/create-product": {
@@ -920,8 +900,8 @@
       "jsFilePath": "/src/www/api/administrator/subscriptions/delete-coupon.js",
       "verbs": "DELETE"
     },
-    "/api/administrator/subscriptions/delete-plan": {
-      "jsFilePath": "/src/www/api/administrator/subscriptions/delete-plan.js",
+    "/api/administrator/subscriptions/delete-price": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/delete-price.js",
       "verbs": "DELETE"
     },
     "/api/administrator/subscriptions/delete-product": {
@@ -980,16 +960,16 @@
       "jsFilePath": "/src/www/api/administrator/subscriptions/payouts.js",
       "verbs": "GET"
     },
-    "/api/administrator/subscriptions/plan": {
-      "jsFilePath": "/src/www/api/administrator/subscriptions/plan.js",
+    "/api/administrator/subscriptions/price": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/price.js",
       "verbs": "GET"
     },
-    "/api/administrator/subscriptions/plans-count": {
-      "jsFilePath": "/src/www/api/administrator/subscriptions/plans-count.js",
+    "/api/administrator/subscriptions/prices-count": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/prices-count.js",
       "verbs": "GET"
     },
-    "/api/administrator/subscriptions/plans": {
-      "jsFilePath": "/src/www/api/administrator/subscriptions/plans.js",
+    "/api/administrator/subscriptions/prices": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/prices.js",
       "verbs": "GET"
     },
     "/api/administrator/subscriptions/product": {
@@ -1052,12 +1032,12 @@
       "jsFilePath": "/src/www/api/administrator/subscriptions/set-invoice-uncollectible.js",
       "verbs": "PATCH"
     },
-    "/api/administrator/subscriptions/set-plan-published": {
-      "jsFilePath": "/src/www/api/administrator/subscriptions/set-plan-published.js",
+    "/api/administrator/subscriptions/set-price-published": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/set-price-published.js",
       "verbs": "PATCH"
     },
-    "/api/administrator/subscriptions/set-plan-unpublished": {
-      "jsFilePath": "/src/www/api/administrator/subscriptions/set-plan-unpublished.js",
+    "/api/administrator/subscriptions/set-price-unpublished": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/set-price-unpublished.js",
       "verbs": "PATCH"
     },
     "/api/administrator/subscriptions/set-product-published": {
@@ -1112,6 +1092,14 @@
       "jsFilePath": "/src/www/api/administrator/subscriptions/subscriptions.js",
       "verbs": "GET"
     },
+    "/api/administrator/subscriptions/tax-code": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/tax-code.js",
+      "verbs": "GET"
+    },
+    "/api/administrator/subscriptions/tax-codes": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/tax-codes.js",
+      "verbs": "GET"
+    },
     "/api/administrator/subscriptions/tax-rate": {
       "jsFilePath": "/src/www/api/administrator/subscriptions/tax-rate.js",
       "verbs": "GET"
@@ -1128,8 +1116,8 @@
       "jsFilePath": "/src/www/api/administrator/subscriptions/update-coupon.js",
       "verbs": "PATCH"
     },
-    "/api/administrator/subscriptions/update-plan": {
-      "jsFilePath": "/src/www/api/administrator/subscriptions/update-plan.js",
+    "/api/administrator/subscriptions/update-price": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/update-price.js",
       "verbs": "PATCH"
     },
     "/api/administrator/subscriptions/update-product": {
@@ -1151,6 +1139,10 @@
     "/api/administrator/subscriptions/usage-records": {
       "jsFilePath": "/src/www/api/administrator/subscriptions/usage-records.js",
       "verbs": "GET"
+    },
+    "/api/user/subscriptions/add-subscription-item": {
+      "jsFilePath": "/src/www/api/user/subscriptions/add-subscription-item.js",
+      "verbs": "PATCH"
     },
     "/api/user/subscriptions/charge": {
       "jsFilePath": "/src/www/api/user/subscriptions/charge.js",
@@ -1196,6 +1188,10 @@
       "jsFilePath": "/src/www/api/user/subscriptions/create-subscription.js",
       "verbs": "POST"
     },
+    "/api/user/subscriptions/create-tax-id": {
+      "jsFilePath": "/src/www/api/user/subscriptions/create-tax-id.js",
+      "verbs": "POST"
+    },
     "/api/user/subscriptions/create-usage-record": {
       "jsFilePath": "/src/www/api/user/subscriptions/create-usage-record.js",
       "verbs": "POST"
@@ -1218,6 +1214,10 @@
     },
     "/api/user/subscriptions/delete-subscription": {
       "jsFilePath": "/src/www/api/user/subscriptions/delete-subscription.js",
+      "verbs": "DELETE"
+    },
+    "/api/user/subscriptions/delete-tax-id": {
+      "jsFilePath": "/src/www/api/user/subscriptions/delete-tax-id.js",
       "verbs": "DELETE"
     },
     "/api/user/subscriptions/invoice": {
@@ -1269,17 +1269,17 @@
       "verbs": "GET",
       "auth": "GUEST"
     },
-    "/api/user/subscriptions/published-plan": {
-      "jsFilePath": "/src/www/api/user/subscriptions/published-plan.js",
+    "/api/user/subscriptions/published-price": {
+      "jsFilePath": "/src/www/api/user/subscriptions/published-price.js",
       "verbs": "GET",
       "auth": "GUEST"
     },
-    "/api/user/subscriptions/published-plans-count": {
-      "jsFilePath": "/src/www/api/user/subscriptions/published-plans-count.js",
+    "/api/user/subscriptions/published-prices-count": {
+      "jsFilePath": "/src/www/api/user/subscriptions/published-prices-count.js",
       "verbs": "GET"
     },
-    "/api/user/subscriptions/published-plans": {
-      "jsFilePath": "/src/www/api/user/subscriptions/published-plans.js",
+    "/api/user/subscriptions/published-prices": {
+      "jsFilePath": "/src/www/api/user/subscriptions/published-prices.js",
       "verbs": "GET"
     },
     "/api/user/subscriptions/published-product": {
@@ -1306,6 +1306,10 @@
     "/api/user/subscriptions/refunds": {
       "jsFilePath": "/src/www/api/user/subscriptions/refunds.js",
       "verbs": "GET"
+    },
+    "/api/user/subscriptions/remove-subscription-item": {
+      "jsFilePath": "/src/www/api/user/subscriptions/remove-subscription-item.js",
+      "verbs": "PATCH"
     },
     "/api/user/subscriptions/reset-subscription-canceling": {
       "jsFilePath": "/src/www/api/user/subscriptions/reset-subscription-canceling.js",
@@ -1339,12 +1343,8 @@
       "jsFilePath": "/src/www/api/user/subscriptions/set-subscription-coupon.js",
       "verbs": "PATCH"
     },
-    "/api/user/subscriptions/set-subscription-plan": {
-      "jsFilePath": "/src/www/api/user/subscriptions/set-subscription-plan.js",
-      "verbs": "PATCH"
-    },
-    "/api/user/subscriptions/set-subscription-quantity": {
-      "jsFilePath": "/src/www/api/user/subscriptions/set-subscription-quantity.js",
+    "/api/user/subscriptions/set-subscription-item-quantity": {
+      "jsFilePath": "/src/www/api/user/subscriptions/set-subscription-item-quantity.js",
       "verbs": "PATCH"
     },
     "/api/user/subscriptions/setup-intent": {
@@ -1359,6 +1359,10 @@
       "jsFilePath": "/src/www/api/user/subscriptions/setup-intents.js",
       "verbs": "GET"
     },
+    "/api/user/subscriptions/subscription-prorated-invoice": {
+      "jsFilePath": "/src/www/api/user/subscriptions/subscription-prorated-invoice.js",
+      "verbs": "GET"
+    },
     "/api/user/subscriptions/subscription": {
       "jsFilePath": "/src/www/api/user/subscriptions/subscription.js",
       "verbs": "GET"
@@ -1369,6 +1373,14 @@
     },
     "/api/user/subscriptions/subscriptions": {
       "jsFilePath": "/src/www/api/user/subscriptions/subscriptions.js",
+      "verbs": "GET"
+    },
+    "/api/user/subscriptions/tax-id": {
+      "jsFilePath": "/src/www/api/user/subscriptions/tax-id.js",
+      "verbs": "GET"
+    },
+    "/api/user/subscriptions/tax-ids": {
+      "jsFilePath": "/src/www/api/user/subscriptions/tax-ids.js",
       "verbs": "GET"
     },
     "/api/user/subscriptions/upcoming-invoice": {

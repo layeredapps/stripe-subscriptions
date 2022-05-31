@@ -1,4 +1,4 @@
-@layeredapps/dashboard 0.0.138
+@layeredapps/dashboard 0.0.143
 http://localhost:8000
 
 |------------------------------------------------------------------------------|
@@ -80,37 +80,6 @@ http://localhost:8000
 |                                                                  |          |  * invalid posted redeem_by                     |
 |------------------------------------------------------------------|----------|-------------------------------------------------|
 
-|-------------------------------------------------------------------------------------------------------------------------------------------------|
-| /api/administrator/subscriptions/create-plan                                                                                                    |
-| RECEIVES---------------------------------------| RETURNS--| EXCEPTIONS-------------------------------------| CONFIGURATION----------------------|
-| required posted interval_count                 | object   | invalid-planid                                 | environment MINIMUM_PLANID_LENGTH  |
-| required posted interval                       |          |  * invalid posted planid is not alphanumeric_  | environment MAXIMUM_PLANID_LENGTH  |
-| required posted currency                       |          | invalid-planid-length                          |                                    |
-| required posted amount                         |          |  * posted planid is too short                  |                                    |
-| required posted productid                      |          |  * posted planid is too long                   |                                    |
-| optional posted published (boolean)            |          | invalid-productid                              |                                    |
-| optional posted trial_period_days (integer)    |          |  * missing posted productid                    |                                    |
-| optional posted usage_type (licensed|metered)  |          |  * invalid posted productid                    |                                    |
-|                                                |          | invalid-product                                |                                    |
-|                                                |          |  * ineligible posted product is not published  |                                    |
-|                                                |          | invalid-amount                                 |                                    |
-|                                                |          |  * missing posted amount                       |                                    |
-|                                                |          |  * invalid posted amount                       |                                    |
-|                                                |          | invalid-currency                               |                                    |
-|                                                |          |  * missing posted currency                     |                                    |
-|                                                |          |  * invalid posted currency                     |                                    |
-|                                                |          | invalid-interval                               |                                    |
-|                                                |          |  * missing posted interval                     |                                    |
-|                                                |          |  * invalid posted interval                     |                                    |
-|                                                |          | invalid-interval-count                         |                                    |
-|                                                |          |  * missing posted interval_count               |                                    |
-|                                                |          |  * invalid posted interval_count               |                                    |
-|                                                |          | invalid-trial_period                           |                                    |
-|                                                |          |  * invalid posted trial_period                 |                                    |
-|                                                |          | invalid-usage_type                             |                                    |
-|                                                |          |  * invalid posted usage_type                   |                                    |
-|------------------------------------------------|----------|------------------------------------------------|------------------------------------|
-
 |---------------------------------------------------------------------------------------------------------------------------------------|
 | /api/administrator/subscriptions/create-product                                                                                       |
 | RECEIVES------------------------------| RETURNS--| EXCEPTIONS------------------------------| CONFIGURATION----------------------------|
@@ -165,14 +134,6 @@ http://localhost:8000
 |                                |          |  * missing querystring couponid  |
 |                                |          |  * invalid querystring couponid  |
 |--------------------------------|----------|----------------------------------|
-
-|--------------------------------------------------------------------------|
-| /api/administrator/subscriptions/delete-plan                             |
-| RECEIVES---------------------| RETURNS--| EXCEPTIONS---------------------|
-| required querystring planid  | boolean  | invalid-planid                 |
-|                              |          |  * missing querystring planid  |
-|                              |          |  * invalid querystring planid  |
-|------------------------------|----------|--------------------------------|
 
 |--------------------------------------------------------------------------------|
 | /api/administrator/subscriptions/delete-product                                |
@@ -256,28 +217,6 @@ http://localhost:8000
 | RETURNS-------------------------------------------------|
 | integer                                                 |
 |---------------------------------------------------------|
-
-|--------------------------------------------------------------------------|
-| /api/administrator/subscriptions/plan                                    |
-| RECEIVES---------------------| RETURNS--| EXCEPTIONS---------------------|
-| required querystring planid  | object   | invalid-planid                 |
-|                              |          |  * missing querystring planid  |
-|                              |          |  * invalid querystring planid  |
-|------------------------------|----------|--------------------------------|
-
-|----------------------------------------------------------------------------|
-| /api/administrator/subscriptions/plans                                     |
-| RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
-| optional querystring offset (integer)  | array    | environment PAGE_SIZE  |
-| optional querystring limit (integer)   |          |                        |
-| optional querystring all (boolean)     |          |                        |
-|----------------------------------------|----------|------------------------|
-
-|-----------------------------------------------|
-| /api/administrator/subscriptions/plans-count  |
-| RETURNS---------------------------------------|
-| integer                                       |
-|-----------------------------------------------|
 
 |--------------------------------------------------------------------------------|
 | /api/administrator/subscriptions/product                                       |
@@ -405,27 +344,6 @@ http://localhost:8000
 |                                  |          |  * ineligible posted coupon is unpublished    |
 |----------------------------------|----------|-----------------------------------------------|
 
-|----------------------------------------------------------------------------------------|
-| /api/administrator/subscriptions/set-plan-published                                    |
-| RECEIVES---------------------| RETURNS--| EXCEPTIONS-----------------------------------|
-| required querystring planid  | object   | invalid-planid                               |
-|                              |          |  * missing querystring planid                |
-|                              |          |  * invalid querystring planid                |
-|                              |          | invalid-plan                                 |
-|                              |          |  * ineligible querystring plan is published  |
-|------------------------------|----------|----------------------------------------------|
-
-|--------------------------------------------------------------------------------------------------|
-| /api/administrator/subscriptions/set-plan-unpublished                                            |
-| RECEIVES---------------------| RETURNS--| EXCEPTIONS---------------------------------------------|
-| required querystring planid  | object   | invalid-planid                                         |
-|                              |          |  * missing querystring planid                          |
-|                              |          |  * invalid querystring planid                          |
-|                              |          | invalid-plan                                           |
-|                              |          |  * ineligible querystring plan is not published        |
-|                              |          |  * ineligible querystring plan is already unpublished  |
-|------------------------------|----------|--------------------------------------------------------|
-
 |---------------------------------------------------------------------------------------------------|
 | /api/administrator/subscriptions/set-product-published                                            |
 | RECEIVES------------------------| RETURNS--| EXCEPTIONS-------------------------------------------|
@@ -541,25 +459,6 @@ http://localhost:8000
 |                                |          |  * missing posted name                           |
 |                                |          |  * invalid posted name                           |
 |--------------------------------|----------|--------------------------------------------------|
-
-|--------------------------------------------------------------------------------------------------------------------|
-| /api/administrator/subscriptions/update-plan                                                                       |
-| RECEIVES-------------------------------------| RETURNS--| EXCEPTIONS-----------------------------------------------|
-| required querystring planid                  | object   | invalid-planid                                           |
-| optional posted trial_period_days (integer)  |          |  * missing querystring planid                            |
-|                                              |          |  * invalid querystring planid                            |
-|                                              |          | invalid-plan                                             |
-|                                              |          |  * ineligible querystring plan is unpublished            |
-|                                              |          | invalid-productid                                        |
-|                                              |          |  * invalid posted productid                              |
-|                                              |          | invalid-product                                          |
-|                                              |          |  * ineligible posted product is not published            |
-|                                              |          |  * ineligible posted product is unpublished              |
-|                                              |          | invalid-trial_period_days                                |
-|                                              |          |  * invalid posted trial_period_days                      |
-|                                              |          |  * ineligible posted trial_period_days is negative       |
-|                                              |          |  * ineligible posted trial_period_days greater than 365  |
-|----------------------------------------------|----------|----------------------------------------------------------|
 
 |-------------------------------------------------------------------------------------------------------------------------------------------------|
 | /api/administrator/subscriptions/update-product                                                                                                 |
@@ -898,30 +797,6 @@ http://localhost:8000
 |                                |          |  * ineligible querystring coupon is not published  |
 |--------------------------------|----------|----------------------------------------------------|
 
-|--------------------------------------------------------------------------------------------|
-| /api/user/subscriptions/published-plan                                                     |
-| RECEIVES---------------------| RETURNS--| EXCEPTIONS---------------------------------------|
-| required querystring planid  | object   | invalid-planid                                   |
-|                              |          |  * missing querystring planid                    |
-|                              |          |  * invalid querystring planid                    |
-|                              |          | invalid-plan                                     |
-|                              |          |  * ineligible querystring plan is not published  |
-|------------------------------|----------|--------------------------------------------------|
-
-|----------------------------------------------------------------------------|
-| /api/user/subscriptions/published-plans                                    |
-| RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
-| optional querystring offset (integer)  | array    | environment PAGE_SIZE  |
-| optional querystring limit (integer)   |          |                        |
-| optional querystring all (boolean)     |          |                        |
-|----------------------------------------|----------|------------------------|
-
-|------------------------------------------------|
-| /api/user/subscriptions/published-plans-count  |
-| RETURNS----------------------------------------|
-| integer                                        |
-|------------------------------------------------|
-
 |--------------------------------------------------------------------------------------------------|
 | /api/user/subscriptions/published-product                                                        |
 | RECEIVES------------------------| RETURNS--| EXCEPTIONS------------------------------------------|
@@ -1083,40 +958,6 @@ http://localhost:8000
 |                                      |          |  * invalid posted coupon is other currency        |
 |--------------------------------------|----------|---------------------------------------------------|
 
-|-------------------------------------------------------------------------------------------------|
-| /api/user/subscriptions/set-subscription-plan                                                   |
-| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS------------------------------------|
-| required posted planid               | object   | invalid-subscriptionid                        |
-| required querystring subscriptionid  |          |  * missing querystring subscriptionid         |
-|                                      |          |  * invalid querystring subscriptionid         |
-|                                      |          | invalid-account                               |
-|                                      |          |  * ineligible accessing account               |
-|                                      |          | invalid-planid                                |
-|                                      |          |  * missing posted planid                      |
-|                                      |          |  * invalid posted planid                      |
-|                                      |          | invalid-plan                                  |
-|                                      |          |  * invalid posted plan is not published       |
-|                                      |          |  * invalid posted plan is unpublished         |
-|                                      |          |  * invalid posted plan is unchanged           |
-|                                      |          | invalid-paymentmethodid                       |
-|                                      |          |  * invalid customer requires payments method  |
-|--------------------------------------|----------|-----------------------------------------------|
-
-|--------------------------------------------------------------------------------------------|
-| /api/user/subscriptions/set-subscription-quantity                                          |
-| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS-------------------------------|
-| required querystring subscriptionid  | object   | invalid-subscriptionid                   |
-|                                      |          |  * missing querystring subscriptionid    |
-|                                      |          |  * invalid querystring subscriptionid    |
-|                                      |          | invalid-account                          |
-|                                      |          |  * ineligible accessing account          |
-|                                      |          | invalid-quantity                         |
-|                                      |          |  * invalid posted quantity               |
-|                                      |          |  * invalid posted quantity is unchanged  |
-|                                      |          |  * invalid posted quantity is negative   |
-|                                      |          |  * invalid posted quantity is zero       |
-|--------------------------------------|----------|------------------------------------------|
-
 |----------------------------------------------------------------------------------------|
 | /api/user/subscriptions/setup-intent                                                   |
 | RECEIVES----------------------------| RETURNS--| EXCEPTIONS----------------------------|
@@ -1195,4 +1036,4 @@ http://localhost:8000
 |-----------------------------------------------|-----------------------|--------------------------------------------|------------------------|
 
 
-2022-05-25T02:22:41.377Z
+2022-05-31T09:31:23.836Z

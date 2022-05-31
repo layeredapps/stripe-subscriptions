@@ -161,62 +161,6 @@
     ],
     "configuration": []
   },
-  "/api/administrator/subscriptions/create-plan": {
-    "url": "/api/administrator/subscriptions/create-plan",
-    "verb": "post",
-    "auth": false,
-    "receives": [
-      "optional posted published (boolean)",
-      "optional posted trial_period_days (integer)",
-      "optional posted usage_type (licensed|metered)"
-    ],
-    "exceptions": {
-      "invalid-planid": [
-        "invalid posted planid is not alphanumeric_"
-      ],
-      "invalid-planid-length": [
-        "posted planid is too short",
-        "posted planid is too long"
-      ],
-      "invalid-productid": [
-        "missing posted productid",
-        "invalid posted productid"
-      ],
-      "invalid-product": [
-        "ineligible posted product is not published"
-      ],
-      "invalid-amount": [
-        "missing posted amount",
-        "invalid posted amount"
-      ],
-      "invalid-currency": [
-        "missing posted currency",
-        "invalid posted currency"
-      ],
-      "invalid-interval": [
-        "missing posted interval",
-        "invalid posted interval"
-      ],
-      "invalid-interval-count": [
-        "missing posted interval_count",
-        "invalid posted interval_count"
-      ],
-      "invalid-trial_period": [
-        "invalid posted trial_period"
-      ],
-      "invalid-usage_type": [
-        "invalid posted usage_type"
-      ]
-    },
-    "redacts": [],
-    "returns": [
-      "object"
-    ],
-    "configuration": [
-      "environment MINIMUM_PLANID_LENGTH",
-      "environment MAXIMUM_PLANID_LENGTH"
-    ]
-  },
   "/api/administrator/subscriptions/create-product": {
     "url": "/api/administrator/subscriptions/create-product",
     "verb": "post",
@@ -324,23 +268,6 @@
       "invalid-couponid": [
         "missing querystring couponid",
         "invalid querystring couponid"
-      ]
-    },
-    "redacts": [],
-    "returns": [
-      "boolean"
-    ],
-    "configuration": []
-  },
-  "/api/administrator/subscriptions/delete-plan": {
-    "url": "/api/administrator/subscriptions/delete-plan",
-    "verb": "delete",
-    "auth": false,
-    "receives": [],
-    "exceptions": {
-      "invalid-planid": [
-        "missing querystring planid",
-        "invalid querystring planid"
       ]
     },
     "redacts": [],
@@ -510,53 +437,6 @@
   },
   "/api/administrator/subscriptions/payment-methods": {
     "url": "/api/administrator/subscriptions/payment-methods",
-    "verb": "get",
-    "auth": false,
-    "receives": [
-      "optional querystring offset (integer)",
-      "optional querystring limit (integer)",
-      "optional querystring all (boolean)"
-    ],
-    "exceptions": {},
-    "redacts": [],
-    "returns": [
-      "array"
-    ],
-    "configuration": [
-      "environment PAGE_SIZE"
-    ]
-  },
-  "/api/administrator/subscriptions/plan": {
-    "url": "/api/administrator/subscriptions/plan",
-    "verb": "get",
-    "auth": false,
-    "receives": [],
-    "exceptions": {
-      "invalid-planid": [
-        "missing querystring planid",
-        "invalid querystring planid"
-      ]
-    },
-    "redacts": [],
-    "returns": [
-      "object"
-    ],
-    "configuration": []
-  },
-  "/api/administrator/subscriptions/plans-count": {
-    "url": "/api/administrator/subscriptions/plans-count",
-    "verb": "get",
-    "auth": false,
-    "receives": [],
-    "exceptions": {},
-    "redacts": [],
-    "returns": [
-      "integer"
-    ],
-    "configuration": []
-  },
-  "/api/administrator/subscriptions/plans": {
-    "url": "/api/administrator/subscriptions/plans",
     "verb": "get",
     "auth": false,
     "receives": [
@@ -827,47 +707,6 @@
     ],
     "configuration": []
   },
-  "/api/administrator/subscriptions/set-plan-published": {
-    "url": "/api/administrator/subscriptions/set-plan-published",
-    "verb": "patch",
-    "auth": false,
-    "receives": [],
-    "exceptions": {
-      "invalid-planid": [
-        "missing querystring planid",
-        "invalid querystring planid"
-      ],
-      "invalid-plan": [
-        "ineligible querystring plan is published"
-      ]
-    },
-    "redacts": [],
-    "returns": [
-      "object"
-    ],
-    "configuration": []
-  },
-  "/api/administrator/subscriptions/set-plan-unpublished": {
-    "url": "/api/administrator/subscriptions/set-plan-unpublished",
-    "verb": "patch",
-    "auth": false,
-    "receives": [],
-    "exceptions": {
-      "invalid-planid": [
-        "missing querystring planid",
-        "invalid querystring planid"
-      ],
-      "invalid-plan": [
-        "ineligible querystring plan is not published",
-        "ineligible querystring plan is already unpublished"
-      ]
-    },
-    "redacts": [],
-    "returns": [
-      "object"
-    ],
-    "configuration": []
-  },
   "/api/administrator/subscriptions/set-product-published": {
     "url": "/api/administrator/subscriptions/set-product-published",
     "verb": "patch",
@@ -1091,40 +930,6 @@
       "invalid-name": [
         "missing posted name",
         "invalid posted name"
-      ]
-    },
-    "redacts": [],
-    "returns": [
-      "object"
-    ],
-    "configuration": []
-  },
-  "/api/administrator/subscriptions/update-plan": {
-    "url": "/api/administrator/subscriptions/update-plan",
-    "verb": "patch",
-    "auth": false,
-    "receives": [
-      "optional posted trial_period_days (integer)"
-    ],
-    "exceptions": {
-      "invalid-planid": [
-        "missing querystring planid",
-        "invalid querystring planid"
-      ],
-      "invalid-plan": [
-        "ineligible querystring plan is unpublished"
-      ],
-      "invalid-productid": [
-        "invalid posted productid"
-      ],
-      "invalid-product": [
-        "ineligible posted product is not published",
-        "ineligible posted product is unpublished"
-      ],
-      "invalid-trial_period_days": [
-        "invalid posted trial_period_days",
-        "ineligible posted trial_period_days is negative",
-        "ineligible posted trial_period_days greater than 365"
       ]
     },
     "redacts": [],
@@ -1821,56 +1626,6 @@
     ],
     "configuration": []
   },
-  "/api/user/subscriptions/published-plan": {
-    "url": "/api/user/subscriptions/published-plan",
-    "verb": "get",
-    "auth": false,
-    "receives": [],
-    "exceptions": {
-      "invalid-planid": [
-        "missing querystring planid",
-        "invalid querystring planid"
-      ],
-      "invalid-plan": [
-        "ineligible querystring plan is not published"
-      ]
-    },
-    "redacts": [],
-    "returns": [
-      "object"
-    ],
-    "configuration": []
-  },
-  "/api/user/subscriptions/published-plans-count": {
-    "url": "/api/user/subscriptions/published-plans-count",
-    "verb": "get",
-    "auth": false,
-    "receives": [],
-    "exceptions": {},
-    "redacts": [],
-    "returns": [
-      "integer"
-    ],
-    "configuration": []
-  },
-  "/api/user/subscriptions/published-plans": {
-    "url": "/api/user/subscriptions/published-plans",
-    "verb": "get",
-    "auth": false,
-    "receives": [
-      "optional querystring offset (integer)",
-      "optional querystring limit (integer)",
-      "optional querystring all (boolean)"
-    ],
-    "exceptions": {},
-    "redacts": [],
-    "returns": [
-      "array"
-    ],
-    "configuration": [
-      "environment PAGE_SIZE"
-    ]
-  },
   "/api/user/subscriptions/published-product": {
     "url": "/api/user/subscriptions/published-product",
     "verb": "get",
@@ -2173,64 +1928,6 @@
         "invalid posted coupon is not published",
         "invalid posted coupon is unpublished",
         "invalid posted coupon is other currency"
-      ]
-    },
-    "redacts": [],
-    "returns": [
-      "object"
-    ],
-    "configuration": []
-  },
-  "/api/user/subscriptions/set-subscription-plan": {
-    "url": "/api/user/subscriptions/set-subscription-plan",
-    "verb": "patch",
-    "auth": false,
-    "receives": [],
-    "exceptions": {
-      "invalid-subscriptionid": [
-        "missing querystring subscriptionid",
-        "invalid querystring subscriptionid"
-      ],
-      "invalid-account": [
-        "ineligible accessing account"
-      ],
-      "invalid-planid": [
-        "missing posted planid",
-        "invalid posted planid"
-      ],
-      "invalid-plan": [
-        "invalid posted plan is not published",
-        "invalid posted plan is unpublished",
-        "invalid posted plan is unchanged"
-      ],
-      "invalid-paymentmethodid": [
-        "invalid customer requires payments method"
-      ]
-    },
-    "redacts": [],
-    "returns": [
-      "object"
-    ],
-    "configuration": []
-  },
-  "/api/user/subscriptions/set-subscription-quantity": {
-    "url": "/api/user/subscriptions/set-subscription-quantity",
-    "verb": "patch",
-    "auth": false,
-    "receives": [],
-    "exceptions": {
-      "invalid-subscriptionid": [
-        "missing querystring subscriptionid",
-        "invalid querystring subscriptionid"
-      ],
-      "invalid-account": [
-        "ineligible accessing account"
-      ],
-      "invalid-quantity": [
-        "invalid posted quantity",
-        "invalid posted quantity is unchanged",
-        "invalid posted quantity is negative",
-        "invalid posted quantity is zero"
       ]
     },
     "redacts": [],

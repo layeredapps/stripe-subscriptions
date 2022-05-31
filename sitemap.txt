@@ -1,4 +1,4 @@
-@layeredapps/dashboard 0.0.138
+@layeredapps/dashboard 0.0.143
 http://localhost:8000
 
 Administrator menu:
@@ -54,25 +54,21 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /account/signout-complete                                          GUEST  FULLSCREEN                 static-page                    @layeredapps/dashboard    
 /account/subscriptions                                                               GET             /src/www                       /src/www                  
 /account/subscriptions/add-payment-method                                            GET POST        /src/www                       /src/www                  
+/account/subscriptions/add-tax-id                                                    GET POST        /src/www                       /src/www                  
 /account/subscriptions/billing-profile                                               GET             /src/www                       /src/www                  
 /account/subscriptions/billing-profiles                                              GET             /src/www                       /src/www                  
 /account/subscriptions/cancel-subscription                                           GET POST        /src/www                       /src/www                  
-/account/subscriptions/change-plan                                                   GET POST        /src/www                       /src/www                  
 /account/subscriptions/confirm-payment                                               GET             /src/www                       /src/www                  
-/account/subscriptions/confirm-subscription                                          GET POST        /src/www                       /src/www                  
 /account/subscriptions/create-billing-profile                                        GET POST        /src/www                       /src/www                  
 /account/subscriptions/delete-billing-profile                                        GET POST        /src/www                       /src/www                  
 /account/subscriptions/invoice                                                       GET             /src/www                       /src/www                  
 /account/subscriptions/invoices                                                      GET             /src/www                       /src/www                  
 /account/subscriptions/pay-invoice                                                   GET POST        /src/www                       /src/www                  
-/account/subscriptions/plan                                                          GET             /src/www                       /src/www                  
-/account/subscriptions/plans                                                         GET             /src/www                       /src/www                  
 /account/subscriptions/refund                                                        GET             /src/www                       /src/www                  
-/account/subscriptions/refund-invoice                                                GET POST        /src/www                       /src/www                  
 /account/subscriptions/refunds                                                       GET             /src/www                       /src/www                  
+/account/subscriptions/remove-tax-id                                                 GET POST        /src/www                       /src/www                  
 /account/subscriptions/request-refund                                                GET POST        /src/www                       /src/www                  
 /account/subscriptions/restore-subscription                                          GET POST        /src/www                       /src/www                  
-/account/subscriptions/start-subscription                                            GET POST        /src/www                       /src/www                  
 /account/subscriptions/subscription                                                  GET             /src/www                       /src/www                  
 /account/subscriptions/subscriptions                                                 GET             /src/www                       /src/www                  
 /account/verify                                                           FULLSCREEN GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
@@ -104,17 +100,17 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /administrator/subscriptions/coupon                                                  GET             /src/www                       /src/www                  
 /administrator/subscriptions/coupons                                                 GET             /src/www                       /src/www                  
 /administrator/subscriptions/create-coupon                                           GET POST        /src/www                       /src/www                  
-/administrator/subscriptions/create-plan                                             GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/create-price                                            GET POST        /src/www                       /src/www                  
 /administrator/subscriptions/create-product                                          GET POST        /src/www                       /src/www                  
 /administrator/subscriptions/customer                                                GET             /src/www                       /src/www                  
 /administrator/subscriptions/customers                                               GET             /src/www                       /src/www                  
 /administrator/subscriptions/delete-coupon                                           GET POST        /src/www                       /src/www                  
-/administrator/subscriptions/delete-plan                                             GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/delete-price                                            GET POST        /src/www                       /src/www                  
 /administrator/subscriptions/delete-product                                          GET POST        /src/www                       /src/www                  
 /administrator/subscriptions/delete-subscription                                     GET POST        /src/www                       /src/www                  
 /administrator/subscriptions/deny-refund                                             GET POST        /src/www                       /src/www                  
 /administrator/subscriptions/edit-coupon                                             GET POST        /src/www                       /src/www                  
-/administrator/subscriptions/edit-plan                                               GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/edit-price                                              GET POST        /src/www                       /src/www                  
 /administrator/subscriptions/edit-product                                            GET POST        /src/www                       /src/www                  
 /administrator/subscriptions/flag-charge                                             GET POST        /src/www                       /src/www                  
 /administrator/subscriptions/forgive-invoice                                         GET POST        /src/www                       /src/www                  
@@ -126,12 +122,12 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /administrator/subscriptions/payment-methods                                         GET             /src/www                       /src/www                  
 /administrator/subscriptions/payout                                                  GET             /src/www                       /src/www                  
 /administrator/subscriptions/payouts                                                 GET             /src/www                       /src/www                  
-/administrator/subscriptions/plan                                                    GET             /src/www                       /src/www                  
-/administrator/subscriptions/plans                                                   GET             /src/www                       /src/www                  
+/administrator/subscriptions/price                                                   GET             /src/www                       /src/www                  
+/administrator/subscriptions/prices                                                  GET             /src/www                       /src/www                  
 /administrator/subscriptions/product                                                 GET             /src/www                       /src/www                  
 /administrator/subscriptions/products                                                GET             /src/www                       /src/www                  
 /administrator/subscriptions/publish-coupon                                          GET POST        /src/www                       /src/www                  
-/administrator/subscriptions/publish-plan                                            GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/publish-price                                           GET POST        /src/www                       /src/www                  
 /administrator/subscriptions/publish-product                                         GET POST        /src/www                       /src/www                  
 /administrator/subscriptions/refund                                                  GET             /src/www                       /src/www                  
 /administrator/subscriptions/refund-charge                                           GET POST        /src/www                       /src/www                  
@@ -144,7 +140,7 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /administrator/subscriptions/subscription                                            GET             /src/www                       /src/www                  
 /administrator/subscriptions/subscriptions                                           GET             /src/www                       /src/www                  
 /administrator/subscriptions/unpublish-coupon                                        GET POST        /src/www                       /src/www                  
-/administrator/subscriptions/unpublish-plan                                          GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/unpublish-price                                         GET POST        /src/www                       /src/www                  
 /administrator/subscriptions/unpublish-product                                       GET POST        /src/www                       /src/www                  
 /administrator/transfer-ownership                                                    GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
 /api/administrator/account                                                           GET             @layeredapps/dashboard                                   
@@ -179,7 +175,7 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /api/administrator/subscriptions/coupons-count                                       GET             /src/www                                                 
 /api/administrator/subscriptions/create-cancelation-refund                           POST            /src/www                                                 
 /api/administrator/subscriptions/create-coupon                                       POST            /src/www                                                 
-/api/administrator/subscriptions/create-plan                                         POST            /src/www                                                 
+/api/administrator/subscriptions/create-price                                        POST            /src/www                                                 
 /api/administrator/subscriptions/create-product                                      POST            /src/www                                                 
 /api/administrator/subscriptions/create-refund                                       POST            /src/www                                                 
 /api/administrator/subscriptions/create-tax-rate                                     POST            /src/www                                                 
@@ -187,7 +183,7 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /api/administrator/subscriptions/customers                                           GET             /src/www                                                 
 /api/administrator/subscriptions/customers-count                                     GET             /src/www                                                 
 /api/administrator/subscriptions/delete-coupon                                       DELETE          /src/www                                                 
-/api/administrator/subscriptions/delete-plan                                         DELETE          /src/www                                                 
+/api/administrator/subscriptions/delete-price                                        DELETE          /src/www                                                 
 /api/administrator/subscriptions/delete-product                                      DELETE          /src/www                                                 
 /api/administrator/subscriptions/delete-subscription                                 DELETE          /src/www                                                 
 /api/administrator/subscriptions/invoice                                             GET             /src/www                                                 
@@ -202,9 +198,9 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /api/administrator/subscriptions/payout                                              GET             /src/www                                                 
 /api/administrator/subscriptions/payouts                                             GET             /src/www                                                 
 /api/administrator/subscriptions/payouts-count                                       GET             /src/www                                                 
-/api/administrator/subscriptions/plan                                                GET             /src/www                                                 
-/api/administrator/subscriptions/plans                                               GET             /src/www                                                 
-/api/administrator/subscriptions/plans-count                                         GET             /src/www                                                 
+/api/administrator/subscriptions/price                                               GET             /src/www                                                 
+/api/administrator/subscriptions/prices                                              GET             /src/www                                                 
+/api/administrator/subscriptions/prices-count                                        GET             /src/www                                                 
 /api/administrator/subscriptions/product                                             GET             /src/www                                                 
 /api/administrator/subscriptions/products                                            GET             /src/www                                                 
 /api/administrator/subscriptions/products-count                                      GET             /src/www                                                 
@@ -220,8 +216,8 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /api/administrator/subscriptions/set-coupon-unpublished                              PATCH           /src/www                                                 
 /api/administrator/subscriptions/set-customer-coupon                                 PATCH           /src/www                                                 
 /api/administrator/subscriptions/set-invoice-uncollectible                           PATCH           /src/www                                                 
-/api/administrator/subscriptions/set-plan-published                                  PATCH           /src/www                                                 
-/api/administrator/subscriptions/set-plan-unpublished                                PATCH           /src/www                                                 
+/api/administrator/subscriptions/set-price-published                                 PATCH           /src/www                                                 
+/api/administrator/subscriptions/set-price-unpublished                               PATCH           /src/www                                                 
 /api/administrator/subscriptions/set-product-published                               PATCH           /src/www                                                 
 /api/administrator/subscriptions/set-product-unpublished                             PATCH           /src/www                                                 
 /api/administrator/subscriptions/set-refund-request-denied                           PATCH           /src/www                                                 
@@ -235,11 +231,13 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /api/administrator/subscriptions/subscription                                        GET             /src/www                                                 
 /api/administrator/subscriptions/subscriptions                                       GET             /src/www                                                 
 /api/administrator/subscriptions/subscriptions-count                                 GET             /src/www                                                 
+/api/administrator/subscriptions/tax-code                                            GET             /src/www                                                 
+/api/administrator/subscriptions/tax-codes                                           GET             /src/www                                                 
 /api/administrator/subscriptions/tax-rate                                            GET             /src/www                                                 
 /api/administrator/subscriptions/tax-rates                                           GET             /src/www                                                 
 /api/administrator/subscriptions/tax-rates-count                                     GET             /src/www                                                 
 /api/administrator/subscriptions/update-coupon                                       PATCH           /src/www                                                 
-/api/administrator/subscriptions/update-plan                                         PATCH           /src/www                                                 
+/api/administrator/subscriptions/update-price                                        PATCH           /src/www                                                 
 /api/administrator/subscriptions/update-product                                      PATCH           /src/www                                                 
 /api/administrator/subscriptions/update-tax-rate                                     PATCH           /src/www                                                 
 /api/administrator/subscriptions/usage-record                                        GET             /src/www                                                 
@@ -271,6 +269,7 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /api/user/set-account-username                                                       PATCH           @layeredapps/dashboard                                   
 /api/user/set-session-ended                                                          PATCH           @layeredapps/dashboard                                   
 /api/user/set-session-verified                                                       PATCH           @layeredapps/dashboard                                   
+/api/user/subscriptions/add-subscription-item                                        PATCH           /src/www                                                 
 /api/user/subscriptions/charge                                                       GET             /src/www                                                 
 /api/user/subscriptions/charges                                                      GET             /src/www                                                 
 /api/user/subscriptions/charges-count                                                GET             /src/www                                                 
@@ -282,12 +281,14 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /api/user/subscriptions/create-refund-request                                        POST            /src/www                                                 
 /api/user/subscriptions/create-setup-intent                                          POST            /src/www                                                 
 /api/user/subscriptions/create-subscription                                          POST            /src/www                                                 
+/api/user/subscriptions/create-tax-id                                                POST            /src/www                                                 
 /api/user/subscriptions/create-usage-record                                          POST            /src/www                                                 
 /api/user/subscriptions/customer                                                     GET             /src/www                                                 
 /api/user/subscriptions/customers                                                    GET             /src/www                                                 
 /api/user/subscriptions/customers-count                                              GET             /src/www                                                 
 /api/user/subscriptions/delete-customer                                              DELETE          /src/www                                                 
 /api/user/subscriptions/delete-subscription                                          DELETE          /src/www                                                 
+/api/user/subscriptions/delete-tax-id                                                DELETE          /src/www                                                 
 /api/user/subscriptions/invoice                                                      GET             /src/www                                                 
 /api/user/subscriptions/invoices                                                     GET             /src/www                                                 
 /api/user/subscriptions/invoices-count                                               GET             /src/www                                                 
@@ -300,15 +301,16 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /api/user/subscriptions/payment-methods                                              GET             /src/www                                                 
 /api/user/subscriptions/payment-methods-count                                        GET             /src/www                                                 
 /api/user/subscriptions/published-coupon                           GUEST             GET             /src/www                                                 
-/api/user/subscriptions/published-plan                             GUEST             GET             /src/www                                                 
-/api/user/subscriptions/published-plans                                              GET             /src/www                                                 
-/api/user/subscriptions/published-plans-count                                        GET             /src/www                                                 
+/api/user/subscriptions/published-price                            GUEST             GET             /src/www                                                 
+/api/user/subscriptions/published-prices                                             GET             /src/www                                                 
+/api/user/subscriptions/published-prices-count                                       GET             /src/www                                                 
 /api/user/subscriptions/published-product                          GUEST             GET             /src/www                                                 
 /api/user/subscriptions/published-products                                           GET             /src/www                                                 
 /api/user/subscriptions/published-products-count                                     GET             /src/www                                                 
 /api/user/subscriptions/refund                                                       GET             /src/www                                                 
 /api/user/subscriptions/refunds                                                      GET             /src/www                                                 
 /api/user/subscriptions/refunds-count                                                GET             /src/www                                                 
+/api/user/subscriptions/remove-subscription-item                                     PATCH           /src/www                                                 
 /api/user/subscriptions/reset-subscription-canceling                                 PATCH           /src/www                                                 
 /api/user/subscriptions/set-customer-coupon                                          PATCH           /src/www                                                 
 /api/user/subscriptions/set-invoice-paid                                             PATCH           /src/www                                                 
@@ -317,14 +319,16 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /api/user/subscriptions/set-setup-intent-canceled                                    PATCH           /src/www                                                 
 /api/user/subscriptions/set-subscription-canceled                                    PATCH           /src/www                                                 
 /api/user/subscriptions/set-subscription-coupon                                      PATCH           /src/www                                                 
-/api/user/subscriptions/set-subscription-plan                                        PATCH           /src/www                                                 
-/api/user/subscriptions/set-subscription-quantity                                    PATCH           /src/www                                                 
+/api/user/subscriptions/set-subscription-item-quantity                               PATCH           /src/www                                                 
 /api/user/subscriptions/setup-intent                                                 GET             /src/www                                                 
 /api/user/subscriptions/setup-intents                                                GET             /src/www                                                 
 /api/user/subscriptions/setup-intents-count                                          GET             /src/www                                                 
 /api/user/subscriptions/subscription                                                 GET             /src/www                                                 
+/api/user/subscriptions/subscription-prorated-invoice                                GET             /src/www                                                 
 /api/user/subscriptions/subscriptions                                                GET             /src/www                                                 
 /api/user/subscriptions/subscriptions-count                                          GET             /src/www                                                 
+/api/user/subscriptions/tax-id                                                       GET             /src/www                                                 
+/api/user/subscriptions/tax-ids                                                      GET             /src/www                                                 
 /api/user/subscriptions/upcoming-invoice                                             GET             /src/www                                                 
 /api/user/subscriptions/usage-record                                                 GET             /src/www                                                 
 /api/user/subscriptions/usage-record-summaries                                       GET             /src/www                                                 
@@ -332,4 +336,4 @@ URL -------------------------------------------------------------- AUTH - TEMPLA
 /home                                                                                                static-page                    /src/www                  
 /webhooks/subscriptions/index-subscription-data                    GUEST             POST            /src/www                       /src/www                  
 
-2022-05-25T02:22:41.368Z
+2022-05-31T09:31:23.829Z
