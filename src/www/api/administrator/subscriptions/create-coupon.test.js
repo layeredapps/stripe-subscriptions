@@ -14,7 +14,8 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
         req.session = administrator.session
         req.body = {
           couponid: '',
-          amount_off: '',
+          name: 'my coupon',
+          amount_off: '10',
           percent_off: ''
         }
         let errorMessage
@@ -33,7 +34,8 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
         req.session = administrator.session
         req.body = {
           couponid: '#$%@#$%@#$%',
-          amount_off: '',
+          name: 'my coupon',
+          amount_off: '10',
           percent_off: ''
         }
         let errorMessage
@@ -51,6 +53,7 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createCoupon(administrator, {
           couponid: 'CUSTOM1',
+          name: 'my coupon',
           percent_off: '10',
           duration: 'once'
         })
@@ -59,6 +62,7 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
         req.session = administrator.session
         req.body = {
           couponid: 'CUSTOM1',
+          name: 'my coupon',
           percent_off: '10',
           duration: 'once'
         }
@@ -72,6 +76,30 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
       })
     })
 
+    describe('invalid-name', () => {
+      it('missing posted name', async () => {
+        const administrator = await TestHelper.createOwner()
+        const req = TestHelper.createRequest('/api/administrator/subscriptions/create-coupon')
+        req.account = administrator.account
+        req.session = administrator.session
+        req.body = {
+          couponid: 'CUSTOM18',
+          name: '',
+          amount_off: '10',
+          currency: 'usd',
+          duration: 'once'
+        }
+        let errorMessage
+        try {
+          await req.post()
+        } catch (error) {
+          errorMessage = error.message
+        }
+        assert.strictEqual(errorMessage, 'invalid-name')
+
+      })
+    })
+
     describe('invalid-amount_off', () => {
       it('missing posted amount_off', async () => {
         const administrator = await TestHelper.createOwner()
@@ -80,6 +108,7 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
         req.session = administrator.session
         req.body = {
           couponid: 'CUSTOM2',
+          name: 'my coupon',
           amount_off: '',
           percent_off: ''
         }
@@ -99,6 +128,7 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
         req.session = administrator.session
         req.body = {
           couponid: 'CUSTOM3',
+          name: 'my coupon',
           amount_off: 'invalid',
           percent_off: ''
         }
@@ -120,6 +150,7 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
         req.session = administrator.session
         req.body = {
           couponid: 'CUSTOM4',
+          name: 'my coupon',
           amount_off: '1',
           currency: ''
         }
@@ -139,6 +170,7 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
         req.session = administrator.session
         req.body = {
           couponid: 'CUSTOM5',
+          name: 'my coupon',
           amount_off: '1',
           currency: 'invalid'
         }
@@ -160,6 +192,7 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
         req.session = administrator.session
         req.body = {
           couponid: 'CUSTOM6',
+          name: 'my coupon',
           percent_off: 'invalid'
         }
         let errorMessage
@@ -171,6 +204,7 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
         assert.strictEqual(errorMessage, 'invalid-percent_off')
         req.body = {
           couponid: 'CUSTOM7',
+          name: 'my coupon',
           percent_off: '101'
         }
         errorMessage = null
@@ -191,6 +225,7 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
         req.session = administrator.session
         req.body = {
           couponid: 'CUSTOM8',
+          name: 'my coupon',
           amount_off: '10',
           currency: 'usd',
           duration: 'invalid'
@@ -213,6 +248,7 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
         req.session = administrator.session
         req.body = {
           couponid: 'CUSTOM9',
+          name: 'my coupon',
           amount_off: '10',
           currency: 'usd',
           duration: 'repeating',
@@ -234,6 +270,7 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
         req.session = administrator.session
         req.body = {
           couponid: 'CUSTOM10',
+          name: 'my coupon',
           amount_off: '10',
           currency: 'usd',
           duration: 'repeating',
@@ -259,6 +296,7 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
         req.session = administrator.session
         req.body = {
           couponid: 'CUSTOM11',
+          name: 'my coupon',
           amount_off: '10',
           currency: 'usd',
           duration: 'repeating',
@@ -284,6 +322,7 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
       req.session = administrator.session
       req.body = {
         couponid: 'CUSTOM12',
+        name: 'my coupon',
         amount_off: '10',
         currency: 'usd',
         duration: 'repeating',
@@ -302,6 +341,7 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
       req.session = administrator.session
       req.body = {
         couponid: 'CUSTOM13',
+        name: 'my coupon',
         amount_off: '10',
         currency: 'usd',
         duration: 'once'
@@ -319,6 +359,7 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
       req.session = administrator.session
       req.body = {
         couponid: 'CUSTOM14',
+        name: 'my coupon',
         amount_off: '10',
         currency: 'aud',
         duration: 'once'
@@ -336,6 +377,7 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
       req.session = administrator.session
       req.body = {
         couponid: 'CUSTOM15',
+        name: 'my coupon',
         percent_off: '10',
         currency: 'usd',
         duration: 'once'
@@ -356,6 +398,7 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
       req.session = administrator.session
       req.body = {
         couponid: 'CUSTOM16',
+        name: 'my coupon',
         percent_off: '10',
         currency: 'usd',
         duration: 'once',
@@ -374,6 +417,7 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
       req.session = administrator.session
       req.body = {
         couponid: 'CUSTOM17',
+        name: 'my coupon',
         percent_off: '10',
         currency: 'usd',
         duration: 'repeating',
@@ -394,6 +438,7 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
       req.session = administrator.session
       req.body = {
         couponid: 'CUSTOM18',
+        name: 'my coupon',
         amount_off: '10',
         currency: 'usd',
         duration: 'once'

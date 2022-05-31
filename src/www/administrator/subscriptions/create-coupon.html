@@ -22,6 +22,12 @@
           </div>
         </div>
         <div class="input-fields">
+          <label class="field-label" for="name" translate="yes">Name</label>
+          <div class="field">
+            <input required="" id="name" name="name" type="text" maxlength="30">
+          </div>n
+        </div>
+        <div class="input-fields">
           <label class="field-label" for="percent_off" translate="yes">Whole percent to deduct (blank if amount)</label>
           <div class="field">
             <input id="percent_off" name="percent_off" type="text" maxlength="3">
@@ -221,6 +227,11 @@
     <template id="invalid-couponid-length">
       <div class="error message" translate="yes">
         Error! Coupon ID is too short or too long
+      </div>
+    </template>
+    <template id="invalid-name">
+      <div class="error message" translate="yes">
+        Error! Invalid coupon name
       </div>
     </template>
     <template id="invalid-percent_off">

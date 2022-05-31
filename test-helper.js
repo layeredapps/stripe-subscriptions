@@ -515,7 +515,8 @@ async function createCoupon (administrator, properties) {
   req.session = administrator.session
   req.account = administrator.account
   req.body = {
-    couponid: `COUPON${couponNumber}`
+    couponid: `COUPON${couponNumber}`,
+    name: 'coupon name'
   }
   if (properties) {
     for (const property in properties) {

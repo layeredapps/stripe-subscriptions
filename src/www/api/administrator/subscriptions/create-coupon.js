@@ -11,6 +11,9 @@ module.exports = {
       global.maximumCouponLength < req.body.couponid.length) {
       throw new Error('invalid-couponid')
     }
+    if (!req.body.name) {
+      throw new Error('invalid-name')
+    }
     if (req.body.amount_off) {
       try {
         req.body.amount_off = parseInt(req.body.amount_off, 10)
@@ -77,7 +80,8 @@ module.exports = {
     }
     const couponInfo = {
       id: req.body.couponid,
-      duration: req.body.duration || null
+      duration: req.body.duration || null,
+      name: req.body.name
     }
     if (req.body.redeem_by) {
       try {

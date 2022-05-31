@@ -64,6 +64,9 @@ async function submitForm (req, res) {
   if (!req.body.couponid.match(/^[a-zA-Z0-9]+$/)) {
     return renderPage(req, res, 'invalid-couponid')
   }
+  if (!req.body.name) {
+    return renderPage(req, res, 'invalid-name')
+  }
   if (!req.body.amount_off && !req.body.percent_off) {
     return renderPage(req, res, 'invalid-discount')
   }
