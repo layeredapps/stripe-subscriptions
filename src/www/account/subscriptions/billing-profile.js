@@ -49,8 +49,24 @@ async function beforeRequest (req) {
   customer.numSubscriptions = await global.api.user.subscriptions.SubscriptionsCount.get(req)
   req.query.all = true
   const invoices = await global.api.user.subscriptions.Invoices.get(req)
+  if (invoices && invoices.length) {
+    for (const i in invoices) {
+      invoices[i] = formatStripeObject(invoices[i])
+    }
+  }
   const subscriptions = await global.api.user.subscriptions.Subscriptions.get(req)
-  req.data = { customer, invoices, subscriptions }
+  if (subscriptions && subscriptions.length) {
+    for (const i in subscriptions) {
+      subscriptions[i] = formatStripeObject(subscriptions[i])
+    }
+  }
+  const taxids = await global.api.user.subscriptions.TaxIds.get(req)
+  if (taxids && taxids.length) {
+    for (const i in taxids) {
+      taxids[i] = formatStripeObject(taxids[i])
+    }
+  }
+  req.data = { customer, invoices, subscriptions, taxids }
 }
 
 async function renderPage (req, res, messageTemplate) {
@@ -88,6 +104,26 @@ async function renderPage (req, res, messageTemplate) {
       removeElements.push('no-subscriptions')
     } else {
       removeElements.push('subscriptions-table')
+    }
+    if (req.data.taxids && req.data.taxids.length) {
+      dashboard.HTML.renderTable(doc, req.data.taxids, 'taxid-row', 'taxids-table')
+      for (const taxid of req.data.taxids) {
+        if (taxid.verification.status !== 'pending') {
+          removeElements.push(`pending-${taxid.taxid}`)
+        }
+        if (taxid.verification.status !== 'verified') {
+          removeElements.push(`verified-${taxid.taxid}`)
+        }
+        if (taxid.verification.status !== 'unverified') {
+          removeElements.push(`unverified-${taxid.taxid}`)
+        }
+        if (taxid.verification.status !== 'unavailable') {
+          removeElements.push(`unavailable-${taxid.taxid}`)
+        }
+      }
+      removeElements.push('no-taxids')
+    } else {
+      removeElements.push('taxids-table')
     }
   }
   for (const id of removeElements) {

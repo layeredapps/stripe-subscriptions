@@ -240,6 +240,7 @@ module.exports = {
   createPrice,
   createProduct,
   createRefund,
+  createTaxId,
   createUsageRecord,
   changeSubscriptionQuantity,
   createSubscription,
@@ -248,6 +249,7 @@ module.exports = {
   deleteOldWebhooks,
   deleteSubscription,
   deleteSubscriptionDiscount,
+  deleteTaxId,
   denyRefund,
   flagCharge,
   forgiveInvoice,
@@ -487,7 +489,8 @@ async function createPrice (administrator, properties) {
     recurring_interval_count: '1',
     recurring_aggregate_usage: 'sum',
     usage_type: 'licensed',
-    unit_amount: '0'
+    unit_amount: '0',
+    tax_behavior: 'inclusive'
   }
   if (properties) {
     for (const property in properties) {
@@ -610,6 +613,21 @@ async function deleteSubscriptionDiscount (administrator, subscription, coupon) 
   return subscriptionNow
 }
 
+async function createTaxId (user, customer, properties) {
+  Log.info('createTaxId', user, customer, properties)
+  properties = properties|| {}
+  const req = createRequest(`/api/user/subscriptions/create-tax-id?customerid=${customer.customerid}`)
+  req.session = user.session
+  req.account = user.account
+  req.body = {
+    type: properties.type || 'eu_vat',
+    value: properties.value || 'DE123456789'
+  }
+  const taxid = await req.post()
+  user.taxid = taxid
+  return taxid
+}
+
 async function createCustomerDiscount (administrator, customer, coupon) {
   Log.info('createCustomerDiscount', administrator, customer, coupon)
   const req = createRequest(`/api/administrator/subscriptions/set-customer-coupon?customerid=${customer.customerid}`)
@@ -635,6 +653,14 @@ async function deleteCustomerDiscount (administrator, customer, coupon) {
   }
   const customerNow = await req.patch()
   return customerNow
+}
+
+async function deleteTaxId (user, taxid) {
+  Log.info('deleteTaxId', user, taxid)
+  const req = createRequest(`/api/user/subscriptions/delete-tax-id?taxid=${taxid}`)
+  req.session = user.session
+  req.account = user.account
+  await req.delete()
 }
 
 const cardTypes = [

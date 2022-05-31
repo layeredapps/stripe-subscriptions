@@ -62,6 +62,23 @@
           </tr>
         </tbody>
       </table>
+      <h3>Tax identity</h3>
+      <div id="no-taxids">
+        <p translate="yes">This billing profile has no tax id associated.</p>
+      </div>
+      <div class="list-table-wrapper">
+        <table id="taxids-table" class="list-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th translate="yes">Type</th>
+              <th translate="yes">Value</th>
+              <th translate="yes">Status</th>
+              <th></th>
+            </tr>
+          </thead>
+        </table>
+      </div>
       <h3>Subscriptions</h3>
       <div id="no-subscriptions">
         <p translate="yes">This billing profile has no subscriptions.</p>
@@ -99,6 +116,18 @@
         </table>
       </div>
     </div>
+    <template id="taxid-row">
+      <tr id="${tax_id.taxid}">
+        <td>${tax_id.id}</td>
+        <td>${tax_id.type}</td>
+        <td>${tax_id.value}</td>
+        <td id="pending-${tax_id.id}">Pending verification</td>
+        <td id="verified-${tax_id.id}">Verified</td>
+        <td id="unverified-${tax_id.id}">Unverified</td>
+        <td id="unavailable-${tax_id.id}">Unavailable</td>
+        <td><a class="button button-small" href="/account/subscriptions/remove-tax-id?taxid=${tax_id.id}">Delete</a></td>
+      </tr>
+    </template>
     <template id="subscription-row">
       <tr id="${subscription.subscriptionid}">
         <td><a href="/account/subscriptions/subscription?subscriptionid=${subscription.subscriptionid}">${subscription.subscriptionid}</a></td>

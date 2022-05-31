@@ -635,6 +635,43 @@ module.exports = async () => {
     sequelize,
     modelName: 'taxcode'
   })
+  class TaxId extends Model {}
+  TaxId.init({
+    taxid: {
+      type: DataTypes.STRING(64),
+      primaryKey: true,
+      allowNull: false
+    },
+    object: {
+      type: DataTypes.VIRTUAL,
+      get () {
+        return 'taxid'
+      }
+    },
+    accountid: DataTypes.STRING(64),
+    customerid: DataTypes.STRING(64),
+    appid: {
+      type: DataTypes.STRING(64),
+      defaultValue: global.appid
+    },
+    stripeObject: {
+      type: DataTypes.TEXT,
+      get () {
+        const raw = this.getDataValue('stripeObject')
+        if (raw) {
+          return JSON.parse(raw)
+        }
+      },
+      set (value) {
+        this.setDataValue('stripeObject', JSON.stringify(value))
+      }
+    },
+    type: DataTypes.STRING,
+    value: DataTypes.STRING
+  }, {
+    sequelize,
+    modelName: 'taxid'
+  })
   class TaxRate extends Model {}
   TaxRate.init({
     taxrateid: {
@@ -838,6 +875,7 @@ module.exports = async () => {
         await Refund.sync({ force: true })
         await SetupIntent.sync({ force: true })
         await Subscription.sync({ force: true })
+        await TaxId.sync({ force: true })
         await TaxRate.sync({ force: true })
         await UsageRecord.sync({ force: true })
       }
@@ -856,6 +894,7 @@ module.exports = async () => {
     SetupIntent,
     Subscription,
     TaxCode,
+    TaxId,
     TaxRate,
     UsageRecord
   }

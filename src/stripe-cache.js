@@ -63,6 +63,9 @@ function formatError (error, group) {
     if (error.raw.code === 'invoice_upcoming_none') {
       return 'invalid-subscription'
     }
+    if (error.raw.code === 'tax_id_invalid') {
+      return 'invalid-taxid'
+    }
   }
   if (error.raw && error.raw.message) {
     if (error.raw.message === 'Coupon already exists.') {

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/account/subscriptions/navbar-taxid.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <title translate="yes">Remove tax id</title>
+    <link rel="stylesheet" href="/public/content.css">
+    <link rel="stylesheet" href="/public/content-additional.css">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">Remove tax id</h1>
+      <div id="message-container"></div>
+      <form id="submit-form" method="post" class="input-form" action="/account/subscriptions/remove-tax-id?taxid=${taxid.taxid}" name="submit-form">
+        <input type="hidden" name="csrf-token" />
+        <button id="submit-button" type="submit" class="button" translate="yes">Remove tax id</button>
+      </form>
+    </div>
+    <template id="success">
+      <div class="success message" translate="yes">
+        Success! The tax id has been deleted
+      </div>
+    </template>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! Something went wrong submitting the form
+      </div>
+    </template>
+    <template id="invalid-account">
+      <div class="error message" translate="yes">
+        Error! You cannot delete tax identities from someone else's account
+      </div>
+    </template>
+    <template id="invalid-customerid">
+      <div class="error message" translate="yes">
+        Error! An invalid customer was specified
+      </div>
+    </template>
+    <template id="invalid-csrf-token">
+      <div class="error message" translate="yes">
+        Error! This form was not submitted correctly
+      </div>
+    </template>
+    <template id="invalid-xss-input">
+      <div class="error message" translate="yes">
+        Error! Invalid value(s) were posted to the server
+      </div>
+    </template>
+  </body>
+</html>

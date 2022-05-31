@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/account/subscriptions/navbar-billing-profile.html">
+  <head>
+    <meta name="viewport" content="width=device-width
+initial-scale=1">
+    <meta charset="utf-8" />
+    <title translate="yes">Add tax id</title>
+    <link href="/public/content.css" rel="stylesheet">
+    <link href="/public/content-additional.css" rel="stylesheet">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">Add tax id</h1>
+      <div id="message-container"></div>
+      <form id="submit-form" method="post" class="input-form" action="/account/subscriptions/add-tax-id?customerid=${customer.customerid}" name="submit-form">
+        <input type="hidden" name="csrf-token" />
+        <div class="input-fields">
+          <label class="field-label" for="description" translate="yes">Profile description</label>
+          <div class="field">
+            <input required="" id="value" name="value" type="text" maxlength="100">
+          </div>
+        </div>
+        <div class="input-fields">
+          <label class="field-label" for="type" translate="yes">Type</label>
+          <div class="field">
+            <div class="normal-field">
+              <select id="type" name="type">
+                <option value="">Select type</option>
+                <option>ae_trn</option>
+                <option>au_abn</option>
+                <option>au_arn</option>
+                <option>bg_uic</option>
+                <option>br_cnpj</option>
+                <option>br_cpf</option>
+                <option>ca_bn</option>
+                <option>ca_gst_hst</option>
+                <option>ca_pst_bc</option>
+                <option>ca_pst_mb</option>
+                <option>ca_pst_sk</option>
+                <option>ca_qst</option>
+                <option>ch_vat</option>
+                <option>cl_tin</option>
+                <option>es_cif</option>
+                <option>eu_oss_vat</option>
+                <option>eu_vat</option>
+                <option>gb_vat</option>
+                <option>ge_vat</option>
+                <option>hk_br</option>
+                <option>hu_tin</option>
+                <option>id_npwp</option>
+                <option>il_vat</option>
+                <option>in_gst</option>
+                <option>is_vat</option>
+                <option>jp_cn</option>
+                <option>jp_rn</option>
+                <option>kr_brn</option>
+                <option>li_uid</option>
+                <option>mx_rfc</option>
+                <option>my_frp</option>
+                <option>my_itn</option>
+                <option>my_sst</option>
+                <option>no_vat</option>
+                <option>nz_gst</option>
+                <option>ru_inn</option>
+                <option>ru_kpp</option>
+                <option>sa_vat</option>
+                <option>sg_gst</option>
+                <option>sg_uen</option>
+                <option>si_tin</option>
+                <option>th_vat</option>
+                <option>tw_vat</option>
+                <option>ua_vat</option>
+                <option>us_ein</option>
+                <option>za_vat</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="input-fields">
+          <label class="field-label"></label>
+          <div class="form-buttons spaced-buttons">
+            <button id="submit-button" type="submit" class="button" translate="yes">Save tax id</button>
+          </div>
+        </div>
+      </form>
+    </div>
+      <template id="invalid-token">
+      <div class="error message" translate="yes">
+        Error! An error occurred submiting your tax id
+      </div>
+    </template>
+    <template id="invalid-type">
+      <div class="error message" translate="yes">
+        Error! Invalid or missing type
+      </div>
+    </template>
+    <template id="invalid-value">
+      <div class="error message" translate="yes">
+        Error! Invalid or missing id value
+      </div>
+    </template>
+    <template id="success">
+      <div class="success message" translate="yes">
+        Success! The tax id has been added
+      </div>
+    </template>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! Something went wrong submitting the form
+      </div>
+    </template>
+    <template id="invalid-account">
+      <div class="error message" translate="yes">
+        Error! You cannot add tax ids to someone else's account
+      </div>
+    </template>
+    <template id="invalid-customerid">
+      <div class="error message" translate="yes">
+        Error! An invalid customer was specified
+      </div>
+    </template>
+    <template id="invalid-csrf-token">
+      <div class="error message" translate="yes">
+        Error! This form was not submitted correctly
+      </div>
+    </template>
+    <template id="invalid-xss-input">
+      <div class="error message" translate="yes">
+        Error! Invalid value(s) were posted to the server
+      </div>
+    </template>
+  </body>
+</html>

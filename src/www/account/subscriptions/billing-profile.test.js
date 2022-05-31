@@ -1,6 +1,7 @@
 /* eslint-env mocha */
 const assert = require('assert')
 const TestHelper = require('../../../../test-helper.js')
+const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 
 describe('/account/subscriptions/billing-profile', function () {
   describe('before', () => {
@@ -18,7 +19,7 @@ describe('/account/subscriptions/billing-profile', function () {
   })
 
   describe('view', () => {
-    it('should have row for customer (screenshots)', async () => {
+    it('should present the customer table (screenshots)', async () => {
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail
@@ -38,6 +39,46 @@ describe('/account/subscriptions/billing-profile', function () {
       const doc = TestHelper.extractDoc(result.html)
       const tbody = doc.getElementById(user.customer.customerid)
       assert.strictEqual(tbody.tag, 'tbody')
+    })
+
+    it('should have table for subscriptions', async () => {
+      const administrator = await TestStripeAccounts.createOwnerWithPrice({ unit_amount: 0 })
+      const user = await TestStripeAccounts.createUserWithFreeSubscription(administrator.price)
+      const req = TestHelper.createRequest(`/account/subscriptions/billing-profile?customerid=${user.customer.customerid}`)
+      req.account = user.account
+      req.session = user.session
+      const result = await req.get()
+      const doc = TestHelper.extractDoc(result.html)
+      const tbody = doc.getElementById(user.subscription.subscriptionid)
+      assert.strictEqual(tbody.tag, 'tr')
+    })
+
+    it('should have table for invoices', async () => {
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
+      const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
+      const req = TestHelper.createRequest(`/account/subscriptions/billing-profile?customerid=${user.customer.customerid}`)
+      req.account = user.account
+      req.session = user.session
+      const result = await req.get()
+      const doc = TestHelper.extractDoc(result.html)
+      const tbody = doc.getElementById(user.invoice.invoiceid)
+      assert.strictEqual(tbody.tag, 'tr')
+    })
+
+    it('should have table for tax ids', async () => {
+      const user = await TestHelper.createUser()
+      await TestHelper.createCustomer(user, {
+        email: user.profile.contactEmail
+      })
+      await TestHelper.createTaxId(user, user.customer)
+      console.log(user.taxid)
+      const req = TestHelper.createRequest(`/account/subscriptions/billing-profile?customerid=${user.customer.customerid}`)
+      req.account = user.account
+      req.session = user.session
+      const result = await req.get()
+      const doc = TestHelper.extractDoc(result.html)
+      const tbody = doc.getElementById(user.taxid.taxid)
+      assert.strictEqual(tbody.tag, 'tr')
     })
   })
 
