@@ -41,12 +41,14 @@ async function beforeRequest (req) {
     subscription = formatStripeObject(subscriptionRaw)
   } catch (error) {
     req.error = error.message
+    req.removeContents = true
   }
   if (req.error) {
     return
   }
   if (!subscription.cancel_at_period_end && req.query.message !== 'success') {
     req.error = 'invalid-subscription'
+    req.removeContents = true
   }
   req.data = { subscription }
 }
@@ -57,7 +59,7 @@ async function renderPage (req, res, messageTemplate) {
   navbar.setup(doc, req.data.subscription)
   if (messageTemplate) {
     dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
-    if (messageTemplate) {
+    if (req.removeContents) {
       const submitForm = doc.getElementById('submit-form')
       submitForm.parentNode.removeChild(submitForm)
       return dashboard.Response.end(req, res, doc)
