@@ -612,7 +612,6 @@ describe('/api/administrator/subscriptions/create-price', function () {
         currency: 'usd',
         tax_behavior: 'inclusive',
         unit_amount: '1000',
-        tax_behavior: 'inclusive',
         recurring_interval: 'month',
         recurring_interval_count: '1',
         recurring_usage_type: 'metered',
