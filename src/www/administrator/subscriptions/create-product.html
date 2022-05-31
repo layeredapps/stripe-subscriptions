@@ -34,6 +34,14 @@
           </div>
         </div>
         <div class="input-fields">
+          <label class="field-label" for="unit_label" translate="yes">Tax code</label>
+          <div class="field">
+            <select name="tax_code" id="tax_code">
+              <option value="" translate="yes">Select tax code</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-fields">
           <label class="field-label"></label>
           <div class="form-buttons">
             <button id="submit-button" type="submit" class="button" translate="yes">Create product</button>
@@ -41,6 +49,9 @@
         </div>
       </form>
     </div>
+    <template id="tax-code-option">
+      <option value="${taxcode.taxcodeid}">${taxcode.name}</option>
+    </template>
     <template id="invalid-name">
       <div class="error message" translate="yes">
         Error! Invalid product name

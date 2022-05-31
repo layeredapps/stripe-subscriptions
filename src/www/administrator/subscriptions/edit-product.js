@@ -47,7 +47,9 @@ async function beforeRequest (req) {
     }
     return
   }
-  req.data = { product }
+  req.query.all = true
+  const taxCodes = await global.api.administrator.subscriptions.TaxCodes.get(req)
+  req.data = { product, taxCodes }
 }
 
 async function renderPage (req, res, messageTemplate) {
@@ -62,12 +64,24 @@ async function renderPage (req, res, messageTemplate) {
       return dashboard.Response.end(req, res, doc)
     }
   }
-  const nameField = doc.getElementById('name')
-  nameField.setAttribute('value', req.body ? (req.body.name || '').split("'").join('&quot;') : req.data.product.name)
-  const statementDescriptorField = doc.getElementById('statement_descriptor')
-  statementDescriptorField.setAttribute('value', req.body ? (req.body.statement_descriptor || '').split("'").join('&quot;') : req.data.product.statement_descriptor)
-  const unitLabelField = doc.getElementById('unit_label')
-  unitLabelField.setAttribute('value', req.body ? (req.body.unit_label || '').split("'").join('&quot;') : req.data.product.unit_label)
+  await dashboard.HTML.renderList(doc, req.data.taxCodes, 'tax-code-option', 'tax_code')
+  if (req.body) {
+    const nameField = doc.getElementById('name')
+    nameField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.name || ''))
+    const statementDescriptorField = doc.getElementById('statement_descriptor')
+    statementDescriptorField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.statement_descriptor || ''))
+    const unitLabelField = doc.getElementById('unit_label')
+    unitLabelField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.unit_label || ''))
+    await dashboard.HTML.setSelectedOptionByValue(doc, 'tax_code', req.body.tax_code || '')
+  } else {
+    const nameField = doc.getElementById('name')
+    nameField.setAttribute('value', req.data.product.name)
+    const statementDescriptorField = doc.getElementById('statement_descriptor')
+    statementDescriptorField.setAttribute('value', dashboard.Format.replaceQuotes(req.data.product.statement_descriptor))
+    const unitLabelField = doc.getElementById('unit_label')
+    unitLabelField.setAttribute('value', dashboard.Format.replaceQuotes(req.data.product.unit_label))
+    await dashboard.HTML.setSelectedOptionByValue(doc, 'tax_code', req.data.product.tax_code)
+  }
   return dashboard.Response.end(req, res, doc)
 }
 

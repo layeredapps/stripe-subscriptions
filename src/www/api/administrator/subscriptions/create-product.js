@@ -16,11 +16,22 @@ module.exports = {
     if (!req.body.unit_label || !req.body.unit_label.length) {
       throw new Error('invalid-unit_label')
     }
+    if (!req.body.tax_code || !req.body.tax_code.length) {
+      throw new Error('invalid-tax_code')
+    }
+    req.query = req.query || {}
+    req.query.taxcodeid = req.body.tax_code
+    try {
+      await global.api.administrator.subscriptions.TaxCode.get(req)
+    } catch (error) {
+      throw new Error('invalid-tax_code')
+    }
     const productInfo = {
       type: 'service',
       name: req.body.name,
       statement_descriptor: req.body.statement_descriptor,
-      unit_label: req.body.unit_label
+      unit_label: req.body.unit_label,
+      tax_code: req.body.tax_code
     }
     const product = await stripeCache.execute('products', 'create', productInfo, req.stripeKey)
     if (!product) {

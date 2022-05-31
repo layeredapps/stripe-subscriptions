@@ -37,21 +37,25 @@ if (global.stripeJS !== false && global.stripeJS !== 2 && global.stripeJS !== 3)
   throw new Error('invalid-stripe-js-version')
 }
 const packageJSON = require('./package.json')
-require('stripe')({
+const stripe = require('stripe')({
   apiVersion: global.stripeAPIVersion,
   telemetry: false,
   maxNetworkRetries: global.maximumStripeRetries || 0,
   appInfo: {
     version: packageJSON.version,
-    name: '@layeredapps/stripe-subscriptions',
+    name: '@layeredapps/stripe-subscriptions (test suite)',
     url: 'https://github.com/layeredapps/stripe-subscriptions'
   }
 })
+const stripeKey = {
+  apiKey: global.subscriptionsStripeKey || global.stripeKey || process.env.SUBSCRIPTIONS_STRIPE_KEY || process.env.STRIPE_KEY
+}
 
 module.exports = {
   setup: async () => {
     const Storage = require('./src/storage.js')
     module.exports.Storage = await Storage()
+    // set up countries
     const countryList = require('./countries.json')
     const countryDivisions = {}
     const raw = require('./country-divisions.json')
@@ -64,6 +68,9 @@ module.exports = {
         return a.toLowerCase() < b.toLowerCase() ? -1 : 1
       })
     }
+    module.exports.countryList = countryList
+    module.exports.countryDivisions = countryDivisions
+    // set up stripe
     if (global.stripeJS === 3) {
       global.packageJSON.dashboard.contentFilePaths.push(
         require.resolve('./src/content/embed-stripe-element-style.js')
@@ -72,7 +79,22 @@ module.exports = {
         require('./src/content/embed-stripe-element-style.js')
       )
     }
-    module.exports.countryList = countryList
-    module.exports.countryDivisions = countryDivisions
+    let offset = 0
+    while (true) {
+      const taxCodes = await stripe.taxCodes.list({ limit: 100, offset }, stripeKey)
+      for (const item of taxCodes.data) {
+        const taxCode = {
+          taxcodeid: item.id,
+          description: item.description,
+          name: item.name
+        }
+        await module.exports.Storage.TaxCode.upsert(taxCode)
+      }
+      if (taxCodes.has_more) {
+        offset += taxCodes.data.length
+      } else {
+        break
+      }
+    }
   }
 }

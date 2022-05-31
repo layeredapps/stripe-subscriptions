@@ -15,7 +15,8 @@ describe('/api/administrator/subscriptions/create-product', function () {
         req.body = {
           name: '',
           statement_descriptor: 'description',
-          unit_label: 'thing'
+          unit_label: 'thing',
+          tax_code: 'txcd_41060003'
         }
         let errorMessage
         try {
@@ -37,7 +38,8 @@ describe('/api/administrator/subscriptions/create-product', function () {
         req.body = {
           name: 'this',
           statement_descriptor: 'description',
-          unit_label: 'thing'
+          unit_label: 'thing',
+          tax_code: 'txcd_41060003'
         }
         let errorMessage
         try {
@@ -57,7 +59,8 @@ describe('/api/administrator/subscriptions/create-product', function () {
         req.body = {
           name: 'that',
           statement_descriptor: 'description',
-          unit_label: 'thing'
+          unit_label: 'thing',
+          tax_code: 'txcd_41060003'
         }
         let errorMessage
         try {
@@ -78,7 +81,8 @@ describe('/api/administrator/subscriptions/create-product', function () {
         req.body = {
           name: 'productName',
           statement_descriptor: '',
-          unit_label: 'thing'
+          unit_label: 'thing',
+          tax_code: 'txcd_41060003'
         }
         let errorMessage
         try {
@@ -89,42 +93,144 @@ describe('/api/administrator/subscriptions/create-product', function () {
         assert.strictEqual(errorMessage, 'invalid-statement_descriptor')
       })
     })
+
+    describe('invalid-tax_code', () => {
+      it('missing posted tax_code', async () => {
+        const administrator = await TestHelper.createOwner()
+        const req = TestHelper.createRequest('/api/administrator/subscriptions/create-product')
+        req.account = administrator.account
+        req.session = administrator.session
+        req.body = {
+          name: 'productName',
+          statement_descriptor: 'description',
+          unit_label: 'thing',
+          tax_code: ''
+        }
+        let errorMessage
+        try {
+          await req.post()
+        } catch (error) {
+          errorMessage = error.message
+        }
+        assert.strictEqual(errorMessage, 'invalid-tax_code')
+      })
+
+      it('invalid posted tax_code', async () => {
+        const administrator = await TestHelper.createOwner()
+        const req = TestHelper.createRequest('/api/administrator/subscriptions/create-product')
+        req.account = administrator.account
+        req.session = administrator.session
+        req.body = {
+          name: 'productName',
+          statement_descriptor: 'description',
+          unit_label: 'thing',
+          tax_code: 'invalid'
+        }
+        let errorMessage
+        try {
+          await req.post()
+        } catch (error) {
+          errorMessage = error.message
+        }
+        assert.strictEqual(errorMessage, 'invalid-tax_code')
+      })
+    })
   })
 
   describe('receives', () => {
     it('optional posted published (boolean)', async () => {
       const administrator = await TestHelper.createOwner()
-      await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
-      })
       const req = TestHelper.createRequest('/api/administrator/subscriptions/create-product')
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        name: 'product' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+        name: 'product name',
         statement_descriptor: 'description',
         unit_label: 'thing',
-        publishedAt: 'true'
+        publishedAt: 'true',
+        tax_code: 'txcd_41060003'
       }
       const product = await req.post()
       assert.notStrictEqual(product.publishedAt, undefined)
       assert.notStrictEqual(product.publishedAt, null)
+    })
+
+    it('required posted name (string)', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/api/administrator/subscriptions/create-product')
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        name: 'product name',
+        statement_descriptor: 'description',
+        unit_label: 'thing',
+        publishedAt: 'true',
+        tax_code: 'txcd_41060003'
+      }
+      const product = await req.post()
+      assert.strictEqual(product.stripeObject.name, 'product name')
+    })
+
+    it('required posted statement_descriptor (string)', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/api/administrator/subscriptions/create-product')
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        name: 'product name',
+        statement_descriptor: 'description',
+        unit_label: 'thing',
+        publishedAt: 'true',
+        tax_code: 'txcd_41060003'
+      }
+      const product = await req.post()
+      assert.strictEqual(product.stripeObject.statement_descriptor, 'description')
+    })
+
+    it('required posted unit_label (string)', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/api/administrator/subscriptions/create-product')
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        name: 'product name',
+        statement_descriptor: 'description',
+        unit_label: 'thing',
+        publishedAt: 'true',
+        tax_code: 'txcd_41060003'
+      }
+      const product = await req.post()
+      assert.strictEqual(product.stripeObject.unit_label, 'thing')
+    })
+
+    it('required posted tax_code (string)', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/api/administrator/subscriptions/create-product')
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        name: 'product name',
+        statement_descriptor: 'description',
+        unit_label: 'thing',
+        publishedAt: 'true',
+        tax_code: 'txcd_41060003'
+      }
+      const product = await req.post()
+      assert.strictEqual(product.stripeObject.tax_code, 'txcd_41060003')
     })
   })
 
   describe('returns', () => {
     it('object', async () => {
       const administrator = await TestHelper.createOwner()
-      await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
-      })
       const req = TestHelper.createRequest('/api/administrator/subscriptions/create-product')
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        name: 'product' + new Date().getTime() + 'r' + Math.ceil(Math.random() * 1000),
+        name: 'product name',
         statement_descriptor: 'description',
-        unit_label: 'thing'
+        unit_label: 'thing',
+        tax_code: 'txcd_41060003'
       }
       req.filename = __filename
       req.saveResponse = true
@@ -143,7 +249,8 @@ describe('/api/administrator/subscriptions/create-product', function () {
       req.body = {
         name: 'this',
         statement_descriptor: 'description',
-        unit_label: 'thing'
+        unit_label: 'thing',
+        tax_code: 'txcd_41060003'
       }
       let errorMessage
       try {
@@ -163,7 +270,8 @@ describe('/api/administrator/subscriptions/create-product', function () {
       req.body = {
         name: 'that',
         statement_descriptor: 'description',
-        unit_label: 'thing'
+        unit_label: 'thing',
+        tax_code: 'txcd_41060003'
       }
       let errorMessage
       try {

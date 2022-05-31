@@ -1,8 +1,16 @@
 const dashboard = require('@layeredapps/dashboard')
 
 module.exports = {
+  before: beforeRequest,
   get: renderPage,
   post: submitForm
+}
+
+async function beforeRequest (req) {
+  req.query = req.query || {}
+  req.query.all = true
+  const taxCodes = await global.api.administrator.subscriptions.TaxCodes.get(req)
+  req.data = { taxCodes }
 }
 
 async function renderPage (req, res, messageTemplate) {
@@ -16,6 +24,7 @@ async function renderPage (req, res, messageTemplate) {
       return dashboard.Response.end(req, res, doc)
     }
   }
+  await dashboard.HTML.renderList(doc, req.data.taxCodes, 'tax-code-option', 'tax_code')
   if (req.body) {
     const nameField = doc.getElementById('name')
     nameField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.name || ''))
@@ -23,6 +32,7 @@ async function renderPage (req, res, messageTemplate) {
     statementDescriptorField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.statement_descriptor || ''))
     const unitLabelField = doc.getElementById('unit_label')
     unitLabelField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.unit_label || ''))
+    await dashboard.HTML.setSelectedOptionByValue(doc, 'tax_code', req.body.tax_code || '')
   }
   return dashboard.Response.end(req, res, doc)
 }

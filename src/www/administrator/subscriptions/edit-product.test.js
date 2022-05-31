@@ -35,84 +35,6 @@ describe('/administrator/subscriptions/edit-product', function () {
   })
 
   describe('submit', () => {
-    it('should reject missing name', async () => {
-      const administrator = await TestHelper.createOwner()
-      await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
-      })
-      const req = TestHelper.createRequest(`/administrator/subscriptions/edit-product?productid=${administrator.product.productid}`)
-      req.account = administrator.account
-      req.session = administrator.session
-      req.body = {
-        name: '',
-        statement_descriptor: 'description'
-      }
-      const result = await req.post()
-      const doc = TestHelper.extractDoc(result.html)
-      const messageContainer = doc.getElementById('message-container')
-      const message = messageContainer.child[0]
-      assert.strictEqual(message.attr.template, 'invalid-name')
-    })
-
-    it('should enforce name length', async () => {
-      const administrator = await TestHelper.createOwner()
-      await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
-      })
-      const req = TestHelper.createRequest(`/administrator/subscriptions/edit-product?productid=${administrator.product.productid}`)
-      req.account = administrator.account
-      req.session = administrator.session
-      req.body = {
-        name: '1234567890123456789012345678901234567890',
-        statement_descriptor: 'description'
-      }
-      global.maximumProductNameLength = 3
-      const result = await req.post()
-      const doc = TestHelper.extractDoc(result.html)
-      const messageContainer = doc.getElementById('message-container')
-      const message = messageContainer.child[0]
-      assert.strictEqual(message.attr.template, 'invalid-product-name-length')
-    })
-
-    it('should reject missing statement_descriptor', async () => {
-      const administrator = await TestHelper.createOwner()
-      await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
-      })
-      const req = TestHelper.createRequest(`/administrator/subscriptions/edit-product?productid=${administrator.product.productid}`)
-      req.account = administrator.account
-      req.session = administrator.session
-      req.body = {
-        name: 'product',
-        statement_descriptor: ''
-      }
-      const result = await req.post()
-      const doc = TestHelper.extractDoc(result.html)
-      const messageContainer = doc.getElementById('message-container')
-      const message = messageContainer.child[0]
-      assert.strictEqual(message.attr.template, 'invalid-statement_descriptor')
-    })
-
-    it('should reject invalid unit_label', async () => {
-      const administrator = await TestHelper.createOwner()
-      await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
-      })
-      const req = TestHelper.createRequest(`/administrator/subscriptions/edit-product?productid=${administrator.product.productid}`)
-      req.account = administrator.account
-      req.session = administrator.session
-      req.body = {
-        name: 'product',
-        statement_descriptor: 'new-descriptor',
-        unit_label: ''
-      }
-      const result = await req.post()
-      const doc = TestHelper.extractDoc(result.html)
-      const messageContainer = doc.getElementById('message-container')
-      const message = messageContainer.child[0]
-      assert.strictEqual(message.attr.template, 'invalid-unit_label')
-    })
-
     it('should update product (screenshots)', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
@@ -167,6 +89,84 @@ describe('/administrator/subscriptions/edit-product', function () {
       req.session = administrator.session
       await req.route.api.before(req)
       assert.strictEqual(req.error, 'unpublished-product')
+    })
+
+    it('invalid-name', async () => {
+      const administrator = await TestHelper.createOwner()
+      await TestHelper.createProduct(administrator, {
+        publishedAt: 'true'
+      })
+      const req = TestHelper.createRequest(`/administrator/subscriptions/edit-product?productid=${administrator.product.productid}`)
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        name: '',
+        statement_descriptor: 'description'
+      }
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-name')
+    })
+
+    it('invalid-product-name-length', async () => {
+      const administrator = await TestHelper.createOwner()
+      await TestHelper.createProduct(administrator, {
+        publishedAt: 'true'
+      })
+      const req = TestHelper.createRequest(`/administrator/subscriptions/edit-product?productid=${administrator.product.productid}`)
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        name: '1234567890123456789012345678901234567890',
+        statement_descriptor: 'description'
+      }
+      global.maximumProductNameLength = 3
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-product-name-length')
+    })
+
+    it('invalid-statement_descriptor', async () => {
+      const administrator = await TestHelper.createOwner()
+      await TestHelper.createProduct(administrator, {
+        publishedAt: 'true'
+      })
+      const req = TestHelper.createRequest(`/administrator/subscriptions/edit-product?productid=${administrator.product.productid}`)
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        name: 'product',
+        statement_descriptor: ''
+      }
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-statement_descriptor')
+    })
+
+    it('invalid-unit_label', async () => {
+      const administrator = await TestHelper.createOwner()
+      await TestHelper.createProduct(administrator, {
+        publishedAt: 'true'
+      })
+      const req = TestHelper.createRequest(`/administrator/subscriptions/edit-product?productid=${administrator.product.productid}`)
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        name: 'product',
+        statement_descriptor: 'new-descriptor',
+        unit_label: ''
+      }
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-unit_label')
     })
 
     it('invalid-xss-input', async () => {

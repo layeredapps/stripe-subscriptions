@@ -18,58 +18,6 @@ describe('/administrator/subscriptions/create-product', function () {
   })
 
   describe('submit', () => {
-    it('should reject missing name', async () => {
-      const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/create-product')
-      req.account = administrator.account
-      req.session = administrator.session
-      req.body = {
-        name: '',
-        statement_descriptor: 'description',
-        unit_label: 'thing'
-      }
-      const result = await req.post()
-      const doc = TestHelper.extractDoc(result.html)
-      const messageContainer = doc.getElementById('message-container')
-      const message = messageContainer.child[0]
-      assert.strictEqual(message.attr.template, 'invalid-name')
-    })
-
-    it('should enforce name length', async () => {
-      const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/create-product')
-      req.account = administrator.account
-      req.session = administrator.session
-      req.body = {
-        name: '1234567890123456789012345678901234567890',
-        statement_descriptor: 'description',
-        unit_label: 'thing'
-      }
-      global.maximumProductNameLength = 3
-      const result = await req.post()
-      const doc = TestHelper.extractDoc(result.html)
-      const messageContainer = doc.getElementById('message-container')
-      const message = messageContainer.child[0]
-      assert.strictEqual(message.attr.template, 'invalid-product-name-length')
-    })
-
-    it('should reject missing statement_descriptor', async () => {
-      const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/create-product')
-      req.account = administrator.account
-      req.session = administrator.session
-      req.body = {
-        name: 'product',
-        statement_descriptor: '',
-        unit_label: 'thing'
-      }
-      const result = await req.post()
-      const doc = TestHelper.extractDoc(result.html)
-      const messageContainer = doc.getElementById('message-container')
-      const message = messageContainer.child[0]
-      assert.strictEqual(message.attr.template, 'invalid-statement_descriptor')
-    })
-
     it('should create product (screenshots)', async () => {
       const administrator = await TestHelper.createOwner()
       const req = TestHelper.createRequest('/administrator/subscriptions/create-product')
@@ -78,7 +26,8 @@ describe('/administrator/subscriptions/create-product', function () {
       req.body = {
         name: 'product' + new Date().getTime(),
         statement_descriptor: 'description',
-        unit_label: 'thing'
+        unit_label: 'thing',
+        tax_code: 'txcd_41060003'
       }
       req.filename = __filename
       req.screenshots = [
@@ -97,6 +46,79 @@ describe('/administrator/subscriptions/create-product', function () {
   })
 
   describe('errors', () => {
+    it('invalid-name', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/create-product')
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        name: '',
+        statement_descriptor: 'description',
+        unit_label: 'thing',
+        tax_code: 'txcd_41060003'
+      }
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-name')
+    })
+
+    it('invalid-product-name-length', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/create-product')
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        name: '1234567890123456789012345678901234567890',
+        statement_descriptor: 'description',
+        unit_label: 'thing',
+        tax_code: 'txcd_41060003'
+      }
+      global.maximumProductNameLength = 3
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-product-name-length')
+    })
+
+    it('invalid-statement_descriptor', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/create-product')
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        name: 'product',
+        statement_descriptor: '',
+        unit_label: 'thing',
+        tax_code: 'txcd_41060003'
+      }
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-statement_descriptor')
+    })
+
+    it('invalid-tax_code', async () => {
+      const administrator = await TestHelper.createOwner()
+      const req = TestHelper.createRequest('/administrator/subscriptions/create-product')
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        name: 'product',
+        statement_descriptor: '',
+        unit_label: 'thing',
+        tax_code: ''
+      }
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-statement_descriptor')
+    })
+
     it('invalid-xss-input', async () => {
       const administrator = await TestHelper.createOwner()
       const req = TestHelper.createRequest('/administrator/subscriptions/create-product')
@@ -105,7 +127,8 @@ describe('/administrator/subscriptions/create-product', function () {
       req.body = {
         name: 'product' + new Date().getTime(),
         statement_descriptor: 'description',
-        unit_label: '<script>'
+        unit_label: '<script>',
+        tax_code: 'txcd_41060003'
       }
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
@@ -124,6 +147,7 @@ describe('/administrator/subscriptions/create-product', function () {
         name: 'product' + new Date().getTime(),
         statement_descriptor: 'description',
         unit_label: 'thing',
+        tax_code: 'txcd_41060003',
         'csrf-token': ''
       }
       const result = await req.post()

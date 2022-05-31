@@ -455,6 +455,7 @@ async function createProduct (administrator, properties) {
   req.session = administrator.session
   req.account = administrator.account
   req.body = {
+    tax_code: 'txcd_41060003',
     name: `product${productNumber}`,
     statement_descriptor: `product${productNumber} description`,
     unit_label: 'thing'

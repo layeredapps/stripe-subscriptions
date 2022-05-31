@@ -616,6 +616,25 @@ module.exports = async () => {
     sequelize,
     modelName: 'subscription'
   })
+  class TaxCode extends Model {}
+  TaxCode.init({
+    taxcodeid: {
+      type: DataTypes.STRING(64),
+      primaryKey: true,
+      allowNull: false
+    },
+    object: {
+      type: DataTypes.VIRTUAL,
+      get () {
+        return 'taxcode'
+      }
+    },
+    description: DataTypes.STRING,
+    name: DataTypes.STRING
+  }, {
+    sequelize,
+    modelName: 'taxcode'
+  })
   class TaxRate extends Model {}
   TaxRate.init({
     taxrateid: {
@@ -836,6 +855,7 @@ module.exports = async () => {
     Refund,
     SetupIntent,
     Subscription,
+    TaxCode,
     TaxRate,
     UsageRecord
   }

@@ -16,9 +16,10 @@ describe('/api/administrator/subscriptions/update-product', function () {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          name: 'name',
+          name: 'that',
           statement_descriptor: 'description',
-          unit_label: 'thing'
+          unit_label: 'thing',
+          tax_code: 'txcd_41060003'
         }
         let errorMessage
         try {
@@ -38,9 +39,10 @@ describe('/api/administrator/subscriptions/update-product', function () {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          name: 'name',
+          name: 'that',
           statement_descriptor: 'description',
-          unit_label: 'thing'
+          unit_label: 'thing',
+          tax_code: 'txcd_41060003'
         }
         let errorMessage
         try {
@@ -63,9 +65,10 @@ describe('/api/administrator/subscriptions/update-product', function () {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          name: 'new-name',
-          statement_descriptor: 'new-description',
-          unit_label: 'new-thing'
+          name: 'that',
+          statement_descriptor: 'description',
+          unit_label: 'thing',
+          tax_code: 'txcd_41060003'
         }
         let errorMessage
         try {
@@ -87,7 +90,10 @@ describe('/api/administrator/subscriptions/update-product', function () {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          name: ''
+          name: '',
+          statement_descriptor: 'description',
+          unit_label: 'thing',
+          tax_code: 'txcd_41060003'
         }
         let errorMessage
         try {
@@ -109,7 +115,10 @@ describe('/api/administrator/subscriptions/update-product', function () {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          name: 'PROD'
+          name: 'short',
+          statement_descriptor: 'description',
+          unit_label: 'thing',
+          tax_code: 'txcd_41060003'
         }
         global.minimumProductNameLength = 30
         let errorMessage
@@ -130,7 +139,10 @@ describe('/api/administrator/subscriptions/update-product', function () {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          name: '123456789012345678901234567890'
+          name: 'looooooooooong',
+          statement_descriptor: 'description',
+          unit_label: 'thing',
+          tax_code: 'txcd_41060003'
         }
         global.maximumProductNameLength = 3
         let errorMessage
@@ -153,7 +165,10 @@ describe('/api/administrator/subscriptions/update-product', function () {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          statement_descriptor: ''
+          name: 'that',
+          statement_descriptor: '',
+          unit_label: 'thing',
+          tax_code: 'txcd_41060003'
         }
         let errorMessage
         try {
@@ -175,7 +190,10 @@ describe('/api/administrator/subscriptions/update-product', function () {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          statement_descriptor: '1234'
+          name: 'that',
+          statement_descriptor: 'test',
+          unit_label: 'thing',
+          tax_code: 'txcd_41060003'
         }
         let errorMessage
         try {
@@ -195,7 +213,10 @@ describe('/api/administrator/subscriptions/update-product', function () {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          statement_descriptor: '1234567890 123456567890 1234567890'
+          name: 'that',
+          statement_descriptor: '123456789 123456789 123456789',
+          unit_label: 'thing',
+          tax_code: 'txcd_41060003'
         }
         let errorMessage
         try {
@@ -217,7 +238,10 @@ describe('/api/administrator/subscriptions/update-product', function () {
         req.account = administrator.account
         req.session = administrator.session
         req.body = {
-          unit_label: ''
+          name: 'that',
+          statement_descriptor: 'description',
+          unit_label: '',
+          tax_code: 'txcd_41060003'
         }
         let errorMessage
         try {
@@ -228,10 +252,58 @@ describe('/api/administrator/subscriptions/update-product', function () {
         assert.strictEqual(errorMessage, 'invalid-unit_label')
       })
     })
+
+    describe('invalid-tax_code', () => {
+      it('missing posted tax_code', async () => {
+        const administrator = await TestHelper.createOwner()
+        await TestHelper.createProduct(administrator, {
+          publishedAt: 'true'
+        })
+        const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-product?productid=${administrator.product.productid}`)
+        req.account = administrator.account
+        req.session = administrator.session
+        req.body = {
+          name: 'that',
+          statement_descriptor: 'description',
+          unit_label: 'thing',
+          tax_code: ''
+        }
+        let errorMessage
+        try {
+          await req.patch(req)
+        } catch (error) {
+          errorMessage = error.message
+        }
+        assert.strictEqual(errorMessage, 'invalid-tax_code')
+      })
+
+      it('invalid posted tax_code', async () => {
+        const administrator = await TestHelper.createOwner()
+        await TestHelper.createProduct(administrator, {
+          publishedAt: 'true'
+        })
+        const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-product?productid=${administrator.product.productid}`)
+        req.account = administrator.account
+        req.session = administrator.session
+        req.body = {
+          name: 'that',
+          statement_descriptor: 'description',
+          unit_label: 'thing',
+          tax_code: 'invalid'
+        }
+        let errorMessage
+        try {
+          await req.patch(req)
+        } catch (error) {
+          errorMessage = error.message
+        }
+        assert.strictEqual(errorMessage, 'invalid-tax_code')
+      })
+    })
   })
 
   describe('receives', () => {
-    it('optional posted name', async () => {
+    it('required posted name', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
         publishedAt: 'true'
@@ -240,13 +312,16 @@ describe('/api/administrator/subscriptions/update-product', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        name: 'testing'
+        name: 'testing',
+        statement_descriptor: 'description',
+        unit_label: 'thing',
+        tax_code: 'txcd_41060003'
       }
       const productNow = await req.patch(req)
       assert.strictEqual(productNow.stripeObject.name, 'testing')
     })
 
-    it('optional posted statement_descriptor', async () => {
+    it('required posted statement_descriptor', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
         publishedAt: 'true'
@@ -255,13 +330,16 @@ describe('/api/administrator/subscriptions/update-product', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        statement_descriptor: 'descriptor'
+        name: 'that',
+        statement_descriptor: 'descriptor',
+        unit_label: 'thing',
+        tax_code: 'txcd_41060003'
       }
       const productNow = await req.patch(req)
       assert.strictEqual(productNow.stripeObject.statement_descriptor, 'descriptor')
     })
 
-    it('optional posted unit_label', async () => {
+    it('required posted unit_label', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
         publishedAt: 'true'
@@ -270,10 +348,31 @@ describe('/api/administrator/subscriptions/update-product', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        unit_label: 'new-thing'
+        name: 'that',
+        statement_descriptor: 'description',
+        unit_label: 'new-thing',
+        tax_code: 'txcd_41060003'
       }
       const productNow = await req.patch(req)
       assert.strictEqual(productNow.stripeObject.unit_label, 'new-thing')
+    })
+
+    it('required posted tax_code', async () => {
+      const administrator = await TestHelper.createOwner()
+      await TestHelper.createProduct(administrator, {
+        publishedAt: 'true'
+      })
+      const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-product?productid=${administrator.product.productid}`)
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        name: 'that',
+        statement_descriptor: 'description',
+        unit_label: 'thing',
+        tax_code: 'txcd_37060012'
+      }
+      const productNow = await req.patch(req)
+      assert.strictEqual(productNow.stripeObject.tax_code, 'txcd_37060012')
     })
   })
 
@@ -289,7 +388,8 @@ describe('/api/administrator/subscriptions/update-product', function () {
       req.body = {
         name: 'new-name',
         statement_descriptor: 'new-description',
-        unit_label: 'new-thing'
+        unit_label: 'new-thing',
+        tax_code: 'txcd_41060003'
       }
       req.filename = __filename
       req.saveResponse = true
@@ -309,7 +409,10 @@ describe('/api/administrator/subscriptions/update-product', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        name: 'new-name'
+        name: 'new-name',
+        statement_descriptor: 'new-description',
+        unit_label: 'new-thitxcd_41060003ng',
+        tax_code: 'txcd_41060003'
       }
       let errorMessage
       try {
@@ -330,7 +433,10 @@ describe('/api/administrator/subscriptions/update-product', function () {
       req.account = administrator.account
       req.session = administrator.session
       req.body = {
-        name: 'new-name'
+        name: 'new-name',
+        statement_descriptor: 'new-description',
+        unit_label: 'new-thing',
+        tax_code: 'txcd_41060003'
       }
       let errorMessage
       try {
