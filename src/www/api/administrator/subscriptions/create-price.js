@@ -18,6 +18,9 @@ module.exports = {
     if (!product.publishedAt || product.unpublishedAt) {
       throw new Error('invalid-product')
     }
+    if (!req.body.tax_behavior || (req.body.tax_behavior !== 'inclusive' && req.body.tax_behavior !== 'exclusive')) {
+      throw new Error('invalid-tax_behavior')
+    }
     if (req.body.recurring_usage_type && req.body.recurring_usage_type !== 'metered' && req.body.recurring_usage_type !== 'licensed') {
       throw new Error('invalid-recurring_usage_type')
     }
@@ -123,6 +126,7 @@ module.exports = {
       nickname: req.body.nickname,
       product: req.body.productid,
       currency: req.body.currency,
+      tax_behavior: req.body.tax_behavior,
       unit_amount: req.body.unit_amount || undefined,
       unit_amount_decimal: req.body.unit_amount_decimal || undefined,
       recurring: {

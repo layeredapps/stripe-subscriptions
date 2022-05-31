@@ -31,6 +31,7 @@ describe('/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         type: 'recurring',
+        tax_behavior: 'inclusive',
         billing_scheme: 'per_unit',
         nickname: 'Custom price',
         unit_amount: '1000',
@@ -53,7 +54,6 @@ describe('/administrator/subscriptions/create-price', function () {
       global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)
       global.packageJSON.dashboard.server.push(ScreenshotData.administratorPrices)
       const result = await req.post()
-      console.log(result)
       assert.strictEqual(true, result.redirect.startsWith('/administrator/subscriptions/price?priceid='))
     })
   })
@@ -66,6 +66,7 @@ describe('/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         productid: '',
+        tax_behavior: 'inclusive',
         nickname: 'Custom price',
         type: 'recurring',
         currency: 'usd',
@@ -83,6 +84,34 @@ describe('/administrator/subscriptions/create-price', function () {
       assert.strictEqual(message.attr.template, 'invalid-productid')
     })
 
+    it('invalid-tax_behavior', async () => {
+      const administrator = await TestHelper.createOwner()
+      await TestHelper.createProduct(administrator, {
+        publishedAt: 'true'
+      })
+      const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        productid: administrator.product.productid,
+        tax_behavior: '',
+        nickname: 'Custom price',
+        type: 'recurring',
+        currency: '',
+        billing_scheme: 'per_unit',
+        recurring_interval: 'day',
+        recurring_interval_count: '1',
+        recurring_usage_type: 'licensed',
+        recurring_aggregate_usage: 'sum',
+        unit_amount: '1000'
+      }
+      const result = await req.post()
+      const doc = TestHelper.extractDoc(result.html)
+      const messageContainer = doc.getElementById('message-container')
+      const message = messageContainer.child[0]
+      assert.strictEqual(message.attr.template, 'invalid-tax_behavior')
+    })
+
     it('invalid-currency', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
@@ -93,6 +122,7 @@ describe('/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         productid: administrator.product.productid,
+        tax_behavior: 'inclusive',
         nickname: 'Custom price',
         type: 'recurring',
         currency: '',
@@ -120,6 +150,7 @@ describe('/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         productid: administrator.product.productid,
+        tax_behavior: 'inclusive',
         nickname: '',
         type: 'recurring',
         currency: 'usd',
@@ -147,6 +178,7 @@ describe('/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         productid: administrator.product.productid,
+        tax_behavior: 'inclusive',
         nickname: 'Custom price',
         type: '',
         currency: 'usd',
@@ -174,6 +206,7 @@ describe('/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         productid: administrator.product.productid,
+        tax_behavior: 'inclusive',
         nickname: 'Custom price',
         type: 'recurring',
         currency: 'usd',
@@ -201,6 +234,7 @@ describe('/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         productid: administrator.product.productid,
+        tax_behavior: 'inclusive',
         nickname: 'Custom price',
         type: 'one_time',
         currency: 'usd',
@@ -224,13 +258,14 @@ describe('/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         productid: administrator.product.productid,
+        tax_behavior: 'inclusive',
         nickname: 'Custom price',
         type: 'one_time',
         currency: 'usd',
         billing_scheme: 'per_unit',
         unit_amount: '1000',
         transform_quantity_divide_by: '-100',
-        transform_quantity_round: 'up',
+        transform_quantity_round: 'up'
       }
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
@@ -249,6 +284,7 @@ describe('/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         productid: administrator.product.productid,
+        tax_behavior: 'inclusive',
         nickname: 'Custom price',
         type: 'one_time',
         currency: 'usd',
@@ -274,6 +310,7 @@ describe('/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         productid: administrator.product.productid,
+        tax_behavior: 'inclusive',
         nickname: 'Custom price',
         type: 'recurring',
         currency: 'usd',
@@ -301,6 +338,7 @@ describe('/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         productid: administrator.product.productid,
+        tax_behavior: 'inclusive',
         nickname: 'Custom price',
         type: 'recurring',
         currency: 'usd',
@@ -330,6 +368,7 @@ describe('/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         productid: administrator.product.productid,
+        tax_behavior: 'inclusive',
         nickname: 'Custom price',
         type: 'recurring',
         currency: 'usd',
@@ -359,6 +398,7 @@ describe('/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         productid: administrator.product.productid,
+        tax_behavior: 'inclusive',
         nickname: 'Custom price',
         type: 'recurring',
         currency: 'usd',
@@ -388,6 +428,7 @@ describe('/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         productid: administrator.product.productid,
+        tax_behavior: 'inclusive',
         nickname: 'Custom price',
         type: 'recurring',
         currency: 'usd',
@@ -422,6 +463,7 @@ describe('/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         productid: administrator.product.productid,
+        tax_behavior: 'inclusive',
         nickname: 'Custom price',
         type: 'recurring',
         currency: 'usd',
@@ -456,6 +498,7 @@ describe('/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         productid: administrator.product.productid,
+        tax_behavior: 'inclusive',
         nickname: 'Custom price',
         type: 'recurring',
         currency: 'usd',
@@ -490,6 +533,7 @@ describe('/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         productid: administrator.product.productid,
+        tax_behavior: 'inclusive',
         nickname: 'Custom price',
         type: 'recurring',
         currency: 'usd',
@@ -525,6 +569,7 @@ describe('/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         productid: administrator.product.productid,
+        tax_behavior: 'inclusive',
         nickname: 'Custom price',
         type: 'recurring',
         currency: 'usd',
@@ -557,6 +602,7 @@ describe('/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         productid: administrator.product.productid,
+        tax_behavior: 'inclusive',
         nickname: 'Custom price',
         type: 'recurring',
         currency: 'usd',

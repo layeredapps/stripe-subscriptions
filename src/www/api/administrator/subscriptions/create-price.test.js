@@ -20,6 +20,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
           unit_amount: '1000',
           recurring_interval: 'month',
           recurring_interval_count: '1',
+          tax_behavior: 'inclusive',
           productid: ''
         }
         let errorMessage
@@ -44,6 +45,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
           unit_amount: '1000',
           recurring_interval: 'month',
           recurring_interval_count: '1',
+          tax_behavior: 'inclusive',
           productid: 'invalid'
         }
         let errorMessage
@@ -68,7 +70,8 @@ describe('/api/administrator/subscriptions/create-price', function () {
           unit_amount: '1000',
           recurring_interval: 'month',
           recurring_interval_count: '1',
-          productid: administrator.product.productid
+          productid: administrator.product.productid,
+          tax_behavior: 'inclusive',
         }
         let errorMessage
         try {
@@ -79,6 +82,34 @@ describe('/api/administrator/subscriptions/create-price', function () {
         assert.strictEqual(errorMessage, 'invalid-product')
       })
     })
+
+    describe('invalid-tax_behavior', () => {
+      it('invalid posted tax_behavior', async () => {
+        const administrator = await TestHelper.createOwner()
+        await TestHelper.createProduct(administrator, {
+          publishedAt: 'true'
+        })
+        const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
+        req.account = administrator.account
+        req.session = administrator.session
+        req.body = {
+          currency: 'usd',
+          unit_amount: '1000',
+          tax_behavior: 'invalid',
+          recurring_interval: 'month',
+          recurring_interval_count: '1',
+          productid: administrator.product.productid
+        }
+        let errorMessage
+        try {
+          await req.post()
+        } catch (error) {
+          errorMessage = error.message
+        }
+        assert.strictEqual(errorMessage, 'invalid-tax_behavior')
+      })
+    })
+
 
     describe('invalid-unit_amount', () => {
       it('invalid posted unit_amount', async () => {
@@ -92,6 +123,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
         req.body = {
           currency: 'usd',
           unit_amount: 'invalid',
+          tax_behavior: 'inclusive',
           recurring_interval: 'month',
           recurring_interval_count: '1',
           productid: administrator.product.productid
@@ -118,6 +150,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
         req.body = {
           currency: '',
           unit_amount: '1000',
+          tax_behavior: 'inclusive',
           recurring_interval: 'month',
           recurring_interval_count: '1',
           productid: administrator.product.productid
@@ -142,6 +175,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
         req.body = {
           currency: 'invalid',
           unit_amount: '1000',
+          tax_behavior: 'inclusive',
           recurring_interval: 'month',
           recurring_interval_count: '1',
           productid: administrator.product.productid
@@ -168,6 +202,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
         req.body = {
           currency: 'usd',
           unit_amount: '1000',
+          tax_behavior: 'inclusive',
           recurring_interval: 'invalid',
           recurring_interval_count: '1',
           productid: administrator.product.productid
@@ -194,6 +229,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
         req.body = {
           currency: 'usd',
           unit_amount: '1000',
+          tax_behavior: 'inclusive',
           recurring_interval: 'month',
           recurring_interval_count: '',
           productid: administrator.product.productid
@@ -218,6 +254,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
         req.body = {
           currency: 'usd',
           unit_amount: '1000',
+          tax_behavior: 'inclusive',
           recurring_interval: 'month',
           recurring_interval_count: 'nvalid',
           productid: administrator.product.productid
@@ -242,6 +279,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
         req.body = {
           currency: 'usd',
           unit_amount: '1000',
+          tax_behavior: 'inclusive',
           recurring_interval: 'month',
           recurring_interval_count: '14',
           productid: administrator.product.productid
@@ -268,6 +306,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
         req.body = {
           currency: 'usd',
           unit_amount: '1000',
+          tax_behavior: 'inclusive',
           recurring_interval: 'month',
           recurring_interval_count: '1',
           recurring_aggregate_usage: 'invalid',
@@ -296,6 +335,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
         req.body = {
           currency: 'usd',
           unit_amount: '1000',
+          tax_behavior: 'inclusive',
           recurring_interval: 'month',
           recurring_interval_count: '1',
           recurring_usage_type: 'invalid',
@@ -324,6 +364,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
         req.body = {
           currency: 'usd',
           unit_amount: '1000',
+          tax_behavior: 'inclusive',
           recurring_interval: 'month',
           recurring_interval_count: '1',
           recurring_usage_type: 'metered',
@@ -353,6 +394,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
         req.body = {
           currency: 'usd',
           unit_amount: '1000',
+          tax_behavior: 'inclusive',
           recurring_interval: 'month',
           recurring_interval_count: '1',
           recurring_usage_type: 'metered',
@@ -384,6 +426,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
         req.body = {
           currency: 'usd',
           unit_amount: '1000',
+          tax_behavior: 'inclusive',
           recurring_interval: 'month',
           recurring_interval_count: '1',
           recurring_usage_type: 'metered',
@@ -415,6 +458,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
         req.body = {
           currency: 'usd',
           unit_amount: '1000',
+          tax_behavior: 'inclusive',
           recurring_interval: 'month',
           recurring_interval_count: '1',
           recurring_usage_type: 'metered',
@@ -444,6 +488,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
         req.session = administrator.session
         req.body = {
           currency: 'usd',
+          tax_behavior: 'inclusive',
           recurring_interval: 'month',
           recurring_interval_count: '1',
           recurring_usage_type: 'metered',
@@ -477,6 +522,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
         req.session = administrator.session
         req.body = {
           currency: 'usd',
+          tax_behavior: 'inclusive',
           unit_amount: '1000',
           recurring_interval: 'month',
           recurring_interval_count: '1',
@@ -509,6 +555,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
         req.session = administrator.session
         req.body = {
           currency: 'usd',
+          tax_behavior: 'inclusive',
           unit_amount: '1000',
           recurring_interval: 'month',
           recurring_interval_count: '1',
@@ -542,6 +589,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         currency: 'usd',
+        tax_behavior: 'inclusive',
         unit_amount: '1000',
         recurring_interval: 'month',
         recurring_interval_count: '1',
@@ -551,6 +599,29 @@ describe('/api/administrator/subscriptions/create-price', function () {
       }
       const price = await req.post()
       assert.strictEqual(price.stripeObject.product, administrator.product.productid)
+    })
+
+    it('required posted tax_behavior', async () => {
+      const administrator = await TestHelper.createOwner()
+      await TestHelper.createProduct(administrator, {
+        publishedAt: 'true'
+      })
+      const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
+      req.account = administrator.account
+      req.session = administrator.session
+      req.body = {
+        currency: 'usd',
+        tax_behavior: 'inclusive',
+        unit_amount: '1000',
+        tax_behavior: 'inclusive',
+        recurring_interval: 'month',
+        recurring_interval_count: '1',
+        recurring_usage_type: 'metered',
+        recurring_aggregate_usage: 'sum',
+        productid: administrator.product.productid
+      }
+      const price = await req.post()
+      assert.strictEqual(price.stripeObject.tax_behavior, 'inclusive')
     })
 
     it('required posted currency', async () => {
@@ -563,6 +634,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         currency: 'usd',
+        tax_behavior: 'inclusive',
         unit_amount: '1000',
         recurring_interval: 'month',
         recurring_interval_count: '1',
@@ -584,6 +656,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         currency: 'usd',
+        tax_behavior: 'inclusive',
         unit_amount: '1000',
         recurring_interval: 'month',
         recurring_interval_count: '1',
@@ -605,6 +678,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         currency: 'usd',
+        tax_behavior: 'inclusive',
         unit_amount: '1000',
         recurring_interval: 'month',
         recurring_interval_count: '1',
@@ -626,6 +700,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         currency: 'usd',
+        tax_behavior: 'inclusive',
         unit_amount: '1000',
         billing_scheme: 'per_unit',
         recurring_interval: 'month',
@@ -648,6 +723,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         currency: 'usd',
+        tax_behavior: 'inclusive',
         unit_amount: '1000',
         recurring_interval: 'month',
         recurring_interval_count: '1',
@@ -669,6 +745,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         currency: 'usd',
+        tax_behavior: 'inclusive',
         unit_amount: '1000',
         recurring_interval: 'month',
         recurring_interval_count: '1',
@@ -690,6 +767,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         currency: 'usd',
+        tax_behavior: 'inclusive',
         unit_amount: '1000',
         recurring_interval: 'month',
         recurring_interval_count: '1',
@@ -711,6 +789,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         currency: 'usd',
+        tax_behavior: 'inclusive',
         unit_amount: '1000',
         recurring_interval: 'month',
         recurring_interval_count: '1',
@@ -732,6 +811,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         currency: 'usd',
+        tax_behavior: 'inclusive',
         unit_amount: '1000',
         recurring_interval: 'month',
         recurring_interval_count: '1',
@@ -755,6 +835,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         currency: 'usd',
+        tax_behavior: 'inclusive',
         unit_amount: '1000',
         recurring_interval: 'month',
         recurring_interval_count: '1',
@@ -778,6 +859,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         currency: 'usd',
+        tax_behavior: 'inclusive',
         recurring_interval: 'month',
         recurring_interval_count: '1',
         recurring_usage_type: 'metered',
@@ -804,6 +886,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         currency: 'usd',
+        tax_behavior: 'inclusive',
         recurring_interval: 'month',
         recurring_interval_count: '1',
         recurring_usage_type: 'metered',
@@ -830,6 +913,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         currency: 'usd',
+        tax_behavior: 'inclusive',
         recurring_interval: 'month',
         recurring_interval_count: '1',
         recurring_usage_type: 'metered',
@@ -856,6 +940,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         currency: 'usd',
+        tax_behavior: 'inclusive',
         recurring_interval: 'month',
         recurring_interval_count: '1',
         recurring_usage_type: 'metered',
@@ -884,6 +969,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       req.session = administrator.session
       req.body = {
         currency: 'usd',
+        tax_behavior: 'inclusive',
         unit_amount: '1000',
         recurring_interval: 'month',
         recurring_interval_count: '1',
