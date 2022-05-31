@@ -20,13 +20,12 @@ describe('/api/administrator/subscriptions/create-refund', function () {
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({
-      amount: '1000',
-      trial_period_days: '0',
-      interval: 'month',
-      usage_type: 'licensed'
+    const administrator = await TestStripeAccounts.createOwnerWithPrice({
+      unit_amount: 3000,
+      recurring_interval: 'month',
+      recurring_usage_type: 'licensed'
     })
-    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     const req = TestHelper.createRequest(`/api/administrator/subscriptions/create-refund?chargeid=${user.charge.chargeid}`)
     req.account = administrator.account
     req.session = administrator.session
@@ -50,13 +49,13 @@ describe('/api/administrator/subscriptions/create-refund', function () {
     } catch (error) {
       cachedResponses.negativeAmount = error.message
     }
-    req.body.amount = administrator.plan.stripeObject.amount * 2
+    req.body.amount = 10000000
     try {
       await req.post()
     } catch (error) {
       cachedResponses.excessiveAmount = error.message
     }
-    req.body.amount = administrator.plan.stripeObject.amount
+    req.body.amount = 3000
     req.filename = __filename
     req.saveResponse = true
     cachedResponses.returns = await req.post()

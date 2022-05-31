@@ -54,10 +54,6 @@ module.exports = {
       case 'product.updated':
         await updateProduct(stripeEvent, req.stripeKey)
         break
-      case 'plan.created':
-      case 'plan.updated':
-        await updatePlan(stripeEvent, req.stripeKey)
-        break
       case 'payment_intent.amount_capturable_updated':
       case 'payment_intent.canceled':
       case 'payment_intent.created':
@@ -162,28 +158,6 @@ async function load (id, group, key) {
   } catch (error) {
 
   }
-}
-
-async function updatePlan (stripeEvent, stripeKey) {
-  const exists = await subscriptions.Storage.Plan.findOne({
-    attributes: ['planid', 'appid'],
-    where: {
-      planid: stripeEvent.data.object.id
-    }
-  })
-  if (!exists || !exists.dataValues || !exists.dataValues.planid) {
-    return
-  }
-  Log.info('update plan', stripeEvent.data.object)
-  const stripeObject = await load(stripeEvent.data.object.id, 'plans', stripeKey)
-  return subscriptions.Storage.Plan.update({
-    stripeObject
-  }, {
-    where: {
-      planid: exists.dataValues.planid,
-      appid: exists.dataValues.appid
-    }
-  })
 }
 
 async function updateProduct (stripeEvent, stripeKey) {

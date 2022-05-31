@@ -60,7 +60,6 @@
                 <th translate="yes">Customer</th>
                 <th translate="yes">Current period</th>
                 <th translate="yes">Discount</th>
-                <th translate="yes">Plan</th>
                 <th translate="yes">Status</th>
                 <th translate="yes">Created</th>
               </tr>
@@ -105,7 +104,6 @@
         <td><a href="/administrator/subscriptions/customer?customerid=${subscription.customerid}">${subscription.customerid}</a></td>
         <td>${subscription.currentPeriodStartFormatted} - ${subscription.currentPeriodEndFormatted}</td>
         <td>${subscription.discount}</td>
-        <td><a href="/administrator/subscriptions/plan?planid=${subscription.plan}">${subscription.planid}</a></td>
         <td id="active-subscription-${subscription.id}">Active</td>
         <td id="canceling-subscription-${subscription.id}">Active (canceling)</td>
         <td id="trialing-subscription-${subscription.id}">Trial ending ${subscription.trialEndFormatted}</td>

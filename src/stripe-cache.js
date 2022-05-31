@@ -49,8 +49,8 @@ function formatError (error, group) {
         return `invalid-${group.substring(0, group.length - 1)}${property}`
       case 'coupon':
         return 'invalid-couponid'
-      case 'plan':
-        return 'invalid-planid'
+      case 'price':
+        return 'invalid-priceid'
       case 'subscription':
         return 'invalid-subscriptionid'
       case 'charge':
@@ -69,6 +69,16 @@ function formatError (error, group) {
       return 'duplicate-couponid'
     }
   }
+  // TODO: this is sniffing the "message" of the error which is
+  // a plain text description of what went wrong, this is
+  // probably a volatile field but the error code is ambiguous
+  if (error.raw && error.raw.code === 'resource_missing' && error.raw.message.indexOf('payment') > -1 && error.raw.message.indexOf('method') > -1) {
+    return 'invalid-paymentmethod'
+  }
+  if (error.raw && error.raw.param === 'subscription_item' && error.raw.message.indexOf('licensed') > -1) {
+    return 'invalid-subscription'
+  }
+  console.log(error)
   return 'unknown-error'
 }
 

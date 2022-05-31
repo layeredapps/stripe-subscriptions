@@ -18,7 +18,7 @@ describe('/api/user/subscriptions/create-refund', function () {
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({ amount: '100000' })
+    const administrator = await TestStripeAccounts.createOwnerWithPrice()
     const user = await TestHelper.createUser()
     // missing and invalid id
     const req = TestHelper.createRequest('/api/user/subscriptions/create-refund')
@@ -38,7 +38,7 @@ describe('/api/user/subscriptions/create-refund', function () {
       cachedResponses.invalid = error.message
     }
     // invalid charge
-    const user2 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const user2 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     await TestHelper.createRefund(administrator, user2.charge.chargeid)
     const req3 = TestHelper.createRequest(`/api/user/subscriptions/create-refund?chargeid=${user2.charge.chargeid}`)
     req3.account = user2.account
@@ -52,7 +52,7 @@ describe('/api/user/subscriptions/create-refund', function () {
       cachedResponses.invalidCharge = error.message
     }
     global.subscriptionRefundPeriod = 0
-    await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan, user2)
+    await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, user2)
     const req4 = TestHelper.createRequest(`/api/user/subscriptions/create-refund?chargeid=${user2.charge.chargeid}`)
     req4.account = user2.account
     req4.session = user2.session
@@ -80,7 +80,7 @@ describe('/api/user/subscriptions/create-refund', function () {
     cachedResponses.returns = await req6.post()
     // env
     global.subscriptionRefundPeriod = 0
-    await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan, user2)
+    await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, user2)
     const req7 = TestHelper.createRequest(`/api/user/subscriptions/create-refund?chargeid=${user2.charge.chargeid}`)
     req7.account = user2.account
     req7.session = user2.session

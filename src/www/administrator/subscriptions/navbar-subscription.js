@@ -8,12 +8,6 @@ module.exports = {
         removeElements.push('navbar-apply-coupon-link')
       } else {
         removeElements.push('navbar-revoke-coupon-link')
-        // const plan = await global.api.administrator.subscriptions.Plan.get({
-        //   planid: subscription.planid
-        // })
-        // if (!plan.amount || subscription.cancel_at_period_end) {
-        //   removeElements.push('navbar-apply-coupon-link')
-        // }
       }
     }
     const template = doc.getElementById('navbar')

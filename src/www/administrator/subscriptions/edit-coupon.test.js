@@ -95,7 +95,7 @@ describe('/administrator/subscriptions/edit-coupon', function () {
   describe('errors', () => {
     it('invalid-couponid', async () => {
       const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/edit-coupon?planid=invalid')
+      const req = TestHelper.createRequest('/administrator/subscriptions/edit-coupon?couponid=invalid')
       req.account = administrator.account
       req.session = administrator.session
       await req.route.api.before(req)

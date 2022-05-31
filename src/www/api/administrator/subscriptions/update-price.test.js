@@ -57,7 +57,7 @@ describe('/api/administrator/subscriptions/update-price', function () {
     })
 
     describe('invalid-nickname', () => {
-      it ('missing posted nickname', async () => {
+      it('missing posted nickname', async () => {
         const administrator = await TestStripeAccounts.createOwnerWithPrice({
           amount: '1000',
           interval: 'month',

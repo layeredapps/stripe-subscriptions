@@ -18,22 +18,7 @@ async function beforeRequest (req) {
     for (const i in subscriptions) {
       const subscription = formatStripeObject(subscriptions[i])
       subscriptions[i] = subscription
-      req.query.planid = subscription.planid
-      let planRaw
-      try {
-        planRaw = await global.api.user.subscriptions.PublishedPlan.get(req)
-      } catch (error) {
-        subscription.nextChargeFormatted = 'plan-missing'
-        continue
-      }
-      const plan = formatStripeObject(planRaw)
-      subscription.amountFormatted = dashboard.Format.money(plan.amount || 0, plan.currency)
-      subscription.currency = plan.currency
-      if (!plan.amount || subscription.status !== 'active') {
-        subscription.nextChargeFormatted = ''
-      } else {
-        subscription.nextChargeFormatted = dashboard.Format.date(subscription.current_period_end)
-      }
+      subscription.nextChargeFormatted = dashboard.Format.date(subscription.current_period_end)
     }
   }
   req.data = { subscriptions, total, offset }

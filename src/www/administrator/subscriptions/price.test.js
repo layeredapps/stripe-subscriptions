@@ -9,7 +9,6 @@ describe('/administrator/subscriptions/price', function () {
     it('should bind data to req', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice({
         amount: '1000',
-        trial_period_days: '0',
         interval: 'month',
         usage_type: 'licensed'
       })
@@ -25,7 +24,6 @@ describe('/administrator/subscriptions/price', function () {
     it('should present the price table (screenshots)', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice({
         amount: '1000',
-        trial_period_days: '0',
         interval: 'month',
         usage_type: 'licensed'
       })

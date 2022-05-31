@@ -798,7 +798,7 @@ function createInvoice (subscription, date) {
             amount: subscription.plan.amount,
             currency: 'usd',
             description: `1 thing × ${subscription.plan.productid} (at $10.00 / month)`,
-            discount_amounts: [],
+            discounit_amounts: [],
             discountable: true,
             discounts: [],
             livemode: false,
@@ -882,7 +882,7 @@ function createInvoice (subscription, date) {
       tax: null,
       test_clock: null,
       total: subscription.plan.amount,
-      total_discount_amounts: [],
+      total_discounit_amounts: [],
       total_tax_amounts: [],
       transfer_data: null,
       webhooks_delivered_at: null

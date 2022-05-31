@@ -13,14 +13,11 @@ global.testConfiguration.automaticBillingProfileFullName = false
 global.testConfiguration.automaticBillingProfileEmail = false
 global.testConfiguration.skipConfirmSubscription = false
 global.testConfiguration.requireBillingProfileAddress = true
-global.testConfiguration.viewSubscriptionPlans = true
 global.testConfiguration.stripeJS = false
 global.testConfiguration.startSubscriptionPath = '/account/subscriptions/start-subscription'
 global.testConfiguration.subscriptionRefundPeriod = 7 * 24 * 60 * 60
 global.testConfiguration.minimumCouponLength = 1
 global.testConfiguration.maximumCouponLength = 100
-global.testConfiguration.minimumPlanIDLength = 1
-global.testConfiguration.maximumPlanIDLength = 100
 global.testConfiguration.minimumProductNameLength = 1
 global.testConfiguration.maximumProductNameLength = 100
 global.testConfiguration.stripeKey = process.env.SUBSCRIPTIONS_STRIPE_KEY || process.env.STRIPE_KEY
@@ -66,9 +63,6 @@ const enabledEvents = [
   // 'price.created',
   // 'price.deleted',
   // 'price.updated',
-  // 'plan.created',
-  // 'plan.deleted',
-  // 'plan.updated',
   // 'order_return.created',
   'payment_intent.amount_capturable_updated',
   'payment_intent.canceled',
@@ -180,8 +174,9 @@ const enabledEvents = [
 const util = require('util')
 const TestHelper = require('@layeredapps/dashboard/test-helper.js')
 const TestHelperPuppeteer = require('@layeredapps/dashboard/test-helper-puppeteer.js')
-const Log = require('@layeredapps/dashboard/src/log.js')('test-helper-stripe-subscriptions')
+const Log = require('@layeredapps/dashboard/src/log.js')('test-helper-subscriptions')
 const ngrok = require('ngrok')
+const ngrokLog = require('@layeredapps/dashboard/src/log.js')('test-helper-ngrok')
 const packageJSON = require('./package.json')
 const stripe = require('stripe')({
   apiVersion: global.stripeAPIVersion,
@@ -232,6 +227,7 @@ const waitForWebhook = util.promisify(async (webhookType, matching, callback) =>
 })
 
 module.exports = {
+  addSubscriptionItem,
   cancelSubscription,
   createAmountOwed,
   createPaymentMethod,
@@ -241,12 +237,10 @@ module.exports = {
   createCustomer,
   createCustomerDiscount,
   createPayout,
-  createPlan,
   createPrice,
   createProduct,
   createRefund,
   createUsageRecord,
-  changeSubscription,
   changeSubscriptionQuantity,
   createSubscription,
   createSubscriptionDiscount,
@@ -257,8 +251,7 @@ module.exports = {
   denyRefund,
   flagCharge,
   forgiveInvoice,
-  setPlanPublished,
-  setPlanUnpublished,
+  removeSubscriptionItem,
   setPricePublished,
   setPriceUnpublished,
   setProductPublished,
@@ -286,7 +279,7 @@ const createRequest = module.exports.createRequest = (rawURL) => {
   return req
 }
 
-let webhook, subscriptions, createdCustomer, createdProduct, createdPlan, createdCoupon
+let webhook, subscriptions, createdCustomer, createdProduct, createdCoupon
 
 // direct webhook access is set up before the tests a single time
 async function setupBefore () {
@@ -306,7 +299,6 @@ async function setupBeforeEach () {
   Log.info('setupBeforeEach')
   createdCustomer = false
   createdCoupon = false
-  createdPlan = false
   createdProduct = false
   const bindStripeKey = require.resolve('./src/server/bind-stripe-key.js')
   if (global.packageJSON.dashboard.serverFilePaths.indexOf(bindStripeKey) === -1) {
@@ -358,7 +350,7 @@ async function setupWebhook () {
       const tunnel = await ngrok.connect({
         port: global.port,
         // auth: process.env.NGROK_AUTH,
-        onLogEvent: Log.info
+        onLogEvent: ngrokLog.info
       })
       webhook = await stripe.webhookEndpoints.create({
         url: `${tunnel}/webhooks/subscriptions/index-subscription-data`,
@@ -415,18 +407,36 @@ async function deleteOldWebhooks () {
 
 async function deleteOldData () {
   Log.info('deleteOldData')
-  if (!createdCustomer && !createdPlan && !createdProduct && !createdCoupon) {
+  if (!createdCustomer && !createdProduct && !createdCoupon) {
     return
   }
-  for (const field of ['subscriptions', 'customers', 'plans', 'products', 'coupons']) {
+  // TODO: stripe don't support deleting invoices, charges, products
+  // payment intents etc the issue with leaving this residual test
+  // data is it may accumulate and overwhelm the ngrok connection
+  // limits for webhook proxying
+  for (const field of ['subscriptions', 'customers', 'products', 'coupons']) {
     try {
-      const objects = await stripe[field].list({ limit: 100 }, stripeKey)
+      const listParameters = {
+        limit: 100
+      }
+      if (field === 'products') {
+        listParameters.active = true
+      }
+      const objects = await stripe[field].list(listParameters, stripeKey)
       if (objects && objects.data && objects.data.length) {
         for (const object of objects.data) {
-          try {
-            await stripe[field].del(object.id, stripeKey)
-          } catch (error) {
-            Log.error('delete old data item error', object.id, error)
+          if (field === 'products') {
+            // TODO: stripe don't support deleting products so they have to
+            // be marked as 'active=false' instead
+            // https://github.com/stripe/stripe-python/issues/658
+            await stripe[field].update(object.id, { active: false }, stripeKey)
+          } else {
+            try {
+              await stripe[field].del(object.id, stripeKey)
+            } catch (error) {
+              await stripe[field].update(object.id, { active: false }, stripeKey)
+              Log.error('delete old data item error', object.id, error)
+            }
           }
         }
       }
@@ -492,37 +502,6 @@ async function createPrice (administrator, properties) {
   }
   administrator.price = price
   return price
-}
-
-let planNumber = 0
-async function createPlan (administrator, properties) {
-  Log.info('createPlan', administrator, properties)
-  createdPlan = true
-  planNumber++
-  const req = createRequest('/api/administrator/subscriptions/create-plan')
-  req.session = administrator.session
-  req.account = administrator.account
-  req.body = {
-    planid: `plan${planNumber}`,
-    currency: 'USD',
-    interval: 'month',
-    interval_count: '1',
-    amount: '0'
-  }
-  if (properties) {
-    for (const property in properties) {
-      req.body[property] = properties[property].toString()
-    }
-  }
-  let plan = await req.post()
-  if (properties && properties.unpublishedAt) {
-    const req2 = createRequest(`/api/administrator/subscriptions/set-plan-unpublished?planid=${plan.planid}`)
-    req2.session = req.session
-    req2.account = req.account
-    plan = await req2.patch(req2)
-  }
-  administrator.plan = plan
-  return plan
 }
 
 let couponNumber = 0
@@ -781,48 +760,6 @@ async function createAmountOwed (user, dueDate) {
   return user.invoice
 }
 
-async function changeSubscription (user, planid) {
-  Log.info('changeSubscription', user, planid)
-  const req = createRequest(`/api/user/subscriptions/set-subscription-plan?subscriptionid=${user.subscription.subscriptionid}`)
-  req.session = user.session
-  req.account = user.account
-  req.body = {
-    planid
-  }
-  if (user.paymentMethod) {
-    req.body.paymentmethodid = user.paymentMethod.stripeObject.id
-  }
-  user.subscription = await req.patch()
-  await waitForWebhook('customer.subscription.updated', (stripeEvent) => {
-    return stripeEvent.data.object.plan.planid === planid
-  })
-  await waitForWebhook('invoice.created', async (stripeEvent) => {
-    if (stripeEvent.data.object.id !== user.invoice.stripeObject.id &&
-        stripeEvent.data.object.subscription === user.subscription.subscriptionid &&
-        stripeEvent.data.object.lines.data[stripeEvent.data.object.lines.data.length - 1].plan.planid === planid) {
-      user.invoice = await global.api.administrator.subscriptions.Invoice.get({
-        query: {
-          invoiceid: stripeEvent.data.object.id
-        }
-      })
-      return true
-    }
-  })
-  if (user.invoice.stripeObject.amount_due && !user.invoice.stripeObject.charge) {
-    await waitForWebhook('charge.succeeded', async (stripeEvent) => {
-      if (stripeEvent.data.object.id === user.invoice.stripeObject.charge) {
-        user.charge = await global.api.administrator.subscriptions.Charge.get({
-          query: {
-            chargeid: stripeEvent.data.object.id
-          }
-        })
-        return true
-      }
-    })
-  }
-  return user.subscription
-}
-
 async function changeSubscriptionQuantity (user, quantity) {
   Log.info('changeSubscriptionQuantity', user, quantity)
   const req = createRequest(`/api/user/subscriptions/set-subscription-quantity?subscriptionid=${user.subscription.subscriptionid}`)
@@ -870,16 +807,51 @@ async function changeSubscriptionQuantity (user, quantity) {
   return user.subscription
 }
 
-async function createSubscription (user, planid) {
-  Log.info('createSubscription', user, planid)
+async function createSubscription (user, priceids, properties) {
+  Log.info('createSubscription', user, priceids)
+  const quantities = []
+  for (let i = 0; i < priceids.length; i++) {
+    quantities.push(1)
+  }
   const req = createRequest(`/api/user/subscriptions/create-subscription?customerid=${user.customer.customerid}`)
   req.session = user.session
   req.account = user.account
   req.body = {
-    planid
+    priceids,
+    quantities: quantities.join(',')
   }
   if (user.paymentMethod) {
     req.body.paymentmethodid = user.paymentMethod.stripeObject.id
+  }
+  if (properties) {
+    for (const property in properties) {
+      req.body[property] = properties[property].toString()
+    }
+  }
+  user.subscription = await req.post()
+  return user.subscription
+}
+
+async function addSubscriptionItem (user, priceid, quantity) {
+  Log.info('addSubscriptionItem', user, priceid)
+  const req = createRequest(`/api/user/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
+  req.session = user.session
+  req.account = user.account
+  req.body = {
+    priceid,
+    quantity: quantity || '1'
+  }
+  user.subscription = await req.patch()
+  return user.subscription
+}
+
+async function removeSubscriptionItem (user, itemid) {
+  Log.info('addSubscriptionItem', user, itemid)
+  const req = createRequest(`/api/user/subscriptions/remove-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
+  req.session = user.session
+  req.account = user.account
+  req.body = {
+    itemid
   }
   user.subscription = await req.post()
   return user.subscription
@@ -907,24 +879,6 @@ async function setPricePublished (administrator, price) {
 async function setPriceUnpublished (administrator, price) {
   Log.info('setPriceUnpublished', administrator, price)
   const req = createRequest(`/api/administrator/subscriptions/set-price-unpublished?priceid=${price.priceid}`)
-  req.session = administrator.session
-  req.account = administrator.account
-  req.stripeKey = stripeKey
-  return req.patch()
-}
-
-async function setPlanPublished (administrator, plan) {
-  Log.info('setPlanPublished', administrator, plan)
-  const req = createRequest(`/api/administrator/subscriptions/set-plan-published?planid=${plan.planid}`)
-  req.session = administrator.session
-  req.account = administrator.account
-  req.stripeKey = stripeKey
-  return req.patch()
-}
-
-async function setPlanUnpublished (administrator, plan) {
-  Log.info('setPlanUnpublished', administrator, plan)
-  const req = createRequest(`/api/administrator/subscriptions/set-plan-unpublished?planid=${plan.planid}`)
   req.session = administrator.session
   req.account = administrator.account
   req.stripeKey = stripeKey

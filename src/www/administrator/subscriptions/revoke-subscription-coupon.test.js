@@ -18,8 +18,8 @@ describe('/administrator/subscriptions/revoke-subscription-coupon', function () 
     cachedResponses = {}
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({ amount: '1000' })
-    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const administrator = await TestStripeAccounts.createOwnerWithPrice()
+    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     // subscription without discount
     const req = TestHelper.createRequest(`/administrator/subscriptions/revoke-subscription-coupon?subscriptionid=${user.subscription.subscriptionid}`)
     req.account = administrator.account

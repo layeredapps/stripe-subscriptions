@@ -6,61 +6,88 @@ module.exports = {
     if (!req.query || !req.query.customerid) {
       throw new Error('invalid-customerid')
     }
-    if (!req.body || !req.body.planid) {
-      throw new Error('invalid-planid')
+    if (!req.body || !req.body.priceids) {
+      throw new Error('invalid-priceids')
     }
-    if (req.body.quantity) {
-      try {
-        const quantity = parseInt(req.body.quantity, 10)
-        if (quantity < 1 || quantity.toString() !== req.body.quantity) {
+    if (!req.body || !req.body.quantities) {
+      throw new Error('invalid-quantities')
+    }
+    const priceids = req.body.priceids.split(',')
+    let metered = false
+    for (const priceid of priceids) {
+      req.query.priceid = priceid
+      const price = await global.api.user.subscriptions.PublishedPrice.get(req)
+      if (!price) {
+        throw new Error('invalid-priceid')
+      }
+      if (price.unpublishedAt) {
+        throw new Error('invalid-price')
+      }
+      if (price.stripeObject.recurring.usage_type === 'metered') {
+        metered = true
+      }
+    }
+    let quantities
+    if (!metered) {
+      quantities = req.body.quantities.split(',')
+      for (const value of quantities) {
+        try {
+          const quantity = parseInt(value, 10)
+          if (quantity < 1 || quantity.toString() !== value) {
+            throw new Error('invalid-quantity')
+          }
+        } catch (error) {
           throw new Error('invalid-quantity')
         }
-      } catch (error) {
-        throw new Error('invalid-quantity')
+      }
+      if (quantities.length !== priceids.length) {
+        throw new Error('invalid-price-quantity-mismatch')
       }
     }
-    req.query.planid = req.body.planid
-    const plan = await global.api.user.subscriptions.PublishedPlan.get(req)
-    if (!plan) {
-      throw new Error('invalid-planid')
-    }
-    if (plan.unpublishedAt) {
-      throw new Error('invalid-plan')
+    if (req.body.couponid) {
+      req.query.couponid = req.body.couponid
+      const coupon = await global.api.user.subscriptions.PublishedCoupon.get(req)
+      if (!coupon) {
+        throw new Error('invalid-couponid')
+      }
     }
     const customer = await global.api.user.subscriptions.Customer.get(req)
-    if (plan.stripeObject.amount && !plan.stripeObject.trial_period_days && (!req.body.paymentmethodid || !req.body.paymentmethodid.length)) {
-      if (customer.stripeObject.invoice_settings && customer.stripeObject.invoice_settings.default_payment_method) {
-        req.body.paymentmethodid = customer.stripeObject.invoice_settings.default_payment_method
-      }
-    }
-    // TODO: create an ENV toggle for allowing no payment info on trials
-    if (plan.stripeObject.amount && !plan.stripeObject.trial_period_days) {
-      if (!req.body.paymentmethodid || !req.body.paymentmethodid.length) {
-        throw new Error('invalid-paymentmethodid')
-      }
-      req.query.paymentmethodid = req.body.paymentmethodid
-      const paymentMethod = await global.api.user.subscriptions.PaymentMethod.get(req)
-      if (!paymentMethod) {
-        throw new Error('invalid-paymentmethodid')
-      }
+    if (customer.stripeObject.default_source) {
+      req.body.paymentmethodid = customer.stripeObject.default_source
+    } else if (customer.stripeObject.invoice_settings && customer.stripeObject.invoice_settings.default_payment_method) {
+      req.body.paymentmethodid = customer.stripeObject.invoice_settings.default_payment_method
     }
     const subscriptionInfo = {
       customer: req.query.customerid,
-      items: [{
-        plan: req.body.planid
-      }],
+      items: [],
       enable_incomplete_payments: true
     }
-    if (req.body.quantity && plan.stripeObject.usage_type === 'licensed') {
-      subscriptionInfo.items[0].quantity = req.body.quantity
+    for (let i = 0; i < priceids.length; i++) {
+      subscriptionInfo.items.push({
+        price: priceids[i],
+        quantity: metered ? undefined : quantities[i]
+      })
     }
     if (req.body.paymentmethodid) {
       subscriptionInfo.default_payment_method = req.body.paymentmethodid
     }
-    if (plan.stripeObject.trial_period_days) {
-      subscriptionInfo.trial_end = Math.floor(new Date().getTime() / 1000) + (plan.stripeObject.trial_period_days * 24 * 60 * 60)
+    if (req.body.trial_period_days) {
+      subscriptionInfo.trial_period_days = req.body.trial_period_days
     }
-    const subscription = await stripeCache.execute('subscriptions', 'create', subscriptionInfo, req.stripeKey)
+    if (req.body.billing_cycle_anchor) {
+      subscriptionInfo.billing_cycle_anchor = req.body.billing_cycle_anchor
+    }
+    if (req.body.couponid) {
+      subscriptionInfo.coupon = req.body.couponid
+    }
+    let subscription
+    try {
+      subscription = await stripeCache.execute('subscriptions', 'create', subscriptionInfo, req.stripeKey)
+    } catch (error) {
+      if (error.message === 'invalid-paymentmethod') {
+        throw new Error('invalid-customer')
+      }
+    }
     if (!subscription) {
       throw new Error('unknown-error')
     }
@@ -69,8 +96,7 @@ module.exports = {
       subscriptionid: subscription.id,
       customerid: req.query.customerid,
       accountid: req.account.accountid,
-      productid: plan.productid,
-      planid: plan.planid,
+      priceids,
       stripeObject: subscription
     })
     req.query.subscriptionid = subscription.id

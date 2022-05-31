@@ -18,6 +18,12 @@ module.exports = {
         throw new Error('invalid-customerid')
       }
       where.customerid = req.query.customerid
+    } else if (req.query.subscriptionid) {
+      const subscription = await global.api.user.subscriptions.Subscription.get(req)
+      if (!subscription) {
+        throw new Error('invalid-subscriptionid')
+      }
+      where.subscriptionid = req.query.subscriptionid
     } else {
       where.accountid = req.query.accountid
     }

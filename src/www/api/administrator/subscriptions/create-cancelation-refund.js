@@ -47,8 +47,6 @@ module.exports = {
       accountid: subscription.accountid,
       subscriptionid: subscription.subscriptionid,
       customerid: subscription.customerid,
-      planid: subscription.planid,
-      productid: subscription.productid,
       stripeObject: refund
     })
     req.query.refundid = refund.id

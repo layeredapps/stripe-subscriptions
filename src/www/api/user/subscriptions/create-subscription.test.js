@@ -20,11 +20,10 @@ describe('/api/user/subscriptions/create-subscription', function () {
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({
-      amount: '1000',
-      trial_period_days: '0',
-      interval: 'month',
-      usage_type: 'licensed'
+    const administrator = await TestStripeAccounts.createOwnerWithPrice({
+      unit_amount: 3000,
+      recurring_interval: 'month',
+      recurring_usage_type: 'licensed'
     })
     const user = await TestHelper.createUser()
     // invalid customerid
@@ -32,7 +31,8 @@ describe('/api/user/subscriptions/create-subscription', function () {
     req.account = user.account
     req.session = user.session
     req.body = {
-      planid: administrator.plan.planid
+      priceids: administrator.price.priceid,
+      quantities: '1'
     }
     try {
       await req.post()
@@ -43,7 +43,8 @@ describe('/api/user/subscriptions/create-subscription', function () {
     req2.account = user.account
     req2.session = user.session
     req2.body = {
-      planid: administrator.plan.planid
+      priceids: administrator.price.priceid,
+      quantities: '1'
     }
     try {
       await req2.post()
@@ -59,7 +60,8 @@ describe('/api/user/subscriptions/create-subscription', function () {
     req3.account = user.account
     req3.session = user.session
     req3.body = {
-      planid: administrator.plan.planid
+      priceids: administrator.price.priceid,
+      quantities: '1'
     }
     try {
       await req3.post()
@@ -72,62 +74,68 @@ describe('/api/user/subscriptions/create-subscription', function () {
     req4.account = user2.account
     req4.session = user2.session
     req4.body = {
-      planid: administrator.plan.planid
+      priceids: administrator.price.priceid,
+      quantities: '1'
     }
     try {
       await req4.post()
     } catch (error) {
       cachedResponses.invalidAccount = error.message
     }
-    // invalid plan
+    // invalid price
     const user3 = await TestStripeAccounts.createUserWithPaymentMethod()
     const req5 = TestHelper.createRequest(`/api/user/subscriptions/create-subscription?customerid=${user3.customer.customerid}`)
     req5.account = user3.account
     req5.session = user3.session
     req5.body = {
-      planid: '',
-      paymentmethodid: user3.paymentMethod.paymentmethodid
+      priceids: '',
+      paymentmethodid: user3.paymentMethod.paymentmethodid,
+      quantities: '1'
     }
     try {
       await req5.post()
     } catch (error) {
-      cachedResponses.missingPlan = error.message
+      cachedResponses.missingprice = error.message
     }
     req5.body = {
-      planid: 'invalid',
-      paymentmethodid: user3.paymentMethod.paymentmethodid
+      priceids: 'invalid',
+      paymentmethodid: user3.paymentMethod.paymentmethodid,
+      quantities: '1'
     }
     try {
       await req5.post()
     } catch (error) {
-      cachedResponses.invalidPlan = error.message
+      cachedResponses.invalidprice = error.message
     }
-    // not published plan
-    const administrator2 = await TestStripeAccounts.createOwnerWithNotPublishedPlan()
+    // not published price
+    const administrator2 = await TestStripeAccounts.createOwnerWithNotPublishedPrice()
     req5.body = {
-      planid: administrator2.plan.planid
+      priceids: administrator2.price.priceid,
+      quantities: '1'
     }
     try {
       await req5.post()
     } catch (error) {
-      cachedResponses.notPublishedPlan = error.message
+      cachedResponses.notPublishedprice = error.message
     }
-    // unpublished plan
-    const administrator3 = await TestStripeAccounts.createOwnerWithUnpublishedPlan()
+    // unpublished price
+    const administrator3 = await TestStripeAccounts.createOwnerWithUnpublishedPrice()
     req5.body = {
-      planid: administrator3.plan.planid
+      priceids: administrator3.price.priceid,
+      quantities: '1'
     }
     try {
       await req5.post()
     } catch (error) {
-      cachedResponses.unpublishedPlan = error.message
+      cachedResponses.unpublishedprice = error.message
     }
     // response
     const req6 = TestHelper.createRequest(`/api/user/subscriptions/create-subscription?customerid=${user3.customer.customerid}`)
     req6.account = user3.account
     req6.session = user3.session
     req6.body = {
-      planid: administrator.plan.planid,
+      priceids: administrator.price.priceid,
+      quantities: '1',
       paymentmethodid: user3.paymentMethod.paymentmethodid
     }
     req6.filename = __filename
@@ -155,7 +163,7 @@ describe('/api/user/subscriptions/create-subscription', function () {
       it('ineligible querystring customer requires payment method', async function () {
         await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidPaymentMethod
-        assert.strictEqual(errorMessage, 'invalid-paymentmethodid')
+        assert.strictEqual(errorMessage, 'invalid-customer')
       })
     })
 
@@ -167,31 +175,33 @@ describe('/api/user/subscriptions/create-subscription', function () {
       })
     })
 
-    describe('invalid-planid', () => {
-      it('missing posted planid', async function () {
+    describe('invalid-priceids', () => {
+      it('missing posted priceids', async function () {
         await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.missingPlan
-        assert.strictEqual(errorMessage, 'invalid-planid')
-      })
-
-      it('invalid posted planid', async function () {
-        await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.invalidPlan
-        assert.strictEqual(errorMessage, 'invalid-planid')
+        const errorMessage = cachedResponses.missingprice
+        assert.strictEqual(errorMessage, 'invalid-priceids')
       })
     })
 
-    describe('invalid-plan', () => {
-      it('ineligible posted plan is not published', async function () {
+    describe('invalid-priceid', () => {
+      it('invalid posted priceids contains invalid price', async function () {
         await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.notPublishedPlan
-        assert.strictEqual(errorMessage, 'invalid-plan')
+        const errorMessage = cachedResponses.invalidprice
+        assert.strictEqual(errorMessage, 'invalid-priceid')
+      })
+    })
+
+    describe('invalid-price', () => {
+      it('invalid posted priceids contains not published price', async function () {
+        await bundledData(this.test.currentRetry())
+        const errorMessage = cachedResponses.notPublishedprice
+        assert.strictEqual(errorMessage, 'invalid-price')
       })
 
-      it('ineligible posted plan is unpublished', async function () {
+      it('invalid posted priceids contains unpublished price', async function () {
         await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.unpublishedPlan
-        assert.strictEqual(errorMessage, 'invalid-plan')
+        const errorMessage = cachedResponses.unpublishedprice
+        assert.strictEqual(errorMessage, 'invalid-price')
       })
     })
   })

@@ -23,7 +23,7 @@ describe('/administrator/subscriptions/coupon', function () {
 
   describe('view', () => {
     it('should present the coupon table (screenshots)', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPlan()
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
       await TestHelper.createCoupon(administrator, {
         publishedAt: 'true',
         duration: 'repeating',
@@ -37,7 +37,7 @@ describe('/administrator/subscriptions/coupon', function () {
         await TestHelper.createCustomerDiscount(administrator, user.customer, administrator.coupon)
       }
       for (let i = 0; i < 3; i++) {
-        const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+        const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
         await TestHelper.createSubscriptionDiscount(administrator, user.subscription, administrator.coupon)
       }
       const req = TestHelper.createRequest(`/administrator/subscriptions/coupon?couponid=${administrator.coupon.couponid}`)

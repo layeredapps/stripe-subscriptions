@@ -42,7 +42,6 @@ describe('/api/administrator/subscriptions/price', function () {
     it('object', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice({
         amount: '1000',
-        trial_period_days: '0',
         interval: 'month',
         usage_type: 'licensed'
       })

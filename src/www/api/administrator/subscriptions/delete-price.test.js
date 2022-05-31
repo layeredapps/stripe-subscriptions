@@ -42,7 +42,6 @@ describe('/api/administrator/subscriptions/delete-price', function () {
     it('boolean', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice({
         amount: '1000',
-        trial_period_days: '0',
         interval: 'month',
         usage_type: 'licensed'
       })

@@ -85,9 +85,9 @@ describe('/api/administrator/subscriptions/set-product-unpublished', function ()
       req.session = administrator.session
       req.filename = __filename
       req.saveResponse = true
-      const plan = await req.patch()
-      assert.notStrictEqual(plan.unpublishedAt, undefined)
-      assert.notStrictEqual(plan.unpublishedAt, null)
+      const price = await req.patch()
+      assert.notStrictEqual(price.unpublishedAt, undefined)
+      assert.notStrictEqual(price.unpublishedAt, null)
     })
   })
 })

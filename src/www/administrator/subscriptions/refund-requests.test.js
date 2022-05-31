@@ -24,14 +24,13 @@ describe('/administrator/subscriptions/refund-requests', function () {
       publishedAt: 'true'
     })
     for (let i = 0, len = global.pageSize + 2; i < len; i++) {
-      await TestHelper.createPlan(administrator, {
+      await TestHelper.createPrice(administrator, {
         productid: administrator.product.productid,
-        usage_type: 'licensed',
+        recurring_usage_type: 'licensed',
         publishedAt: 'true',
-        amount: '100000',
-        trial_period_days: '0'
+        unit_amount: '100000'
       })
-      const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+      const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
       await TestHelper.requestRefund(user, user.charge.chargeid)
       cachedCharges.unshift(user.charge.chargeid)
     }

@@ -18,8 +18,8 @@ describe('/administrator/subscriptions/apply-subscription-coupon', function () {
     cachedResponses = {}
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({ amount: '1000' })
-    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const administrator = await TestStripeAccounts.createOwnerWithPrice()
+    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     // canceling subscription
     await TestHelper.cancelSubscription(user)
     const req = TestHelper.createRequest(`/administrator/subscriptions/apply-subscription-coupon?subscriptionid=${user.subscription.subscriptionid}`)
@@ -28,15 +28,15 @@ describe('/administrator/subscriptions/apply-subscription-coupon', function () {
     await req.route.api.before(req)
     cachedResponses.cancelingSubscription = req.error
     // free subscription
-    const administrator2 = await TestStripeAccounts.createOwnerWithPlan({ amount: 0 })
-    const user2 = await TestStripeAccounts.createUserWithFreeSubscription(administrator2.plan)
+    const administrator2 = await TestStripeAccounts.createOwnerWithPrice({ unit_amount: 0 })
+    const user2 = await TestStripeAccounts.createUserWithFreeSubscription(administrator2.price)
     const req2 = TestHelper.createRequest(`/administrator/subscriptions/apply-subscription-coupon?subscriptionid=${user2.subscription.subscriptionid}`)
     req2.account = administrator.account
     req2.session = administrator.session
     await req2.route.api.before(req2)
     cachedResponses.freeSubscription = req2.error
     // has coupon
-    const user3 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const user3 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     await TestHelper.createCoupon(administrator, {
       publishedAt: 'true',
       duration: 'repeating',
@@ -52,7 +52,7 @@ describe('/administrator/subscriptions/apply-subscription-coupon', function () {
     await req3.route.api.before(req3)
     cachedResponses.existingCoupon = req3.error
     // before
-    await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan, user)
+    await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, user)
     const req4 = TestHelper.createRequest(`/administrator/subscriptions/apply-subscription-coupon?subscriptionid=${user.subscription.subscriptionid}`)
     req4.account = administrator.account
     req4.session = administrator.session

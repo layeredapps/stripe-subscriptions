@@ -1,3 +1,16 @@
+.price-form fieldset { border-radius: 0.5rem; border-width: 1px; border-color: var(--content-gray-light); padding: 1rem 1rem 0 1rem; margin: 0 0 1rem 0 }
+.price-form legend { padding: 0 0.5rem; font-size: 0.7rem; text-transform: uppercase }
+.price-form .input-fields { padding-left: 1rem }
+.price-form fieldset .input-fields { padding-left: 0 }
+.price-form .list-table { margin-bottom: 0 }
+.price-form .list-table th,
+.price-form .list-table td { padding: 0.25rem 1rem 0.25rem 0 }
+.price-form .list-table input[type=text], 
+.price-form .list-table input[type=number] { width: 6rem }
+.price-form .field-label .field-note { margin-bottom: 0.5rem; padding-right: 2rem }
+.price-form .spaced-buttons { margin-top: 1rem }
+.price-form .delete-button { border-color: var(--content-red); color: var(--content-red) }
+
 .StripeElement { padding: 0.5rem; border-radius: 0.25rem; border: 1px solid var(--content-input-border-color); background-color: var(--stripe-element-background-color); color: var(--stripe-element-text-color) }
 .StripeElement:active,
 .StripeElement:focus-within

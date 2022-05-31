@@ -20,25 +20,21 @@ describe('/account/subscriptions', function () {
     cachedCustomers = []
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({
-      amount: '1000',
-      trial_period_days: '0',
-      interval: 'month',
-      usage_type: 'licensed'
+    const administrator = await TestStripeAccounts.createOwnerWithPrice({
+      unit_amount: 3000,
+      recurring_interval: 'month',
+      recurring_usage_type: 'licensed'
     })
-    let user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    let user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     cachedInvoices.unshift(user.subscription.stripeObject.latest_invoice)
     cachedSubscriptions.unshift(user.subscription.subscriptionid)
     cachedCustomers.unshift(user.customer.customerid)
-    await TestHelper.createProduct(administrator, {
-      publishedAt: 'true'
-    })
-    await TestHelper.createPlan(administrator, {
+    await TestHelper.createPrice(administrator, {
       productid: administrator.product.productid,
       publishedAt: 'true',
-      amount: '1000',
-      interval: 'month',
-      usage_type: 'licensed'
+      unit_amount: '1000',
+      recurring_interval: 'month',
+      recurring_usage_type: 'licensed'
     })
     await TestHelper.createCustomer(user, {
       email: user.profile.contactEmail,
@@ -59,7 +55,7 @@ describe('/account/subscriptions', function () {
       country: 'US',
       default: 'true'
     })
-    user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan, user)
+    user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, user)
     cachedInvoices.unshift(user.invoice.invoiceid)
     cachedSubscriptions.unshift(user.subscription.subscriptionid)
     cachedCustomers.unshift(user.customer.customerid)

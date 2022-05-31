@@ -3,12 +3,12 @@ module.exports = {
     const removeElements = []
     if (subscription.status === 'active') {
       if (subscription.cancel_at_period_end) {
-        removeElements.push('navbar-change-plan-link', 'navbar-cancel-link')
+        removeElements.push('navbar-cancel-link')
       } else {
         removeElements.push('navbar-restore-link')
       }
     } else {
-      removeElements.push('navbar-change-plan-link', 'navbar-cancel-link', 'navbar-restore-link')
+      removeElements.push('navbar-cancel-link', 'navbar-restore-link')
     }
     const template = doc.getElementById('navbar')
     for (const id of removeElements) {

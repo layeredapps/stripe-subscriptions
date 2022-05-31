@@ -20,13 +20,12 @@ describe('/api/user/subscriptions/set-subscription-canceled', function () {
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({
-      amount: '1000',
-      trial_period_days: '0',
-      interval: 'month',
-      usage_type: 'licensed'
+    const administrator = await TestStripeAccounts.createOwnerWithPrice({
+      unit_amount: 3000,
+      recurring_interval: 'month',
+      recurring_usage_type: 'licensed'
     })
-    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     // missing and invalid id
     const req = TestHelper.createRequest('/api/user/subscriptions/set-subscription-canceled')
     req.account = user.account
@@ -65,7 +64,7 @@ describe('/api/user/subscriptions/set-subscription-canceled', function () {
       cachedResponses.invalidSubscription = error.message
     }
     // returns
-    await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan, user)
+    await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, user)
     const req5 = TestHelper.createRequest(`/api/user/subscriptions/set-subscription-canceled?subscriptionid=${user.subscription.subscriptionid}`)
     req5.account = user.account
     req5.session = user.session

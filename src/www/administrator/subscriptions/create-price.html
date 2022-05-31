@@ -3,53 +3,44 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8" /> 
-    <title translate="yes">Create plan</title>
+    <title translate="yes">Create price</title>
     <link rel="stylesheet" href="/public/content.css">
     <link rel="stylesheet" href="/public/content-additional.css">
+    <link rel="stylesheet" href="/public/subscriptions/subscriptions.css">
+    <script src="/public/subscriptions/stripe-create-price.js"></script>
     <base href="/" target="_top">
   </head>
   <body>
     <div class="container">
-      <h1 translate="yes">Create plan</h1>
-      <p translate="yes">Customers select plans to subscribe to.</p>
+      <h1 translate="yes">Create price</h1>
+      <p translate="yes">Prices hold the billing configuration for Products.  Prices can be one-time or recurring, and bill based on usage records or the quantity added to a subscription.</p>
       <div id="message-container"></div>
-      <form id="submit-form" method="post" class="input-form" action="/administrator/subscriptions/create-plan" name="submit-form">
+      <form id="submit-form" method="post" class="price-form input-form" action="/administrator/subscriptions/create-price" name="submit-form">
         <input type="hidden" name="csrf-token" />
         <div class="input-fields">
-          <label class="field-label" for="planid" translate="yes">Plan ID</label>
+          <label class="field-label" for="type" translate="yes">Type</label>
           <div class="field">
-            <input required="" id="planid" name="planid" type="text" maxlength="50">
+            <select name="type" id="type">
+              <option value="" translate="yes">Select type</option>
+              <option value="one_time" translate="yes">One time</option>
+              <option value="recurring" translate="yes">Recurring</option>
+            </select>
           </div>
         </div>
         <div class="input-fields">
-          <label class="field-label" for="productid" translate="yes">Published product</label>
+          <label class="field-label" for="productid" translate="yes">Product</label>
           <div class="field">
             <select name="productid" id="productid">
-              <option value="" translate="yes">
-                Select product</option>
+              <option value="" translate="yes">Select product</option>
             </select>
+            <span class="field-note">Only published products may be selected.</span>
           </div>
         </div>
         <div class="input-fields">
           <label class="field-label" for="nickname" translate="yes">Nickname</label>
           <div class="field">
             <input required="" id="nickname" name="nickname" type="text" maxlength="50">
-          </div>
-        </div>
-        <div class="input-fields">
-          <label class="field-label" for="usage_type" translate="yes">Usage type</label>
-          <div class="field">
-            <select name="usage_type" id="usage_type">
-              <option value="" translate="yes">Select usage type</option>
-              <option value="licensed" translate="yes">Licensed</option>
-              <option value="metered" translate="yes">Metered</option>
-            </select>
-          </div>
-        </div>
-        <div class="input-fields">
-          <label class="field-label" for="amount" translate="yes">Price in cents or smallest unit</label>
-          <div class="field">
-            <input required="" id="amount" name="amount" type="text" maxlength="7" size="7">
+            <span class="field-note">An internal reference name.</span>
           </div>
         </div>
         <div class="input-fields">
@@ -197,44 +188,193 @@
           </div>
         </div>
         <div class="input-fields">
-          <label class="field-label" for="interval_count" translate="yes">Billing interval (max. annual)</label>
+          <label class="field-label" for="billing_scheme" translate="yes">Billing scheme</label>
           <div class="field">
-            <select id="interval_count" name="interval_count">
-              <option value="" translate="yes">Select interval count</option>
-              <option value="1" selected>1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
+            <select name="billing_scheme" id="billing_scheme">
+              <option value="" translate="yes">Select billing scheme</option>
+              <option value="per_unit" translate="yes">Per unit</option>
+              <option value="tiered" translate="yes">Tiered</option>
             </select>
-            <select id="interval" name="interval">
-              <option value="" translate="yes">Select interval</option>
-              <option value="day" translate="yes">Day</option>
-              <option value="week" translate="yes">Week</option>
-              <option value="month" translate="yes" selected>Month</option>
-              <option value="year" translate="yes">Year</option>
-            </select>
+            <span class="field-note"><em>Per unit</em> billing applies to the quantity in the user's subscription or their usage records.</span>
+            <span class="field-note"><em>Tiered</em> billing depends on usage records and the usage/pricing levels you define.</span>
           </div>
         </div>
-        <div class="input-fields">
-          <label class="field-label" for="trial_period_days" translate="yes">Free trial days (maximum 720)</label>
+        <div id="unit-amount-container" class="input-fields" style="display: none">
+          <label class="field-label" for="unit_amount" translate="yes">Unit amount</label>
           <div class="field">
-            <input id="trial_period_days" name="trial_period_days" type="text" maxlength="3" size="3">
+            <input id="unit_amount" name="unit_amount" type="text" maxlength="7" size="7">
+            <span class="field-note">The unit amount in cents or currency's smallest unit.</span>
           </div>
         </div>
+        <fieldset id="tiered-container" style="display: none">
+          <legend>Tiered billing</legend>
+          <div class="input-fields">
+            <label class="field-label" for="tier_mode" translate="yes">Tier mode</label>
+            <div class="field">
+              <select id="tier_mode" name="tier_mode">
+                <option value="" translate="yes">Select mode</option>
+                <option value="graduated" translate="yes">Graduated</option>
+                <option value="volume" translate="yes">Volume</option>
+              </select>
+              <span class="field-note"><em>Volume</em> the maximum quantity within a period determines the per unit price.</span>
+              <span class="field-note"><em>Graduated</em> pricing can change as the quantity grows.</span>
+            </div>
+          </div>
+          <div class="input-fields">
+            <label class="field-label" for="tier1_flat_amount" translate="yes">
+              Tiers
+              <span class="field-note"><em>Flat amount</em> is a single fee for the entire tier.  <em>Unit amount</em> is usage-based fees.  Provide one of these values for each tier.</span>
+              <span class="field-note">The final <em>usage up to</em> value must be <em>inf</em> to account for all remaining usage.</span>
+            </label>
+            <div class="field">
+              <table class="list-table" id="tier-table">
+                <tr>
+                  <th>Flat amount</th>
+                  <th>Unit amount</th>
+                  <th>Usage up to &amp; including</th>
+                </tr>
+                <tr>
+                  <td><input name="tier1_flat_amount" id="tier1_flat_amount" type="text" /></td>
+                  <td><input name="tier1_unit_amount" id="tier1_unit_amount" type="text" /></td>
+                  <td><input name="tier1_up_to" id="tier1_up_to" type="text" class="upto-input" value="inf" /></td>
+                </tr>
+                <tr>
+                  <td><input name="tier2_flat_amount" id="tier2_flat_amount" type="text" /></td>
+                  <td><input name="tier2_unit_amount" id="tier2_unit_amount" type="text" /></td>
+                  <td><input name="tier2_up_to" id="tier2_up_to" type="text" class="upto-input" /></td>
+                </tr>
+                <tr>
+                  <td><input name="tier3_flat_amount" id="tier3_flat_amount" type="text" /></td>
+                  <td><input name="tier3_unit_amount" id="tier3_unit_amount" type="text" /></td>
+                  <td><input name="tier3_up_to" id="tier3_up_to" type="text" class="upto-input" /></td>
+                </tr>
+                <tr>
+                  <td><input name="tier4_flat_amount" id="tier4_flat_amount" type="text" /></td>
+                  <td><input name="tier4_unit_amount" id="tier4_unit_amount" type="text" /></td>
+                  <td><input name="tier4_up_to" id="tier4_up_to" type="text" class="upto-input" /></td>
+                </tr>
+                <tr>
+                  <td><input name="tier5_flat_amount" id="tier5_flat_amount" type="text" /></td>
+                  <td><input name="tier5_unit_amount" id="tier5_unit_amount" type="text" /></td>
+                  <td><input name="tier5_up_to" id="tier5_up_to" type="text" class="upto-input" /></td>
+                </tr>
+                <tr>
+                  <td><input name="tier6_flat_amount" id="tier6_flat_amount" type="text" /></td>
+                  <td><input name="tier6_unit_amount" id="tier6_unit_amount" type="text" /></td>
+                  <td><input name="tier6_up_to" id="tier6_up_to" type="text" class="upto-input" /></td>
+                </tr>
+                <tr>
+                  <td><input name="tier7_flat_amount" id="tier7_flat_amount" type="text" /></td>
+                  <td><input name="tier7_unit_amount" id="tier7_unit_amount" type="text" /></td>
+                  <td><input name="tier7_up_to" id="tier7_up_to" type="text" class="upto-input" /></td>
+                </tr>
+                <tr>
+                  <td><input name="tier8_flat_amount" id="tier8_flat_amount" type="text" /></td>
+                  <td><input name="tier8_unit_amount" id="tier8_unit_amount" type="text" /></td>
+                  <td><input name="tier8_up_to" id="tier8_up_to" type="text" class="upto-input" /></td>
+                </tr>
+                <tr>
+                  <td><input name="tier9_flat_amount" id="tier9_flat_amount" type="text" /></td>
+                  <td><input name="tier9_unit_amount" id="tier9_unit_amount" type="text" /></td>
+                  <td><input name="tier9_up_to" id="tier9_up_to" type="text" class="upto-input" /></td>
+                </tr>
+                <tr>
+                  <td><input name="tier10_flat_amount" id="tier10_flat_amount" type="text" /></td>
+                  <td><input name="tier10_unit_amount" id="tier10_unit_amount" type="text" /></td>
+                  <td><input name="tier10_up_to" id="tier10_up_to" type="text" class="upto-input" /></td>
+                </tr>
+              </table>
+              <div id="tier-controls" class="spaced-buttons buttons" style="display: none">
+                <button formnovalidate class="small-button button">&plus; add row</button>
+                <button formnovalidate class="small-button button delete-button">&minus; remove last row</button>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+        <fieldset id="recurring-billing-container" style="display: none">
+          <legend>Recurring billing</legend>
+          <div class="input-fields">
+            <label class="field-label" for="recurring_interval" translate="yes">Billing interval</label>
+            <div class="field">
+              <select id="recurring_interval" name="recurring_interval">
+                <option value="" translate="yes">Select interval</option>
+                <option value="day" translate="yes">Daily</option>
+                <option value="week" translate="yes">Weekly</option>
+                <option value="month" translate="yes">Monthly</option>
+                <option value="year" translate="yes">Annually</option>
+              </select>
+            </div>
+          </div>
+          <div class="input-fields">
+            <label class="field-label" for="recurring_interval_count" translate="yes">Interval count</label>
+            <div class="field">
+              <input id="recurring_interval_count" name="recurring_interval_count" type="number" min="1" max="365">
+              <span class="field-note">The maximum time between invoices is one year total for all intervals.</span>
+            </div>
+          </div>
+          <div class="input-fields">
+            <label class="field-label" for="recurring_usage_type" translate="yes">Usage type</label>
+            <div class="field">
+              <select name="recurring_usage_type" id="recurring_usage_type">
+                <option value="" translate="yes">Select usage type</option>
+                <option value="licensed" translate="yes">Licensed</option>
+                <option value="metered" translate="yes">Metered</option>
+              </select>
+              <span class="field-note"><em>Licensed</em> bills the quantity set.</span>
+              <span class="field-note"><em>Metered</em> aggregates usage records.</span>
+            </div>
+          </div>
+          <div class="input-fields">
+            <label class="field-label" for="recurring_aggregate_usage" translate="yes">Usage aggregation</label>
+            <div class="field">
+              <select id="recurring_aggregate_usage" name="recurring_aggregate_usage">
+                <option value="" translate="yes">Select aggregation strategy</option>
+                <option value="sum">Sum</option>
+                <option value="last_during_period">Last during period</option>
+                <option value="last_ever">Last ever</option>
+                <option value="max">Max</option>
+              </select>
+              <span class="field-note"><em>Sum</em> for summing up all usage during a period.</span>
+              <span class="field-note"><em>Last during period</em> for using the last usage record reported within a period.</span>
+              <span class="field-note"><em>Last ever</em> for using the last usage record ever (across period bounds).</span>
+              <span class="field-note"><em>Max</em> for the maximum reported usage during a period.</span>
+            </div>
+          </div>
+        </fieldset>
+        <fieldset id="transform-quantity-container" style="display: none">
+          <legend>Transform quantity</legend>
+          <div class="input-fields">
+            <label class="field-label" for="transform_quantity_divide_by" translate="yes">Divide by</label>
+            <div class="field">
+              <input id="transform_quantity_divide_by" name="transform_quantity_divide_by" type="number" maxlength="5">
+              <span class="field-note">Divide usage by this number</span>
+            </div>
+          </div>
+          <div class="input-fields">
+            <label class="field-label" for="transform_quantity_round" translate="yes">Rounding</label>
+            <div class="field">
+              <select name="transform_quantity_round" id="transform_quantity_round">
+                <option value="" translate="yes">Select rounding direction</option>
+                <option value="up" translate="yes">Up</option>
+                <option value="down" translate="yes">Down</option>
+              </select>
+            </div>
+          </div>
+        </fieldset>
         <div class="input-fields">
           <label class="field-label"></label>
           <div class="form-buttons">
-            <button id="submit-button" type="submit" class="button" translate="yes">Create plan</button>
+            <button id="submit-button" type="submit" class="button" translate="yes">Create price</button>
           </div>
         </div>
+        <noscript>
+          <style>
+            #tiered-container,
+            #unit-amouint-container,
+            #recurring-billing-container
+            #transform-quantity-container { display: block }
+          </style>
+        </noscript>
       </form>
     </div>
     <template id="success">
@@ -252,24 +392,9 @@
         ${product.name}
       </option>
     </template>
-    <template id="invalid-planid">
-      <div class="error message" translate="yes">
-        Error! Invalid plan ID value
-      </div>
-    </template>
-    <template id="invalid-planid-length">
-      <div class="error message" translate="yes">
-        Error! Invalid plan ID length
-      </div>
-    </template>
     <template id="invalid-productid">
       <div class="error message" translate="yes">
         Error! Invalid product ID value
-      </div>
-    </template>
-    <template id="invalid-usage_type">
-      <div class="error message" translate="yes">
-        Error! Invalid usage type
       </div>
     </template>
     <template id="invalid-product">
@@ -282,34 +407,84 @@
         Error! Invalid name value
       </div>
     </template>
-    <template id="invalid-nickname-length">
-      <div class="error message" translate="yes">
-        Error! Invalid name length
-      </div>
-    </template>
-    <template id="invalid-amount">
-      <div class="error message" translate="yes">
-        Error! Invalid amount value
-      </div>
-    </template>
     <template id="invalid-currency">
       <div class="error message" translate="yes">
         Error! Invalid currency value
       </div>
     </template>
-    <template id="invalid-interval">
+    <template id="invalid-type">
+      <div class="error message" translate="yes">
+        Error! Invalid price type
+      </div>
+    </template>
+    <template id="invalid-billing_scheme">
+      <div class="error message" translate="yes">
+        Error! Invalid price billing scheme
+      </div>
+    </template>
+    <template id="invalid-unit_amount">
+      <div class="error message" translate="yes">
+        Error! Invalid unit amount value
+      </div>
+    </template>
+    <template id="invalid-transform_quantity_divide_by">
+      <div class="error message" translate="yes">
+        Error! Invalid "divide by" value for quantity transformation
+      </div>
+    </template>
+    <template id="invalid-transform_quantity_round">
+      <div class="error message" translate="yes">
+        Error! Invalid rounding value for quantity transformation
+      </div>
+    </template>
+    <template id="invalid-recurring_interval">
       <div class="error message" translate="yes">
         Error! Invalid interval value
       </div>
     </template>
-    <template id="invalid-interval_count">
+    <template id="invalid-recurring_interval_count">
       <div class="error message" translate="yes">
         Error! Invalid interval count value
       </div>
     </template>
-    <template id="invalid-trial_period_days">
+    <template id="invalid-recurring_usage_type">
       <div class="error message" translate="yes">
-        Error! Invalid trial period value
+        Error! Invalid usage type
+      </div>
+    </template>
+    <template id="invalid-recurring_aggregate_usage">
+      <div class="error message" translate="yes">
+        Error! Invalid usage aggregation strategy
+      </div>
+    </template>
+    <template id="invalid-tier_mode">
+      <div class="error message" translate="yes">
+        Error! Invalid tier mode
+      </div>
+    </template>
+    <template id="invalid-tier_up_to">
+      <div class="error message" translate="yes">
+        Error! Invalid tier up to quantity value
+      </div>
+    </template>
+    <template id="invalid-tier_up_to_inf">
+      <div class="error message" translate="yes">
+        Error! The final tier quantity must be "inf"
+      </div>
+    </template>
+    <template id="invalid-tier_ambiguous_amount">
+      <div class="error message" translate="yes">
+        Error! A tier had both flat and unit amounts provided
+      </div>
+    </template>
+    <template id="invalid-tier_unit_amount">
+      <div class="error message" translate="yes">
+        Error! Invalid tier unit amount
+      </div>
+    </template>
+    <template id="invalid-tier_flat_amount">
+      <div class="error message" translate="yes">
+        Error! Invalid tier flat amount
       </div>
     </template>
     <template id="invalid-csrf-token">

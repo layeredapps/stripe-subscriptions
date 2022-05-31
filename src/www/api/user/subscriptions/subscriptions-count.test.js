@@ -57,22 +57,21 @@ describe('/api/user/subscriptions/subscriptions-count', function () {
 
   describe('returns', () => {
     it('integer', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPlan({
-        amount: '1000',
-        trial_period_days: '0',
-        interval: 'month',
-        usage_type: 'licensed'
+      const administrator = await TestStripeAccounts.createOwnerWithPrice({
+        unit_amount: 3000,
+        recurring_interval: 'month',
+        recurring_usage_type: 'licensed'
       })
-      const plan1 = administrator.plan
-      const plan2 = await TestHelper.createPlan(administrator, {
+      const price1 = administrator.price
+      const price2 = await TestHelper.createPrice(administrator, {
         productid: administrator.product.productid,
-        usage_type: 'licensed',
-        publishedAt: 'true',
-        amount: '100000',
-        trial_period_days: '0'
+        unit_amount: 3000,
+        recurring_interval: 'month',
+        recurring_usage_type: 'licensed',
+        publishedAt: 'true'
       })
-      const user = await TestStripeAccounts.createUserWithPaidSubscription(plan1)
-      await TestStripeAccounts.createUserWithPaidSubscription(plan2, user)
+      const user = await TestStripeAccounts.createUserWithPaidSubscription(price1)
+      await TestStripeAccounts.createUserWithPaidSubscription(price2, user)
       const req = TestHelper.createRequest(`/api/user/subscriptions/subscriptions-count?accountid=${user.account.accountid}`)
       req.account = user.account
       req.session = user.session

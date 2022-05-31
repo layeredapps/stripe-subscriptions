@@ -7,7 +7,7 @@ describe('/account/subscriptions/confirm-payment', function () {
   describe('before', () => {
   // TODO: requires a payment card that will not proceed
   //   it('should bind data to req', async () => {
-  //     const administrator = await TestStripeAccounts.createOwnerWithPlan({
+  //     const administrator = await TestStripeAccounts.createOwnerWithPrice({
     //   amount: '1000',
     //   trial_period_days: '0',
     //   interval: 'month',
@@ -32,7 +32,7 @@ describe('/account/subscriptions/confirm-payment', function () {
   //       country: 'US',
   //       default: 'true'
   //     })
-  //     await TestHelper.createSubscription(user, administrator.plan.planid)
+  //     await TestHelper.createSubscription(user, administrator.price.priceid)
   //     await TestHelper.waitForWebhook('payment_intent.created', (stripeEvent) => {
   //       return stripeEvent.data.object.invoice === user.invoice.invoiceid
   //     })
@@ -54,11 +54,10 @@ describe('/account/subscriptions/confirm-payment', function () {
       if (!process.env.SHOW_BROWSERS) {
         return assert.strictEqual(1, 1)
       }
-      const administrator = await TestStripeAccounts.createOwnerWithPlan({
-        amount: '1000',
-        trial_period_days: '0',
-        interval: 'month',
-        usage_type: 'licensed'
+      const administrator = await TestStripeAccounts.createOwnerWithPrice({
+        unit_amount: 3000,
+        recurring_interval: 'month',
+        recurring_usage_type: 'licensed'
       })
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
@@ -79,7 +78,7 @@ describe('/account/subscriptions/confirm-payment', function () {
         country: 'US',
         default: 'true'
       })
-      await TestStripeAccounts.createUserWithFreeSubscription(administrator.plan, user)
+      await TestStripeAccounts.createUserWithFreeSubscription(administrator.price, user)
       await TestHelper.waitForWebhook('payment_intent.created', (stripeEvent) => {
         return stripeEvent.data.object.invoice === user.invoice.invoiceid
       })

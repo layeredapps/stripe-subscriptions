@@ -18,13 +18,8 @@ describe('/account/subscriptions/invoice', function () {
     cachedResponses = {}
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({
-      usage_type: 'licensed',
-      publishedAt: 'true',
-      amount: '100000',
-      trial_period_days: '0'
-    })
-    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const administrator = await TestStripeAccounts.createOwnerWithPrice()
+    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     cachedInvoice = user.invoice
     const req1 = TestHelper.createRequest(`/account/subscriptions/invoice?invoiceid=${user.invoice.invoiceid}`)
     req1.account = user.account

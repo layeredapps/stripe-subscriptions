@@ -14,25 +14,7 @@ async function beforeRequest (req) {
   const customers = await global.api.user.subscriptions.Customers.get(req)
   if (customers && customers.length) {
     for (const i in customers) {
-      const customer = formatStripeObject(customers[i])
-      customers[i] = customer
-      customer.free = 0
-      customer.paid = 0
-      req.query.customerid = customer.id
-      req.query.all = true
-      const subscriptions = await global.api.user.subscriptions.Subscriptions.get(req)
-      if (!subscriptions || !subscriptions.length) {
-        continue
-      }
-      for (const subscription of subscriptions) {
-        req.query.planid = subscription.planid
-        const plan = await global.api.user.subscriptions.PublishedPlan.get(req)
-        if (plan.stripeObject.amount) {
-          customer.paid++
-        } else {
-          customer.free++
-        }
-      }
+      customers[i] = formatStripeObject(customers[i])
     }
   }
   const offset = req.query.offset || 0

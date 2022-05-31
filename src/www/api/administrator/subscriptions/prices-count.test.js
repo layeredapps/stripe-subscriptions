@@ -14,10 +14,9 @@ describe('/api/administrator/subscriptions/prices-count', function () {
       for (let i = 0, len = global.pageSize + 1; i < len; i++) {
         await TestHelper.createPrice(administrator, {
           productid: administrator.product.productid,
-          usage_type: 'licensed',
           publishedAt: 'true',
-          trial_period_days: '0',
-          amount: '1000'
+          recurring_usage_type: 'licensed',
+          recurring_unit_amount: '2000'
         })
       }
       const req = TestHelper.createRequest('/api/administrator/subscriptions/prices-count')

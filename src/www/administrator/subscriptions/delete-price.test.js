@@ -4,12 +4,11 @@ const TestHelper = require('../../../../test-helper.js')
 const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const ScreenshotData = require('../../../../screenshot-data.js')
 
-describe.only('/administrator/subscriptions/delete-price', function () {
+describe('/administrator/subscriptions/delete-price', function () {
   describe('before', () => {
     it('should bind data to req', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice({
         amount: '1000',
-        trial_period_days: '0',
         interval: 'month',
         usage_type: 'licensed'
       })
@@ -25,7 +24,6 @@ describe.only('/administrator/subscriptions/delete-price', function () {
     it('should present the form', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice({
         amount: '1000',
-        trial_period_days: '0',
         interval: 'month',
         usage_type: 'licensed'
       })
@@ -43,7 +41,6 @@ describe.only('/administrator/subscriptions/delete-price', function () {
     it('should delete price (screenshots)', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice({
         amount: '1000',
-        trial_period_days: '0',
         interval: 'month',
         usage_type: 'licensed'
       })
@@ -83,7 +80,6 @@ describe.only('/administrator/subscriptions/delete-price', function () {
     it('invalid-csrf-token', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice({
         amount: '1000',
-        trial_period_days: '0',
         interval: 'month',
         usage_type: 'licensed'
       })

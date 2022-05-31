@@ -20,11 +20,10 @@ describe('/api/user/subscriptions/set-subscription-coupon', function () {
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({
-      amount: '1000',
-      trial_period_days: '0',
-      interval: 'month',
-      usage_type: 'licensed'
+    const administrator = await TestStripeAccounts.createOwnerWithPrice({
+      unit_amount: 3000,
+      recurring_interval: 'month',
+      recurring_usage_type: 'licensed'
     })
     const coupon1 = await TestHelper.createCoupon(administrator, {
       publishedAt: 'true'
@@ -42,7 +41,7 @@ describe('/api/user/subscriptions/set-subscription-coupon', function () {
       amount_off: '2500',
       currency: 'jpy'
     })
-    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     // missing and invalid id
     const req = TestHelper.createRequest('/api/user/subscriptions/set-subscription-coupon')
     req.account = user.account
@@ -79,7 +78,7 @@ describe('/api/user/subscriptions/set-subscription-coupon', function () {
     } catch (error) {
       cachedResponses.invalidSubscription = error.message
     }
-    await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan, user)
+    await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, user)
     await TestHelper.cancelSubscription(user)
     const req4 = TestHelper.createRequest(`/api/user/subscriptions/set-subscription-coupon?subscriptionid=${user.subscription.subscriptionid}`)
     req4.account = user.account
@@ -93,7 +92,7 @@ describe('/api/user/subscriptions/set-subscription-coupon', function () {
       cachedResponses.invalidSubscription2 = error.message
     }
     // invalid account
-    await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan, user)
+    await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, user)
     const user2 = await TestHelper.createUser()
     const req5 = TestHelper.createRequest(`/api/user/subscriptions/set-subscription-coupon?subscriptionid=${user.subscription.subscriptionid}`)
     req5.account = user2.account

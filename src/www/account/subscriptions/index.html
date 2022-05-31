@@ -99,8 +99,9 @@
         <td id="canceled-subscription-${subscription.id}">Canceled</td>
         <td id="unpaid-subscription-${subscription.id}">Unpaid</td>
         <td>${subscription.planid}</td>
-        <td id="amount-plan-${subscription.planid}">${subscription.plan.amountFormatted} ${subscription.plan.currency} x ${subscription.plan.interval}</td>
-        <td id="free-plan-${subscription.planid}">Free</td>
+        <td id="licensed-subscription-${subscription.id}">${subscription.plan.amountFormatted} ${subscription.plan.currency} x ${subscription.plan.interval}</td>
+        <td id="metered-subscription-${subscription.id}">Usage x ${subscription.plan.interval}</td>
+        <td id="free-subscription-${subscription.id}">Free</td>
         <td>${subscription.createdAtFormatted}</td>
         <td>${subscription.nextChargeFormatted}</td>
       </tr>

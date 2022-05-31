@@ -59,7 +59,6 @@
             <tr>
               <th>ID</th>
               <th translate="yes">Customer</th>
-              <th translate="yes">Plan</th>
               <th translate="yes">Status</th>
               <th translate="yes">Created</th>
             </tr>
@@ -80,7 +79,6 @@
       <tr id="${subscription.id}">
         <td><a href="/administrator/subscriptions/subscription?subscriptionid=${subscription.id}">${subscription.id}</a></td>
         <td><a href="/administrator/subscriptions/customer?customerid=${subscription.customer.id || subscription.customer}">${subscription.customer.id || subscription.customer}</a></td>
-        <td><a href="/administrator/subscriptions/plan?planid=${subscription.plan}">${subscription.planid}</a></td>
         <td id="active-subscription-${subscription.id}">Active</td>
         <td id="canceling-subscription-${subscription.id}">Active (canceling)</td>
         <td id="trialing-subscription-${subscription.id}">Trial ending ${subscription.trialEndFormatted}</td>

@@ -39,12 +39,7 @@ describe('/api/administrator/subscriptions/set-price-published', function () {
 
     describe('invalid-price', () => {
       it('ineligible querystring price is published', async () => {
-        const administrator = await TestStripeAccounts.createOwnerWithPrice({
-          amount: '1000',
-          trial_period_days: '0',
-          interval: 'month',
-          usage_type: 'licensed'
-        })
+        const administrator = await TestStripeAccounts.createOwnerWithPrice()
         const req = TestHelper.createRequest(`/api/administrator/subscriptions/set-price-published?priceid=${administrator.price.priceid}`)
         req.account = administrator.account
         req.session = administrator.session

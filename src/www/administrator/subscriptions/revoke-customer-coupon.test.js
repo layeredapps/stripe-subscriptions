@@ -7,11 +7,10 @@ const ScreenshotData = require('../../../../screenshot-data.js')
 describe('/administrator/subscriptions/revoke-customer-coupon', function () {
   describe('before', () => {
     it('should bind data to req', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPlan({
-        amount: '1000',
-        trial_period_days: '0',
-        interval: 'month',
-        usage_type: 'licensed'
+      const administrator = await TestStripeAccounts.createOwnerWithPrice({
+        unit_amount: 3000,
+        recurring_interval: 'month',
+        recurring_usage_type: 'licensed'
       })
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
@@ -34,11 +33,10 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
 
   describe('view', () => {
     it('should present the form', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPlan({
-        amount: '1000',
-        trial_period_days: '0',
-        interval: 'month',
-        usage_type: 'licensed'
+      const administrator = await TestStripeAccounts.createOwnerWithPrice({
+        unit_amount: 3000,
+        recurring_interval: 'month',
+        recurring_usage_type: 'licensed'
       })
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
@@ -63,11 +61,10 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
 
   describe('submit', () => {
     it('should remove coupon (screenshots)', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPlan({
-        amount: '1000',
-        trial_period_days: '0',
-        interval: 'month',
-        usage_type: 'licensed'
+      const administrator = await TestStripeAccounts.createOwnerWithPrice({
+        unit_amount: 3000,
+        recurring_interval: 'month',
+        recurring_usage_type: 'licensed'
       })
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
@@ -117,7 +114,7 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
     })
 
     it('no-discount', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPlan({ amount: '1000' })
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
       await TestHelper.createCoupon(administrator, {
         publishedAt: 'true',
         duration: 'repeating',
@@ -136,11 +133,10 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
     })
 
     it('invalid-csrf-token', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPlan({
-        amount: '1000',
-        trial_period_days: '0',
-        interval: 'month',
-        usage_type: 'licensed'
+      const administrator = await TestStripeAccounts.createOwnerWithPrice({
+        unit_amount: 3000,
+        recurring_interval: 'month',
+        recurring_usage_type: 'licensed'
       })
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {

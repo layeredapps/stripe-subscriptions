@@ -19,17 +19,11 @@ describe('/account/subscriptions/request-refund', function () {
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     global.subscriptionRefundPeriod = 0
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({
-      usage_type: 'licensed',
-      publishedAt: 'true',
-      amount: '100000',
-      trial_period_days: '0'
-    })
-    const user = cachedUser = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const administrator = await TestStripeAccounts.createOwnerWithPrice()
+    const user = cachedUser = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     const req = TestHelper.createRequest(`/account/subscriptions/request-refund?invoiceid=${user.invoice.invoiceid}`)
     req.account = user.account
     req.session = user.session
-
     await req.route.api.before(req)
     cachedResponses.before = req.data
     const req2 = TestHelper.createRequest(`/account/subscriptions/request-refund?invoiceid=${user.invoice.invoiceid}`)

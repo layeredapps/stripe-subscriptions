@@ -465,7 +465,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
         assert.strictEqual(errorMessage, 'invalid-tier_up_to')
       })
     })
-    
+
     describe('invalid-tier_unit_amount', () => {
       it('invalid posted tier_unit_amount', async () => {
         const administrator = await TestHelper.createOwner()
@@ -783,7 +783,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
         recurring_usage_type: 'metered',
         recurring_aggregate_usage: 'sum',
         billing_scheme: 'tiered',
-        tiers_mode: 'volume',        
+        tiers_mode: 'volume',
         tier1_up_to: '1000',
         tier1_unit_amount: '9999',
         tier2_up_to: 'inf',

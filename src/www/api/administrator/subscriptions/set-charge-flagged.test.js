@@ -20,11 +20,10 @@ describe('/api/administrator/subscriptions/set-charge-flagged', function () {
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({
-      amount: '1000',
-      trial_period_days: '0',
-      interval: 'month',
-      usage_type: 'licensed'
+    const administrator = await TestStripeAccounts.createOwnerWithPrice({
+      unit_amount: 3000,
+      recurring_interval: 'month',
+      recurring_usage_type: 'licensed'
     })
     // missing and invalid id
     const req = TestHelper.createRequest('/api/administrator/subscriptions/set-charge-flagged')
@@ -44,7 +43,7 @@ describe('/api/administrator/subscriptions/set-charge-flagged', function () {
       cachedResponses.invalid = error.message
     }
     // invalid charge
-    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     await TestHelper.flagCharge(administrator, user.charge.chargeid)
     const req3 = TestHelper.createRequest(`/api/administrator/subscriptions/set-charge-flagged?chargeid=${user.charge.chargeid}`)
     req3.account = administrator.account
@@ -55,7 +54,7 @@ describe('/api/administrator/subscriptions/set-charge-flagged', function () {
       cachedResponses.invalidCharge = error.message
     }
     // returns
-    const user2 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const user2 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     const req4 = TestHelper.createRequest(`/api/administrator/subscriptions/set-charge-flagged?chargeid=${user2.charge.chargeid}`)
     req4.account = administrator.account
     req4.session = administrator.session

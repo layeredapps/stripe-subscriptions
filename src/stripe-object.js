@@ -69,9 +69,6 @@ module.exports = (sequelizeObject) => {
       if (line.period && line.period.end) {
         line.period.endFormatted = dashboard.Format.date(new Date(line.period.end * 1000))
       }
-      if (line.plan && line.plan.amount) {
-        line.plan.amountFormatted = dashboard.Format.money(line.plan.amount || 0, line.plan.currency)
-      }
       if (line.amount) {
         line.amountFormatted = dashboard.Format.money(line.amount || 0, line.currency)
       }

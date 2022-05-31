@@ -40,11 +40,20 @@ describe('/api/administrator/subscriptions/usage-record', function () {
 
   describe('returns', () => {
     it('object', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPlan({
-        usage_type: 'metered',
-        amount: 1000
+      const administrator = await TestStripeAccounts.createOwnerWithPrice({
+        currency: 'usd',
+        recurring_interval: 'month',
+        recurring_interval_count: '1',
+        recurring_usage_type: 'metered',
+        recurring_aggregate_usage: 'sum',
+        billing_scheme: 'tiered',
+        tiers_mode: 'volume',
+        tier1_up_to: '1000',
+        tier1_flat_amount: '9999',
+        tier2_up_to: 'inf',
+        tier2_flat_amount: '8999'
       })
-      const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+      const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
       await TestHelper.createUsageRecord(user, 100)
       const req = TestHelper.createRequest(`/api/administrator/subscriptions/usage-record?usagerecordid=${user.usageRecord.stripeObject.id}`)
       req.account = administrator.account

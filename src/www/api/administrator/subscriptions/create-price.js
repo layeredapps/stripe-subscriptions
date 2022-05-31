@@ -229,7 +229,7 @@ module.exports = {
     }
     const price = await stripeCache.execute('prices', 'create', priceInfo, req.stripeKey)
     const priceExpanded = await stripeCache.execute('prices', 'retrieve', price.id, {
-      expand: ['tiers'],
+      expand: ['tiers']
     }, req.stripeKey)
     await subscriptions.Storage.Price.create({
       appid: req.appid || global.appid,

@@ -20,8 +20,8 @@ describe('/api/user/subscriptions/charge', function () {
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({ amount: '1000', interval: 'day' })
-    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const administrator = await TestStripeAccounts.createOwnerWithPrice()
+    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     const user2 = await TestHelper.createUser()
     // invalid account
     const req = TestHelper.createRequest(`/api/user/subscriptions/charge?chargeid=${user.charge.chargeid}`)

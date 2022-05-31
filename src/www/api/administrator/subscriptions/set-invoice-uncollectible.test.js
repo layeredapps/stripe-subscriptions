@@ -20,11 +20,10 @@ describe('/api/administrator/subscriptions/set-invoice-uncollectable', function 
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({
-      amount: '1000',
-      trial_period_days: '0',
-      interval: 'month',
-      usage_type: 'licensed'
+    const administrator = await TestStripeAccounts.createOwnerWithPrice({
+      unit_amount: 3000,
+      recurring_interval: 'month',
+      recurring_usage_type: 'licensed'
     })
     // missing and invalid id
     const req = TestHelper.createRequest('/api/administrator/subscriptions/set-invoice-uncollectible?invoiceid=invalid')
@@ -44,7 +43,7 @@ describe('/api/administrator/subscriptions/set-invoice-uncollectable', function 
       cachedResponses.invalid = error.message
     }
     // invalid invoice
-    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     const req3 = TestHelper.createRequest(`/api/administrator/subscriptions/set-invoice-uncollectible?invoiceid=${user.invoice.invoiceid}`)
     req3.account = administrator.account
     req3.session = administrator.session

@@ -27,14 +27,14 @@ describe('/api/user/subscriptions/charges', function () {
     })
     const user = await TestStripeAccounts.createUserWithPaymentMethod()
     for (let i = 0, len = global.pageSize + 2; i < len; i++) {
-      await TestHelper.createPlan(administrator, {
+      await TestHelper.createPrice(administrator, {
         productid: administrator.product.productid,
-        usage_type: 'licensed',
         publishedAt: 'true',
-        trial_period_days: '0',
-        amount: '1000'
+        unit_amount: 3000,
+        recurring_interval: 'month',
+        recurring_usage_type: 'licensed'
       })
-      await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan, user)
+      await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, user)
       cachedCharges.unshift(user.charge.chargeid)
     }
     const req1 = TestHelper.createRequest(`/api/user/subscriptions/charges?accountid=${user.account.accountid}&offset=1`)

@@ -64,7 +64,7 @@ async function renderPage (req, res, messageTemplate) {
       removeElements.push(`canceling-subscription-${req.data.subscription.id}`)
     } else {
       if (req.data.subscription.cancel_at_period_end) {
-        removeElements.push(`change-plan-link-${req.data.subscription.getElementById}`, `cancel-subscription-link-${req.data.subscription.id}`)
+        removeElements.push(`cancel-subscription-link-${req.data.subscription.id}`)
       } else {
         removeElements.push(`canceling-subscription-${req.data.subscription.id}`)
       }

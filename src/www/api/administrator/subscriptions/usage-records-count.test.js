@@ -8,16 +8,25 @@ describe('/api/administrator/subscriptions/usage-records-count', function () {
   after(TestHelper.enableMetrics)
   describe('returns', () => {
     it('integer', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPlan({
-        usage_type: 'metered',
-        amount: 1000
+      const administrator = await TestStripeAccounts.createOwnerWithPrice({
+        currency: 'usd',
+        recurring_interval: 'month',
+        recurring_interval_count: '1',
+        recurring_usage_type: 'metered',
+        recurring_aggregate_usage: 'sum',
+        billing_scheme: 'tiered',
+        tiers_mode: 'volume',
+        tier1_up_to: '1000',
+        tier1_flat_amount: '9999',
+        tier2_up_to: 'inf',
+        tier2_flat_amount: '8999'
       })
       let accountUser
       for (let i = 0, len = global.pageSize; i < len; i++) {
-        const user = accountUser = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+        const user = accountUser = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
         await TestHelper.createUsageRecord(user, 100)
       }
-      await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan, accountUser)
+      await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, accountUser)
       await TestHelper.createUsageRecord(accountUser, 100)
       await TestHelper.wait(1100)
       await TestHelper.createUsageRecord(accountUser, 100)

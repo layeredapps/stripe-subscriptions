@@ -14,15 +14,14 @@ describe('/api/user/subscriptions/invoices-count', function () {
       })
       const user = await TestStripeAccounts.createUserWithPaymentMethod()
       for (let i = 0, len = global.pageSize + 1; i < len; i++) {
-        await TestHelper.createPlan(administrator, {
+        await TestHelper.createPrice(administrator, {
           productid: administrator.product.productid,
-          usage_type: 'licensed',
-          publishedAt: 'true',
-          trial_period_days: '0',
-          amount: '10000',
-          interval: 'day'
+          unit_amount: 3000,
+          recurring_interval: 'month',
+          recurring_usage_type: 'licensed',
+          publishedAt: 'true'
         })
-        await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan, user)
+        await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, user)
       }
       const req = TestHelper.createRequest(`/api/user/subscriptions/invoices-count?accountid=${user.account.accountid}`)
       req.account = user.account

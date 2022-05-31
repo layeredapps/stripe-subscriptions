@@ -25,10 +25,9 @@ describe('/administrator/subscriptions/prices', function () {
     for (let i = 0, len = global.pageSize + 2; i < len; i++) {
       await TestHelper.createPrice(administrator, {
         productid: administrator.product.productid,
-        usage_type: 'licensed',
+        recurring_usage_type: 'licensed',
         publishedAt: 'true',
-        amount: '100000',
-        trial_period_days: '0'
+        unit_amount: '100000'
       })
       cachedPrices.unshift(administrator.price.priceid)
     }
@@ -73,7 +72,7 @@ describe('/administrator/subscriptions/prices', function () {
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
       const table = doc.getElementById('prices-table')
-      const rows = table.getElementsByTagName('tr')      
+      const rows = table.getElementsByTagName('tr')
       assert.strictEqual(rows.length, 5)
       // 4 created in loop
       // 1 heading row

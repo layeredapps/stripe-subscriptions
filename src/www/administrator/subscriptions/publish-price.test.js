@@ -68,7 +68,6 @@ describe('/administrator/subscriptions/publish-price', function () {
     it('already-published', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice({
         amount: '1000',
-        trial_period_days: '0',
         interval: 'month',
         usage_type: 'licensed'
       })
@@ -82,7 +81,6 @@ describe('/administrator/subscriptions/publish-price', function () {
     it('already-unpublished', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice({
         amount: '1000',
-        trial_period_days: '0',
         interval: 'month',
         usage_type: 'licensed',
         publishedAt: 'true'

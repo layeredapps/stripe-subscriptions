@@ -21,13 +21,22 @@ describe('/api/administrator/subscriptions/usage-records', function () {
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({
-      usage_type: 'metered',
-      amount: 1000
+    const administrator = await TestStripeAccounts.createOwnerWithPrice({
+      currency: 'usd',
+      recurring_interval: 'month',
+      recurring_interval_count: '1',
+      recurring_usage_type: 'metered',
+      recurring_aggregate_usage: 'sum',
+      billing_scheme: 'tiered',
+      tiers_mode: 'volume',
+      tier1_up_to: '1000',
+      tier1_flat_amount: '9999',
+      tier2_up_to: 'inf',
+      tier2_flat_amount: '8999'
     })
     let accountUser
     for (let i = 0, len = global.pageSize; i < len; i++) {
-      const user = accountUser = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+      const user = accountUser = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
       await TestHelper.createUsageRecord(user, 100)
       cachedUsageRecords.unshift(user.usageRecord.usagerecordid)
     }
@@ -48,7 +57,7 @@ describe('/api/administrator/subscriptions/usage-records', function () {
       country: 'US',
       default: 'true'
     })
-    await TestHelper.createSubscription(accountUser, administrator.plan.planid)
+    await TestHelper.createSubscription(accountUser, [administrator.price.priceid])
     await TestHelper.createUsageRecord(accountUser, 100)
     cachedUsageRecords.unshift(accountUser.usageRecord.usagerecordid)
     await TestHelper.wait(1100)

@@ -19,39 +19,41 @@ describe('/administrator/subscriptions/delete-subscription', function () {
     cachedResponses = {}
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({
-      amount: '1000',
-      trial_period_days: '0',
-      interval: 'month',
-      usage_type: 'licensed'
+    const administrator = await TestStripeAccounts.createOwnerWithPrice({
+      unit_amount: 3000,
+      recurring_interval: 'month',
+      recurring_usage_type: 'licensed'
     })
-    const paidPlan = administrator.plan
-    const freeTrialPlan = await TestHelper.createPlan(administrator, {
+    const paidPrice = administrator.price
+    const freeTrialPrice = await TestHelper.createPrice(administrator, {
       productid: administrator.product.productid,
       publishedAt: 'true',
-      amount: '100000',
-      trial_period_days: '10'
+      unit_amount: '100000',
+      recurring_interval: 'month',
+      recurring_usage_type: 'licensed'
     })
-    const freePlan = await TestHelper.createPlan(administrator, {
+    const freePrice = await TestHelper.createPrice(administrator, {
       productid: administrator.product.productid,
       publishedAt: 'true',
-      amount: '0'
+      unit_amount: '0',
+      recurring_interval: 'month',
+      recurring_usage_type: 'licensed'
     })
-    const user = await TestStripeAccounts.createUserWithPaidSubscription(paidPlan)
+    const user = await TestStripeAccounts.createUserWithPaidSubscription(paidPrice)
     const paidSubscription1 = user.subscription
-    await TestStripeAccounts.createUserWithPaidSubscription(paidPlan, user)
+    await TestStripeAccounts.createUserWithPaidSubscription(paidPrice, user)
     const paidSubscription2 = user.subscription
-    await TestStripeAccounts.createUserWithPaidSubscription(paidPlan, user)
+    await TestStripeAccounts.createUserWithPaidSubscription(paidPrice, user)
     const paidSubscription3 = user.subscription
-    await TestStripeAccounts.createUserWithPaidSubscription(paidPlan, user)
+    await TestStripeAccounts.createUserWithPaidSubscription(paidPrice, user)
     const paidSubscription4 = user.subscription
-    await TestStripeAccounts.createUserWithFreeSubscription(freePlan, user)
+    await TestStripeAccounts.createUserWithFreeSubscription(freePrice, user)
     const freeSubscription1 = cachedSubscription = user.subscription
-    await TestStripeAccounts.createUserWithFreeSubscription(freePlan, user)
+    await TestStripeAccounts.createUserWithFreeSubscription(freePrice, user)
     const freeSubscription2 = user.subscription
-    await TestStripeAccounts.createUserWithFreeTrialSubscription(freeTrialPlan, user)
+    await TestStripeAccounts.createUserWithFreeTrialSubscription(freeTrialPrice, user)
     const trialSubscription1 = user.subscription
-    await TestStripeAccounts.createUserWithFreeTrialSubscription(freeTrialPlan, user)
+    await TestStripeAccounts.createUserWithFreeTrialSubscription(freeTrialPrice, user)
     const trialSubscription2 = user.subscription
     // test before with a missing subscriptionid
     let req = TestHelper.createRequest('/administrator/subscriptions/delete-subscription')
@@ -78,7 +80,7 @@ describe('/administrator/subscriptions/delete-subscription', function () {
     req = TestHelper.createRequest(`/administrator/subscriptions/delete-subscription?subscriptionid=${freeSubscription1.subscriptionid}`)
     req.account = administrator.account
     req.session = administrator.session
-    cachedResponses.returnsFreePlan = await req.get()
+    cachedResponses.returnsFreePrice = await req.get()
     req = TestHelper.createRequest(`/administrator/subscriptions/delete-subscription?subscriptionid=${trialSubscription1.subscriptionid}`)
     req.account = administrator.account
     req.session = administrator.session
@@ -86,22 +88,28 @@ describe('/administrator/subscriptions/delete-subscription', function () {
     req = TestHelper.createRequest(`/administrator/subscriptions/delete-subscription?subscriptionid=${paidSubscription1.subscriptionid}`)
     req.account = administrator.account
     req.session = administrator.session
-    cachedResponses.returnsPaidPlan = await req.get()
-    // test submit 'at period end'
+    cachedResponses.returnsPaidPrice = await req.get()
+    // test submit 'delayed'
     req = TestHelper.createRequest(`/administrator/subscriptions/delete-subscription?subscriptionid=${freeSubscription1.subscriptionid}`)
     req.account = administrator.account
     req.session = administrator.session
     req.body = {
-      refund: 'at_period_end'
+      cancelation: 'delayed'
     }
     cachedResponses.submitFreeAtPeriodEnd = await req.post()
     req = TestHelper.createRequest(`/administrator/subscriptions/delete-subscription?subscriptionid=${trialSubscription1.subscriptionid}`)
     req.account = administrator.account
     req.session = administrator.session
+    req.body = {
+      cancelation: 'delayed'
+    }
     cachedResponses.submitFreeTrialAtPeriodEnd = await req.post()
     req = TestHelper.createRequest(`/administrator/subscriptions/delete-subscription?subscriptionid=${paidSubscription1.subscriptionid}`)
     req.account = administrator.account
     req.session = administrator.session
+    req.body = {
+      cancelation: 'delayed'
+    }
     cachedResponses.submitPaidAtPeriodEnd = await req.post()
     // already-deleted error
     req.query = {
@@ -111,7 +119,7 @@ describe('/administrator/subscriptions/delete-subscription', function () {
     cachedResponses.invalidSubscription = req.error
     // test submit 'immediate'
     req.body = {
-      refund: 'immediate'
+      cancelation: 'immediate'
     }
     req = TestHelper.createRequest(`/administrator/subscriptions/delete-subscription?subscriptionid=${trialSubscription2.subscriptionid}`)
     req.account = administrator.account
@@ -131,23 +139,18 @@ describe('/administrator/subscriptions/delete-subscription', function () {
     req.account = administrator.account
     req.session = administrator.session
     req.body = {
-      refund: 'refund',
+      cancelation: 'immediate',
       'csrf-token': ''
     }
     req.puppeteer = false
     cachedResponses.csrf = await req.post()
     delete (req.puppeteer)
-    // credit
-    req.body = {
-      refund: 'credit'
-    }
-    cachedResponses.submitPaidCredit = await req.post()
     // refund
     req = TestHelper.createRequest(`/administrator/subscriptions/delete-subscription?subscriptionid=${paidSubscription4.subscriptionid}`)
     req.account = administrator.account
     req.session = administrator.session
     req.body = {
-      refund: 'refund'
+      cancelation: 'immediate'
     }
     req.filename = __filename
     req.screenshots = [
@@ -176,52 +179,10 @@ describe('/administrator/subscriptions/delete-subscription', function () {
   describe('view', () => {
     it('should present the form', async function () {
       await bundledData(this.test.currentRetry())
-      const result = cachedResponses.returnsFreePlan
+      const result = cachedResponses.returnsFreePrice
       const doc = TestHelper.extractDoc(result.html)
       assert.strictEqual(doc.getElementById('submit-form').tag, 'form')
       assert.strictEqual(doc.getElementById('submit-button').tag, 'button')
-    })
-
-    it('should show fields for free plan cancelations', async function () {
-      await bundledData(this.test.currentRetry())
-      const result = cachedResponses.returnsFreePlan
-      const doc = TestHelper.extractDoc(result.html)
-      const delay = doc.getElementById('delay-checkbox')
-      assert.strictEqual(delay.tag, 'input')
-      const immediate = doc.getElementById('immediate-checkbox')
-      assert.strictEqual(immediate.tag, 'input')
-      const refund = doc.getElementById('refund-checkbox')
-      assert.strictEqual(refund, undefined)
-      const credit = doc.getElementById('credit-checkbox')
-      assert.strictEqual(credit, undefined)
-    })
-
-    it('should show fields for free trial cancelations', async function () {
-      await bundledData(this.test.currentRetry())
-      const result = cachedResponses.returnsFreeTrial
-      const doc = TestHelper.extractDoc(result.html)
-      const delay = doc.getElementById('delay-checkbox')
-      assert.strictEqual(delay.tag, 'input')
-      const immediate = doc.getElementById('immediate-checkbox')
-      assert.strictEqual(immediate.tag, 'input')
-      const refund = doc.getElementById('refund-checkbox')
-      assert.strictEqual(refund, undefined)
-      const credit = doc.getElementById('credit-checkbox')
-      assert.strictEqual(credit, undefined)
-    })
-
-    it('should show fields for cancelation with credit or refund', async function () {
-      await bundledData(this.test.currentRetry())
-      const result = cachedResponses.returnsPaidPlan
-      const doc = TestHelper.extractDoc(result.html)
-      const delay = doc.getElementById('delay-checkbox')
-      assert.strictEqual(delay.tag, 'input')
-      const immediate = doc.getElementById('immediate')
-      assert.strictEqual(immediate, undefined)
-      const refund = doc.getElementById('refund-checkbox')
-      assert.strictEqual(refund.tag, 'input')
-      const credit = doc.getElementById('credit-checkbox')
-      assert.strictEqual(credit.tag, 'input')
     })
   })
 
@@ -232,7 +193,7 @@ describe('/administrator/subscriptions/delete-subscription', function () {
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
       const message = messageContainer.child[0]
-      assert.strictEqual(message.attr.template, 'success')
+      assert.strictEqual(message.attr.template, 'success-immediate')
     })
 
     it('should cancel free subscription at period end', async function () {
@@ -241,7 +202,7 @@ describe('/administrator/subscriptions/delete-subscription', function () {
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
       const message = messageContainer.child[0]
-      assert.strictEqual(message.attr.template, 'success')
+      assert.strictEqual(message.attr.template, 'success-delayed')
     })
 
     it('should cancel free trial immediately', async function () {
@@ -250,7 +211,7 @@ describe('/administrator/subscriptions/delete-subscription', function () {
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
       const message = messageContainer.child[0]
-      assert.strictEqual(message.attr.template, 'success')
+      assert.strictEqual(message.attr.template, 'success-immediate')
     })
 
     it('should cancel free trial at period end', async function () {
@@ -259,25 +220,25 @@ describe('/administrator/subscriptions/delete-subscription', function () {
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
       const message = messageContainer.child[0]
-      assert.strictEqual(message.attr.template, 'success')
+      assert.strictEqual(message.attr.template, 'success-delayed')
     })
 
-    it('should cancel paid subscription and credit account', async function () {
+    it('should cancel paid subscription immediately', async function () {
       await bundledData(this.test.currentRetry())
-      const result = cachedResponses.submitPaidCredit
+      const result = cachedResponses.submitPaidImmediate
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
       const message = messageContainer.child[0]
-      assert.strictEqual(message.attr.template, 'success-credit')
+      assert.strictEqual(message.attr.template, 'success-immediate')
     })
 
-    it('should cancel paid subscription and show refund', async function () {
+    it('should cancel paid subscription at period end', async function () {
       await bundledData(this.test.currentRetry())
-      const result = cachedResponses.submitPaidRefund
+      const result = cachedResponses.submitPaidAtPeriodEnd
       const doc = TestHelper.extractDoc(result.html)
       const messageContainer = doc.getElementById('message-container')
       const message = messageContainer.child[0]
-      assert.strictEqual(message.attr.template, 'success-refund')
+      assert.strictEqual(message.attr.template, 'success-delayed')
     })
   })
 

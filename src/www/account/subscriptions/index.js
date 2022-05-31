@@ -33,22 +33,8 @@ async function beforeRequest (req) {
   if (subscriptions && subscriptions.length) {
     for (const i in subscriptions) {
       const subscription = formatStripeObject(subscriptions[i])
+      subscription.nextChargeFormatted = dashboard.Format.date(subscription.current_period_end)
       subscriptions[i] = subscription
-      req.query.planid = subscription.planid
-      let planRaw
-      try {
-        planRaw = await global.api.user.subscriptions.PublishedPlan.get(req)
-      } catch (error) {
-        subscription.nextChargeFormatted = 'plan-missing'
-        continue
-      }
-      const plan = formatStripeObject(planRaw)
-      if (!plan.amount || subscription.status === 'canceled' || subscription.cancel_at_period_end) {
-        subscription.nextChargeFormatted = '-'
-      } else {
-        subscription.nextChargeFormatted = dashboard.Format.date(subscription.current_period_end)
-      }
-      subscription.plan = plan
     }
   }
   delete (req.query.subscriptionid)
@@ -65,12 +51,10 @@ async function beforeRequest (req) {
 async function renderPage (req, res) {
   const doc = dashboard.HTML.parse(req.html || req.route.html)
   await navbar.setup(doc)
-  let allFree = true
   const removeElements = []
   if (req.data.subscriptions && req.data.subscriptions.length) {
     dashboard.HTML.renderTable(doc, req.data.subscriptions, 'subscription-row', 'subscriptions-table')
     for (const subscription of req.data.subscriptions) {
-      allFree = allFree || subscription.plan.amount > 0
       for (const status of statuses) {
         if (subscription.status === status) {
           continue
@@ -82,10 +66,26 @@ async function renderPage (req, res) {
           removeElements.push(`active-subscription-${subscription.id}`)
         }
       }
-      if (subscription.plan.amount) {
-        removeElements.push(`free-plan-${subscription.planid}`)
+      let freeSubscription = true
+      let meteredSubscription = false
+      for (const item of subscription.items.data) {
+        if (item.price.recurring.usage_type === 'metered') {
+          meteredSubscription = true
+        }
+        if (item.price.unit_amount || (item.price.unit_amount_decimal && item.price.unit_amount_decimal !== '0') ||
+            item.price.fixed_amount || (item.price.fixed_amount_decimal && item.price.fixed_amount_decimal !== '0')) {
+          freeSubscription = false
+          break
+        }
+      }
+      if (!freeSubscription) {
+        removeElements.push(`free-subscription-${subscription.id}`)
       } else {
-        removeElements.push(`amount-plan-${subscription.planid}`)
+        if (meteredSubscription) {
+          removeElements.push(`licensed-subscription-${subscription.id}`)
+        } else {
+          removeElements.push(`metered-subscription-${subscription.id}`)
+        }
       }
     }
     removeElements.push('no-subscriptions')

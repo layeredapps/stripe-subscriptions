@@ -28,7 +28,6 @@ describe('/api/administrator/subscriptions/prices', function () {
         productid: administrator.product.productid,
         usage_type: 'licensed',
         publishedAt: 'true',
-        trial_period_days: '0',
         amount: '1000'
       })
       cachedPrices.unshift(administrator.price.priceid)

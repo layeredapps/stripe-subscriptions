@@ -27,6 +27,14 @@
             <td><a href="/administrator/subscriptions/product?productid=${price.product}">${price.product}</a></td>
           </tr>
           <tr>
+            <th>Type</th>
+            <td>${price.type}</td>
+          </tr>
+          <tr>
+            <th>Billing scheme</th>
+            <td>${price.billing_scheme}</td>
+          </tr>
+          <tr>
             <th translate="yes">Price</th>
             <td id="amount">${price.amountFormatted}${price.currency} x  ${price.interval}</td>
             <td id="free">Free</td>

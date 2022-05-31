@@ -44,31 +44,19 @@ async function beforeRequest (req) {
     }
     return
   }
-  req.query.planid = subscription.planid
-  let planRaw
-  try {
-    planRaw = await global.api.administrator.subscriptions.Plan.get(req)
-  } catch (error) {
-    req.removeContents = true
-    if (error.message === 'invalid-planid' || error.message === 'invalid-plan') {
-      req.error = error.message
-    } else {
-      req.error = 'unknown-error'
+  let hasAmount = false
+  for (const item of subscription.items.data) {
+    if (item.price.unit_amount || (item.price.unit_amount_decimal && item.price.unit_amount_decimal !== '0') ||
+        item.price.fixed_amount || (item.price.fixed_amount_decimal && item.price.fixed_amount_decimal !== '0')) {
+      hasAmount = true
+      break
     }
-    req.data = {
-      subscription: {
-        subscriptionid: req.query.subscriptionid
-      }
-    }
-    return
   }
-  if (!planRaw.stripeObject.amount) {
+  if (!hasAmount) {
     req.error = 'invalid-subscription-free'
     req.removeContents = true
     req.data = {
-      subscription: {
-        subscriptionid: ''
-      }
+      subscription
     }
     return
   }

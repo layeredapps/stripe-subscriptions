@@ -20,13 +20,12 @@ describe('/api/user/subscriptions/create-refund-request', function () {
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({
-      amount: '1000',
-      trial_period_days: '0',
-      interval: 'month',
-      usage_type: 'licensed'
+    const administrator = await TestStripeAccounts.createOwnerWithPrice({
+      unit_amount: 3000,
+      recurring_interval: 'month',
+      recurring_usage_type: 'licensed'
     })
-    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     // missing or invalid id
     const req = TestHelper.createRequest('/api/user/subscriptions/create-refund-request')
     req.account = user.account
@@ -63,7 +62,7 @@ describe('/api/user/subscriptions/create-refund-request', function () {
     } catch (error) {
       cachedResponses.invalidCharge = error.message
     }
-    await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan, user)
+    await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, user)
     await TestHelper.requestRefund(user, user.charge.chargeid)
     const req4 = TestHelper.createRequest(`/api/user/subscriptions/create-refund-request?chargeid=${user.charge.chargeid}`)
     req4.account = user.account
@@ -77,7 +76,7 @@ describe('/api/user/subscriptions/create-refund-request', function () {
       cachedResponses.invalidCharge2 = error.message
     }
     // invalid account
-    await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan, user)
+    await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, user)
     const user2 = await TestHelper.createUser()
     const req5 = TestHelper.createRequest(`/api/user/subscriptions/create-refund-request?chargeid=${user.charge.chargeid}`)
     req5.account = user2.account

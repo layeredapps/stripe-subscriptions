@@ -20,11 +20,10 @@ describe('/api/administrator/subscriptions/reset-subscription-coupon', function 
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({
-      amount: '1000',
-      trial_period_days: '0',
-      interval: 'month',
-      usage_type: 'licensed'
+    const administrator = await TestStripeAccounts.createOwnerWithPrice({
+      unit_amount: 3000,
+      recurring_interval: 'month',
+      recurring_usage_type: 'licensed'
     })
     await TestHelper.createCoupon(administrator, {
       publishedAt: 'true',
@@ -49,7 +48,7 @@ describe('/api/administrator/subscriptions/reset-subscription-coupon', function 
       cachedResponses.invalid = error.message
     }
     // invalid subscription
-    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     const req3 = TestHelper.createRequest(`/api/administrator/subscriptions/reset-subscription-coupon?subscriptionid=${user.subscription.subscriptionid}`)
     req3.account = administrator.account
     req3.session = administrator.session

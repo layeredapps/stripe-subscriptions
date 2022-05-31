@@ -6,7 +6,7 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts')
 const ScreenshotData = require('../../../../screenshot-data.js')
 
 describe('/administrator/subscriptions', function () {
-  let cachedResponses, cachedPlans, cachedSubscriptions, cachedCoupons
+  let cachedResponses, cachedSubscriptions, cachedCoupons
   async function bundledData (retryNumber) {
     if (retryNumber > 0) {
       cachedResponses = {}
@@ -16,29 +16,26 @@ describe('/administrator/subscriptions', function () {
       return
     }
     cachedResponses = {}
-    cachedPlans = []
     cachedSubscriptions = []
     cachedCoupons = []
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({
-      amount: '1000',
-      trial_period_days: '0',
-      interval: 'month',
-      usage_type: 'licensed'
+    const administrator = await TestStripeAccounts.createOwnerWithPrice({
+      unit_amount: 3000,
+      recurring_interval: 'month',
+      recurring_usage_type: 'licensed'
     })
-    cachedPlans.unshift(administrator.plan.planid)
-    const user1 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const user1 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     cachedSubscriptions.unshift(user1.subscription.subscriptionid)
-    await TestHelper.createPlan(administrator, {
+    await TestHelper.createPrice(administrator, {
       productid: administrator.product.productid,
-      usage_type: 'licensed',
       publishedAt: 'true',
-      amount: '2000',
-      trial_period_days: '0'
+      recurring_usage_type: 'licensed',
+      unit_amount: '2000',
+      recurring_interval: 'month',
+      recurring_interval_count: '1'
     })
-    cachedPlans.unshift(administrator.plan.planid)
-    const user2 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const user2 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     cachedSubscriptions.unshift(user2.subscription.subscriptionid)
     const coupon1 = await TestHelper.createCoupon(administrator, {
       publishedAt: 'true',
@@ -67,12 +64,11 @@ describe('/administrator/subscriptions', function () {
     cachedResponses.view = await req.get()
     cachedResponses.finished = true
   }
+
   describe('before', () => {
     it('should bind data to req', async function () {
       await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
-      assert.strictEqual(data.plans[0].planid, cachedPlans[0])
-      assert.strictEqual(data.plans[1].planid, cachedPlans[1])
       assert.strictEqual(data.coupons[0].couponid, cachedCoupons[0])
       assert.strictEqual(data.coupons[1].couponid, cachedCoupons[1])
       assert.strictEqual(data.subscriptions[0].subscriptionid, cachedSubscriptions[0])
@@ -81,16 +77,6 @@ describe('/administrator/subscriptions', function () {
   })
 
   describe('view', () => {
-    it('should have row for each plan', async function () {
-      await bundledData(this.test.currentRetry())
-      const result = cachedResponses.view
-      const doc = TestHelper.extractDoc(result.html)
-      const plan1Row = doc.getElementById(cachedPlans[0])
-      const plan2Row = doc.getElementById(cachedPlans[1])
-      assert.strictEqual(plan1Row.tag, 'tr')
-      assert.strictEqual(plan2Row.tag, 'tr')
-    })
-
     it('should have row for each coupon', async function () {
       await bundledData(this.test.currentRetry())
       const result = cachedResponses.view

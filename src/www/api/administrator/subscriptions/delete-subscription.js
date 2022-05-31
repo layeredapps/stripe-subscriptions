@@ -13,20 +13,6 @@ module.exports = {
     if ((subscription.stripeObject.status !== 'active' && subscription.stripeObject.status !== 'trialing') || subscription.stripeObject.cancel_at_period_end) {
       throw new Error('invalid-subscription')
     }
-    req.query.planid = subscription.planid
-    const plan = await global.api.administrator.subscriptions.Plan.get(req)
-    if (!plan.stripeObject.amount) {
-      const subscriptionNow = await stripeCache.execute('subscriptions', 'del', req.query.subscriptionid, req.stripeKey)
-      await subscriptions.Storage.Subscription.update({
-        stripeObject: subscriptionNow
-      }, {
-        where: {
-          subscriptionid: req.query.subscriptionid,
-          appid: req.appid || global.appid
-        }
-      })
-      return true
-    }
     req.query.invoiceid = subscription.stripeObject.latest_invoice
     const invoice = await global.api.administrator.subscriptions.Invoice.get(req)
     let subscriptionNow

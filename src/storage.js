@@ -372,9 +372,9 @@ module.exports = async () => {
     sequelize,
     modelName: 'payout'
   })
-  class Plan extends Model {}
-  Plan.init({
-    planid: {
+  class Price extends Model {}
+  Price.init({
+    priceid: {
       type: DataTypes.STRING(64),
       primaryKey: true,
       allowNull: false
@@ -382,7 +382,7 @@ module.exports = async () => {
     object: {
       type: DataTypes.VIRTUAL,
       get () {
-        return 'plan'
+        return 'price'
       }
     },
     stripeObject: {
@@ -414,7 +414,7 @@ module.exports = async () => {
     }
   }, {
     sequelize,
-    modelName: 'plan'
+    modelName: 'price'
   })
   class Product extends Model {}
   Product.init({
@@ -488,7 +488,16 @@ module.exports = async () => {
     subscriptionid: DataTypes.STRING(64),
     customerid: DataTypes.STRING(64),
     invoiceid: DataTypes.STRING(64),
-    planid: DataTypes.STRING(64),
+    priceids: {
+      type: DataTypes.STRING,
+      get () {
+        const value = this.getDataValue('priceids')
+        return value ? value.split(',') : undefined
+      },
+      set (array) {
+        this.setDataValue('priceids', array.join(','))
+      }
+    },
     productid: DataTypes.STRING(64),
     paymentmethodid: DataTypes.STRING(64),
     appid: {
@@ -580,7 +589,16 @@ module.exports = async () => {
     accountid: DataTypes.STRING(64),
     paymentmethodid: DataTypes.STRING(64),
     productid: DataTypes.STRING(64),
-    planid: DataTypes.STRING(64),
+    priceids: {
+      type: DataTypes.STRING,
+      get () {
+        const value = this.getDataValue('priceids')
+        return value ? value.split(',') : undefined
+      },
+      set (array) {
+        this.setDataValue('priceids', array.join(','))
+      }
+    },
     couponid: DataTypes.STRING(64),
     appid: {
       type: DataTypes.STRING(64),
@@ -666,8 +684,6 @@ module.exports = async () => {
     },
     customerid: DataTypes.STRING(64),
     accountid: DataTypes.STRING(64),
-    productid: DataTypes.STRING(64),
-    planid: DataTypes.STRING(64),
     subscriptionid: DataTypes.STRING(64),
     subscriptionitemid: DataTypes.STRING(64),
     appid: {
@@ -745,11 +761,11 @@ module.exports = async () => {
     }
     await metrics.aggregate(object.dataValues.appid, 'paymentmethod-created', new Date())
   })
-  Plan.afterCreate(async (object) => {
+  Price.afterCreate(async (object) => {
     if (global.disableMetrics) {
       return
     }
-    await metrics.aggregate(object.dataValues.appid, 'plan-created', new Date())
+    await metrics.aggregate(object.dataValues.appid, 'price-created', new Date())
   })
   Product.afterCreate(async (object) => {
     if (global.disableMetrics) {
@@ -798,7 +814,7 @@ module.exports = async () => {
         await PaymentIntent.sync({ force: true })
         await PaymentMethod.sync({ force: true })
         await Payout.sync({ force: true })
-        await Plan.sync({ force: true })
+        await Price.sync({ force: true })
         await Product.sync({ force: true })
         await Refund.sync({ force: true })
         await SetupIntent.sync({ force: true })
@@ -815,7 +831,7 @@ module.exports = async () => {
     PaymentIntent,
     PaymentMethod,
     Payout,
-    Plan,
+    Price,
     Product,
     Refund,
     SetupIntent,

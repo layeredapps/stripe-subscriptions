@@ -37,18 +37,46 @@ async function renderPage (req, res, messageTemplate) {
   }
   if (req.body) {
     dashboard.HTML.setSelectedOptionByValue(doc, 'productid', req.body.productid || '')
-    dashboard.HTML.setSelectedOptionByValue(doc, 'currency', req.body.currency || 'usd')
-    const idField = doc.getElementById('planid')
-    idField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.planid || ''))
+    dashboard.HTML.setSelectedOptionByValue(doc, 'currency', req.body.currency || '')
+    dashboard.HTML.setSelectedOptionByValue(doc, 'billing_scheme', req.body.billing_scheme || '')
+    dashboard.HTML.setSelectedOptionByValue(doc, 'type', req.body.type || '')
     const nicknameField = doc.getElementById('nickname')
     nicknameField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.nickname || ''))
-    const amountField = doc.getElementById('amount')
-    amountField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.amount || ''))
-    dashboard.HTML.setSelectedOptionByValue(doc, 'interval_count', dashboard.Format.replaceQuotes(req.body.interval_count || ''))
-    dashboard.HTML.setSelectedOptionByValue(doc, 'interval', dashboard.Format.replaceQuotes(req.body.interval || ''))
-    dashboard.HTML.setSelectedOptionByValue(doc, 'usage_type', dashboard.Format.replaceQuotes(req.body.usage_type || ''))
-    const trialPeriodDaysField = doc.getElementById('trial_period_days')
-    trialPeriodDaysField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.trial_period_days || ''))
+    if (req.body.billing_scheme === 'per_unit') {
+      const amountField = doc.getElementById('unit_amount')
+      amountField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.unit_amount || req.body.unit_amount_decimal || ''))
+      if (req.body.transform_quantity_divide_by) {
+        const divideField = doc.getElementById('transform_quantity_divide_by')
+        divideField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.transform_quantity_divide_by || ''))
+        if (req.body.transform_quantity_round) {
+          dashboard.HTML.setSelectedOptionByValue(doc, 'transform_quantity_round', dashboard.Format.replaceQuotes(req.body.transform_quantity_round || ''))
+        }
+      }
+    } else {
+      let tier = 0
+      while (true) {
+        tier++
+        const unitAmount = req.body[`tier${tier}_unit_amount`]
+        const flatAmount = req.body[`tier${tier}_flat_amount`]
+        const upto = req.body[`tier${tier}_up_to`]
+        if (!unitAmount && !flatAmount && !upto) {
+          break
+        }
+        const unitAmountField = doc.getElementById(`tier${tier}_unit_amount`)
+        unitAmountField.setAttribute('value', dashboard.Format.replaceQuotes(unitAmount || ''))
+        const flatAmountField = doc.getElementById(`tier${tier}_flat_amount`)
+        flatAmountField.setAttribute('value', dashboard.Format.replaceQuotes(flatAmount || ''))
+        const uptoField = doc.getElementById(`tier${tier}_up_to`)
+        uptoField.setAttribute('value', dashboard.Format.replaceQuotes(upto || ''))
+      }
+    }
+    if (req.body.type === 'recurring') {
+      dashboard.HTML.setSelectedOptionByValue(doc, 'recurring_interval', dashboard.Format.replaceQuotes(req.body.recurring_interval || ''))
+      dashboard.HTML.setSelectedOptionByValue(doc, 'recurring_usage_type', dashboard.Format.replaceQuotes(req.body.recurring_usage_type || ''))
+      dashboard.HTML.setSelectedOptionByValue(doc, 'recurring_aggregate_usage', dashboard.Format.replaceQuotes(req.body.recurring_aggregate_usage || ''))
+      const intervalCountField = doc.getElementById('recurring_interval_count')
+      intervalCountField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.recurring_interval_count || ''))
+    }
   }
   return dashboard.Response.end(req, res, doc)
 }
@@ -60,72 +88,164 @@ async function submitForm (req, res) {
   if (req.query && req.query.message === 'success') {
     return renderPage(req, res)
   }
-  if (!req.body.planid || !req.body.planid.trim()) {
-    return renderPage(req, res, 'invalid-planid')
-  }
-  if (global.minimumPlanIDLength > req.body.planid.length ||
-    global.maximumPlanIDLength < req.body.planid.length) {
-    return renderPage(req, res, 'invalid-planid-length')
-  }
   if (!req.body.productid || !req.body.productid.length) {
     return renderPage(req, res, 'invalid-productid')
   }
-  if (!req.body.amount) {
-    return renderPage(req, res, 'invalid-amount')
-  }
-  if (!req.body.currency) {
-    return renderPage(req, res, 'invalid-currency')
-  }
-  if (req.body.usage_type !== 'licensed' && req.body.usage_type !== 'metered') {
-    return renderPage(req, res, 'invalid-usage_type')
-  }
-  try {
-    const amount = parseInt(req.body.amount, 10)
-    if (amount < 0) {
-      return renderPage(req, res, 'invalid-amount')
-    }
-  } catch (s) {
-    return renderPage(req, res, 'invalid-amount')
-  }
-  if (!req.body.interval_count) {
-    return renderPage(req, res, 'invalid-interval_count')
-  }
-  if (req.body.interval !== 'day' && req.body.interval !== 'week' && req.body.interval !== 'month' && req.body.interval !== 'year') {
-    return renderPage(req, res, 'invalid-interval')
-  }
-  try {
-    const intervalCount = parseInt(req.body.interval_count, 10)
-    if (!intervalCount || intervalCount < 1) {
-      return renderPage(req, res, 'invalid-interval_count')
-    }
-  } catch (s) {
-    return renderPage(req, res, 'invalid-interval_count')
-  }
-  if (req.body.trial_period_days) {
-    try {
-      const trialPeriodDays = parseInt(req.body.trial_period_days, 10)
-      if (trialPeriodDays < 0 || trialPeriodDays > 365) {
-        return renderPage(req, res, 'invalid-trial_period_days')
-      }
-    } catch (s) {
-      return renderPage(req, res, 'invalid-trial_period_days')
-    }
-  }
-  let validProduct = false
-  if (req.data.products && req.data.products.length) {
-    for (const product of req.data.products) {
-      if (product.id === req.body.productid) {
-        validProduct = true
-        break
-      }
-    }
-  }
-  if (!validProduct) {
+  if (!req.data.products || !req.data.products.length) {
     return renderPage(req, res, 'invalid-productid')
   }
-  let plan
+  let foundProduct = false
+  for (const product of req.data.products) {
+    if (product.productid === req.body.productid) {
+      foundProduct = true
+      break
+    }
+  }
+  if (!foundProduct) {
+    return renderPage(req, res, 'invalid-productid')
+  }
+  if (!req.body.nickname || !req.body.nickname.length) {
+    return renderPage(req, res, 'invalid-nickname')
+  }
+  if (!req.body.type || (req.body.type !== 'one_time' && req.body.type !== 'recurring')) {
+    return renderPage(req, res, 'invalid-type')
+  }
+  if (!req.body.currency || req.body.currency.length !== 3) {
+    return renderPage(req, res, 'invalid-currency')
+  }
+  if (!req.body.billing_scheme || (req.body.billing_scheme !== 'per_unit' && req.body.billing_scheme !== 'tiered')) {
+    return renderPage(req, res, 'invalid-billing_scheme')
+  }
+  // recurring billing
+  if (req.body.type === 'recurring') {
+    if (!req.body.recurring_interval || (req.body.recurring_interval !== 'day' && req.body.recurring_interval !== 'week' && req.body.recurring_interval !== 'month' && req.body.recurring_interval !== 'year')) {
+      return renderPage(req, res, 'invalid-recurring_interval')
+    }
+    try {
+      const intervalCount = parseInt(req.body.recurring_interval_count, 10)
+      if (!intervalCount || intervalCount < 1) {
+        return renderPage(req, res, 'invalid-recurring_interval_count')
+      }
+      if (req.body.recurring_interval === 'day' && intervalCount > 365) {
+        return renderPage(req, res, 'invalid-recurring_interval_count')
+      }
+      if (req.body.recurring_interval === 'week' && intervalCount > 52) {
+        return renderPage(req, res, 'invalid-recurring_interval_count')
+      }
+      if (req.body.recurring_interval === 'month' && intervalCount > 12) {
+        return renderPage(req, res, 'invalid-recurring_interval_count')
+      }
+      if (req.body.recurring_interval === 'year' && intervalCount > 1) {
+        return renderPage(req, res, 'invalid-recurring_interval_count')
+      }
+    } catch (s) {
+      return renderPage(req, res, 'invalid-recurring_interval_count')
+    }
+    if (!req.body.recurring_usage_type || (req.body.recurring_usage_type !== 'licensed' && req.body.recurring_usage_type !== 'metered')) {
+      return renderPage(req, res, 'invalid-recurring_usage_type')
+    }
+    if (!req.body.recurring_aggregate_usage || (req.body.recurring_aggregate_usage !== 'sum' && req.body.recurring_aggregate_usage !== 'last_during_period' && req.body.recurring_aggregate_usage !== 'last_ever' && req.body.recurring_aggregate_usage !== 'max')) {
+      return renderPage(req, res, 'invalid-recurring_aggregate_usage')
+    }
+  }
+  // unit amount billing
+  if (req.body.billing_scheme === 'per_unit') {
+    if (!req.body.unit_amount || !req.body.unit_amount.length) {
+      return renderPage(req, res, 'invalid-unit_amount')
+    }
+    if (req.body.unit_amount.indexOf('.') > -1) {
+      try {
+        const amount = parseFloat(req.body.unit_amount)
+        if (amount < 0) {
+          return renderPage(req, res, 'invalid-unit_amount')
+        }
+      } catch (s) {
+        return renderPage(req, res, 'invalid-unit_amount')
+      }
+      req.body.unit_amount_decimal = req.body.unit_amount
+      delete (req.body.unit_amount)
+    } else {
+      try {
+        const amount = parseInt(req.body.unit_amount, 10)
+        if (amount < 0) {
+          return renderPage(req, res, 'invalid-unit_amount')
+        }
+      } catch (s) {
+        return renderPage(req, res, 'invalid-unit_amount')
+      }
+    }
+    if (req.body.transform_quantity_divide_by) {
+      try {
+        const divideBy = parseInt(req.body.transform_quantity_divide_by, 10)
+        if (divideBy < 0) {
+          return renderPage(req, res, 'invalid-transform_quantity_divide_by')
+        }
+      } catch (s) {
+        return renderPage(req, res, 'invalid-transform_quantity_divide_by')
+      }
+      if (!req.body.transform_quantity_round || (req.body.transform_quantity_round !== 'up' && req.body.transform_quantity_round !== 'down')) {
+        return renderPage(req, res, 'invalid-transform_quantity_round')
+      }
+    }
+  }
+  // tiered billing
+  if (req.body.billing_scheme === 'tiered') {
+    if (!req.body.tier_mode || (req.body.tier_mode !== 'graduated' && req.body.tier_mode !== 'volume')) {
+      return renderPage(req, res, 'invalid-tier_mode')
+    }
+    let tier = 0
+    let lastTierQuantity = 0
+    while (true) {
+      tier++
+      const unitAmount = req.body[`tier${tier}_unit_amount`]
+      const flatAmount = req.body[`tier${tier}_flat_amount`]
+      const upto = req.body[`tier${tier}_up_to`]
+      if (!unitAmount && !flatAmount && !upto) {
+        break
+      }
+      // unit or flat amount
+      if (unitAmount && flatAmount) {
+        return renderPage(req, res, 'invalid-tier_ambiguous_amount')
+      }
+      if (unitAmount) {
+        try {
+          const amount = parseFloat(unitAmount)
+          if (amount < 0) {
+            return renderPage(req, res, 'invalid-tier_unit_amount')
+          }
+        } catch (s) {
+          return renderPage(req, res, 'invalid-tier_unit_amount')
+        }
+      } else {
+        try {
+          const amount = parseFloat(flatAmount)
+          if (amount < 0) {
+            return renderPage(req, res, 'invalid-tier_flat_amount')
+          }
+        } catch (s) {
+          return renderPage(req, res, 'invalid-tier_flat_amount')
+        }
+      }
+      // quantity
+      if (upto !== 'inf') {
+        try {
+          const quantity = parseInt(upto, 10)
+          if (quantity < 0 || lastTierQuantity > quantity) {
+            return renderPage(req, res, 'invalid-tier_up_to')
+          }
+        } catch (s) {
+          return renderPage(req, res, 'invalid-tier_up_to')
+        }
+      }
+      lastTierQuantity = upto
+    }
+    if (lastTierQuantity !== 'inf') {
+      return renderPage(req, res, 'invalid-tier_up_to_inf')
+    }
+  }
+  let price
   try {
-    plan = await global.api.administrator.subscriptions.CreatePlan.post(req)
+    price = await global.api.administrator.subscriptions.CreatePrice.post(req)
   } catch (error) {
     return renderPage(req, res, error.message)
   }
@@ -133,7 +253,7 @@ async function submitForm (req, res) {
     return dashboard.Response.redirect(req, res, req.query['return-url'])
   } else {
     res.writeHead(302, {
-      location: `/administrator/subscriptions/plan?planid=${plan.planid}`
+      location: `/administrator/subscriptions/price?priceid=${price.priceid}`
     })
     return res.end()
   }

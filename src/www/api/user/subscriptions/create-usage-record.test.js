@@ -20,11 +20,12 @@ describe('/api/user/subscriptions/create-usage-record', function () {
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({
-      usage_type: 'metered',
-      amount: 1000
+    const administrator = await TestStripeAccounts.createOwnerWithPrice({
+      unit_amount: 3000,
+      recurring_interval: 'month',
+      recurring_usage_type: 'metered'
     })
-    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     // invalid / missing subscriptionid
     const req = TestHelper.createRequest('/api/user/subscriptions/create-usage-record')
     req.account = user.account
@@ -53,13 +54,14 @@ describe('/api/user/subscriptions/create-usage-record', function () {
       cachedResponses.invalid = error.message
     }
     // invalid subscription
-    const plan2 = await TestHelper.createPlan(administrator, {
-      usage_type: 'licensed',
-      amount: '1000',
+    const price2 = await TestHelper.createPrice(administrator, {
       productid: administrator.product.productid,
+      unit_amount: 3000,
+      recurring_interval: 'month',
+      recurring_usage_type: 'licensed',
       publishedAt: 'true'
     })
-    const user2 = await TestStripeAccounts.createUserWithPaidSubscription(plan2)
+    const user2 = await TestStripeAccounts.createUserWithPaidSubscription(price2)
     const req3 = TestHelper.createRequest(`/api/user/subscriptions/create-usage-record?subscriptionid=${user2.subscription.subscriptionid}`)
     req3.account = user2.account
     req3.session = user2.session

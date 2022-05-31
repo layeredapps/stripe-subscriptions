@@ -18,15 +18,10 @@ describe('/account/subscriptions/refunds', function () {
     cachedRefunds = []
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({
-      usage_type: 'licensed',
-      publishedAt: 'true',
-      amount: '100000',
-      trial_period_days: '0'
-    })
+    const administrator = await TestStripeAccounts.createOwnerWithPrice()
     const user = await TestStripeAccounts.createUserWithPaymentMethod()
     for (let i = 0, len = global.pageSize + 2; i < len; i++) {
-      await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan, user)
+      await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, user)
       await TestHelper.createRefund(administrator, user.charge.chargeid)
       cachedRefunds.unshift(administrator.refund.refundid)
     }

@@ -20,13 +20,12 @@ describe('/api/user/subscriptions/create-cancelation-refund', function () {
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({
-      amount: '1000',
-      trial_period_days: '0',
-      interval: 'month',
-      usage_type: 'licensed'
+    const administrator = await TestStripeAccounts.createOwnerWithPrice({
+      unit_amount: 3000,
+      recurring_interval: 'month',
+      recurring_usage_type: 'licensed'
     })
-    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     // missing and invalid id
     const req = TestHelper.createRequest('/api/user/subscriptions/create-cancelation-refund')
     req.account = user.account
@@ -61,7 +60,7 @@ describe('/api/user/subscriptions/create-cancelation-refund', function () {
       cachedResponses.account = error.message
     }
     // invalid subscription
-    const user3 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const user3 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     await TestHelper.cancelSubscription(user3)
     const req4 = TestHelper.createRequest(`/api/user/subscriptions/create-cancelation-refund?subscriptionid=${user3.subscription.subscriptionid}`)
     req4.account = user3.account
@@ -71,12 +70,14 @@ describe('/api/user/subscriptions/create-cancelation-refund', function () {
     } catch (error) {
       cachedResponses.inactiveSubscription = error.message
     }
-    await TestHelper.createPlan(administrator, {
-      publishedAt: 'true',
+    await TestHelper.createPrice(administrator, {
       productid: administrator.product.productid,
-      amount: '0'
+      publishedAt: 'true',
+      unit_amount: 0,
+      recurring_interval: 'month',
+      recurring_usage_type: 'licensed'
     })
-    const user4 = await TestStripeAccounts.createUserWithFreeSubscription(administrator.plan)
+    const user4 = await TestStripeAccounts.createUserWithFreeSubscription(administrator.price)
     const req5 = TestHelper.createRequest(`/api/user/subscriptions/create-cancelation-refund?subscriptionid=${user4.subscription.subscriptionid}`)
     req5.account = user4.account
     req5.session = user4.session
@@ -136,13 +137,13 @@ describe('/api/user/subscriptions/create-cancelation-refund', function () {
 
       // TODO: requires modifying create-subscription to skip requiring payment method
       // it('ineligible querystring subscription is in free trial', async () => {
-      //   const administrator = await TestStripeAccounts.createOwnerWithPlan({ trial_period_days: '10' })
+      //   const administrator = await TestStripeAccounts.createOwnerWithPrice()
       //   const user = await TestHelper.createUser()
       //   await TestHelper.createCustomer(user, {
       //     email: user.profile.contactEmail,
       //     description: user.profile.fullName
       //   })
-      //   await TestHelper.createSubscription(user, administrator.plan.planid)
+      //   await TestHelper.createSubscription(user, administrator.price.priceid)
       //   const req2 = TestHelper.createRequest(`/api/user/subscriptions/create-cancelation-refund?subscriptionid=${user.subscription.subscriptionid}`)
       //   req2.account = user.account
       //   req2.session = user.session

@@ -48,7 +48,6 @@ module.exports = {
       subscriptionid: subscription.subscriptionid,
       customerid: subscription.customerid,
       invoiceid: invoice.invoiceid,
-      planid: invoice.planid,
       productid: invoice.productid,
       paymentmethodid: invoice.paymentmethodid
     })

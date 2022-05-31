@@ -40,32 +40,7 @@ async function beforeRequest (req) {
     req.error = 'invalid-subscription'
     return
   }
-  req.query.planid = subscription.planid
-  let planRaw
-  try {
-    planRaw = await global.api.user.subscriptions.PublishedPlan.get(req)
-  } catch (error) {
-    req.removeContents = true
-    req.data = {
-      subscription: {
-        subscriptionid: ''
-      }
-    }
-    if (error.message === 'invalid-planid' || error.message === 'invalid-plan') {
-      req.error = error.message
-    } else {
-      req.error = 'unknown-error'
-    }
-    return
-  }
-  const plan = formatStripeObject(planRaw)
-  subscription.amountFormatted = dashboard.Format.money(plan.amount || 0, plan.currency)
-  subscription.currency = plan.currency
-  if (!plan.amount || (subscription.status !== 'trialing' && subscription.status !== 'active') || subscription.cancel_at_period_end) {
-    subscription.nextCharge = '-'
-  } else {
-    subscription.nextCharge = new Date(subscription.current_period_end * 1000)
-  }
+  subscription.nextCharge = new Date(subscription.current_period_end * 1000)
   req.query.accountid = req.account.accountid
   const invoices = await global.api.user.subscriptions.Invoices.get(req)
   if (invoices && invoices.length) {
@@ -74,7 +49,7 @@ async function beforeRequest (req) {
       invoices[i] = invoice
     }
   }
-  req.data = { subscription, plan, invoices }
+  req.data = { subscription, invoices }
 }
 
 async function renderPage (req, res, messageTemplate) {
@@ -93,29 +68,18 @@ async function renderPage (req, res, messageTemplate) {
     } else if (req.data.subscription.status === 'active') {
       removeElements.push(`canceled-subscription-${req.data.subscription.subscriptionid}`, `past_due-subscription-${req.data.subscription.subscriptionid}`, `unpaid-subscription-${req.data.subscription.subscriptionid}`, `trial-subscription-${req.data.subscription.subscriptionid}`)
       if (req.data.subscription.cancel_at_period_end) {
-        removeElements.push(`active-subscription-${req.data.subscription.subscriptionid}`, `change-plan-link-${req.data.subscription.subscriptionid}`, `cancel-subscription-link-${req.data.subscription.subscriptionid}`)
+        removeElements.push(`active-subscription-${req.data.subscription.subscriptionid}`, `cancel-subscription-link-${req.data.subscription.subscriptionid}`)
       } else {
         removeElements.push(`canceling-subscription-${req.data.subscription.subscriptionid}`)
       }
     } else {
-      removeElements.push(`active-subscription-${req.data.subscription.subscriptionid}`, `trial-subscription-${req.data.subscription.subscriptionid}`, `canceling-subscription-${req.data.subscription.subscriptionid}`, `change-plan-link-${req.data.subscription.subscriptionid}`)
+      removeElements.push(`active-subscription-${req.data.subscription.subscriptionid}`, `trial-subscription-${req.data.subscription.subscriptionid}`, `canceling-subscription-${req.data.subscription.subscriptionid}`)
       if (req.data.subscription.status === 'past_due') {
         removeElements.push(`canceled-subscription-${req.data.subscription.subscriptionid}`, `unpaid-subscription-${req.data.subscription.subscriptionid}`)
       } else if (req.data.subscription.status === 'canceled') {
         removeElements.push(`past_due-subscription-${req.data.subscription.subscriptionid}`, `unpaid-subscription-${req.data.subscription.subscriptionid}`)
       } else if (req.data.subscription.status === 'unpaid') {
         removeElements.push(`canceled-subscription-${req.data.subscription.subscriptionid}`, `past_due-subscription-${req.data.subscription.subscriptionid}`)
-      }
-    }
-    for (const interval of ['day', 'week', 'month', 'year']) {
-      if (interval !== req.data.plan.interval) {
-        removeElements.push(`${interval}-singular-interval-${req.data.subscription.subscriptionid}`, `${interval}-multiple-interval-${req.data.subscription.subscriptionid}`)
-        continue
-      }
-      if (req.data.plan.interval_count === 1) {
-        removeElements.push(`${interval}-multiple-interval-${req.data.subscription.subscriptionid}`)
-      } else {
-        removeElements.push(`${interval}-singular-interval-${req.data.subscription.subscriptionid}`)
       }
     }
     if (req.data.invoices && req.data.invoices.length) {

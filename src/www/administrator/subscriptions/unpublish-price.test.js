@@ -9,7 +9,6 @@ describe('/administrator/subscriptions/unpublish-price', function () {
     it('should bind data to req', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice({
         amount: '1000',
-        trial_period_days: '0',
         interval: 'month',
         usage_type: 'licensed'
       })
@@ -25,7 +24,6 @@ describe('/administrator/subscriptions/unpublish-price', function () {
     it('should present the form', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice({
         amount: '1000',
-        trial_period_days: '0',
         interval: 'month',
         usage_type: 'licensed'
       })
@@ -43,7 +41,6 @@ describe('/administrator/subscriptions/unpublish-price', function () {
     it('should unpublish price (screenshots)', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice({
         amount: '1000',
-        trial_period_days: '0',
         interval: 'month',
         usage_type: 'licensed'
       })
@@ -101,7 +98,6 @@ describe('/administrator/subscriptions/unpublish-price', function () {
     it('invalid-csrf-token', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice({
         amount: '1000',
-        trial_period_days: '0',
         interval: 'month',
         usage_type: 'licensed'
       })

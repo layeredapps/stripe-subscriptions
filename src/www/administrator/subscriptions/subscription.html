@@ -35,8 +35,15 @@
             <td><a href="/administrator/subscriptions/coupon?couponid=${subscription.discount ? subscription.discount.coupon.id : ''}">${subscription.discount ? subscription.discount.coupon.id : ''}</a></td>
           </tr>
           <tr>
-            <th translate="yes">Plan</th>
-            <td><a href="/administrator/subscriptions/plan?planid=${subscription.planid}">${subscription.planid}</a></td>
+            <th translate="yes">Items</th>
+            <td>
+              <table id="items-table" class="list-table">
+                <tr>
+                  <th></th>
+                </tr>
+              </table>
+              <a href="/administrator/subscriptions/plan?planid=${subscription.planid}">${subscription.planid}</a>
+            </td>
           </tr>
           <tr id="active-subscription-${subscription.id}">
             <th translate="yes">Status</th>

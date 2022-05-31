@@ -18,20 +18,12 @@
           <label class="field-label" translate="yes">Cancel options</label>
           <div class="checkbox-fields">
             <label class="field-label" id="delay-label">
-              <input id="delay-checkbox" name="refund" value="at_period_end" type="radio">
-              <span translate="yes">After current billing period</span>
+              <input id="delay-checkbox" name="cancelation" value="delayed" type="radio">
+              <span translate="yes">After current billing period on ${subscription.currentPeriodEndFormatted}</span>
             </label>
-            <label class="field-label" id="immediate-label">
-              <input id="immediate-checkbox" name="refund" value="immediate" type="radio">
-              <span translate="yes">Cancel immediately</span>
-            </label>
-            <label class="field-label" id="credit-label">
-              <input id="credit-checkbox" name="refund" value="credit" type="radio">
-              <span translate="yes">Credit unused balance for future payments</span>
-            </label>
-            <label class="field-label" id="refund-label">
-              <input id="refund-checkbox" name="refund" value="refund" type="radio">
-              <span translate="yes">Refund unused balance to original card</span>
+            <label class="field-label" id="immediate-full-refund-label">
+              <input id="immediate-checkbox" name="cancelation" value="immediate" type="radio">
+              <span translate="yes">Immediately</span>
             </label>
           </div>
         </div>
@@ -40,19 +32,29 @@
         </div>
       </form>
     </div>
-    <template id="success">
+    <template id="success-immediate">
       <div class="success message" translate="yes">
-        Success! The subscription has been canceled
+        Success! The subscription has been canceled effective immediately
       </div>
     </template>
-    <template id="success-refund">
+    <template id="success-delayed">
       <div class="success message" translate="yes">
-        Success! The subscription has been canceled and refunded
+        Success! The subscription has been canceled after the current billing period
       </div>
     </template>
-    <template id="success-credit">
-      <div class="success message" translate="yes">
-        Success! The subscription has been canceled and your account credited
+    <template id="invalid-subscription">
+      <div class="error message" translate="yes">
+        Error! An invalid subscription was selected
+      </div>
+    </template>
+    <template id="invalid-subscriptionid">
+      <div class="error message" translate="yes">
+        Error! An invalid subscription was selected
+      </div>
+    </template>
+    <template id="invalid-type">
+      <div class="error message" translate="yes">
+        Error! An unexpected response was received
       </div>
     </template>
     <template id="unknown-error">
@@ -67,7 +69,7 @@
     </template>
     <template id="invalid-subscription">
       <div class="error message" translate="yes">
-        Error! An invalid subscription was specified
+        Error! This subscription is already canceled or canceling
       </div>
     </template>
     <template id="invalid-csrf-token">

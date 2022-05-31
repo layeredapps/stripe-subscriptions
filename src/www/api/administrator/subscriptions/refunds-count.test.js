@@ -8,14 +8,13 @@ describe('/api/administrator/subscriptions/refunds-count', function () {
   after(TestHelper.enableMetrics)
   describe('returns', () => {
     it('integer', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPlan({
-        amount: '1000',
-        trial_period_days: '0',
-        interval: 'month',
-        usage_type: 'licensed'
+      const administrator = await TestStripeAccounts.createOwnerWithPrice({
+        unit_amount: 3000,
+        recurring_interval: 'month',
+        recurring_usage_type: 'licensed'
       })
       for (let i = 0, len = global.pageSize + 1; i < len; i++) {
-        const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+        const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
         await TestHelper.createRefund(administrator, user.charge.chargeid)
       }
       const req = TestHelper.createRequest('/api/administrator/subscriptions/refunds-count')

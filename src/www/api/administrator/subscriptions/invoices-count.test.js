@@ -8,14 +8,13 @@ describe('/api/administrator/subscriptions/invoices-count', function () {
   after(TestHelper.enableMetrics)
   describe('returns', () => {
     it('integer', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPlan({
-        amount: '1000',
-        trial_period_days: '0',
-        interval: 'month',
-        usage_type: 'licensed'
+      const administrator = await TestStripeAccounts.createOwnerWithPrice({
+        unit_amount: 3000,
+        recurring_interval: 'month',
+        recurring_usage_type: 'licensed'
       })
       for (let i = 0, len = global.pageSize + 1; i < len; i++) {
-        await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+        await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
       }
       const req = TestHelper.createRequest('/api/administrator/subscriptions/invoices-count')
       req.account = administrator.account

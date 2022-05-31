@@ -9,7 +9,7 @@ const waitForWebhook = util.promisify(async (webhookType, matching, callback) =>
       return
     }
     if (!global.webhooks || !global.webhooks.length) {
-      return setTimeout(wait, 1000)
+      return setTimeout(wait, 100)
     }
     for (const received of global.webhooks) {
       if (webhookType.indexOf(received.type) === -1) {
@@ -21,9 +21,9 @@ const waitForWebhook = util.promisify(async (webhookType, matching, callback) =>
         return callback()
       }
     }
-    return setTimeout(wait, 1000)
+    return setTimeout(wait, 100)
   }
-  return setTimeout(wait, 1000)
+  return setTimeout(wait, 100)
 })
 
 const TestStripeAccounts = module.exports = {
@@ -69,55 +69,6 @@ const TestStripeAccounts = module.exports = {
       unit_amount: priceData.unit_amount !== undefined ? priceData.unit_amount : 1000,
       recurring_interval: priceData.recurring_interval || 'month',
       recurring_usage_type: priceData.recurring_usage_type || 'licensed'
-    })
-    return owner
-  },
-
-  createOwnerWithPlan: async (planData) => {
-    const owner = await TestHelper.createOwner()
-    await TestHelper.createProduct(owner, {
-      publishedAt: 'true'
-    })
-    planData = planData || {}
-    await TestHelper.createPlan(owner, {
-      productid: owner.product.productid,
-      publishedAt: 'true',
-      trial_period_days: planData.trial_period_days !== undefined ? planData.trial_period_days : 0,
-      amount: planData.amount !== undefined ? planData.amount : 1000,
-      interval: planData.interval || 'month',
-      usage_type: planData.usage_type || 'licensed'
-    })
-    return owner
-  },
-  createOwnerWithUnpublishedPlan: async (planData) => {
-    const owner = await TestHelper.createOwner()
-    const product = await TestHelper.createProduct(owner, {
-      publishedAt: 'true'
-    })
-    planData = planData || {}
-    await TestHelper.createPlan(owner, {
-      productid: product.productid,
-      publishedAt: 'true',
-      unpublishedAt: 'true',
-      trial_period_days: planData.trial_period_days !== undefined ? planData.trial_period_days : 0,
-      amount: planData.amount !== undefined ? planData.amount : 1000,
-      interval: planData.interval || 'month',
-      usage_type: planData.usage_type || 'licensed'
-    })
-    return owner
-  },
-  createOwnerWithNotPublishedPlan: async (planData) => {
-    const owner = await TestHelper.createOwner()
-    const product = await TestHelper.createProduct(owner, {
-      publishedAt: 'true'
-    })
-    planData = planData || {}
-    await TestHelper.createPlan(owner, {
-      productid: product.productid,
-      trial_period_days: planData.trial_period_days !== undefined ? planData.trial_period_days : 0,
-      amount: planData.amount !== undefined ? planData.amount : 1000,
-      interval: planData.interval || 'month',
-      usage_type: planData.usage_type || 'licensed'
     })
     return owner
   },
@@ -173,7 +124,7 @@ const TestStripeAccounts = module.exports = {
     })
     return user
   },
-  createUserWithFreeSubscription: async (plan, user, withPaymentMethod) => {
+  createUserWithFreeSubscription: async (price, user, withPaymentMethod) => {
     if (!user) {
       if (withPaymentMethod) {
         user = await TestStripeAccounts.createUserWithPaymentMethod(user)
@@ -181,17 +132,20 @@ const TestStripeAccounts = module.exports = {
         user = await TestStripeAccounts.createUserWithoutPaymentMethod(user)
       }
     }
-    await TestHelper.createSubscription(user, plan.planid)
+    await TestHelper.createSubscription(user, [price.priceid])
     let invoiceid
+    console.log('wait1')
     await waitForWebhook('invoice.created', (stripeEvent) => {
       if (stripeEvent.data.object.subscription === user.subscription.subscriptionid) {
         invoiceid = stripeEvent.data.object.id
         return true
       }
     })
+    console.log('wait2')
     await waitForWebhook(['invoice.finalized', 'invoice.paid', 'invoice.payment_succeeded'], (stripeEvent) => {
       return stripeEvent.data.object.id === invoiceid
     })
+    console.log('wait3')
     await TestHelper.rotateWebhook()
     user.subscription = await global.api.administrator.subscriptions.Subscription.get({
       query: {
@@ -210,7 +164,7 @@ const TestStripeAccounts = module.exports = {
     })
     return user
   },
-  createUserWithFreeTrialSubscription: async (plan, user, withPaymentMethod) => {
+  createUserWithFreeTrialSubscription: async (price, user, withPaymentMethod) => {
     if (!user) {
       if (withPaymentMethod) {
         user = await TestStripeAccounts.createUserWithPaymentMethod(user)
@@ -218,7 +172,10 @@ const TestStripeAccounts = module.exports = {
         user = await TestStripeAccounts.createUserWithoutPaymentMethod(user)
       }
     }
-    await TestHelper.createSubscription(user, plan.planid)
+    await TestHelper.createSubscription(user, [price.priceid], {
+      trial_period_days: '7'
+    })
+    console.log('wait4')
     let invoiceid
     await waitForWebhook('invoice.created', (stripeEvent) => {
       if (stripeEvent.data.object.subscription === user.subscription.subscriptionid) {
@@ -226,9 +183,11 @@ const TestStripeAccounts = module.exports = {
         return true
       }
     })
+    console.log('wait5')
     await waitForWebhook(['invoice.finalized', 'invoice.paid', 'invoice.payment_succeeded'], (stripeEvent) => {
       return stripeEvent.data.object.id === invoiceid
     })
+    console.log('wait6')
     await TestHelper.rotateWebhook()
     user.subscription = await global.api.administrator.subscriptions.Subscription.get({
       query: {
@@ -247,11 +206,11 @@ const TestStripeAccounts = module.exports = {
     })
     return user
   },
-  createUserWithPaidSubscription: async (plan, user) => {
+  createUserWithPaidSubscription: async (price, user) => {
     if (!user) {
       user = await TestStripeAccounts.createUserWithPaymentMethod(user)
     }
-    await TestHelper.createSubscription(user, plan.planid)
+    await TestHelper.createSubscription(user, [price.priceid])
     let invoiceid
     await waitForWebhook('invoice.created', (stripeEvent) => {
       if (stripeEvent.data.object.subscription === user.subscription.subscriptionid) {
@@ -262,7 +221,7 @@ const TestStripeAccounts = module.exports = {
     await waitForWebhook(['invoice.finalized', 'invoice.paid', 'invoice.payment_succeeded'], (stripeEvent) => {
       return stripeEvent.data.object.id === invoiceid
     })
-    if (plan.stripeObject.usage_type === 'licensed') {
+    if (price.stripeObject.recurring.usage_type === 'licensed') {
       await waitForWebhook('charge.succeeded', (stripeEvent) => {
         return stripeEvent.data.object.invoice === invoiceid
       })
@@ -281,7 +240,7 @@ const TestStripeAccounts = module.exports = {
         invoiceid
       }
     })
-    if (plan.stripeObject.usage_type === 'licensed') {
+    if (price.stripeObject.recurring.usage_type === 'licensed') {
       user.charge = await global.api.administrator.subscriptions.Charge.get({
         query: {
           chargeid: user.invoice.stripeObject.charge

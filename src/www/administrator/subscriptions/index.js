@@ -7,13 +7,7 @@ module.exports = {
 }
 
 async function beforeRequest (req) {
-  const plans = await global.api.administrator.subscriptions.Plans.get(req)
-  if (plans && plans.length) {
-    for (const i in plans) {
-      const plan = formatStripeObject(plans[i])
-      plans[i] = plan
-    }
-  }
+  req.query = req.query || {}
   const coupons = await global.api.administrator.subscriptions.Coupons.get(req)
   if (coupons && coupons.length) {
     for (const i in coupons) {
@@ -51,7 +45,6 @@ async function beforeRequest (req) {
   const chargesChartHighlights = dashboard.Metrics.highlights(chargesChart, chargesChartDays)
   const chargesChartValues = dashboard.Metrics.chartValues(chargesChartMaximum)
   req.data = {
-    plans,
     coupons,
     subscriptions,
     subscriptionsChartDays,
@@ -69,31 +62,6 @@ async function beforeRequest (req) {
 async function renderPage (req, res) {
   const doc = dashboard.HTML.parse(req.html || req.route.html)
   const removeElements = []
-  if (req.data.plans && req.data.plans.length) {
-    dashboard.HTML.renderTable(doc, req.data.plans, 'plan-row', 'plans-table')
-    for (const plan of req.data.plans) {
-      if (plan.unpublishedAt) {
-        removeElements.push(`published-plan-${plan.planid}`, `draft-plan-${plan.planid}`)
-      } else if (plan.publishedAt) {
-        removeElements.push(`unpublished-plan-${plan.planid}`, `draft-plan-${plan.planid}`)
-      } else {
-        removeElements.push(`published-plan-${plan.planid}`, `unpublished-plan-${plan.planid}`)
-      }
-      if (!plan.trial_period_days) {
-        removeElements.push(`trial-plan-${plan.planid}`)
-      } else {
-        removeElements.push(`no-trial-plan-${plan.planid}`)
-      }
-      if (!plan.amount) {
-        removeElements.push(`amount-plan-${plan.planid}`)
-      } else {
-        removeElements.push(`free-plan-${plan.planid}`)
-      }
-    }
-    removeElements.push('no-plans')
-  } else {
-    removeElements.push('plans-table')
-  }
   if (req.data.coupons && req.data.coupons.length) {
     dashboard.HTML.renderTable(doc, req.data.coupons, 'coupon-row', 'coupons-table')
     for (const coupon of req.data.coupons) {

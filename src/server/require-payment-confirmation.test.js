@@ -18,13 +18,13 @@ describe('server/stripe-subscriptions/require-payment-confirmation', function ()
     })
 
     // it('should ignore user with pending confirmations requesting account pages', async () => {
-    //   const administrator = await TestStripeAccounts.createOwnerWithPlan({
+    //   const administrator = await TestStripeAccounts.createOwnerWithPrice({
     //     amount: '1000',
     //     trial_period_days: '0',
     //     interval: 'month',
     //     usage_type: 'licensed'
     //   })
-    //   const user = await TestStripeAccounts.createUserWithFreeTrialSubscription(administrator.plan)
+    //   const user = await TestStripeAccounts.createUserWithFreeTrialSubscription(administrator.price)
     //   const req = TestHelper.createRequest('/account/change-password')
     //   req.account = user.account
     //   req.session = user.session
@@ -38,11 +38,10 @@ describe('server/stripe-subscriptions/require-payment-confirmation', function ()
     // })
 
     it('should ignore administrators with pending confirmations requesting administration pages', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPlan({
-        amount: '1000',
-        trial_period_days: '0',
-        interval: 'month',
-        usage_type: 'licensed'
+      const administrator = await TestStripeAccounts.createOwnerWithPrice({
+        unit_amount: 3000,
+        recurring_interval: 'month',
+        recurring_usage_type: 'licensed'
       })
       await TestHelper.createCustomer(administrator, {
         email: administrator.profile.contactEmail,
@@ -62,7 +61,7 @@ describe('server/stripe-subscriptions/require-payment-confirmation', function ()
         country: 'US',
         default: 'true'
       })
-      await TestHelper.createSubscription(administrator, administrator.plan.planid)
+      await TestHelper.createSubscription(administrator, administrator.price.priceid)
       const req = TestHelper.createRequest('/administrator/subscriptions')
       req.account = administrator.account
       req.session = administrator.session
@@ -76,13 +75,12 @@ describe('server/stripe-subscriptions/require-payment-confirmation', function ()
     })
 
     it('should ignore user without pending confirmation', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPlan({
-        amount: '0',
-        trial_period_days: '0',
-        interval: 'month',
-        usage_type: 'licensed'
+      const administrator = await TestStripeAccounts.createOwnerWithPrice({
+        unit_amount: 0,
+        recurring_interval: 'month',
+        recurring_usage_type: 'licensed'
       })
-      const user = await TestStripeAccounts.createUserWithFreeSubscription(administrator.plan)
+      const user = await TestStripeAccounts.createUserWithFreeSubscription(administrator.price)
       const req = TestHelper.createRequest('/home')
       req.account = user.account
       req.session = user.session
@@ -98,7 +96,7 @@ describe('server/stripe-subscriptions/require-payment-confirmation', function ()
     // TODO: needs a card or state that triggers confirmation, may not be
     // possible as complete data is collected for payment
     // it('should require user confirm payment', async () => {
-    //   const administrator = await TestStripeAccounts.createOwnerWithPlan({
+    //   const administrator = await TestStripeAccounts.createOwnerWithPrice({
     //   amount: '1000',
     //   trial_period_days: '0',
     //   interval: 'month',
@@ -124,7 +122,7 @@ describe('server/stripe-subscriptions/require-payment-confirmation', function ()
     //     country: 'US',
     //     default: 'true'
     //   })
-    //   await TestHelper.createSubscription(user, administrator.plan.planid)
+    //   await TestHelper.createSubscription(user, administrator.price.priceid)
     //   const req = TestHelper.createRequest('/home')
     //   req.account = user.account
     //   req.session = user.session

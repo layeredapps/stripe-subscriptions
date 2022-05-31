@@ -15,7 +15,7 @@ const properties = [
   { camelCase: 'automaticBillingProfileEmail', raw: 'AUTOMATIC_BILLING_PROFILE_EMAIL', description: 'Use profile contact email as billing email', value: 'true', noDefaultValue: true, valueDescription: 'Boolean' },
   { camelCase: 'skipConfirmSubscription', raw: 'SKIP_CONFIRM_SUBSCRIPTION', description: 'Auto-submit "confirm subscription" if the user has billing information', value: 'true', noDefaultValue: true, valueDescription: 'Boolean' },
   { camelCase: 'requireBillingProfileAddress', raw: 'REQUIRE_BILLING_PROFILE_ADDRESS', description: 'Require address with billing information', value: 'true', noDefaultValue: true, valueDescription: 'Boolean' },
-  { camelCase: 'viewSubscriptionPlans', raw: 'VIEW_SUBSCRIPTION_PLANS', description: 'Allow users to browse published plans', value: 'true', noDefaultValue: true, valueDescription: 'Boolean' }
+  { camelCase: 'viewSubscriptionPrices', raw: 'VIEW_SUBSCRIPTION_PLANS', description: 'Allow users to browse published.prices', value: 'true', noDefaultValue: true, valueDescription: 'Boolean' }
 ]
 
 describe('index', () => {

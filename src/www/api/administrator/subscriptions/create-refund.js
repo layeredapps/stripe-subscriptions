@@ -41,7 +41,6 @@ module.exports = {
       customerid: charge.stripeObject.customer.id,
       invoiceid: charge.stripeObject.invoice,
       subscriptionid: invoice.stripeObject.subscriptionid,
-      planid: invoice.stripeObject.planid,
       productid: invoice.stripeObject.productid,
       stripeObject: refund
     })

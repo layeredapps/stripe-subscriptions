@@ -20,11 +20,10 @@ describe('/api/administrator/subscriptions/set-refund-request-denied', function 
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({
-      amount: '1000',
-      trial_period_days: '0',
-      interval: 'month',
-      usage_type: 'licensed'
+    const administrator = await TestStripeAccounts.createOwnerWithPrice({
+      unit_amount: 3000,
+      recurring_interval: 'month',
+      recurring_usage_type: 'licensed'
     })
     // missing and invalid id
     const req = TestHelper.createRequest('/api/administrator/subscriptions/set-refund-request-denied')
@@ -50,7 +49,7 @@ describe('/api/administrator/subscriptions/set-refund-request-denied', function 
       cachedResponses.invalid = error.message
     }
     // invalid charge
-    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     const req3 = TestHelper.createRequest(`/api/administrator/subscriptions/set-refund-request-denied?chargeid=${user.charge.chargeid}`)
     req3.account = administrator.account
     req3.session = administrator.session
@@ -63,7 +62,7 @@ describe('/api/administrator/subscriptions/set-refund-request-denied', function 
       cachedResponses
         .invalidCharge = error.message
     }
-    await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan, user)
+    await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, user)
     await TestHelper.requestRefund(user, user.charge.chargeid)
     await TestHelper.denyRefund(administrator, user, user.charge.chargeid)
     const req4 = TestHelper.createRequest(`/api/administrator/subscriptions/set-refund-request-denied?chargeid=${user.charge.chargeid}`)
@@ -78,7 +77,7 @@ describe('/api/administrator/subscriptions/set-refund-request-denied', function 
       cachedResponses.invalidCharge2 = error.message
     }
     // returns
-    await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan, user)
+    await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, user)
     await TestHelper.requestRefund(user, user.charge.chargeid)
     const req5 = TestHelper.createRequest(`/api/administrator/subscriptions/set-refund-request-denied?chargeid=${user.charge.chargeid}`)
     req5.account = administrator.account

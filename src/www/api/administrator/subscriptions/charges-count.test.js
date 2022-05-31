@@ -13,14 +13,14 @@ describe('/api/administrator/subscriptions/charges-count', function () {
         publishedAt: 'true'
       })
       for (let i = 0, len = global.pageSize + 1; i < len; i++) {
-        await TestHelper.createPlan(administrator, {
+        await TestHelper.createPrice(administrator, {
           productid: administrator.product.productid,
-          usage_type: 'licensed',
           publishedAt: 'true',
-          trial_period_days: '0',
-          amount: '1000'
+          unit_amount: 3000,
+          recurring_interval: 'month',
+          recurring_usage_type: 'licensed'
         })
-        await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+        await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
       }
       const req = TestHelper.createRequest('/api/administrator/subscriptions/charges-count')
       req.account = administrator.account

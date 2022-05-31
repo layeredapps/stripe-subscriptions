@@ -20,11 +20,10 @@ describe('/api/administrator/subscriptions/set-customer-coupon', function () {
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({
-      amount: '1000',
-      trial_period_days: '0',
-      interval: 'month',
-      usage_type: 'licensed'
+    const administrator = await TestStripeAccounts.createOwnerWithPrice({
+      unit_amount: 3000,
+      recurring_interval: 'month',
+      recurring_usage_type: 'licensed'
     })
     const coupon = await TestHelper.createCoupon(administrator, {
       publishedAt: 'true',
@@ -65,7 +64,7 @@ describe('/api/administrator/subscriptions/set-customer-coupon', function () {
       cachedResponses.invalid = error.message
     }
     // invalid customer
-    const user2 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const user2 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     await TestHelper.createCustomerDiscount(administrator, user2.customer, coupon)
     const req3 = TestHelper.createRequest(`/api/administrator/subscriptions/set-customer-coupon?customerid=${user2.customer.customerid}`)
     req3.account = administrator.account
@@ -79,7 +78,7 @@ describe('/api/administrator/subscriptions/set-customer-coupon', function () {
       cachedResponses.invalidCustomer = error.message
     }
     // invalid coupon
-    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     const req4 = TestHelper.createRequest(`/api/administrator/subscriptions/set-customer-coupon?customerid=${user.customer.customerid}`)
     req4.account = administrator.account
     req4.session = administrator.session

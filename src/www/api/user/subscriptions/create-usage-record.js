@@ -10,11 +10,6 @@ module.exports = {
     if (!subscription) {
       throw new Error('invalid-subscriptionid')
     }
-    req.query.planid = subscription.planid
-    const plan = await global.api.user.subscriptions.PublishedPlan.get(req)
-    if (plan.stripeObject.usage_type !== 'metered') {
-      throw new Error('invalid-subscription')
-    }
     if (!req.body) {
       throw new Error('invalid-quantity')
     }
@@ -54,7 +49,14 @@ module.exports = {
     } else {
       usageInfo.timestamp = subscription.stripeObject.current_period_start
     }
-    const usageRecord = await stripeCache.execute('subscriptionItems', 'createUsageRecord', req.body.subscriptionitemid, usageInfo, req.stripeKey)
+    let usageRecord
+    try {
+      usageRecord = await stripeCache.execute('subscriptionItems', 'createUsageRecord', req.body.subscriptionitemid, usageInfo, req.stripeKey)
+    } catch (error) {
+      if (error.message === 'invalid-subscriptionitemid' || error.message === 'invalid-subscription') {
+        throw new Error('invalid-subscription')
+      }
+    }
     if (!usageRecord) {
       throw new Error('invalid-usagerecord')
     }
@@ -64,8 +66,6 @@ module.exports = {
       stripeObject: usageRecord,
       customerid: subscription.stripeObject.customer,
       accountid: req.account.accountid,
-      productid: subscription.productid,
-      planid: subscription.planid,
       subscriptionid: req.query.subscriptionid,
       subscriptionitemid: req.body.subscriptionitemid
     })

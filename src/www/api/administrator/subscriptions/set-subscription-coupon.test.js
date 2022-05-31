@@ -20,11 +20,10 @@ describe('/api/administrator/subscriptions/set-subscription-coupon', function ()
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPlan({
-      amount: '1000',
-      trial_period_days: '0',
-      interval: 'month',
-      usage_type: 'licensed'
+    const administrator = await TestStripeAccounts.createOwnerWithPrice({
+      unit_amount: 3000,
+      recurring_interval: 'month',
+      recurring_usage_type: 'licensed'
     })
     const publishedCoupon = await TestHelper.createCoupon(administrator, {
       publishedAt: 'true',
@@ -32,11 +31,11 @@ describe('/api/administrator/subscriptions/set-subscription-coupon', function ()
       duration_in_months: '3'
     })
     // subscription is cancelling
-    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     await TestHelper.cancelSubscription(user)
-    const user2 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const user2 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     await TestHelper.createSubscriptionDiscount(administrator, user2.subscription, administrator.coupon)
-    const user3 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.plan)
+    const user3 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     const req = TestHelper.createRequest(`/api/administrator/subscriptions/set-subscription-coupon?subscriptionid=${user.subscription.subscriptionid}`)
     req.account = administrator.account
     req.session = administrator.session

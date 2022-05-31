@@ -15,7 +15,7 @@ module.exports = {
     const invoice = await global.api.user.subscriptions.Invoice.get(req)
     const refundInfo = {
       charge: req.query.chargeid,
-      amount: charge.stripeObject.amount - (charge.stripeObject.amount_refunded || 0),
+      amount: charge.stripeObject.paid - (charge.stripeObject.amount_refunded || 0),
       reason: 'requested_by_customer'
     }
     req.query.subscriptionid = invoice.subscriptionid
@@ -41,7 +41,6 @@ module.exports = {
         subscriptionid: subscription.subscriptionid,
         customerid: invoice.customerid,
         invoiceid: invoice.invoiceid,
-        planid: invoice.planid,
         productid: invoice.productid,
         paymentmethodid: invoice.paymentmethodid,
         stripeObject: refund

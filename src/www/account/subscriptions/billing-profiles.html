@@ -22,8 +22,6 @@
               <th>ID</th>
               <th translate="yes">Email</th>
               <th translate="yes">Description</th>
-              <th translate="yes">Paid subscriptions</th>
-              <th translate="yes">Free subscriptions</th>
             </tr>
           </thead>
         </table>
@@ -40,8 +38,6 @@
         <td><a href="/account/subscriptions/billing-profile?customerid=${customer.id}">${customer.id}</a></td>
         <td><a href="mailto:${customer.email}">${customer.email}</a></td>
         <td>${customer.description}</td>
-        <td><a href="/account/subscriptions/billing-profile-subscriptions?customerid=${customer.id}">${customer.paid}</a></td>
-        <td><a href="/account/subscriptions/billing-profile-subscriptions?customerid=${customer.id}">${customer.free}</a></td>
       </tr>
     </template>
   </body>
