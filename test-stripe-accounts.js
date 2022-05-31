@@ -134,18 +134,15 @@ const TestStripeAccounts = module.exports = {
     }
     await TestHelper.createSubscription(user, [price.priceid])
     let invoiceid
-    console.log('wait1')
     await waitForWebhook('invoice.created', (stripeEvent) => {
       if (stripeEvent.data.object.subscription === user.subscription.subscriptionid) {
         invoiceid = stripeEvent.data.object.id
         return true
       }
     })
-    console.log('wait2')
     await waitForWebhook(['invoice.finalized', 'invoice.paid', 'invoice.payment_succeeded'], (stripeEvent) => {
       return stripeEvent.data.object.id === invoiceid
     })
-    console.log('wait3')
     await TestHelper.rotateWebhook()
     user.subscription = await global.api.administrator.subscriptions.Subscription.get({
       query: {
@@ -175,7 +172,6 @@ const TestStripeAccounts = module.exports = {
     await TestHelper.createSubscription(user, [price.priceid], {
       trial_period_days: '7'
     })
-    console.log('wait4')
     let invoiceid
     await waitForWebhook('invoice.created', (stripeEvent) => {
       if (stripeEvent.data.object.subscription === user.subscription.subscriptionid) {
@@ -183,11 +179,9 @@ const TestStripeAccounts = module.exports = {
         return true
       }
     })
-    console.log('wait5')
     await waitForWebhook(['invoice.finalized', 'invoice.paid', 'invoice.payment_succeeded'], (stripeEvent) => {
       return stripeEvent.data.object.id === invoiceid
     })
-    console.log('wait6')
     await TestHelper.rotateWebhook()
     user.subscription = await global.api.administrator.subscriptions.Subscription.get({
       query: {

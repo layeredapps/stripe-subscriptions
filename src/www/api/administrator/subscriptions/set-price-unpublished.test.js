@@ -54,7 +54,6 @@ describe('/api/administrator/subscriptions/set-price-unpublished', function () {
 
       it('ineligible querystring price is already unpublished', async () => {
         const administrator = await TestStripeAccounts.createOwnerWithUnpublishedPrice()
-        console.log(administrator.pri)
         const req = TestHelper.createRequest(`/api/administrator/subscriptions/set-price-unpublished?priceid=${administrator.price.priceid}`)
         req.account = administrator.account
         req.session = administrator.session

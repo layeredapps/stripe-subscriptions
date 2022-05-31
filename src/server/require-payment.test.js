@@ -96,7 +96,6 @@ describe('server/stripe-subscriptions/require-payment', () => {
     //   const user = await TestStripeAccounts.createUserWithPaymentMethod()
     //   const dueDate = new Date(new Date().getTime() + (4 * 24 * 60 * 60 * 1000))
     //   const invoice = await TestHelper.createAmountOwed(user, dueDate)
-    //   console.log('wait1', invoice)
     //   await TestHelper.waitForWebhook('invoice.updated', (stripeEvent) => {
     //     return stripeEvent.data.object.id === user.invoice.invoiceid
     //   })

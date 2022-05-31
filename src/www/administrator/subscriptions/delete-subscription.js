@@ -61,7 +61,6 @@ async function renderPage (req, res, messageTemplate) {
     if (messageTemplate === 'success') {
       dashboard.HTML.renderTemplate(doc, null, `${messageTemplate}-${req.query.type}`, 'message-container')
     } else {
-      console.log('message template', messageTemplate)
       dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
     }
     if (req.removeContents) {
