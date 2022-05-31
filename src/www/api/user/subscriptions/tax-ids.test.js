@@ -21,7 +21,7 @@ describe('/api/user/subscriptions/tax-ids', function () {
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const user = await TestHelper.createUser()
-    await TestHelper.createCustomer(user,  {
+    await TestHelper.createCustomer(user, {
       email: user.profile.contactEmail
     })
     const values = ['DE123456789', 'DE123456788', 'DE123456787', 'DE123456786', 'DE123456785']
@@ -90,7 +90,7 @@ describe('/api/user/subscriptions/tax-ids', function () {
       it('ineligible accessing account', async function () {
         await bundledData(this.test.currentRetry())
         const user = await TestHelper.createUser()
-        await TestHelper.createCustomer(user,  {
+        await TestHelper.createCustomer(user, {
           email: user.profile.contactEmail
         })
         await TestHelper.createTaxId(user, user.customer)

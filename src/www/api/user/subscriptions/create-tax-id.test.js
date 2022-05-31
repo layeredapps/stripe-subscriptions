@@ -48,7 +48,7 @@ describe('/api/user/subscriptions/create-tax-id', function () {
       it('ineligible accessing account', async () => {
         const user = await TestHelper.createUser()
         const user2 = await TestHelper.createUser()
-        await TestHelper.createCustomer(user2,  {
+        await TestHelper.createCustomer(user2, {
           email: user2.profile.contactEmail
         })
         const req = TestHelper.createRequest(`/api/user/subscriptions/create-tax-id?customerid=${user2.customer.customerid}`)
