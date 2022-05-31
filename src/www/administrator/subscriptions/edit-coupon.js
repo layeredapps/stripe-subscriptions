@@ -62,8 +62,13 @@ async function renderPage (req, res, messageTemplate) {
       return dashboard.Response.end(req, res, doc)
     }
   }
-  const nameField = doc.getElementById('name')
-  nameField.setAttribute('value', req.body ? (req.body.name || '').split("'").join('&quot;') : req.data.coupon.name || req.data.coupon.id)
+  if (req.body) {
+    const nameField = doc.getElementById('name')
+    nameField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.name || ''))
+  } else {
+    const nameField = doc.getElementById('name')
+    nameField.setAttribute('value', dashboard.Format.replaceQuotes(req.data.coupon.name))
+  }
   return dashboard.Response.end(req, res, doc)
 }
 

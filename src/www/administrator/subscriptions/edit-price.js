@@ -62,8 +62,13 @@ async function renderPage (req, res, messageTemplate) {
       return dashboard.Response.end(req, res, doc)
     }
   }
-  const nicknameField = doc.getElementById('nickname')
-  nicknameField.setAttribute('value', req.body ? (req.body.nickname || '').split("'").join('&quot;') : req.data.price.nickname)
+  if (req.body) {
+    const nicknameField = doc.getElementById('nickname')
+    nicknameField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.nickname || ''))
+  } else {
+    const nicknameField = doc.getElementById('nickname')
+    nicknameField.setAttribute('value', dashboard.Format.replaceQuotes(req.data.price.nickname))
+  }
   return dashboard.Response.end(req, res, doc)
 }
 
