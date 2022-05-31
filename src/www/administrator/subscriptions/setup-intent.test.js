@@ -49,7 +49,7 @@ describe('/administrator/subscriptions/setup-intent', function () {
   })
 
   describe('view', () => {
-    it('should have row for setup intent (screenshots)', async function () {
+    it('should present setup intent table (screenshots)', async function () {
       await bundledData(this.test.currentRetry())
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)

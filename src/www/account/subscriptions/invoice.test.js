@@ -53,7 +53,7 @@ describe('/account/subscriptions/invoice', function () {
   })
 
   describe('view', () => {
-    it('should have row for invoice (screenshots)', async function () {
+    it('should present invoice table (screenshots)', async function () {
       await bundledData(this.test.currentRetry())
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)

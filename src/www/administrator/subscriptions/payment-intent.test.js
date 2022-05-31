@@ -54,7 +54,7 @@ describe('/administrator/subscriptions/payment-intent', function () {
   })
 
   describe('view', () => {
-    it('should have row for payment intent (screenshots)', async function () {
+    it('should present payment intent table (screenshots)', async function () {
       await bundledData(this.test.currentRetry())
       const result = cachedResponses.get
       const doc = TestHelper.extractDoc(result.html)

@@ -19,7 +19,7 @@ describe('/administrator/subscriptions/payout', function () {
   })
   describe('view', () => {
     if (!process.env.DISABLE_PAYOUT_TESTS) {
-      it('should have row for payout (screenshots)', async () => {
+      it('should present payout table (screenshots)', async () => {
         const administrator = await TestHelper.createOwner()
         const payout = await TestHelper.createPayout(administrator)
         const req = TestHelper.createRequest(`/administrator/subscriptions/payout?payoutid=${payout.id}`)

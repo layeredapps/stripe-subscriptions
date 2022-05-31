@@ -19,7 +19,7 @@ describe('/administrator/subscriptions/product', function () {
   })
 
   describe('view', () => {
-    it('should have row for product (screenshots)', async () => {
+    it('should present product table (screenshots)', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
         publishedAt: 'true'

@@ -54,7 +54,7 @@ describe('/administrator/subscriptions/refund', function () {
   })
 
   describe('view', () => {
-    it('should have row for refund (screenshots)', async function () {
+    it('should present refund table (screenshots)', async function () {
       await bundledData(this.test.currentRetry())
       const result = cachedResponses.get
       const doc = TestHelper.extractDoc(result.html)
