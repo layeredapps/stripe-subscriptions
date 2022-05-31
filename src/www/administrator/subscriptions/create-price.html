@@ -44,6 +44,18 @@
           </div>
         </div>
         <div class="input-fields">
+          <label class="field-label" for="type" translate="yes">Tax behavior</label>
+          <div class="field">
+            <select name="tax_behavior" id="tax_behavior">
+              <option value="" translate="yes">Select behavior</option>
+              <option value="inclusive" translate="yes">Inclusive</option>
+              <option value="exclusive" translate="yes">Exclusive</option>
+            </select>
+            <span class="field-note"><em>Inclusive</em> means price includes tax.</span>
+            <span class="field-note"><em>Exclusive</em> means price excludes tax.</span>
+          </div>
+        </div>
+        <div class="input-fields">
           <label class="field-label" for="currency" translate="yes">Currency</label>
           <div class="field">
             <select class="currency" name="currency" id="currency">
@@ -397,9 +409,9 @@
         Error! Invalid product ID value
       </div>
     </template>
-    <template id="invalid-product">
+    <template id="invalid-tax_behavior">
       <div class="error message" translate="yes">
-        Error! Invalid, unpublished or never published product
+        Error! Invalid tax behavior
       </div>
     </template>
     <template id="invalid-nickname">

@@ -39,6 +39,7 @@ async function renderPage (req, res, messageTemplate) {
     dashboard.HTML.setSelectedOptionByValue(doc, 'productid', req.body.productid || '')
     dashboard.HTML.setSelectedOptionByValue(doc, 'currency', req.body.currency || '')
     dashboard.HTML.setSelectedOptionByValue(doc, 'billing_scheme', req.body.billing_scheme || '')
+    dashboard.HTML.setSelectedOptionByValue(doc, 'tax_behavior', req.body.tax_behavior || '')
     dashboard.HTML.setSelectedOptionByValue(doc, 'type', req.body.type || '')
     const nicknameField = doc.getElementById('nickname')
     nicknameField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.nickname || ''))
@@ -49,7 +50,7 @@ async function renderPage (req, res, messageTemplate) {
         const divideField = doc.getElementById('transform_quantity_divide_by')
         divideField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.transform_quantity_divide_by || ''))
         if (req.body.transform_quantity_round) {
-          dashboard.HTML.setSelectedOptionByValue(doc, 'transform_quantity_round', dashboard.Format.replaceQuotes(req.body.transform_quantity_round || ''))
+          dashboard.HTML.setSelectedOptionByValue(doc, 'transform_quantity_round', req.body.transform_quantity_round || '')
         }
       }
     } else {
@@ -109,6 +110,9 @@ async function submitForm (req, res) {
   }
   if (!req.body.type || (req.body.type !== 'one_time' && req.body.type !== 'recurring')) {
     return renderPage(req, res, 'invalid-type')
+  }
+  if (!req.body.tax_behavior || (req.body.tax_behavior !== 'inclusive' && req.body.tax_behavior !== 'exclusive')) {
+    return renderPage(req, res, 'invalid-tax_behavior')
   }
   if (!req.body.currency || req.body.currency.length !== 3) {
     return renderPage(req, res, 'invalid-currency')
