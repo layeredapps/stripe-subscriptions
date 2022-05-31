@@ -71,7 +71,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
           recurring_interval: 'month',
           recurring_interval_count: '1',
           productid: administrator.product.productid,
-          tax_behavior: 'inclusive',
+          tax_behavior: 'inclusive'
         }
         let errorMessage
         try {
@@ -109,7 +109,6 @@ describe('/api/administrator/subscriptions/create-price', function () {
         assert.strictEqual(errorMessage, 'invalid-tax_behavior')
       })
     })
-
 
     describe('invalid-unit_amount', () => {
       it('invalid posted unit_amount', async () => {

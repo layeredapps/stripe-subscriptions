@@ -96,7 +96,6 @@ describe('/api/administrator/subscriptions/create-coupon', function () {
           errorMessage = error.message
         }
         assert.strictEqual(errorMessage, 'invalid-name')
-
       })
     })
 

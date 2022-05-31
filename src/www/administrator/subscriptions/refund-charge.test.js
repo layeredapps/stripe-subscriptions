@@ -111,7 +111,6 @@ describe('/administrator/subscriptions/refund-charge', function () {
     it('already-refunded', async function () {
       await bundledData(this.test.currentRetry())
       const errorMessage = cachedResponses.alreadyRefunded
-      console.log(errorMessage)
       assert.strictEqual(errorMessage, 'already-refunded')
     })
 

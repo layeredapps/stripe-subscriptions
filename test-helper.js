@@ -615,7 +615,7 @@ async function deleteSubscriptionDiscount (administrator, subscription, coupon) 
 
 async function createTaxId (user, customer, properties) {
   Log.info('createTaxId', user, customer, properties)
-  properties = properties|| {}
+  properties = properties || {}
   const req = createRequest(`/api/user/subscriptions/create-tax-id?customerid=${customer.customerid}`)
   req.session = user.session
   req.account = user.account

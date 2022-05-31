@@ -37,7 +37,7 @@ async function beforeRequest (req) {
     }
     return
   }
-  let taxidRaw 
+  let taxidRaw
   try {
     taxidRaw = await global.api.user.subscriptions.TaxId.get(req)
   } catch (error) {
