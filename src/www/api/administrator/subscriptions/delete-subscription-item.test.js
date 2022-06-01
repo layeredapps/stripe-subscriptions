@@ -4,7 +4,7 @@ const TestHelper = require('../../../../../test-helper.js')
 const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
-describe('/api/user/subscriptions/remove-subscription-item', function () {
+describe('/api/administrator/subscriptions/delete-subscription-item', function () {
   before(TestHelper.disableMetrics)
   after(TestHelper.enableMetrics)
   let cachedResponses
@@ -22,11 +22,10 @@ describe('/api/user/subscriptions/remove-subscription-item', function () {
     await TestHelper.setupBeforeEach()
     const administrator = await TestStripeAccounts.createOwnerWithPrice()
     const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
-    const user2 = await TestHelper.createUser()
     // missing and invalid id
-    let req = TestHelper.createRequest('/api/user/subscriptions/remove-subscription-item')
-    req.account = user.account
-    req.session = user.session
+    let req = TestHelper.createRequest('/api/administrator/subscriptions/delete-subscription-item')
+    req.account = administrator.account
+    req.session = administrator.session
     req.body = {
       itemid: user.subscription.stripeObject.items.data[0].id
     }
@@ -35,9 +34,9 @@ describe('/api/user/subscriptions/remove-subscription-item', function () {
     } catch (error) {
       cachedResponses.missing = error.message
     }
-    req = TestHelper.createRequest('/api/user/subscriptions/remove-subscription-item?subscriptionid=invalid')
-    req.account = user.account
-    req.session = user.session
+    req = TestHelper.createRequest('/api/administrator/subscriptions/delete-subscription-item?subscriptionid=invalid')
+    req.account = administrator.account
+    req.session = administrator.session
     req.body = {
       itemid: user.subscription.stripeObject.items.data[0].id
     }
@@ -46,22 +45,10 @@ describe('/api/user/subscriptions/remove-subscription-item', function () {
     } catch (error) {
       cachedResponses.invalid = error.message
     }
-    // invalid account
-    req = TestHelper.createRequest(`/api/user/subscriptions/remove-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
-    req.account = user2.account
-    req.session = user2.session
-    req.body = {
-      itemid: user.subscription.stripeObject.items.data[0].id
-    }
-    try {
-      await req.patch()
-    } catch (error) {
-      cachedResponses.account = error.message
-    }
     // invalid itemid
-    req = TestHelper.createRequest(`/api/user/subscriptions/remove-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
-    req.account = user.account
-    req.session = user.session
+    req = TestHelper.createRequest(`/api/administrator/subscriptions/delete-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     req.body = {
       itemid: ''
     }
@@ -70,11 +57,10 @@ describe('/api/user/subscriptions/remove-subscription-item', function () {
     } catch (error) {
       cachedResponses.missingItem = error.message
     }
-    req = TestHelper.createRequest(`/api/user/subscriptions/remove-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
-    req.account = user.account
-    req.session = user.session
+    req = TestHelper.createRequest(`/api/administrator/subscriptions/delete-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     req.body = {
-      quantity: '1',
       itemid: 'invalid'
     }
     try {
@@ -82,10 +68,24 @@ describe('/api/user/subscriptions/remove-subscription-item', function () {
     } catch (error) {
       cachedResponses.invalidItem = error.message
     }
+    // only items
+    req = TestHelper.createRequest(`/api/administrator/subscriptions/delete-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
+    req.body = {
+      itemid: user.subscription.stripeObject.items.data[0].id
+    }
+    try {
+      await req.patch()
+    } catch (error) {
+      cachedResponses.onlyItem = error.message
+    }
     // returns
-    req = TestHelper.createRequest(`/api/user/subscriptions/remove-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
-    req.account = user.account
-    req.session = user.session
+    const price2 = await TestHelper.createPrice(administrator)
+    await TestHelper.addSubscriptionItem(user, price2.priceid, 1)
+    req = TestHelper.createRequest(`/api/administrator/subscriptions/delete-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     req.body = {
       itemid: user.subscription.stripeObject.items.data[0].id
     }
@@ -110,14 +110,6 @@ describe('/api/user/subscriptions/remove-subscription-item', function () {
       })
     })
 
-    describe('invalid-account', () => {
-      it('ineligible accessing account', async function () {
-        await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.account
-        assert.strictEqual(errorMessage, 'invalid-account')
-      })
-    })
-
     describe('invalid-itemid', () => {
       it('missing posted itemid', async function () {
         await bundledData(this.test.currentRetry())
@@ -131,12 +123,20 @@ describe('/api/user/subscriptions/remove-subscription-item', function () {
         assert.strictEqual(errorMessage, 'invalid-itemid')
       })
     })
+
+    describe('only-item', () => {
+      it('invalid posted itemid is only item', async function () {
+        await bundledData(this.test.currentRetry())
+        const errorMessage = cachedResponses.onlyItem
+        assert.strictEqual(errorMessage, 'only-item')
+      })
+    })
   })
 
   describe('returns', () => {
     it('object', async () => {
       const subscriptionNow = cachedResponses.returns
-      assert.strictEqual(subscriptionNow.stripeObject.items.data[0].quantity, 0)
+      assert.strictEqual(subscriptionNow.stripeObject.items.data.length, 1)
     })
   })
 })

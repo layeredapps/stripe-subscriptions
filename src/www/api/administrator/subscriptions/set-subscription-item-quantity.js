@@ -7,9 +7,12 @@ module.exports = {
     if (!req.query || !req.query.subscriptionid) {
       throw new Error('invalid-subscriptionid')
     }
-    const subscription = await global.api.user.subscriptions.Subscription.get(req)
+    const subscription = await global.api.administrator.subscriptions.Subscription.get(req)
     if (!subscription) {
       throw new Error('invalid-subscriptionid')
+    }
+    if (!req.body || !req.body.quantity) {
+      throw new Error('invalid-quantity')
     }
     if (!req.body.itemid) {
       throw new Error('invalid-itemid')
@@ -24,10 +27,21 @@ module.exports = {
     if (!existingItem) {
       throw new Error('invalid-itemid')
     }
+    try {
+      const quantity = parseInt(req.body.quantity, 10)
+      if (quantity < 1 || quantity.toString() !== req.body.quantity) {
+        throw new Error('invalid-quantity')
+      }
+      if (existingItem.quantity === quantity) {
+        throw new Error('invalid-quantity')
+      }
+    } catch (error) {
+      throw new Error('invalid-quantity')
+    }
     const updateInfo = {
       items: [{
         id: req.body.itemid,
-        quantity: 0
+        quantity: req.body.quantity
       }]
     }
     const subscriptionNow = await stripeCache.execute('subscriptions', 'update', req.query.subscriptionid, updateInfo, req.stripeKey)
@@ -43,6 +57,6 @@ module.exports = {
       }
     })
     await dashboard.StorageCache.remove(req.query.subscriptionid)
-    return global.api.user.subscriptions.Subscription.get(req)
+    return global.api.administrator.subscriptions.Subscription.get(req)
   }
 }

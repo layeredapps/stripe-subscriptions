@@ -7,7 +7,7 @@ module.exports = {
     if (!req.query || !req.query.subscriptionid) {
       throw new Error('invalid-subscriptionid')
     }
-    const subscription = await global.api.user.subscriptions.Subscription.get(req)
+    const subscription = await global.api.administrator.subscriptions.Subscription.get(req)
     if (!subscription) {
       throw new Error('invalid-subscriptionid')
     }
@@ -18,11 +18,11 @@ module.exports = {
       throw new Error('invalid-priceid')
     }
     req.query.priceid = req.body.priceid
-    const price = await global.api.user.subscriptions.PublishedPrice.get(req)
+    const price = await global.api.administrator.subscriptions.Price.get(req)
     if (!price) {
       throw new Error('invalid-priceid')
     }
-    if (price.unpublishedAt) {
+    if (!price.publishedAt || price.unpublishedAt) {
       throw new Error('invalid-price')
     }
     try {
@@ -57,6 +57,6 @@ module.exports = {
       }
     })
     await dashboard.StorageCache.remove(req.query.subscriptionid)
-    return global.api.user.subscriptions.Subscription.get(req)
+    return global.api.administrator.subscriptions.Subscription.get(req)
   }
 }

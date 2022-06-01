@@ -51,6 +51,19 @@ module.exports = {
         throw new Error('invalid-couponid')
       }
     }
+    if (req.body.taxrateids) {
+      const taxRates = req.body.taxrateids.split(',')
+      for (const taxrateid of taxRates) {
+        req.query.taxrateid = taxrateid
+        const taxRate = await global.api.user.subscriptions.TaxRate.get(req)
+        if (!taxRate) {
+          throw new Error('invalid-taxrateid')
+        }
+        if (!taxRate.stripeObject.active) {
+          throw new Error('invalid-tax-rate')
+        }
+      }
+    }
     const customer = await global.api.user.subscriptions.Customer.get(req)
     if (customer.stripeObject.default_source) {
       req.body.paymentmethodid = customer.stripeObject.default_source
@@ -79,6 +92,9 @@ module.exports = {
     }
     if (req.body.couponid) {
       subscriptionInfo.coupon = req.body.couponid
+    }
+    if (req.body.taxrateids) {
+      subscriptionInfo.default_tax_rates = req.body.taxrateids.split(',')
     }
     let subscription
     try {

@@ -83,6 +83,9 @@ function formatError (error, group) {
   if (error.raw && error.raw.param === 'subscription_item' && error.raw.message.indexOf('licensed') > -1) {
     return 'invalid-subscription'
   }
+  if (error.raw && error.raw.message.indexOf('Invalid subscription_item') > -1) {
+    return 'invalid-subscriptionitemid'
+  }
   return 'unknown-error'
 }
 

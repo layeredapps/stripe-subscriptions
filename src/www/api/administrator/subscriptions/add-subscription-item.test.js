@@ -4,7 +4,7 @@ const TestHelper = require('../../../../../test-helper.js')
 const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 
-describe('/api/user/subscriptions/add-subscription-item', function () {
+describe('/api/administrator/subscriptions/add-subscription-item', function () {
   before(TestHelper.disableMetrics)
   after(TestHelper.enableMetrics)
   let cachedResponses
@@ -44,11 +44,10 @@ describe('/api/user/subscriptions/add-subscription-item', function () {
     })
     const price5 = await TestHelper.createPrice(administrator)
     const user = await TestStripeAccounts.createUserWithPaidSubscription(price2)
-    const user2 = await TestHelper.createUser()
     // missing and invalid subscription id
-    let req = TestHelper.createRequest('/api/user/subscriptions/add-subscription-item')
-    req.account = user.account
-    req.session = user.session
+    let req = TestHelper.createRequest('/api/administrator/subscriptions/add-subscription-item')
+    req.account = administrator.account
+    req.session = administrator.session
     req.body = {
       quantity: '10',
       priceid: price2.priceid
@@ -58,9 +57,9 @@ describe('/api/user/subscriptions/add-subscription-item', function () {
     } catch (error) {
       cachedResponses.missing = error.message
     }
-    req = TestHelper.createRequest('/api/user/subscriptions/add-subscription-item?subscriptionid=invalid')
-    req.account = user.account
-    req.session = user.session
+    req = TestHelper.createRequest('/api/administrator/subscriptions/add-subscription-item?subscriptionid=invalid')
+    req.account = administrator.account
+    req.session = administrator.session
     req.body = {
       quantity: '10',
       priceid: price2.priceid
@@ -70,23 +69,10 @@ describe('/api/user/subscriptions/add-subscription-item', function () {
     } catch (error) {
       cachedResponses.invalid = error.message
     }
-    // invalid account
-    req = TestHelper.createRequest(`/api/user/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
-    req.account = user2.account
-    req.session = user2.session
-    req.body = {
-      quantity: '1',
-      priceid: price2.priceid
-    }
-    try {
-      await req.patch()
-    } catch (error) {
-      cachedResponses.account = error.message
-    }
     // invalid price id
-    req = TestHelper.createRequest(`/api/user/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
-    req.account = user.account
-    req.session = user.session
+    req = TestHelper.createRequest(`/api/administrator/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     req.body = {
       quantity: '7',
       priceid: ''
@@ -96,9 +82,9 @@ describe('/api/user/subscriptions/add-subscription-item', function () {
     } catch (error) {
       cachedResponses.missingPriceID = error.message
     }
-    req = TestHelper.createRequest(`/api/user/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
-    req.account = user.account
-    req.session = user.session
+    req = TestHelper.createRequest(`/api/administrator/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     req.body = {
       quantity: '7',
       priceid: 'invalid'
@@ -109,9 +95,9 @@ describe('/api/user/subscriptions/add-subscription-item', function () {
       cachedResponses.invalidPriceID = error.message
     }
     // invalid price
-    req = TestHelper.createRequest(`/api/user/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
-    req.account = user.account
-    req.session = user.session
+    req = TestHelper.createRequest(`/api/administrator/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     req.body = {
       quantity: '7',
       priceid: price3.priceid
@@ -121,9 +107,9 @@ describe('/api/user/subscriptions/add-subscription-item', function () {
     } catch (error) {
       cachedResponses.invalidPriceUnpublished = error.message
     }
-    req = TestHelper.createRequest(`/api/user/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
-    req.account = user.account
-    req.session = user.session
+    req = TestHelper.createRequest(`/api/administrator/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     req.body = {
       quantity: '7',
       priceid: price4.priceid
@@ -134,9 +120,9 @@ describe('/api/user/subscriptions/add-subscription-item', function () {
       cachedResponses.invalidPriceNotPublished = error.message
     }
     // invalid quantity
-    req = TestHelper.createRequest(`/api/user/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
-    req.account = user.account
-    req.session = user.session
+    req = TestHelper.createRequest(`/api/administrator/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     req.body = {
       quantity: 'letters',
       priceid: price2.priceid
@@ -146,9 +132,9 @@ describe('/api/user/subscriptions/add-subscription-item', function () {
     } catch (error) {
       cachedResponses.invalidQuantity = error.message
     }
-    req = TestHelper.createRequest(`/api/user/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
-    req.account = user.account
-    req.session = user.session
+    req = TestHelper.createRequest(`/api/administrator/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     req.body = {
       quantity: '-1',
       priceid: price2.priceid
@@ -158,9 +144,9 @@ describe('/api/user/subscriptions/add-subscription-item', function () {
     } catch (error) {
       cachedResponses.negativeQuantity = error.message
     }
-    req = TestHelper.createRequest(`/api/user/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
-    req.account = user.account
-    req.session = user.session
+    req = TestHelper.createRequest(`/api/administrator/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     req.body = {
       quantity: '0',
       priceid: price2.priceid
@@ -171,9 +157,9 @@ describe('/api/user/subscriptions/add-subscription-item', function () {
       cachedResponses.zeroQuantity = error.message
     }
     // returns
-    req = TestHelper.createRequest(`/api/user/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
-    req.account = user.account
-    req.session = user.session
+    req = TestHelper.createRequest(`/api/administrator/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     req.body = {
       quantity: '2',
       priceid: price2.priceid
@@ -183,9 +169,9 @@ describe('/api/user/subscriptions/add-subscription-item', function () {
     } catch (error) {
       cachedResponses.invalidDuplicatePrice = error.message
     }
-    req = TestHelper.createRequest(`/api/user/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
-    req.account = user.account
-    req.session = user.session
+    req = TestHelper.createRequest(`/api/administrator/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
+    req.account = administrator.account
+    req.session = administrator.session
     req.body = {
       quantity: '2',
       priceid: price5.priceid
@@ -208,14 +194,6 @@ describe('/api/user/subscriptions/add-subscription-item', function () {
         await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalid
         assert.strictEqual(errorMessage, 'invalid-subscriptionid')
-      })
-    })
-
-    describe('invalid-account', () => {
-      it('ineligible accessing account', async function () {
-        await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.account
-        assert.strictEqual(errorMessage, 'invalid-account')
       })
     })
 

@@ -11,39 +11,26 @@ module.exports = {
     if (!subscription) {
       throw new Error('invalid-subscriptionid')
     }
-    if (!req.body || !req.body.quantity) {
-      throw new Error('invalid-quantity')
+    if (!req.body.itemid) {
+      throw new Error('invalid-itemid')
     }
-    if (!req.body.priceid) {
-      throw new Error('invalid-priceid')
-    }
-    req.query.priceid = req.body.priceid
-    const price = await global.api.user.subscriptions.PublishedPrice.get(req)
-    if (!price) {
-      throw new Error('invalid-priceid')
-    }
-    if (price.unpublishedAt) {
-      throw new Error('invalid-price')
-    }
-    try {
-      const quantity = parseInt(req.body.quantity, 10)
-      if (quantity < 1 || quantity.toString() !== req.body.quantity) {
-        throw new Error('invalid-quantity')
-      }
-    } catch (error) {
-      throw new Error('invalid-quantity')
-    }
+    let existingItem
     for (const item of subscription.stripeObject.items.data) {
-      if (item.price.id === req.body.priceid) {
-        throw new Error('duplicate-price')
+      if (item.id === req.body.itemid) {
+        existingItem = item
+        break
       }
     }
-    const updateInfo = {
-      subscription: req.query.subscriptionid,
-      price: price.priceid,
-      quantity: req.body.quantity
+    if (!existingItem) {
+      throw new Error('invalid-itemid')
     }
-    await stripeCache.execute('subscriptionItems', 'create', updateInfo, req.stripeKey)
+    if (subscription.stripeObject.items.data.length === 1) {
+      throw new Error('only-item')
+    }
+    const itemNow = await stripeCache.execute('subscriptionItems', 'del', req.body.itemid, req.stripeKey)
+    if (!itemNow) {
+      throw new Error('unknown-error')
+    }
     const subscriptionNow = await stripeCache.execute('subscriptions', 'retrieve', req.query.subscriptionid, req.stripeKey)
     if (!subscriptionNow) {
       throw new Error('unknown-error')

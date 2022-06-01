@@ -228,6 +228,7 @@ const waitForWebhook = util.promisify(async (webhookType, matching, callback) =>
 
 module.exports = {
   addSubscriptionItem,
+  addSubscriptionItemTaxRate,
   cancelSubscription,
   createAmountOwed,
   createPaymentMethod,
@@ -485,13 +486,15 @@ async function createPrice (administrator, properties) {
   req.session = administrator.session
   req.account = administrator.account
   req.body = properties || {
+    productid: administrator.product.productid,
     currency: 'USD',
     recurring_interval: 'month',
     recurring_interval_count: '1',
     recurring_aggregate_usage: 'sum',
     usage_type: 'licensed',
     unit_amount: '0',
-    tax_behavior: 'inclusive'
+    tax_behavior: 'inclusive',
+    publishedAt: 'true'
   }
   let price = await req.post()
   if (properties && properties.unpublishedAt) {
@@ -906,6 +909,18 @@ async function removeSubscriptionItem (user, itemid) {
   }
   user.subscription = await req.post()
   return user.subscription
+}
+
+async function addSubscriptionItemTaxRate (administrator, itemid, taxrateid) {
+  Log.info('addSubscriptionItemTaxRate', administrator, itemid, taxrateid)
+  const req = createRequest(`/api/administrator/subscriptions/add-subscription-item-tax-rate?subscriptionitemid=${itemid}`)
+  req.session = administrator.session
+  req.account = administrator.account
+  req.body = {
+    taxrateid
+  }
+  const subscription = await req.patch()
+  return subscription
 }
 
 async function cancelSubscription (user) {

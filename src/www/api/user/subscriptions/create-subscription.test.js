@@ -23,7 +23,7 @@ describe('/api/user/subscriptions/create-subscription', function () {
     const administrator = await TestStripeAccounts.createOwnerWithPrice()
     const user = await TestHelper.createUser()
     // invalid customerid
-    const req = TestHelper.createRequest('/api/user/subscriptions/create-subscription')
+    let req = TestHelper.createRequest('/api/user/subscriptions/create-subscription')
     req.account = user.account
     req.session = user.session
     req.body = {
@@ -35,15 +35,15 @@ describe('/api/user/subscriptions/create-subscription', function () {
     } catch (error) {
       cachedResponses.missingCustomer = error.message
     }
-    const req2 = TestHelper.createRequest('/api/user/subscriptions/create-subscription?customerid=invalid')
-    req2.account = user.account
-    req2.session = user.session
-    req2.body = {
+    req = TestHelper.createRequest('/api/user/subscriptions/create-subscription?customerid=invalid')
+    req.account = user.account
+    req.session = user.session
+    req.body = {
       priceids: administrator.price.priceid,
       quantities: '1'
     }
     try {
-      await req2.post()
+      await req.post()
     } catch (error) {
       cachedResponses.invalidCustomer = error.message
     }
@@ -52,91 +52,128 @@ describe('/api/user/subscriptions/create-subscription', function () {
       email: user.profile.contactEmail,
       country: 'US'
     })
-    const req3 = TestHelper.createRequest(`/api/user/subscriptions/create-subscription?customerid=${user.customer.customerid}`)
-    req3.account = user.account
-    req3.session = user.session
-    req3.body = {
+    req = TestHelper.createRequest(`/api/user/subscriptions/create-subscription?customerid=${user.customer.customerid}`)
+    req.account = user.account
+    req.session = user.session
+    req.body = {
       priceids: administrator.price.priceid,
       quantities: '1'
     }
     try {
-      await req3.post()
+      await req.post()
     } catch (error) {
       cachedResponses.invalidPaymentMethod = error.message
     }
     // invalid account
     const user2 = await TestHelper.createUser()
-    const req4 = TestHelper.createRequest(`/api/user/subscriptions/create-subscription?customerid=${user.customer.customerid}`)
-    req4.account = user2.account
-    req4.session = user2.session
-    req4.body = {
+    req = TestHelper.createRequest(`/api/user/subscriptions/create-subscription?customerid=${user.customer.customerid}`)
+    req.account = user2.account
+    req.session = user2.session
+    req.body = {
       priceids: administrator.price.priceid,
       quantities: '1'
     }
     try {
-      await req4.post()
+      await req.post()
     } catch (error) {
       cachedResponses.invalidAccount = error.message
     }
     // invalid price
     const user3 = await TestStripeAccounts.createUserWithPaymentMethod()
-    const req5 = TestHelper.createRequest(`/api/user/subscriptions/create-subscription?customerid=${user3.customer.customerid}`)
-    req5.account = user3.account
-    req5.session = user3.session
-    req5.body = {
+    req = TestHelper.createRequest(`/api/user/subscriptions/create-subscription?customerid=${user3.customer.customerid}`)
+    req.account = user3.account
+    req.session = user3.session
+    req.body = {
       priceids: '',
       paymentmethodid: user3.paymentMethod.paymentmethodid,
       quantities: '1'
     }
     try {
-      await req5.post()
+      await req.post()
     } catch (error) {
-      cachedResponses.missingprice = error.message
+      cachedResponses.missingPrice = error.message
     }
-    req5.body = {
+    req.body = {
       priceids: 'invalid',
       paymentmethodid: user3.paymentMethod.paymentmethodid,
       quantities: '1'
     }
     try {
-      await req5.post()
+      await req.post()
     } catch (error) {
-      cachedResponses.invalidprice = error.message
+      cachedResponses.invalidPrice = error.message
     }
     // not published price
     const administrator2 = await TestStripeAccounts.createOwnerWithNotPublishedPrice()
-    req5.body = {
+    req.body = {
       priceids: administrator2.price.priceid,
       quantities: '1'
     }
     try {
-      await req5.post()
+      await req.post()
     } catch (error) {
-      cachedResponses.notPublishedprice = error.message
+      cachedResponses.notPublishedPrice = error.message
     }
     // unpublished price
     const administrator3 = await TestStripeAccounts.createOwnerWithUnpublishedPrice()
-    req5.body = {
+    req.body = {
       priceids: administrator3.price.priceid,
       quantities: '1'
     }
     try {
-      await req5.post()
+      await req.post()
     } catch (error) {
-      cachedResponses.unpublishedprice = error.message
+      cachedResponses.unpublishedPrice = error.message
     }
-    // response
-    const req6 = TestHelper.createRequest(`/api/user/subscriptions/create-subscription?customerid=${user3.customer.customerid}`)
-    req6.account = user3.account
-    req6.session = user3.session
-    req6.body = {
+    // default tax rates
+    const taxRate1 = await TestHelper.createTaxRate(administrator, {
+      active: false
+    })
+    req = TestHelper.createRequest(`/api/user/subscriptions/create-subscription?customerid=${user3.customer.customerid}`)
+    req.account = user3.account
+    req.session = user3.session
+    req.body = {
       priceids: administrator.price.priceid,
       quantities: '1',
-      paymentmethodid: user3.paymentMethod.paymentmethodid
+      taxrateids: taxRate1.taxrateid
     }
-    req6.filename = __filename
-    req6.saveResponse = true
-    cachedResponses.returns = await req6.post()
+    try {
+      await req.post()
+    } catch (error) {
+      cachedResponses.invalidTaxRate = error.message
+    }
+    req = TestHelper.createRequest(`/api/user/subscriptions/create-subscription?customerid=${user3.customer.customerid}`)
+    req.account = user3.account
+    req.session = user3.session
+    req.body = {
+      priceids: administrator.price.priceid,
+      quantities: '1',
+      taxrateids: 'invalid'
+    }
+    try {
+      await req.post()
+    } catch (error) {
+      cachedResponses.invalidTaxRateId = error.message
+    }
+    // response
+    const taxRate2 = await TestHelper.createTaxRate(administrator, {
+      active: true
+    })
+    const taxRate3 = await TestHelper.createTaxRate(administrator, {
+      active: true
+    })
+    req = TestHelper.createRequest(`/api/user/subscriptions/create-subscription?customerid=${user3.customer.customerid}`)
+    req.account = user3.account
+    req.session = user3.session
+    req.body = {
+      priceids: administrator.price.priceid,
+      quantities: '1',
+      paymentmethodid: user3.paymentMethod.paymentmethodid,
+      taxrateids: `${taxRate2.taxrateid},${taxRate3.taxrateid}`
+    }
+    req.filename = __filename
+    req.saveResponse = true
+    cachedResponses.returns = await req.post()
     cachedResponses.finished = true
   }
 
@@ -174,7 +211,7 @@ describe('/api/user/subscriptions/create-subscription', function () {
     describe('invalid-priceids', () => {
       it('missing posted priceids', async function () {
         await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.missingprice
+        const errorMessage = cachedResponses.missingPrice
         assert.strictEqual(errorMessage, 'invalid-priceids')
       })
     })
@@ -182,7 +219,7 @@ describe('/api/user/subscriptions/create-subscription', function () {
     describe('invalid-priceid', () => {
       it('invalid posted priceids contains invalid price', async function () {
         await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.invalidprice
+        const errorMessage = cachedResponses.invalidPrice
         assert.strictEqual(errorMessage, 'invalid-priceid')
       })
     })
@@ -190,14 +227,30 @@ describe('/api/user/subscriptions/create-subscription', function () {
     describe('invalid-price', () => {
       it('invalid posted priceids contains not published price', async function () {
         await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.notPublishedprice
+        const errorMessage = cachedResponses.notPublishedPrice
         assert.strictEqual(errorMessage, 'invalid-price')
       })
 
       it('invalid posted priceids contains unpublished price', async function () {
         await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.unpublishedprice
+        const errorMessage = cachedResponses.unpublishedPrice
         assert.strictEqual(errorMessage, 'invalid-price')
+      })
+    })
+
+    describe('invalid-taxrateid', () => {
+      it('invalid posted taxrateids contains invalid tax rate', async function () {
+        await bundledData(this.test.currentRetry())
+        const errorMessage = cachedResponses.invalidTaxRateId
+        assert.strictEqual(errorMessage, 'invalid-taxrateid')
+      })
+    })
+
+    describe('invalid-tax-rate', () => {
+      it('invalid posted taxrateids contains inactive tax rate', async function () {
+        await bundledData(this.test.currentRetry())
+        const errorMessage = cachedResponses.invalidTaxRate
+        assert.strictEqual(errorMessage, 'invalid-tax-rate')
       })
     })
   })
