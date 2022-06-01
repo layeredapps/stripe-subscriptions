@@ -32,43 +32,58 @@ const TestStripeAccounts = module.exports = {
     await TestHelper.createProduct(owner, {
       publishedAt: 'true'
     })
-    priceData = priceData || {}
-    await TestHelper.createPrice(owner, {
+    if (priceData && !priceData.productid) {
+      priceData.productid = owner.product.productid
+    }
+    await TestHelper.createPrice(owner, priceData || {
       productid: owner.product.productid,
       publishedAt: 'true',
-      unit_amount: priceData.unit_amount !== undefined ? priceData.unit_amount : 1000,
-      recurring_interval: priceData.recurring_interval || 'month',
-      recurring_usage_type: priceData.recurring_usage_type || 'licensed'
+      tax_behavior: 'inclusive',
+      unit_amount: 1000,
+      currency: 'usd',
+      recurring_interval: 'month',
+      recurring_interval_count: 1,
+      recurring_usage_type: 'licensed'
     })
     return owner
   },
   createOwnerWithUnpublishedPrice: async (priceData) => {
     const owner = await TestHelper.createOwner()
-    const product = await TestHelper.createProduct(owner, {
+    await TestHelper.createProduct(owner, {
       publishedAt: 'true'
     })
-    priceData = priceData || {}
-    await TestHelper.createPrice(owner, {
+    if (priceData && !priceData.productid) {
+      priceData.productid = owner.product.productid
+    }
+    await TestHelper.createPrice(owner, priceData || {
       productid: product.productid,
       publishedAt: 'true',
       unpublishedAt: 'true',
-      unit_amount: priceData.unit_amount !== undefined ? priceData.unit_amount : 1000,
-      recurring_interval: priceData.recurring_interval || 'month',
-      recurring_usage_type: priceData.recurring_usage_type || 'licensed'
+      tax_behavior: 'inclusive',
+      unit_amount: 1000,
+      currency: 'usd',
+      recurring_interval: 'month',
+      recurring_interval_count: 1,
+      recurring_usage_type: 'licensed'
     })
     return owner
   },
   createOwnerWithNotPublishedPrice: async (priceData) => {
     const owner = await TestHelper.createOwner()
-    const product = await TestHelper.createProduct(owner, {
+    await TestHelper.createProduct(owner, {
       publishedAt: 'true'
     })
-    priceData = priceData || {}
-    await TestHelper.createPrice(owner, {
+    if (priceData && !priceData.productid) {
+      priceData.productid = owner.product.productid
+    }
+    await TestHelper.createPrice(owner, priceData || {
       productid: product.productid,
-      unit_amount: priceData.unit_amount !== undefined ? priceData.unit_amount : 1000,
-      recurring_interval: priceData.recurring_interval || 'month',
-      recurring_usage_type: priceData.recurring_usage_type || 'licensed'
+      unit_amount: 1000,
+      currency: 'usd',
+      tax_behavior: 'inclusive',
+      recurring_interval: 'month',
+      recurring_interval_count: 1,
+      recurring_usage_type: 'licensed'
     })
     return owner
   },
@@ -89,7 +104,7 @@ const TestStripeAccounts = module.exports = {
       default: 'true'
     })
     await waitForWebhook('setup_intent.created', async (stripeEvent) => {
-      if (stripeEvent.data.object.payment_method === user.paymentMethod.stripeObject.id) {
+      if (stripeEvent.data.object.payment_method === user.paymentMethod.paymentmethodid) {
         user.setupIntent = await global.api.administrator.subscriptions.SetupIntent.get({
           query: {
             setupintentid: stripeEvent.data.object.id

@@ -484,7 +484,7 @@ async function createPrice (administrator, properties) {
   const req = createRequest('/api/administrator/subscriptions/create-price')
   req.session = administrator.session
   req.account = administrator.account
-  req.body = {
+  req.body = properties || {
     currency: 'USD',
     recurring_interval: 'month',
     recurring_interval_count: '1',
@@ -492,11 +492,6 @@ async function createPrice (administrator, properties) {
     usage_type: 'licensed',
     unit_amount: '0',
     tax_behavior: 'inclusive'
-  }
-  if (properties) {
-    for (const property in properties) {
-      req.body[property] = properties[property].toString()
-    }
   }
   let price = await req.post()
   if (properties && properties.unpublishedAt) {
@@ -624,7 +619,7 @@ async function createTaxRate (administrator, properties) {
     display_name: 'NY Sales Tax',
     percentage: '17.5',
     inclusive: 'true',
-    active: true,
+    active: 'true',
     state: 'NY',
     country: 'US',
     description: 'Sales tax in NY',
@@ -746,7 +741,7 @@ async function createPaymentIntent (user, properties) {
   req.body = properties
   user.paymentIntent = await req.post()
   await waitForWebhook('payment_intent.created', (stripeEvent) => {
-    return stripeEvent.data.object.id === user.paymentIntent.stripeObject.id
+    return stripeEvent.data.object.id === user.paymentIntent.paymentintentid
   })
   return user.paymentIntent
 }
@@ -775,13 +770,13 @@ async function createPaymentMethod (user, properties) {
   if (properties.default === 'true') {
     await waitForWebhook('customer.updated', (stripeEvent) => {
       return stripeEvent.data.object.id === user.customer.customerid &&
-             stripeEvent.data.object.invoice_settings.default_payment_method === user.paymentMethod.stripeObject.id
+             stripeEvent.data.object.invoice_settings.default_payment_method === user.paymentMethod.paymentmethodid
     })
     await waitForWebhook('payment_method.attached', (stripeEvent) => {
-      return stripeEvent.data.object.id === user.paymentMethod.stripeObject.id
+      return stripeEvent.data.object.id === user.paymentMethod.paymentmethodid
     })
     await waitForWebhook('setup_intent.created', async (stripeEvent) => {
-      if (stripeEvent.data.object.payment_method === user.paymentMethod.stripeObject.id) {
+      if (stripeEvent.data.object.payment_method === user.paymentMethod.paymentmethodid) {
         user.setupIntent = await global.api.administrator.subscriptions.SetupIntent.get({
           query: {
             setupintentid: stripeEvent.data.object.id
@@ -825,7 +820,7 @@ async function changeSubscriptionQuantity (user, quantity) {
     quantity
   }
   if (user.paymentMethod) {
-    req.body.paymentmethodid = user.paymentMethod.stripeObject.id
+    req.body.paymentmethodid = user.paymentMethod.paymentmethodid
   }
   user.subscription = await req.patch()
   await waitForWebhook('customer.subscription.updated', (stripeEvent) => {
@@ -833,7 +828,7 @@ async function changeSubscriptionQuantity (user, quantity) {
   })
   if (user.subscription.stripeObject.current_period_end && !user.subscription.stripeObject.trial_end) {
     await waitForWebhook('invoice.created', async (stripeEvent) => {
-      if (stripeEvent.data.object.id !== user.invoice.stripeObject.id &&
+      if (stripeEvent.data.object.id !== user.invoice.paymentmethodid &&
         stripeEvent.data.object.subscription === user.subscription.subscriptionid &&
         stripeEvent.data.object.lines.data[stripeEvent.data.object.lines.data.length - 1].quantity === quantity) {
         user.invoice = await global.api.administrator.subscriptions.Invoice.get({
@@ -877,7 +872,7 @@ async function createSubscription (user, priceids, properties) {
     quantities: quantities.join(',')
   }
   if (user.paymentMethod) {
-    req.body.paymentmethodid = user.paymentMethod.stripeObject.id
+    req.body.paymentmethodid = user.paymentMethod.paymentmethodid
   }
   if (properties) {
     for (const property in properties) {
