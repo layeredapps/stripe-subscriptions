@@ -5,7 +5,7 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 const ScreenshotData = require('../../../../screenshot-data.js')
 
-describe.only('/administrator/subscriptions/subscription', function () {
+describe('/administrator/subscriptions/subscription', function () {
   let cachedResponses
   async function bundledData (retryNumber) {
     if (retryNumber > 0) {

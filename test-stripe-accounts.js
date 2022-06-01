@@ -56,7 +56,7 @@ const TestStripeAccounts = module.exports = {
       priceData.productid = owner.product.productid
     }
     await TestHelper.createPrice(owner, priceData || {
-      productid: product.productid,
+      productid: owner.product.productid,
       publishedAt: 'true',
       unpublishedAt: 'true',
       tax_behavior: 'inclusive',
@@ -77,7 +77,7 @@ const TestStripeAccounts = module.exports = {
       priceData.productid = owner.product.productid
     }
     await TestHelper.createPrice(owner, priceData || {
-      productid: product.productid,
+      productid: owner.product.productid,
       unit_amount: 1000,
       currency: 'usd',
       tax_behavior: 'inclusive',
