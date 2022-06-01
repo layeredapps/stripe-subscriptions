@@ -19,11 +19,7 @@ describe('/administrator/subscriptions/delete-subscription', function () {
     cachedResponses = {}
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPrice({
-      unit_amount: 3000,
-      recurring_interval: 'month',
-      recurring_usage_type: 'licensed'
-    })
+    const administrator = await TestStripeAccounts.createOwnerWithPrice()
     const paidPrice = administrator.price
     const freeTrialPrice = await TestHelper.createPrice(administrator, {
       productid: administrator.product.productid,

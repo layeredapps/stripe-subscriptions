@@ -43,7 +43,7 @@ describe('/api/user/subscriptions/setup-intents', function () {
         country: 'US',
         default: 'true'
       })
-      cachedSetupIntents.unshift(user.setupIntent.stripeObject.id)
+      cachedSetupIntents.unshift(user.setupIntent.setupintentid)
     }
     const req1 = TestHelper.createRequest(`/api/user/subscriptions/setup-intents?accountid=${user.account.accountid}&offset=1`)
     req1.account = user.account

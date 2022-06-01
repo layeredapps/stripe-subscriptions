@@ -21,7 +21,7 @@ describe('/administrator/subscriptions/setup-intent', function () {
     const administrator = await TestHelper.createOwner()
     const user = await TestStripeAccounts.createUserWithPaymentMethod()
     // before
-    const req = TestHelper.createRequest(`/administrator/subscriptions/setup-intent?setupintentid=${user.setupIntent.stripeObject.id}`)
+    const req = TestHelper.createRequest(`/administrator/subscriptions/setup-intent?setupintentid=${user.setupIntent.setupintentid}`)
     req.account = administrator.account
     req.session = administrator.session
     await req.route.api.before(req)
@@ -32,7 +32,7 @@ describe('/administrator/subscriptions/setup-intent', function () {
       { hover: '#administrator-menu-container' },
       { click: '/administrator/subscriptions' },
       { click: '/administrator/subscriptions/setup-intents' },
-      { click: `/administrator/subscriptions/setup-intent?setupintentid=${user.setupIntent.stripeObject.id}` }
+      { click: `/administrator/subscriptions/setup-intent?setupintentid=${user.setupIntent.setupintentid}` }
     ]
     global.pageSize = 50
     global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)

@@ -20,11 +20,7 @@ describe('/api/user/subscriptions/subscription', function () {
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPrice({
-      unit_amount: 3000,
-      recurring_interval: 'month',
-      recurring_usage_type: 'licensed'
-    })
+    const administrator = await TestStripeAccounts.createOwnerWithPrice()
     const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     const user2 = await TestHelper.createUser()
     // invalid account

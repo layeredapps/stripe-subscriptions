@@ -66,11 +66,7 @@ describe('/administrator/subscriptions/publish-price', function () {
     })
 
     it('already-published', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        amount: '1000',
-        interval: 'month',
-        usage_type: 'licensed'
-      })
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
       const req = TestHelper.createRequest(`/administrator/subscriptions/publish-price?priceid=${administrator.price.priceid}`)
       req.account = administrator.account
       req.session = administrator.session

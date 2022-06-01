@@ -70,11 +70,7 @@ describe('/api/administrator/subscriptions/set-price-unpublished', function () {
 
   describe('returns', () => {
     it('object', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        amount: '1000',
-        interval: 'month',
-        usage_type: 'licensed'
-      })
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
       const req = TestHelper.createRequest(`/api/administrator/subscriptions/set-price-unpublished?priceid=${administrator.price.priceid}`)
       req.account = administrator.account
       req.session = administrator.session

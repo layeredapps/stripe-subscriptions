@@ -47,13 +47,13 @@ describe('/api/administrator/subscriptions/payment-intent', function () {
         currency: 'usd',
         paymentmethodid: user.paymentMethod.paymentmethodid
       })
-      const req = TestHelper.createRequest(`/api/administrator/subscriptions/payment-intent?paymentintentid=${user.paymentIntent.stripeObject.id}`)
+      const req = TestHelper.createRequest(`/api/administrator/subscriptions/payment-intent?paymentintentid=${user.paymentIntent.paymentintentid}`)
       req.account = administrator.account
       req.session = administrator.session
       req.filename = __filename
       req.saveResponse = true
       const paymentIntent = await req.get()
-      assert.strictEqual(paymentIntent.paymentintentid, user.paymentIntent.stripeObject.id)
+      assert.strictEqual(paymentIntent.paymentintentid, user.paymentIntent.paymentintentid)
     })
   })
 })

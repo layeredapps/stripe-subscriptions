@@ -27,7 +27,7 @@ describe('/administrator/subscriptions/payment-intents', function () {
         amount: '10000',
         currency: 'usd'
       })
-      cachedPaymentIntents.unshift(user.paymentIntent.stripeObject.id)
+      cachedPaymentIntents.unshift(user.paymentIntent.paymentintentid)
     }
     const req1 = TestHelper.createRequest('/administrator/subscriptions/payment-intents')
     req1.account = administrator.account

@@ -29,7 +29,7 @@ describe('/api/administrator/subscriptions/payment-intents', function () {
         amount: '10000',
         currency: 'usd'
       })
-      cachedPaymentIntents.unshift(user.paymentIntent.stripeObject.id)
+      cachedPaymentIntents.unshift(user.paymentIntent.paymentintentid)
     }
     const offset = 1
     const limit = 1

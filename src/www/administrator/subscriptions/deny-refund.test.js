@@ -18,11 +18,7 @@ describe('/administrator/subscriptions/deny-refund', function () {
     cachedResponses = {}
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPrice({
-      unit_amount: 3000,
-      recurring_interval: 'month',
-      recurring_usage_type: 'licensed'
-    })
+    const administrator = await TestStripeAccounts.createOwnerWithPrice()
     const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     let req = TestHelper.createRequest(`/administrator/subscriptions/deny-refund?chargeid=${user.charge.chargeid}`)
     req.account = administrator.account

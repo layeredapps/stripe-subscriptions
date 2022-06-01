@@ -20,11 +20,7 @@ describe('/account/subscriptions', function () {
     cachedCustomers = []
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPrice({
-      unit_amount: 3000,
-      recurring_interval: 'month',
-      recurring_usage_type: 'licensed'
-    })
+    const administrator = await TestStripeAccounts.createOwnerWithPrice()
     let user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     cachedInvoices.unshift(user.subscription.stripeObject.latest_invoice)
     cachedSubscriptions.unshift(user.subscription.subscriptionid)

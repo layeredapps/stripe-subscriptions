@@ -5,7 +5,7 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 const ScreenshotData = require('../../../../screenshot-data.js')
 
-describe('/administrator/subscriptions/subscription', function () {
+describe.only('/administrator/subscriptions/subscription', function () {
   let cachedResponses
   async function bundledData (retryNumber) {
     if (retryNumber > 0) {
@@ -19,12 +19,9 @@ describe('/administrator/subscriptions/subscription', function () {
     await TestHelper.setupBefore()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
-    const administrator = await TestStripeAccounts.createOwnerWithPrice({
-      unit_amount: 3000,
-      recurring_interval: 'month',
-      recurring_usage_type: 'licensed'
-    })
+    const administrator = await TestStripeAccounts.createOwnerWithPrice()
     const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
+    console.log(JSON.stringify(user.subscription, null, '  '))
     // before
     const req = TestHelper.createRequest(`/administrator/subscriptions/subscription?subscriptionid=${user.subscription.subscriptionid}`)
     req.account = administrator.account

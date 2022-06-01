@@ -7,11 +7,7 @@ const ScreenshotData = require('../../../../screenshot-data.js')
 describe('/administrator/subscriptions/unpublish-price', function () {
   describe('before', () => {
     it('should bind data to req', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        amount: '1000',
-        interval: 'month',
-        usage_type: 'licensed'
-      })
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
       const req = TestHelper.createRequest(`/administrator/subscriptions/unpublish-price?priceid=${administrator.price.priceid}`)
       req.account = administrator.account
       req.session = administrator.session
@@ -22,11 +18,7 @@ describe('/administrator/subscriptions/unpublish-price', function () {
 
   describe('view', () => {
     it('should present the form', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        amount: '1000',
-        interval: 'month',
-        usage_type: 'licensed'
-      })
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
       const req = TestHelper.createRequest(`/administrator/subscriptions/unpublish-price?priceid=${administrator.price.priceid}`)
       req.account = administrator.account
       req.session = administrator.session
@@ -39,11 +31,7 @@ describe('/administrator/subscriptions/unpublish-price', function () {
 
   describe('submit', () => {
     it('should unpublish price (screenshots)', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        amount: '1000',
-        interval: 'month',
-        usage_type: 'licensed'
-      })
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
       const req = TestHelper.createRequest(`/administrator/subscriptions/unpublish-price?priceid=${administrator.price.priceid}`)
       req.account = administrator.account
       req.session = administrator.session
@@ -96,11 +84,7 @@ describe('/administrator/subscriptions/unpublish-price', function () {
     })
 
     it('invalid-csrf-token', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        amount: '1000',
-        interval: 'month',
-        usage_type: 'licensed'
-      })
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
       const req = TestHelper.createRequest(`/administrator/subscriptions/unpublish-price?priceid=${administrator.price.priceid}`)
       req.puppeteer = false
       req.account = administrator.account

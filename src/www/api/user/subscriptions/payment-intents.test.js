@@ -32,7 +32,7 @@ describe('/api/user/subscriptions/payment-intents', function () {
         currency: 'usd',
         paymentmethodid: user.paymentMethod.paymentmethodid
       })
-      cachedPaymentIntents.unshift(user.paymentIntent.stripeObject.id)
+      cachedPaymentIntents.unshift(user.paymentIntent.paymentintentid)
     }
     const req1 = TestHelper.createRequest(`/api/user/subscriptions/payment-intents?accountid=${user.account.accountid}&offset=1`)
     req1.account = user.account

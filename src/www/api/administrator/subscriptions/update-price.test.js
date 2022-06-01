@@ -82,11 +82,7 @@ describe('/api/administrator/subscriptions/update-price', function () {
 
   describe('receives', () => {
     it('required posted nickname (string)', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        amount: '1000',
-        interval: 'month',
-        usage_type: 'licensed'
-      })
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
       const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-price?priceid=${administrator.price.priceid}`)
       req.account = administrator.account
       req.session = administrator.session
@@ -104,11 +100,7 @@ describe('/api/administrator/subscriptions/update-price', function () {
 
   describe('returns', () => {
     it('object', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        amount: '1000',
-        interval: 'month',
-        usage_type: 'licensed'
-      })
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
       const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-price?priceid=${administrator.price.priceid}`)
       req.account = administrator.account
       req.session = administrator.session

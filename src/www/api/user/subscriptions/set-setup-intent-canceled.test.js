@@ -40,7 +40,7 @@ describe('/api/user/subscriptions/set-setup-intent-canceled', function () {
     }
     // invalid account
     const user2 = await TestHelper.createUser()
-    const req4 = TestHelper.createRequest(`/api/user/subscriptions/set-setup-intent-canceled?setupintentid=${user.setupIntent.stripeObject.id}`)
+    const req4 = TestHelper.createRequest(`/api/user/subscriptions/set-setup-intent-canceled?setupintentid=${user.setupIntent.setupintentid}`)
     req4.account = user2.account
     req4.session = user2.session
     try {
@@ -49,7 +49,7 @@ describe('/api/user/subscriptions/set-setup-intent-canceled', function () {
       cachedResponses.invalidAccount = error.message
     }
     // returns
-    const req5 = TestHelper.createRequest(`/api/user/subscriptions/set-setup-intent-canceled?setupintentid=${user.setupIntent.stripeObject.id}`)
+    const req5 = TestHelper.createRequest(`/api/user/subscriptions/set-setup-intent-canceled?setupintentid=${user.setupIntent.setupintentid}`)
     req5.account = user.account
     req5.session = user.session
     req5.filename = __filename

@@ -51,11 +51,7 @@ describe('/api/user/subscriptions/published-price', function () {
 
   describe('returns', () => {
     it('object', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        amount: '1000',
-        interval: 'month',
-        usage_type: 'licensed'
-      })
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
       const user = await TestHelper.createUser()
       const req = TestHelper.createRequest(`/api/user/subscriptions/published-price?priceid=${administrator.price.priceid}`)
       req.account = user.account

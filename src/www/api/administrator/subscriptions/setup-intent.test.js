@@ -42,13 +42,13 @@ describe('/api/administrator/subscriptions/setup-intent', function () {
     it('object', async () => {
       const administrator = await TestHelper.createOwner()
       const user = await TestStripeAccounts.createUserWithPaymentMethod()
-      const req = TestHelper.createRequest(`/api/administrator/subscriptions/setup-intent?setupintentid=${user.setupIntent.stripeObject.id}`)
+      const req = TestHelper.createRequest(`/api/administrator/subscriptions/setup-intent?setupintentid=${user.setupIntent.setupintentid}`)
       req.account = administrator.account
       req.session = administrator.session
       req.filename = __filename
       req.saveResponse = true
       const setupIntent = await req.get()
-      assert.strictEqual(setupIntent.setupintentid, user.setupIntent.stripeObject.id)
+      assert.strictEqual(setupIntent.setupintentid, user.setupIntent.setupintentid)
     })
   })
 })

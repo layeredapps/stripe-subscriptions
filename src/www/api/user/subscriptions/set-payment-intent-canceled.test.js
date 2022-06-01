@@ -46,7 +46,7 @@ describe('/api/user/subscriptions/set-payment-intent-canceled', function () {
           paymentmethodid: user.paymentMethod.paymentmethodid
         })
         const user2 = await TestHelper.createUser()
-        const req = TestHelper.createRequest(`/api/user/subscriptions/set-payment-intent-canceled?paymentintentid=${user.paymentIntent.stripeObject.id}`)
+        const req = TestHelper.createRequest(`/api/user/subscriptions/set-payment-intent-canceled?paymentintentid=${user.paymentIntent.paymentintentid}`)
         req.account = user2.account
         req.session = user2.session
         let errorMessage
@@ -68,7 +68,7 @@ describe('/api/user/subscriptions/set-payment-intent-canceled', function () {
         currency: 'usd',
         paymentmethodid: user.paymentMethod.paymentmethodid
       })
-      const req = TestHelper.createRequest(`/api/user/subscriptions/set-payment-intent-canceled?paymentintentid=${user.paymentIntent.stripeObject.id}`)
+      const req = TestHelper.createRequest(`/api/user/subscriptions/set-payment-intent-canceled?paymentintentid=${user.paymentIntent.paymentintentid}`)
       req.account = user.account
       req.session = user.session
       req.filename = __filename

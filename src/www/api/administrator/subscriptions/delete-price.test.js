@@ -40,11 +40,7 @@ describe('/api/administrator/subscriptions/delete-price', function () {
 
   describe('returns', () => {
     it('boolean', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        amount: '1000',
-        interval: 'month',
-        usage_type: 'licensed'
-      })
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
       const req = TestHelper.createRequest(`/api/administrator/subscriptions/delete-price?priceid=${administrator.price.priceid}`)
       req.account = administrator.account
       req.session = administrator.session

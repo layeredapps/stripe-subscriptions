@@ -55,13 +55,13 @@ describe('/api/administrator/subscriptions/usage-record', function () {
       })
       const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
       await TestHelper.createUsageRecord(user, 100)
-      const req = TestHelper.createRequest(`/api/administrator/subscriptions/usage-record?usagerecordid=${user.usageRecord.stripeObject.id}`)
+      const req = TestHelper.createRequest(`/api/administrator/subscriptions/usage-record?usagerecordid=${user.usageRecord.usagerecordid}`)
       req.account = administrator.account
       req.session = administrator.session
       req.filename = __filename
       req.saveResponse = true
       const usageRecord = await req.get()
-      assert.strictEqual(usageRecord.usagerecordid, user.usageRecord.stripeObject.id)
+      assert.strictEqual(usageRecord.usagerecordid, user.usageRecord.usagerecordid)
     })
   })
 })
