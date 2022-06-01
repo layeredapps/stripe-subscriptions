@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/administrator/subscriptions/navbar.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" /> 
+    <title translate="yes">Tax rates</title>
+    <link rel="stylesheet" href="/public/content.css">
+    <link rel="stylesheet" href="/public/content-additional.css">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">Tax rates</h1>
+      <div id="message-container"></div>
+      <p><a href="/administrator/subscriptions/create-tax-rate" class="button" translate="yes">Create tax rate</a></p>
+      <div id="no-tax-rates">
+        <p translate="yes">No tax rates have been created yet.</p>
+      </div>
+      <div class="list-table-wrapper">
+        <table id="tax-rates-table" class="list-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th translate="yes">Display name</th>
+              <th translate="yes">Percentage</th>
+              <th translate="yes">Inclusive</th>
+              <th translate="yes">Active</th>
+              <th translate="yes">Jurisdiction</th>
+              <th translate="yes">Type</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <ul id="page-links" class="pagination"></ul>
+    </div>
+    <template id="page-link">
+      <li>
+        <a href="/administrator/subscriptions/tax-rates?offset=${page.offset}" id="page-link-${page.pageNumber}">${page.pageNumber}</a>
+      </li>
+    </template>
+    <template id="tax-rate-row">
+      <tr id="${tax_rate.id}">
+        <td><a href="/administrator/subscriptions/tax-rate?taxrateid=${tax_rate.id}">${tax_rate.id}</a></td>
+        <td>${tax_rate.display_name}</td>
+        <td>${tax_rate.Percentage}%</td>
+        <td>${tax_rate.inclusive}</td>
+        <td>${tax_rate.active}</td>
+        <td>${tax_rate.jurisdiction}</td>
+        <td>${tax_rate.type}</td>
+      </tr>
+    </template>
+  </body>
+</html>

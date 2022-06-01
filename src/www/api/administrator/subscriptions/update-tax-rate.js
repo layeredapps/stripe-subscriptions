@@ -11,14 +11,28 @@ module.exports = {
     if (!taxRate) {
       throw new Error('invalid-taxrateid')
     }
-    const updateInfo = {}
-    const optionalFields = ['active', 'country', 'description', 'jurisdiction', 'state', 'tax_type']
-    for (const field of optionalFields) {
-      if (req.body[field] !== undefined) {
-        updateInfo[field] = req.body[field]
-      }
+    if (req.body.inclusive !== 'true' && req.body.inclusive !== 'false') {
+      throw new Error('invalid-inclusive')
     }
-    const taxRateNow = await stripeCache.execute('taxRate', 'update', req.query.taxrateid, updateInfo, req.stripeKey)
+    const updateInfo = {}
+    // TODO: stripe docs say state is an optional parameter but
+    // the stripe api is throwing an exception saying it cannot
+    // be updated:
+    // "You cannot change `state` via API once it has been set."
+    // https://stripe.com/docs/api/tax_rates/update
+    // TODO: stripe docs say tax_type is an optional parameter but
+    // the stripe api is throwing an exception saying it cannot
+    // be updated:
+    // "You cannot change `tax_type` via API once it has been set."
+    // https://stripe.com/docs/api/tax_rates/update
+    const optionalFields = ['active', 'description', 'jurisdiction']
+    for (const field of optionalFields) {
+      if (!req.body[field] || !req.body[field].length) { 
+        throw new Error(`invalid-${field}`)
+      }
+      updateInfo[field] = req.body[field]
+    }
+    const taxRateNow = await stripeCache.execute('taxRates', 'update', req.query.taxrateid, updateInfo, req.stripeKey)
     await subscriptions.Storage.TaxRate.update({
       stripeObject: taxRateNow
     }, {

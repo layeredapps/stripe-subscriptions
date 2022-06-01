@@ -57,6 +57,8 @@ function formatError (error, group) {
         return 'invalid-chargeid'
       case 'invoice':
         return 'invalid-invoiceid'
+      case 'country':
+        return 'invalid-country'
     }
   }
   if (error.raw && error.raw.code) {

@@ -241,6 +241,7 @@ module.exports = {
   createProduct,
   createRefund,
   createTaxId,
+  createTaxRate,
   createUsageRecord,
   changeSubscriptionQuantity,
   createSubscription,
@@ -611,6 +612,33 @@ async function deleteSubscriptionDiscount (administrator, subscription, coupon) 
   }
   const subscriptionNow = await req.patch()
   return subscriptionNow
+}
+
+async function createTaxRate (administrator, properties) {
+  Log.info('createTaxRate', administrator, properties)
+  properties = properties || {}
+  const req = createRequest('/api/administrator/subscriptions/create-tax-rate')
+  req.session = administrator.session
+  req.account = administrator.account
+  req.body = {
+    display_name: 'NY Sales Tax',
+    percentage: '17.5',
+    inclusive: 'true',
+    active: true,
+    state: 'NY',
+    country: 'US',
+    description: 'Sales tax in NY',
+    jurisdiction: 'US',
+    tax_type: 'sales_tax'
+  }
+  if (properties) {
+    for (const key in properties) {
+      req.body[key] = properties[key]
+    }
+  }
+  const taxRate = await req.post()
+  administrator.taxRate = taxRate
+  return taxRate
 }
 
 async function createTaxId (user, customer, properties) {

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/administrator/subscriptions/navbar-tax-rate.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <title translate="yes">Deactivate tax rate</title>
+    <link rel="stylesheet" href="/public/content.css">
+    <link rel="stylesheet" href="/public/content-additional.css">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">Deactivate tax rate</h1>
+      <p translate="yes">Inactive tax rates cannot be applied to customers and subscriptions.</p>
+      <div id="message-container"></div>
+      <form id="submit-form" method="post" class="input-form" action="/administrator/subscriptions/deactivate-tax-rate?taxrateid=${tax_rate.taxrateid}" name="submit-form">
+        <input type="hidden" name="csrf-token" />
+        <div class="input-fields">
+          <label class="field-label"></label>
+          <div class="form-buttons">
+            <button id="submit-button" type="submit" class="button" translate="yes">Deactivate</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <template id="success">
+      <div class="success message" translate="yes">
+        Success! The tax rate is now inactive
+      </div>
+    </template>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! Something went wrong submitting the form
+      </div>
+    </template>
+    <template id="invalid-taxrateid">
+      <div class="error message" translate="yes">
+        Error! An invalid tax rate was specified
+      </div>
+    </template>
+    <template id="invalid-taxrate">
+      <div class="error message" translate="yes">
+        Error! An invalid tax rate was specified
+      </div>
+    </template>
+    <template id="already-inactive">
+      <div class="error message" translate="yes">
+        Error! The tax rate is already inactive
+      </div>
+    </template>
+    <template id="invalid-csrf-token">
+      <div class="error message" translate="yes">
+        Error! This form was not submitted correctly
+      </div>
+    </template>
+    <template id="invalid-xss-input">
+      <div class="error message" translate="yes">
+        Error! Invalid value(s) were posted to the server
+      </div>
+    </template>
+  </body>
+</html>

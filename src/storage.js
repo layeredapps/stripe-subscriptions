@@ -682,7 +682,7 @@ module.exports = async () => {
     object: {
       type: DataTypes.VIRTUAL,
       get () {
-        return 'dispute'
+        return 'taxrate'
       }
     },
     stripeObject: {

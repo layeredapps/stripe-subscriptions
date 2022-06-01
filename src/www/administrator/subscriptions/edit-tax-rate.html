@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/administrator/subscriptions/navbar-tax-rate.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" /> 
+    <title translate="yes">Edit tax rate</title>
+    <link rel="stylesheet" href="/public/content.css">
+    <link rel="stylesheet" href="/public/content-additional.css">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">Edit tax rate</h1>
+      <div id="message-container"></div>
+      <form id="submit-form" method="post" class="input-form" action="/administrator/subscriptions/edit-tax-rate?taxrateid=${tax_rate.taxrateid}" name="submit-form">
+        <input type="hidden" name="csrf-token" />
+        <div class="input-fields">
+          <label class="field-label" for="display_name" translate="yes">Display name</label>
+          <div class="field">
+            <input type="text" id="display_name" name="display_name" maxlength="50">
+          </div>
+        </div>
+        <div class="input-fields">
+          <label class="field-label" for="description" translate="yes">Description</label>
+          <div class="field">
+            <input type="text" id="description" name="description" maxlength="50">
+          </div>
+        </div>
+        <div class="input-fields">
+          <label class="field-label" for="active" translate="yes">Active</label>
+          <div class="field">
+            <select name="active" id="active">
+              <option value="" translate="yes">Select option</option>
+              <option value="true">Yes</option>
+              <option value="true">No</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-fields">
+          <label class="field-label" for="inclusive" translate="yes">Inclusive</label>
+          <div class="field">
+            <select name="inclusive" id="inclusive">
+              <option value="" translate="yes">Select option</option>
+              <option value="true">Yes</option>
+              <option value="true">No</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-fields">
+          <label class="field-label" for="jurisdiction" translate="yes">Jurisdiction</label>
+          <div class="field">
+            <input type="text" id="jurisdiction" name="jurisdiction" maxlength="50">
+          </div>
+        </div>
+        <div class="input-fields">
+          <label class="field-label"></label>
+          <div class="form-buttons">
+            <button id="submit-button" type="submit" class="button" translate="yes">Update tax rate</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <template id="invalid-display_name">
+      <div class="error message" translate="yes">
+        Error! Missing or invalid display name
+      </div>
+    </template>
+    <template id="invalid-description">
+      <div class="error message" translate="yes">
+        Error! Missing or invalid description
+      </div>
+    </template>
+    <template id="invalid-inclusive">
+      <div class="error message" translate="yes">
+        Error! Missing or invalid inclusive state
+      </div>
+    </template>
+    <template id="invalid-active">
+      <div class="error message" translate="yes">
+        Error! Missing or invalid active state
+      </div>
+    </template>
+    <template id="invalid-jurisdiction">
+      <div class="error message" translate="yes">
+        Error! Missing or invalid jurisdiction
+      </div>
+    </template>
+    <template id="success">
+      <div class="success message" translate="yes">
+        Success! The product has been created
+      </div>
+    </template>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! Something went wrong submitting the form
+      </div>
+    </template>
+    <template id="invalid-taxrateid">
+      <div class="error message" translate="yes">
+        Error! An invalid tax rate was specified
+      </div>
+    </template>
+    <template id="invalid-csrf-token">
+      <div class="error message" translate="yes">
+        Error! This form was not submitted correctly
+      </div>
+    </template>
+    <template id="invalid-xss-input">
+      <div class="error message" translate="yes">
+        Error! Invalid value(s) were posted to the server
+      </div>
+    </template>
+  </body>
+</html>

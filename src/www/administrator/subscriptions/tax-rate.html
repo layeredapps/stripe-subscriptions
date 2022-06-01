@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/administrator/subscriptions/navbar-tax-rate.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" /> 
+    <title translate="yes">View tax rate</title>
+    <link rel="stylesheet" href="/public/content.css">
+    <link rel="stylesheet" href="/public/content-additional.css">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">View tax rate</h1>
+      <div id="message-container"></div>
+      <table id="tax_rates-table" class="data-table">
+        <tbody id="${tax_rate.id}">
+          <tr>
+            <th>ID</th>
+            <td>${tax_rate.id}</td>
+          </tr>
+          <tr>
+            <th>Display name</th>
+            <td>${tax_rate.display_name}</td>
+          </tr>
+          <tr>
+            <th>Percentage</th>
+            <td>${tax_rate.percentage}</td>
+          </tr>
+          <tr>
+            <th>Inclusive</th>
+            <td>${tax_rate.inclusive}</td>
+          </tr>
+          <tr>
+            <th>Active</th>
+            <td>${tax_rate.active}</td>
+          </tr>
+          <tr>
+            <th>State</th>
+            <td>${tax_rate.state}</td>
+          </tr>
+          <tr>
+            <th>Country</th>
+            <td>${tax_rate.country}</td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td>${tax_rate.description}</td>
+          </tr>
+          <tr>
+            <th>Jurisdiction</th>
+            <td>${tax_rate.jurisdiction}</td>
+          </tr>
+          <tr>
+            <th>Tax type</th>
+            <td>${tax_rate.tax_type}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! Something went wrong submitting the form
+      </div>
+    </template>
+    <template id="invalid-taxrateid">
+      <div class="error message" translate="yes">
+        Error! An invalid tax rate was specified
+      </div>
+    </template>
+    <template id="invalid-taxrate">
+      <div class="error message" translate="yes">
+        Error! An invalid tax rate was specified
+      </div>
+    </template>
+  </body>
+</html>
