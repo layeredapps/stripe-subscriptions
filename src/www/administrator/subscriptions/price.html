@@ -45,9 +45,55 @@
             <td id="unpublished" translate="yes">Unpublished</td>
             <td id="not-published" translate="yes">Not yet published</td>
           </tr>
+          <tr id="transform-quantity">
+            <th>Transform quantity</th>
+            <td>Divide by ${price.transform_quantity.divide_by} and round ${price.transform_quantity.round} </td>
+          </tr>
+          <tr id="pricing-tiers">
+            <th>Pricing tiers</th>
+            <td>
+              <table id="tiers-table">
+                <tr>
+                  <th>Flat amount</th>
+                  <th>Unit amount</th>
+                  <th>Up to</th>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr id="unit-billing">
+            <th>Unit billing</th>
+            <td>${price.unit_amount || price.unit_amount_decimal}</td>
+          </tr>
+          <tr id="recurring-billing">
+            <th>Recurring billing</th>
+            <td>
+              <table>
+                <tr>
+                  <th>Interval</th>
+                  <th>Interval count</th>
+                  <th>Usage type</th>
+                  <th>Aggregation</th>
+                </tr>
+                <tr>
+                  <td>${price.recurring.interval}</td>
+                  <td>${price.recurring.interval_count}</td>
+                  <td>${price.recurring.usage_type}</td>
+                  <td>${price.recurring.aggregate_usage}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
+    <template id="tier-row">
+      <tr id="tier-${tier.number}">
+        <td>${tier.flat_amount || tier.flat_amount_decimal}</td>
+        <td>${tier.unit_amount || tier.unit_amount_decimal}</td>
+        <td>${tier.upto}</td>
+      </tr>
+    </template>
     <template id="unknown-error">
       <div class="error message" translate="yes">
         Error! Something went wrong submitting the form

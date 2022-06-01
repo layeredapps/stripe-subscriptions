@@ -13,7 +13,8 @@ async function beforeRequest (req) {
     req.removeContents = true
     req.data = {
       price: {
-        priceid: ''
+        priceid: '',
+        transform_quantity: {}
       }
     }
     return
@@ -30,12 +31,14 @@ async function beforeRequest (req) {
     }
     req.data = {
       price: {
-        priceid: req.query.priceid
+        priceid: req.query.priceid,
+        transform_quantity: {}
       }
     }
     return
   }
   const price = formatStripeObject(priceRaw)
+  price.transform_quantity = price.transform_quantity || {}
   req.data = { price }
 }
 
@@ -57,11 +60,21 @@ async function renderPage (req, res, messageTemplate) {
     } else {
       removeElements.push('published', 'unpublished')
     }
-    if (!req.data.price.amount) {
-      removeElements.push('amount')
+    if (req.data.price.billing_scheme !== 'per_unit') {
+      removeElements.push('unit-billing')
+      for (const tier of req.data.price.tiers) {
+        tier.object = 'tier'
+      }
+      dashboard.HTML.renderTable(doc, req.data.price.tiers, 'tier-row', 'tiers-table')
     } else {
-      removeElements.push('free')
+      removeElements.push('pricing-tiers')
     }
+    if (req.data.price.type === 'one_time' ){
+      removeElements.push('recurring-billing')
+    }
+     if (!req.data.price.transform_quantity.divide_by) {
+      removeElements.push('transform-quantity')
+     }
   }
   for (const id of removeElements) {
     const element = doc.getElementById(id)
