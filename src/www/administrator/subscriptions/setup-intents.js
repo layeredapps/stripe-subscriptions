@@ -32,8 +32,8 @@ async function renderPage (req, res) {
     } else {
       dashboard.HTML.renderPagination(doc, req.data.offset, req.data.total)
     }
-    const noPayouts = doc.getElementById('no-setup-intents')
-    noPayouts.parentNode.removeChild(noPayouts)
+    const noSetupIntents = doc.getElementById('no-setup-intents')
+    noSetupIntents.parentNode.removeChild(noSetupIntents)
   } else {
     const setupIntentsTable = doc.getElementById('setup-intents-table')
     setupIntentsTable.parentNode.removeChild(setupIntentsTable)
