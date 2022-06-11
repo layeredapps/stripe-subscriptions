@@ -9,9 +9,19 @@ describe('/api/administrator/subscriptions/invoices-count', function () {
   describe('returns', () => {
     it('integer', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        unit_amount: 3000,
+        publishedAt: 'true',
+        currency: 'usd',
         recurring_interval: 'month',
-        recurring_usage_type: 'licensed'
+        recurring_interval_count: '1',
+        recurring_usage_type: 'metered',
+        recurring_aggregate_usage: 'sum',
+        billing_scheme: 'tiered',
+        tax_behavior: 'inclusive',
+        tiers_mode: 'volume',
+        tier1_up_to: '1000',
+        tier1_flat_amount: '9999',
+        tier2_up_to: 'inf',
+        tier2_flat_amount: '8999'
       })
       for (let i = 0, len = global.pageSize + 1; i < len; i++) {
         await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)

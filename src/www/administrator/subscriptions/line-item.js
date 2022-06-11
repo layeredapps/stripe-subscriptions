@@ -1,5 +1,4 @@
 const dashboard = require('@layeredapps/dashboard')
-const navbar = require('./navbar-invoice.js')
 const formatStripeObject = require('../../../stripe-object.js')
 
 module.exports = {
@@ -8,41 +7,40 @@ module.exports = {
 }
 
 async function beforeRequest (req) {
-  if (!req.query || !req.query.invoiceid) {
-    req.error = 'invalid-invoiceid'
+  if (!req.query || !req.query.lineitemid) {
+    req.error = 'invalid-lineitemid'
     req.removeContents = true
     req.data = {
-      invoice: {
-        invoiceid: ''
+      invoiceItem: {
+        lineitemid: ''
       }
     }
     return
   }
-  let invoiceRaw
+  let invoiceItemRaw
   try {
-    invoiceRaw = await global.api.administrator.subscriptions.Invoice.get(req)
+    invoiceItemRaw = await global.api.administrator.subscriptions.LineItem.get(req)
   } catch (error) {
-    if (error.message === 'invalid-invoiceid' || error.message === 'invalid-invoice') {
+    if (error.message === 'invalid-lineitemid' || error.message === 'invalid-invoice') {
       req.error = error.message
     } else {
       req.error = 'unknown-error'
     }
     req.removeContents = true
     req.data = {
-      invoice: {
-        invoiceid: req.query.invoiceid
+      invoiceItem: {
+        lineitemid: req.query.lineitemid
       }
     }
     return
   }
-  const invoice = formatStripeObject(invoiceRaw)
-  req.data = { invoice }
+  const invoiceItem = formatStripeObject(invoiceItemRaw)
+  req.data = { invoiceItem }
 }
 
 async function renderPage (req, res, messageTemplate) {
   messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
-  const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.invoice, 'invoice')
-  navbar.setup(doc, req.data.invoice)
+  const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.invoiceItem, 'line_item')
   if (messageTemplate) {
     dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
     if (req.removeContents) {
@@ -51,6 +49,11 @@ async function renderPage (req, res, messageTemplate) {
       return dashboard.Response.end(req, res, doc)
     }
   }
-  dashboard.HTML.renderTable(doc, req.data.invoice.lines.data, 'line-item-row', 'line-items-table')
+  if (req.data.invoiceItem.tax_rates.length) {
+    dashboard.HTML.renderTable(doc, req.data.invoiceItem.tax_rates, 'tax-rate-row', 'tax-rates-table')
+  } else {
+    const taxRates = doc.getElementById('tax-rates')
+    taxRates.parentNode.removeChild(taxRates)
+  }
   return dashboard.Response.end(req, res, doc)
 }

@@ -54,9 +54,33 @@
             <th translate="yes">Created</th>
             <td>${invoice.createdAtFormatted}</td>
           </tr>
+          <tr>
+            <th>Invoice items</th>
+            <td>
+              <table id="line-items-table">
+                <tr>
+                  <th>ID</th>
+                  <th>Amount</th>
+                  <th>Description</th>
+                  <th></th>
+                </tr>
+              </table>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
+    <template id="line-item-row">
+      <tr id="${line_item.id}">
+        <td><a href="/administrator/subscriptions/line-item?lineitemid=${line_item.id}">${line_item.id}</a></td>
+        <td>${line_item.amountFormatted}</td>
+        <td>${line_item.description}</td>
+        <td>
+          <a class="button" href="/administrator/subscriptions/add-line-item-tax?lineitemid=${line_item.id}">Add tax</a>
+          <a class="button" href="/administrator/subscriptions/remove-line-item?lineitemid=${line_item.id}">Remove</a>
+        </td>
+      </tr>
+    </template>
     <template id="unknown-error">
       <div class="error message" translate="yes">
         Error! Something went wrong submitting the form

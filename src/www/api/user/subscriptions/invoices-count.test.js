@@ -17,7 +17,10 @@ describe('/api/user/subscriptions/invoices-count', function () {
         await TestHelper.createPrice(administrator, {
           productid: administrator.product.productid,
           unit_amount: 3000,
+          currency: 'usd',
+          tax_behavior: 'inclusive',
           recurring_interval: 'month',
+          recurring_interval_count: '1',
           recurring_usage_type: 'licensed',
           publishedAt: 'true'
         })
