@@ -69,6 +69,7 @@ async function renderPage (req, res, messageTemplate) {
         removeElements.push(`canceling-subscription-${req.data.subscription.id}`)
       }
     }
+    dashboard.HTML.renderTable(doc, req.data.subscription.items.data, 'item-row', 'items-table')
   }
   for (const id of removeElements) {
     const element = doc.getElementById(id)

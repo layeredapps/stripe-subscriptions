@@ -7,11 +7,7 @@ const ScreenshotData = require('../../../../screenshot-data.js')
 describe('/administrator/subscriptions/revoke-customer-coupon', function () {
   describe('before', () => {
     it('should bind data to req', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        unit_amount: 3000,
-        recurring_interval: 'month',
-        recurring_usage_type: 'licensed'
-      })
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,
@@ -33,11 +29,7 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
 
   describe('view', () => {
     it('should present the form', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        unit_amount: 3000,
-        recurring_interval: 'month',
-        recurring_usage_type: 'licensed'
-      })
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,
@@ -61,11 +53,7 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
 
   describe('submit', () => {
     it('should remove coupon (screenshots)', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        unit_amount: 3000,
-        recurring_interval: 'month',
-        recurring_usage_type: 'licensed'
-      })
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,
@@ -133,11 +121,7 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
     })
 
     it('invalid-csrf-token', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        unit_amount: 3000,
-        recurring_interval: 'month',
-        recurring_usage_type: 'licensed'
-      })
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,

@@ -29,9 +29,12 @@ describe('/api/user/subscriptions/subscriptions', function () {
     for (let i = 0, len = global.pageSize + 2; i < len; i++) {
       await TestHelper.createPrice(administrator, {
         productid: administrator.product.productid,
+        currency: 'usd',
         unit_amount: 3000,
         recurring_interval: 'month',
+        recurring_interval_count: '1',
         recurring_usage_type: 'licensed',
+        tax_behavior: 'inclusive',
         publishedAt: 'true'
       })
       await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, user)

@@ -51,7 +51,7 @@ describe('/api/administrator/subscriptions/create-refund', function () {
     } catch (error) {
       cachedResponses.excessiveAmount = error.message
     }
-    req.body.amount = 3000
+    req.body.amount = administrator.price.stripeObject.unit_amount
     req.filename = __filename
     req.saveResponse = true
     cachedResponses.returns = await req.post()

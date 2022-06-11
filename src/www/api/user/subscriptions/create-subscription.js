@@ -115,6 +115,16 @@ module.exports = {
       priceids,
       stripeObject: subscription
     })
+    for (const item of subscription.items.data) {
+      await subscriptions.Storage.SubscriptionItem.create({
+        accountid: req.account.accountid,
+        subscriptionitemid: item.id,
+        customerid: req.query.customerid,
+        appid: req.appid || global.appid,
+        subscriptionid: subscription.id,
+        stripeObject: item
+      }) 
+    }
     req.query.subscriptionid = subscription.id
     return global.api.user.subscriptions.Subscription.get(req)
   }

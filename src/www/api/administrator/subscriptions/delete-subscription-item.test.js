@@ -30,97 +30,54 @@ describe('/api/administrator/subscriptions/delete-subscription-item', function (
       itemid: user.subscription.stripeObject.items.data[0].id
     }
     try {
-      await req.patch()
+      await req.delete()
     } catch (error) {
       cachedResponses.missing = error.message
     }
-    req = TestHelper.createRequest('/api/administrator/subscriptions/delete-subscription-item?subscriptionid=invalid')
+    req = TestHelper.createRequest('/api/administrator/subscriptions/delete-subscription-item?subscriptionitemid=invalid')
     req.account = administrator.account
     req.session = administrator.session
     req.body = {
       itemid: user.subscription.stripeObject.items.data[0].id
     }
     try {
-      await req.patch()
+      await req.delete()
     } catch (error) {
       cachedResponses.invalid = error.message
     }
-    // invalid itemid
-    req = TestHelper.createRequest(`/api/administrator/subscriptions/delete-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
-    req.account = administrator.account
-    req.session = administrator.session
-    req.body = {
-      itemid: ''
-    }
-    try {
-      await req.patch()
-    } catch (error) {
-      cachedResponses.missingItem = error.message
-    }
-    req = TestHelper.createRequest(`/api/administrator/subscriptions/delete-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
-    req.account = administrator.account
-    req.session = administrator.session
-    req.body = {
-      itemid: 'invalid'
-    }
-    try {
-      await req.patch()
-    } catch (error) {
-      cachedResponses.invalidItem = error.message
-    }
     // only items
-    req = TestHelper.createRequest(`/api/administrator/subscriptions/delete-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
+    req = TestHelper.createRequest(`/api/administrator/subscriptions/delete-subscription-item?subscriptionitemid=${user.subscription.stripeObject.items.data[0].id}`)
     req.account = administrator.account
     req.session = administrator.session
-    req.body = {
-      itemid: user.subscription.stripeObject.items.data[0].id
-    }
     try {
-      await req.patch()
+      await req.delete()
     } catch (error) {
       cachedResponses.onlyItem = error.message
     }
     // returns
     const price2 = await TestHelper.createPrice(administrator)
     await TestHelper.addSubscriptionItem(user, price2.priceid, 1)
-    req = TestHelper.createRequest(`/api/administrator/subscriptions/delete-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
+    req = TestHelper.createRequest(`/api/administrator/subscriptions/delete-subscription-item?subscriptionitemid=${user.subscription.stripeObject.items.data[0].id}`)
     req.account = administrator.account
     req.session = administrator.session
-    req.body = {
-      itemid: user.subscription.stripeObject.items.data[0].id
-    }
     req.filename = __filename
     req.saveResponse = true
-    cachedResponses.returns = await req.patch()
+    cachedResponses.returns = await req.delete()
     cachedResponses.finished = true
   }
 
   describe('exceptions', () => {
-    describe('invalid-subscriptionid', () => {
-      it('missing querystring subscriptionid', async function () {
+    describe('invalid-subscriptionitemid', () => {
+      it('missing querystring subscriptionitemid', async function () {
         await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missing
-        assert.strictEqual(errorMessage, 'invalid-subscriptionid')
+        assert.strictEqual(errorMessage, 'invalid-subscriptionitemid')
       })
 
-      it('invalid querystring subscriptionid', async function () {
+      it('invalid querystring subscriptionitemid', async function () {
         await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalid
-        assert.strictEqual(errorMessage, 'invalid-subscriptionid')
-      })
-    })
-
-    describe('invalid-itemid', () => {
-      it('missing posted itemid', async function () {
-        await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.missingItem
-        assert.strictEqual(errorMessage, 'invalid-itemid')
-      })
-
-      it('invalid posted itemid', async function () {
-        await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.invalidItem
-        assert.strictEqual(errorMessage, 'invalid-itemid')
+        assert.strictEqual(errorMessage, 'invalid-subscriptionitemid')
       })
     })
 
@@ -135,8 +92,8 @@ describe('/api/administrator/subscriptions/delete-subscription-item', function (
 
   describe('returns', () => {
     it('object', async () => {
-      const subscriptionNow = cachedResponses.returns
-      assert.strictEqual(subscriptionNow.stripeObject.items.data.length, 1)
+      const deleted = cachedResponses.returns
+      assert.strictEqual(deleted, true)
     })
   })
 })

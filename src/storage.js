@@ -241,6 +241,50 @@ module.exports = async () => {
     sequelize,
     modelName: 'invoice'
   })
+  class LineItem extends Model {}
+  LineItem.init({
+    lineitemid: {
+      type: DataTypes.STRING(64),
+      primaryKey: true,
+      allowNull: false
+    },
+    object: {
+      type: DataTypes.VIRTUAL,
+      get () {
+        return 'invoiceitem'
+      }
+    },
+    stripeObject: {
+      type: DataTypes.TEXT,
+      get () {
+        const raw = this.getDataValue('stripeObject')
+        if (raw) {
+          return JSON.parse(raw)
+        }
+      },
+      set (value) {
+        this.setDataValue('stripeObject', JSON.stringify(value))
+      }
+    },
+    invoiceid: DataTypes.STRING(64),
+    subscriptionid: DataTypes.STRING(64),
+    customerid: DataTypes.STRING(64),
+    appid: {
+      type: DataTypes.STRING(64),
+      defaultValue: global.appid
+    },
+    // 'createdAt' is specified for each model because mysql/mariadb truncate
+    // the ms and this makes the return order unpredictable and throws off the
+    // test suites expecting the write order to match the return order
+    createdAt: {
+      type: dateType,
+      allowNull: true,
+      defaultValue: DataTypes.NOW
+    }
+  }, {
+    sequelize,
+    modelName: 'invoiceitem'
+  })
   class PaymentIntent extends Model {}
   PaymentIntent.init({
     paymentintentid: {
@@ -616,6 +660,50 @@ module.exports = async () => {
     sequelize,
     modelName: 'subscription'
   })
+  class SubscriptionItem extends Model {}
+  SubscriptionItem.init({
+    subscriptionitemid: {
+      type: DataTypes.STRING(64),
+      primaryKey: true,
+      allowNull: false
+    },
+    object: {
+      type: DataTypes.VIRTUAL,
+      get () {
+        return 'subscriptionitem'
+      }
+    },
+    stripeObject: {
+      type: DataTypes.TEXT,
+      get () {
+        const raw = this.getDataValue('stripeObject')
+        if (raw) {
+          return JSON.parse(raw)
+        }
+      },
+      set (value) {
+        this.setDataValue('stripeObject', JSON.stringify(value))
+      }
+    },
+    accountid: DataTypes.STRING(64),
+    subscriptionid: DataTypes.STRING(64),
+    customerid: DataTypes.STRING(64),
+    appid: {
+      type: DataTypes.STRING(64),
+      defaultValue: global.appid
+    },
+    // 'createdAt' is specified for each model because mysql/mariadb truncate
+    // the ms and this makes the return order unpredictable and throws off the
+    // test suites expecting the write order to match the return order
+    createdAt: {
+      type: dateType,
+      allowNull: true,
+      defaultValue: DataTypes.NOW
+    }
+  }, {
+    sequelize,
+    modelName: 'subscriptionitem'
+  })
   class TaxCode extends Model {}
   TaxCode.init({
     taxcodeid: {
@@ -867,6 +955,7 @@ module.exports = async () => {
         await Customer.sync({ force: true })
         await Dispute.sync({ force: true })
         await Invoice.sync({ force: true })
+        await LineItem.sync({forcE: true })
         await PaymentIntent.sync({ force: true })
         await PaymentMethod.sync({ force: true })
         await Payout.sync({ force: true })
@@ -875,6 +964,7 @@ module.exports = async () => {
         await Refund.sync({ force: true })
         await SetupIntent.sync({ force: true })
         await Subscription.sync({ force: true })
+        await SubscriptionItem.sync({ force: true })
         await TaxId.sync({ force: true })
         await TaxRate.sync({ force: true })
         await UsageRecord.sync({ force: true })
@@ -885,6 +975,7 @@ module.exports = async () => {
     Customer,
     Dispute,
     Invoice,
+    LineItem,
     PaymentIntent,
     PaymentMethod,
     Payout,
@@ -893,6 +984,7 @@ module.exports = async () => {
     Refund,
     SetupIntent,
     Subscription,
+    SubscriptionItem,
     TaxCode,
     TaxId,
     TaxRate,

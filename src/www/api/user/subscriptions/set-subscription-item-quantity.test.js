@@ -28,20 +28,18 @@ describe('/api/user/subscriptions/set-subscription-item-quantity', function () {
     req.account = user.account
     req.session = user.session
     req.body = {
-      quantity: '10',
-      itemid: user.subscription.stripeObject.items.data[0].id
+      quantity: '10'
     }
     try {
       await req.patch()
     } catch (error) {
       cachedResponses.missing = error.message
     }
-    req = TestHelper.createRequest('/api/user/subscriptions/set-subscription-item-quantity?subscriptionid=invalid')
+    req = TestHelper.createRequest('/api/user/subscriptions/set-subscription-item-quantity?subscriptionitemid=invalid')
     req.account = user.account
     req.session = user.session
     req.body = {
-      quantity: '10',
-      itemid: user.subscription.stripeObject.items.data[0].id
+      quantity: '10'
     }
     try {
       await req.patch()
@@ -49,86 +47,56 @@ describe('/api/user/subscriptions/set-subscription-item-quantity', function () {
       cachedResponses.invalid = error.message
     }
     // invalid account
-    req = TestHelper.createRequest(`/api/user/subscriptions/set-subscription-item-quantity?subscriptionid=${user.subscription.subscriptionid}`)
+    req = TestHelper.createRequest(`/api/user/subscriptions/set-subscription-item-quantity?subscriptionitemid=${user.subscription.stripeObject.items.data[0].id}`)
     req.account = user2.account
     req.session = user2.session
     req.body = {
-      quantity: '1',
-      itemid: user.subscription.stripeObject.items.data[0].id
+      quantity: '1'
     }
     try {
       await req.patch()
     } catch (error) {
       cachedResponses.account = error.message
     }
-    // invalid itemid
-    req = TestHelper.createRequest(`/api/user/subscriptions/set-subscription-item-quantity?subscriptionid=${user.subscription.subscriptionid}`)
-    req.account = user.account
-    req.session = user.session
-    req.body = {
-      quantity: '7',
-      itemid: ''
-    }
-    try {
-      await req.patch()
-    } catch (error) {
-      cachedResponses.missingItem = error.message
-    }
-    req = TestHelper.createRequest(`/api/user/subscriptions/set-subscription-item-quantity?subscriptionid=${user.subscription.subscriptionid}`)
-    req.account = user.account
-    req.session = user.session
-    req.body = {
-      quantity: '7',
-      itemid: 'invalid'
-    }
-    try {
-      await req.patch()
-    } catch (error) {
-      cachedResponses.invalidItem = error.message
-    }
     // invalid quantity
-    req = TestHelper.createRequest(`/api/user/subscriptions/set-subscription-item-quantity?subscriptionid=${user.subscription.subscriptionid}`)
+    req = TestHelper.createRequest(`/api/user/subscriptions/set-subscription-item-quantity?subscriptionitemid=${user.subscription.stripeObject.items.data[0].id}`)
     req.account = user.account
     req.session = user.session
     req.body = {
-      quantity: 'letters',
-      itemid: user.subscription.stripeObject.items.data[0].id
+      quantity: 'letters'
     }
     try {
       await req.patch()
     } catch (error) {
       cachedResponses.invalidQuantity = error.message
     }
-    req = TestHelper.createRequest(`/api/user/subscriptions/set-subscription-item-quantity?subscriptionid=${user.subscription.subscriptionid}`)
+    req = TestHelper.createRequest(`/api/user/subscriptions/set-subscription-item-quantity?subscriptionitemid=${user.subscription.stripeObject.items.data[0].id}`)
     req.account = user.account
     req.session = user.session
     req.body = {
-      quantity: '1',
-      itemid: user.subscription.stripeObject.items.data[0].id
+      quantity: '1'
     }
     try {
       await req.patch()
     } catch (error) {
       cachedResponses.unchangedQuantity = error.message
     }
-    req = TestHelper.createRequest(`/api/user/subscriptions/set-subscription-item-quantity?subscriptionid=${user.subscription.subscriptionid}`)
+    req = TestHelper.createRequest(`/api/user/subscriptions/set-subscription-item-quantity?subscriptionitemid=${user.subscription.stripeObject.items.data[0].id}`)
     req.account = user.account
     req.session = user.session
     req.body = {
-      quantity: '-1',
-      itemid: user.subscription.stripeObject.items.data[0].id
+      quantity: '-1'
     }
     try {
       await req.patch()
     } catch (error) {
       cachedResponses.negativeQuantity = error.message
     }
-    req = TestHelper.createRequest(`/api/user/subscriptions/set-subscription-item-quantity?subscriptionid=${user.subscription.subscriptionid}`)
+    req = TestHelper.createRequest(`/api/user/subscriptions/set-subscription-item-quantity?subscriptionitemid=${user.subscription.stripeObject.items.data[0].id}`)
     req.account = user.account
     req.session = user.session
     req.body = {
-      quantity: '0',
-      itemid: user.subscription.stripeObject.items.data[0].id
+      quantity: '0'
     }
     try {
       await req.patch()
@@ -136,12 +104,11 @@ describe('/api/user/subscriptions/set-subscription-item-quantity', function () {
       cachedResponses.zeroQuantity = error.message
     }
     // returns
-    req = TestHelper.createRequest(`/api/user/subscriptions/set-subscription-item-quantity?subscriptionid=${user.subscription.subscriptionid}`)
+    req = TestHelper.createRequest(`/api/user/subscriptions/set-subscription-item-quantity?subscriptionitemid=${user.subscription.stripeObject.items.data[0].id}`)
     req.account = user.account
     req.session = user.session
     req.body = {
-      quantity: '2',
-      itemid: user.subscription.stripeObject.items.data[0].id
+      quantity: '2'
     }
     req.filename = __filename
     req.saveResponse = true
@@ -150,17 +117,17 @@ describe('/api/user/subscriptions/set-subscription-item-quantity', function () {
   }
 
   describe('exceptions', () => {
-    describe('invalid-subscriptionid', () => {
-      it('missing querystring subscriptionid', async function () {
+    describe('invalid-subscriptionitemid', () => {
+      it('missing querystring subscriptionitemid', async function () {
         await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missing
-        assert.strictEqual(errorMessage, 'invalid-subscriptionid')
+        assert.strictEqual(errorMessage, 'invalid-subscriptionitemid')
       })
 
-      it('invalid querystring subscriptionid', async function () {
+      it('invalid querystring subscriptionitemid', async function () {
         await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalid
-        assert.strictEqual(errorMessage, 'invalid-subscriptionid')
+        assert.strictEqual(errorMessage, 'invalid-subscriptionitemid')
       })
     })
 
@@ -197,26 +164,12 @@ describe('/api/user/subscriptions/set-subscription-item-quantity', function () {
         assert.strictEqual(errorMessage, 'invalid-quantity')
       })
     })
-
-    describe('invalid-itemid', () => {
-      it('missing posted itemid', async function () {
-        await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.missingItem
-        assert.strictEqual(errorMessage, 'invalid-itemid')
-      })
-
-      it('invalid posted itemid', async function () {
-        await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.invalidItem
-        assert.strictEqual(errorMessage, 'invalid-itemid')
-      })
-    })
   })
 
   describe('returns', () => {
     it('object', async () => {
-      const subscriptionNow = cachedResponses.returns
-      assert.strictEqual(subscriptionNow.stripeObject.quantity, 2)
+      const subscriptionItemNow = cachedResponses.returns
+      assert.strictEqual(subscriptionItemNow.stripeObject.quantity, 2)
     })
   })
 })

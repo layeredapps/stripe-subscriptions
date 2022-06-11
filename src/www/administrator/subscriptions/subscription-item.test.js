@@ -5,7 +5,7 @@ const TestStripeAccounts = require('../../../../test-stripe-accounts.js')
 const DashboardTestHelper = require('@layeredapps/dashboard/test-helper.js')
 const ScreenshotData = require('../../../../screenshot-data.js')
 
-describe('/administrator/subscriptions/subscription', function () {
+describe('/administrator/subscriptions/subscription-item', function () {
   let cachedResponses
   async function bundledData (retryNumber) {
     if (retryNumber > 0) {
@@ -22,7 +22,7 @@ describe('/administrator/subscriptions/subscription', function () {
     const administrator = await TestStripeAccounts.createOwnerWithPrice()
     const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     // before
-    const req = TestHelper.createRequest(`/administrator/subscriptions/subscription?subscriptionid=${user.subscription.subscriptionid}`)
+    const req = TestHelper.createRequest(`/administrator/subscriptions/subscription-item?subscriptionitemid=${user.subscription.stripeObject.items.data[0].id}`)
     req.account = administrator.account
     req.session = administrator.session
     await req.route.api.before(req)
@@ -33,7 +33,8 @@ describe('/administrator/subscriptions/subscription', function () {
       { hover: '#administrator-menu-container' },
       { click: '/administrator/subscriptions' },
       { click: '/administrator/subscriptions/subscriptions' },
-      { click: `/administrator/subscriptions/subscription?subscriptionid=${user.subscription.subscriptionid}` }
+      { click: `/administrator/subscriptions/subscription?subscriptionid=${user.subscription.subscriptionid}` },
+      { click: `/administrator/subscriptions/subscription-item?subscriptionitemid=${user.subscription.stripeObject.items.data[0].id}` }
     ]
     global.pageSize = 50
     global.packageJSON.dashboard.server.push(ScreenshotData.administratorIndex)
@@ -46,7 +47,7 @@ describe('/administrator/subscriptions/subscription', function () {
     it('should bind data to req', async function () {
       await bundledData(this.test.currentRetry())
       const data = cachedResponses.before
-      assert.strictEqual(data.subscription.object, 'subscription')
+      assert.strictEqual(data.subscriptionItem.object, 'subscription_item')
     })
   })
 
@@ -55,19 +56,19 @@ describe('/administrator/subscriptions/subscription', function () {
       await bundledData(this.test.currentRetry())
       const result = cachedResponses.returns
       const doc = TestHelper.extractDoc(result.html)
-      const table = doc.getElementById('subscriptions-table')
+      const table = doc.getElementById('subscription-items-table')
       assert.strictEqual(table.tag, 'table')
     })
   })
 
   describe('errors', () => {
-    it('invalid-subscriptionid', async () => {
+    it('invalid-subscriptionitemid', async () => {
       const administrator = await TestHelper.createOwner()
-      const req = TestHelper.createRequest('/administrator/subscriptions/subscription?subscriptionid=invalid')
+      const req = TestHelper.createRequest('/administrator/subscriptions/subscription-item?subscriptionitemid=invalid')
       req.account = administrator.account
       req.session = administrator.session
       await req.route.api.before(req)
-      assert.strictEqual(req.error, 'invalid-subscriptionid')
+      assert.strictEqual(req.error, 'invalid-subscriptionitemid')
     })
   })
 })

@@ -15,7 +15,7 @@ module.exports = {
     if (!taxRate.stripeObject.active) {
       throw new Error('invalid-tax-rate')
     }
-    const subscriptionItem = await stripeCache.execute('subscriptionItems', 'update', req.query.subscriptionitemid, { 
+    const subscriptionItem = await stripeCache.execute('subscriptionItems', 'update', req.query.subscriptionitemid, {
       tax_rates: [req.body.taxrateid]
     }, req.stripeKey)
     const subscriptionNow = await stripeCache.execute('subscriptions', 'retrieve', subscriptionItem.subscription, req.stripeKey)

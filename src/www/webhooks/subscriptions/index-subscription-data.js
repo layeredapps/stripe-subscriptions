@@ -273,7 +273,16 @@ async function updateInvoice (stripeEvent, stripeKey) {
   if (stripeObject.subscription) {
     updateObject.subscriptionid = stripeObject.subscription
   }
-  return upsert(subscriptions.Storage.Invoice, 'invoiceid', stripeObject.id, updateObject)
+  await upsert(subscriptions.Storage.Invoice, 'invoiceid', stripeObject.id, updateObject)
+  for (const item of stripeObject.lines.data) {
+    await upsert(subscriptions.Storage.LineItem, 'lineitemid', item.id, {
+      lineitemid: item.id,
+      invoiceid: stripeObject.id,
+      customerid: exists.dataValues.customerid,
+      subscriptionid: stripeObject.subscription,
+      stripeObject: item
+    })
+  }
 }
 
 async function updateCustomer (stripeEvent, stripeKey) {

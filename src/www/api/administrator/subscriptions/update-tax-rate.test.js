@@ -21,7 +21,6 @@ describe('/api/administrator/subscriptions/update-tax-rate', function () {
     await TestHelper.setupBeforeEach()
     const administrator = await TestHelper.createOwner()
     await TestHelper.createTaxRate(administrator)
-    console.log('updating tax rate', administrator.taxRate)
     const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-tax-rate?taxrateid=${administrator.taxRate.taxrateid}`)
     req.account = administrator.account
     req.session = administrator.session
@@ -89,7 +88,7 @@ describe('/api/administrator/subscriptions/update-tax-rate', function () {
         try {
           await req.patch()
         } catch (error) {
-          errorMessage  = error.message
+          errorMessage = error.message
         }
         assert.strictEqual(errorMessage, 'invalid-taxrateid')
       })
@@ -103,7 +102,7 @@ describe('/api/administrator/subscriptions/update-tax-rate', function () {
         try {
           await req.patch()
         } catch (error) {
-          errorMessage  = error.message
+          errorMessage = error.message
         }
         assert.strictEqual(errorMessage, 'invalid-taxrateid')
       })

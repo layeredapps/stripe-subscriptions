@@ -27,7 +27,7 @@ module.exports = {
     // https://stripe.com/docs/api/tax_rates/update
     const optionalFields = ['active', 'description', 'jurisdiction']
     for (const field of optionalFields) {
-      if (!req.body[field] || !req.body[field].length) { 
+      if (!req.body[field] || !req.body[field].length) {
         throw new Error(`invalid-${field}`)
       }
       updateInfo[field] = req.body[field]

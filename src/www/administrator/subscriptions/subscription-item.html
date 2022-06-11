@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/administrator/subscriptions/navbar-subscription-item.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" /> 
+    <title translate="yes">View subscription item</title>
+    <link rel="stylesheet" href="/public/content.css">
+    <link rel="stylesheet" href="/public/content-additional.css">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">View subscription item</h1>
+      <div id="message-container"></div>
+      <table id="subscription-items-table" class="data-table">
+        <tbody id="${subscription_item.id}">
+          <tr>
+            <th>ID</th>
+            <td>${subscription_item.id}</td>
+          </tr>
+          <tr>
+            <th translate="yes">Subscription</th>
+            <td>
+              <a href="/administrator/subscriptions/subscription?subscriptionid=${subscription_item.subscription}">${subscription_item.subscription}</a>
+            </td>
+          </tr>
+          <tr>
+            <th translate="yes">Created</th>
+            <td>${subscription_item.createdFormatted}</td>
+          </tr>
+          <tr>
+            <th translate="yes">Quantity</th>
+            <td>${subscription_item.quantity}</td>
+          </tr>
+          <tr>
+            <th translate="yes">Price</th>
+            <td>
+              <table id="prices-table" class="data-table">
+                <tbody id="${subscription_item.price.priceid}">
+                  <tr>
+                    <th>ID</th>
+                    <td>${subscription_item.price.priceid}</td>
+                  </tr>
+                  <tr>
+                    <th>Nickname</th>
+                    <td>${subscription_item.price.nickname}</td>
+                  </tr>
+                  <tr>
+                    <th translate="yes">Product</th>
+                    <td><a href="/administrator/subscriptions/product?productid=${subscription_item.price.product}">${subscription_item.price.product}</a></td>
+                  </tr>
+                  <tr>
+                    <th>Type</th>
+                    <td>${subscription_item.price.type}</td>
+                  </tr>
+                  <tr>
+                    <th>Billing scheme</th>
+                    <td>${subscription_item.price.billing_scheme}</td>
+                  </tr>
+                  <tr>
+                    <th translate="yes">Price</th>
+                    <td id="amount">${subscription_item.price.amountFormatted}${subscription_item.price.currency} x  ${subscription_item.price.interval}</td>
+                    <td id="free">Free</td>
+                  </tr>
+                  <tr>
+                    <th translate="yes">Status</th>
+                    <td id="published" translate="yes">Published</td>
+                    <td id="unpublished" translate="yes">Unpublished</td>
+                    <td id="not-published" translate="yes">Not yet published</td>
+                  </tr>
+                  <tr id="transform-quantity">
+                    <th>Transform quantity</th>
+                    <td>Divide by ${subscription_item.price.transform_quantity.divide_by} and round ${subscription_item.price.transform_quantity.round} </td>
+                  </tr>
+                  <tr id="pricing-tiers">
+                    <th>Pricing tiers</th>
+                    <td>
+                      <table id="tiers-table">
+                        <tr>
+                          <th>Flat amount</th>
+                          <th>Unit amount</th>
+                          <th>Up to</th>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr id="unit-billing">
+                    <th>Unit billing</th>
+                    <td>${subscription_item.price.unit_amount || price.unit_amount_decimal}</td>
+                  </tr>
+                  <tr id="recurring-billing">
+                    <th>Recurring billing</th>
+                    <td>
+                      <table>
+                        <tr>
+                          <th>Interval</th>
+                          <th>Interval count</th>
+                          <th>Usage type</th>
+                          <th>Aggregation</th>
+                        </tr>
+                        <tr>
+                          <td>${subscription_item.price.recurring.interval}</td>
+                          <td>${subscription_item.price.recurring.interval_count}</td>
+                          <td>${subscription_item.price.recurring.usage_type}</td>
+                          <td>${subscription_item.price.recurring.aggregate_usage}</td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+          <tr id="tax-rates">
+            <th translate="yes">Tax rates</th>
+            <td>
+              <table id="tax-rates-table" class="list-table">
+                <tr>
+                  <th translate="yes">ID</th>
+                  <th translate="yes">Display name</th>
+                  <th translate="yes">Percentage</th>
+                  <th translate="yes">Inclusive</th>
+                  <th translate="yes">Active</th>
+                  <th translate="yes">Jurisdiction</th>
+                  <th translate="yes">Type</th>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <template id="tax-rate-row">
+      <tr id="${tax_rate.id}">
+        <td><a href="/administrator/subscriptions/tax-rate?taxrateid=${tax_rate.id}">${tax_rate.id}</a></td>
+        <td>${tax_rate.display_name}</td>
+        <td>${tax_rate.Percentage}%</td>
+        <td>${tax_rate.inclusive}</td>
+        <td>${tax_rate.active}</td>
+        <td>${tax_rate.jurisdiction}</td>
+        <td>${tax_rate.type}</td>
+      </tr>
+    </template>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! Something went wrong submitting the form
+      </div>
+    </template>
+    <template id="invalid-subscriptionid">
+      <div class="error message" translate="yes">
+        Error! An invalid subscription was specified
+      </div>
+    </template>
+    <template id="invalid-subscription">
+      <div class="error message" translate="yes">
+        Error! An invalid subscription was specified
+      </div>
+    </template>
+  </body>
+</html>

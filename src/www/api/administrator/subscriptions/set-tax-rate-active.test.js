@@ -16,7 +16,7 @@ describe('/api/administrator/subscriptions/set-tax-rate-active', function () {
         try {
           await req.patch()
         } catch (error) {
-          errorMessage  = error.message
+          errorMessage = error.message
         }
         assert.strictEqual(errorMessage, 'invalid-taxrateid')
       })
@@ -30,7 +30,7 @@ describe('/api/administrator/subscriptions/set-tax-rate-active', function () {
         try {
           await req.patch()
         } catch (error) {
-          errorMessage  = error.message
+          errorMessage = error.message
         }
         assert.strictEqual(errorMessage, 'invalid-taxrateid')
       })
@@ -49,7 +49,7 @@ describe('/api/administrator/subscriptions/set-tax-rate-active', function () {
         try {
           await req.patch()
         } catch (error) {
-          errorMessage  = error.message
+          errorMessage = error.message
         }
         assert.strictEqual(errorMessage, 'invalid-taxrate')
       })

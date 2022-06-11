@@ -16,9 +16,7 @@
         <tbody id="${subscription.id}">
           <tr>
             <th>ID</th>
-            <td>
-              <a href="/administrator/subscriptions/subscription?subscriptionid=${subscription.id}">${subscription.id}</a>
-            </td>
+            <td>${subscription.id}</td>
           </tr>
           <tr>
             <th translate="yes">Customer</th>
@@ -75,7 +73,33 @@
           </tr>
         </tbody>
       </table>
+      <h3>Subscription items</h3>
+      <p><a href="/administrator/subscriptions/add-subscription-item?subscriptionid=${subscription.id}" class="button" translate="yes">Add item</a></p>
+      <table id="items-table" class="list-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th translate="yes">Quantity</th>
+            <th translate="yes">Product</th>
+            <th translate="yes">Price</th>
+            <th></th>
+          </tr>
+        </thead>
+      </table>
     </div>
+    <template id="item-row">
+      <tr id="${subscription_item.price.priceid}">
+        <td><a href="/administrator/subscriptions/subscription-item?subscriptionitemid=${subscription_item.id}">${subscription_item.id}</a></td>
+        <td>${subscription_item.quantity}</td>
+        <td><a href="/administrator/subscriptions/price?priceid=${subscription_item.price.priceid}">${subscription_item.price.priceid}</a></td>
+        <td><a href="/administrator/subscriptions/product?productid=${subscription_item.price.product}">${subscription_item.price.product}</a></td>
+        <td>
+          <a class="button" href="/administrator/subscriptions/add-subscription-item-tax?subscriptionitemid=${subscription_item.id}">Add tax</a>
+          <a class="button" href="/administrator/subscriptions/adjust-subscription-item-quantity?subscriptionitemid=${subscription_item.id}">Set quantity</a>
+          <a class="button" href="/administrator/subscriptions/remove-subscription-item?subscriptionitemid=${subscription_item.id}">Remove</a>
+        </td>
+      </tr>
+    </template>
     <template id="unknown-error">
       <div class="error message" translate="yes">
         Error! Something went wrong submitting the form

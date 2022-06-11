@@ -16,9 +16,12 @@ describe('/api/administrator/subscriptions/charges-count', function () {
         await TestHelper.createPrice(administrator, {
           productid: administrator.product.productid,
           publishedAt: 'true',
+          currency: 'usd',
+          tax_behavior: 'inclusive',
           unit_amount: 3000,
           recurring_interval: 'month',
-          recurring_usage_type: 'licensed'
+          recurring_usage_type: 'licensed',
+          recurring_interval_count: '1'
         })
         await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
       }

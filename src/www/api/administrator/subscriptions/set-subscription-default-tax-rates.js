@@ -1,3 +1,4 @@
+const dashboard = require('@layeredapps/dashboard')
 const subscriptions = require('../../../../../index.js')
 const stripeCache = require('../../../../stripe-cache.js')
 
@@ -31,7 +32,7 @@ module.exports = {
       stripeObject: subscriptionNow
     }, {
       where: {
-        subscriptionid: subscriptionNow.id 
+        subscriptionid: subscriptionNow.id
       }
     })
     await dashboard.StorageCache.remove(subscriptionNow.id)

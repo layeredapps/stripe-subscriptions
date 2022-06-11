@@ -8,11 +8,7 @@ describe('/api/administrator/subscriptions/subscriptions-count', function () {
   after(TestHelper.enableMetrics)
   describe('returns', () => {
     it('integer', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        unit_amount: 3000,
-        recurring_interval: 'month',
-        recurring_usage_type: 'licensed'
-      })
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
       for (let i = 0, len = global.pageSize + 1; i < len; i++) {
         await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
       }

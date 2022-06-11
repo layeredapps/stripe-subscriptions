@@ -29,8 +29,8 @@ module.exports = {
     if (req.body.state && subscriptions.countryDivisions[req.body.country].indexOf(req.body.state) === -1) {
       throw new Error('invalid-state')
     }
-    if (req.body.tax_type && 
-        req.body.tax_type !== 'sales_tax' && 
+    if (req.body.tax_type &&
+        req.body.tax_type !== 'sales_tax' &&
         req.body.tax_type !== 'vat' &&
         req.body.tax_type !== 'gst' &&
         req.body.tax_type !== 'hst' &&
@@ -47,7 +47,7 @@ module.exports = {
     }
     const optionalFields = ['active', 'country', 'description', 'jurisdiction', 'state', 'tax_type']
     for (const field of optionalFields) {
-      if (!req.body[field] || !req.body[field].length) { 
+      if (!req.body[field] || !req.body[field].length) {
         throw new Error(`invalid-${field}`)
       }
       taxRateInfo[field] = req.body[field]

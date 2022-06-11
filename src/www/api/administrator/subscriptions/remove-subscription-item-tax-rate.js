@@ -16,7 +16,6 @@ module.exports = {
       throw new Error('invalid-tax-rate')
     }
     const subscriptionItemBefore = await stripeCache.execute('subscriptionItems', 'retrieve', req.query.subscriptionitemid, req.stripeKey)
-    console.log('item before', subscriptionItemBefore)
     const taxRatesRemaining = []
     if (subscriptionItemBefore.tax_rates.length) {
       for (const item of subscriptionItemBefore.tax_rates) {
@@ -26,13 +25,12 @@ module.exports = {
       }
     }
     // clear the taxes
-    const subscriptionItem = await stripeCache.execute('subscriptionItems', 'update', req.query.subscriptionitemid, { 
+    const subscriptionItem = await stripeCache.execute('subscriptionItems', 'update', req.query.subscriptionitemid, {
       tax_rates: ''
     }, req.stripeKey)
-    console.log('reset item', subscriptionItem, 'remaining rates', taxRatesRemaining)
     // add any remaining taxes back
     if (taxRatesRemaining.length) {
-      await stripeCache.execute('subscriptionItems', 'update', req.query.subscriptionitemid, { 
+      await stripeCache.execute('subscriptionItems', 'update', req.query.subscriptionitemid, {
         tax_rates: taxRatesRemaining
       }, req.stripeKey)
     }

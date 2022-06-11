@@ -71,7 +71,7 @@ describe('/api/administrator/subscriptions/set-subscription-default-tax-rates', 
     try {
       await req.patch()
     } catch (error) {
-      cachedResponses.invalidTaxRateId = error.message
+      cachedResponses.invalidTaxRateIds = error.message
     }
     // invalid tax rate
     req = TestHelper.createRequest(`/api/administrator/subscriptions/set-subscription-default-tax-rates?subscriptionid=${user.subscription.subscriptionid}`)
@@ -103,26 +103,28 @@ describe('/api/administrator/subscriptions/set-subscription-default-tax-rates', 
       it('missing querystring subscriptionid', async function () {
         await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.missing
-        assert.strictEqual(errorMessage, 'invalid-subscriptionitemid')
+        assert.strictEqual(errorMessage, 'invalid-subscriptionid')
       })
 
       it('invalid querystring subscriptionid', async function () {
         await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalid
-        assert.strictEqual(errorMessage, 'invalid-subscriptionitemid')
+        assert.strictEqual(errorMessage, 'invalid-subscriptionid')
+      })
+    })
+
+    describe('invalid-taxrateids', () => {
+      it('missing posted taxrateids', async function () {
+        await bundledData(this.test.currentRetry())
+        const errorMessage = cachedResponses.missingTaxRateIds
+        assert.strictEqual(errorMessage, 'invalid-taxrateids')
       })
     })
 
     describe('invalid-taxrateid', () => {
-      it('missing posted taxrateid', async function () {
-        await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.missingTaxRateId
-        assert.strictEqual(errorMessage, 'invalid-taxrateid')
-      })
-      
       it('invalid posted taxrateid', async function () {
         await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.invalidTaxRateId
+        const errorMessage = cachedResponses.invalidTaxRateIds
         assert.strictEqual(errorMessage, 'invalid-taxrateid')
       })
     })
@@ -139,7 +141,6 @@ describe('/api/administrator/subscriptions/set-subscription-default-tax-rates', 
   describe('returns', () => {
     it('object', async () => {
       const subscriptionNow = cachedResponses.returns
-      console.log(subscriptionNow.stripeObject.items.data)
       assert.strictEqual(subscriptionNow.stripeObject.default_tax_rates.length, 2)
     })
   })

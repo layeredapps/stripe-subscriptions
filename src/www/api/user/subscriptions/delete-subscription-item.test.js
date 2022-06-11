@@ -95,8 +95,7 @@ describe('/api/user/subscriptions/delete-subscription-item', function () {
     }
     // returns
     const price2 = await TestHelper.createPrice(administrator)
-    const xxx = await TestHelper.addSubscriptionItem(user, price2.priceid, 1)
-    console.log('adeded item', xxx)
+    await TestHelper.addSubscriptionItem(user, price2.priceid, 1)
     req = TestHelper.createRequest(`/api/user/subscriptions/delete-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
     req.account = user.account
     req.session = user.session
@@ -158,7 +157,6 @@ describe('/api/user/subscriptions/delete-subscription-item', function () {
   describe('returns', () => {
     it('object', async () => {
       const subscriptionNow = cachedResponses.returns
-      console.log(subscriptionNow, subscriptionNow.stripeObject.items)
       assert.strictEqual(subscriptionNow.stripeObject.items.data.length, 1)
     })
   })

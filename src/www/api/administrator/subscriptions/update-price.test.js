@@ -58,11 +58,7 @@ describe('/api/administrator/subscriptions/update-price', function () {
 
     describe('invalid-nickname', () => {
       it('missing posted nickname', async () => {
-        const administrator = await TestStripeAccounts.createOwnerWithPrice({
-          amount: '1000',
-          interval: 'month',
-          usage_type: 'licensed'
-        })
+        const administrator = await TestStripeAccounts.createOwnerWithPrice()
         const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-price?priceid=${administrator.price.priceid}`)
         req.account = administrator.account
         req.session = administrator.session

@@ -3,14 +3,14 @@ const assert = require('assert')
 const TestHelper = require('../../../../../test-helper.js')
 const TestStripeAccounts = require('../../../../../test-stripe-accounts.js')
 
-describe('/api/user/subscriptions/subscriptions-count', function () {
+describe('/api/user/subscriptions/subscription-item', function () {
   before(TestHelper.disableMetrics)
   after(TestHelper.enableMetrics)
   describe('exceptions', () => {
-    describe('invalid-accountid', () => {
-      it('missing querystring accountid', async () => {
+    describe('invalid-subscriptionitemid', () => {
+      it('missing querystring subscriptionitemid', async () => {
         const user = await TestHelper.createUser()
-        const req = TestHelper.createRequest('/api/user/subscriptions/subscriptions-count')
+        const req = TestHelper.createRequest('/api/user/subscriptions/subscription-item')
         req.account = user.account
         req.session = user.session
         let errorMessage
@@ -19,12 +19,12 @@ describe('/api/user/subscriptions/subscriptions-count', function () {
         } catch (error) {
           errorMessage = error.message
         }
-        assert.strictEqual(errorMessage, 'invalid-accountid')
+        assert.strictEqual(errorMessage, 'invalid-subscriptionitemid')
       })
 
-      it('invalid querystring accountid', async () => {
+      it('invalid querystring subscriptionitemid', async () => {
         const user = await TestHelper.createUser()
-        const req = TestHelper.createRequest('/api/user/subscriptions/subscriptions-count?accountid=invalid')
+        const req = TestHelper.createRequest('/api/user/subscriptions/subscription-item?subscriptionitemid=invalid')
         req.account = user.account
         req.session = user.session
         let errorMessage
@@ -33,15 +33,16 @@ describe('/api/user/subscriptions/subscriptions-count', function () {
         } catch (error) {
           errorMessage = error.message
         }
-        assert.strictEqual(errorMessage, 'invalid-accountid')
+        assert.strictEqual(errorMessage, 'invalid-subscriptionitemid')
       })
     })
 
     describe('invalid-account', () => {
       it('ineligible accessing account', async () => {
-        const user = await TestHelper.createUser()
+        const administrator = await TestStripeAccounts.createOwnerWithPrice()
+        const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
         const user2 = await TestHelper.createUser()
-        const req = TestHelper.createRequest(`/api/user/subscriptions/subscriptions-count?accountid=${user.account.accountid}`)
+        const req = TestHelper.createRequest(`/api/user/subscriptions/subscription-item?subscriptionitemid=${user.subscription.stripeObject.items.data[0].id}`)
         req.account = user2.account
         req.session = user2.session
         let errorMessage
@@ -56,28 +57,16 @@ describe('/api/user/subscriptions/subscriptions-count', function () {
   })
 
   describe('returns', () => {
-    it('integer', async () => {
+    it('object', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice()
-      const price1 = administrator.price
-      const price2 = await TestHelper.createPrice(administrator, {
-        productid: administrator.product.productid,
-        currency: 'usd',
-        unit_amount: 3000,
-        recurring_interval: 'month',
-        recurring_interval_count: '1',
-        recurring_usage_type: 'licensed',
-        publishedAt: 'true',
-        tax_behavior: 'inclusive'
-      })
-      const user = await TestStripeAccounts.createUserWithPaidSubscription(price1)
-      await TestStripeAccounts.createUserWithPaidSubscription(price2, user)
-      const req = TestHelper.createRequest(`/api/user/subscriptions/subscriptions-count?accountid=${user.account.accountid}`)
+      const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
+      const req = TestHelper.createRequest(`/api/user/subscriptions/subscription-item?subscriptionitemid=${user.subscription.stripeObject.items.data[0].id}`)
       req.account = user.account
       req.session = user.session
       req.filename = __filename
       req.saveResponse = true
-      const result = await req.get()
-      assert.strictEqual(result, global.pageSize)
+      const subscriptionItemNow = await req.get()
+      assert.strictEqual(subscriptionItemNow.subscriptionitemid, user.subscription.stripeObject.items.data[0].id)
     })
   })
 })

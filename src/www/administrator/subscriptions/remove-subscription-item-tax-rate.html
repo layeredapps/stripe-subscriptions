@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" data-navbar="/administrator/subscriptions/navbar-subscription-item.html">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <title translate="yes">Remove tax rate from subscription item</title>
+    <link rel="stylesheet" href="/public/content.css">
+    <link rel="stylesheet" href="/public/content-additional.css">
+    <base href="/" target="_top">
+  </head>
+  <body>
+    <div class="container">
+      <h1 translate="yes">Remove tax rate from subscription item</h1>
+      <div id="message-container"></div>
+      <form id="submit-form" method="post" class="input-form" action="/administrator/subscriptions/remove-subscription-item-tax-rate?subscriptionitemid=${subscription_item.id}" name="submit-form">
+        <input type="hidden" name="csrf-token" />
+        <div class="input-fields">
+          <label class="field-label" for="taxrateid" translate="yes">Select tax rate</label>
+          <div class="field">
+            <select id="taxrateid" name="taxrateid">
+              <option value="" translate="yes">
+                Select tax
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="input-fields">
+          <label class="field-label"></label>
+          <div class="form-buttons">
+            <button id="submit-button" type="submit" class="button" translate="yes">Remove tax rate</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <template id="tax-rate-option">
+      <option value="${tax_rate.id}">
+        ${tax_rate.display_name} - ${tax_rate.description}
+      </option>
+    </template>
+    <template id="success">
+      <div class="success message" translate="yes">
+        Success! The tax rate has been removed
+      </div>
+    </template>
+    <template id="invalid-subscriptionitemid">
+      <div class="error message" translate="yes">
+        Error! Missing or invalid subscription item
+      </div>
+    </template>
+    <template id="invalid-taxrateid">
+      <div class="error message" translate="yes">
+        Error! Missing or invalid tax rate
+      </div>
+    </template>
+    <template id="unknown-error">
+      <div class="error message" translate="yes">
+        Error! Something went wrong submitting the form
+      </div>
+    </template>
+    <template id="invalid-subscriptionid">
+      <div class="error message" translate="yes">
+        Error! An invalid subscription was specified
+      </div>
+    </template>
+    <template id="invalid-subscription">
+      <div class="error message" translate="yes">
+        Error! An invalid subscription was specified
+      </div>
+    </template>
+    <template id="invalid-subscription-canceling">
+      <div class="error message" translate="yes">
+        Error! The selected subscription is canceled or canceling
+      </div>
+    </template>
+    <template id="invalid-csrf-token">
+      <div class="error message" translate="yes">
+        Error! This form was not submitted correctly
+      </div>
+    </template>
+    <template id="invalid-xss-input">
+      <div class="error message" translate="yes">
+        Error! Invalid value(s) were posted to the server
+      </div>
+    </template>
+  </body>
+</html>

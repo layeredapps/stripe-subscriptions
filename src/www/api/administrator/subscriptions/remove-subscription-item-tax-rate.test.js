@@ -27,7 +27,6 @@ describe('/api/administrator/subscriptions/remove-subscription-item-tax-rate', f
     const taxRate3 = await TestHelper.createTaxRate(administrator, {
       active: false
     })
-    console.log('taxrate1', taxRate1, 'taxrate2', taxRate2, 'taxrate3', taxRate3)
     // missing and invalid id
     let req = TestHelper.createRequest('/api/administrator/subscriptions/remove-subscription-item-tax-rate')
     req.account = administrator.account
