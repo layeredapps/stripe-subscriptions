@@ -24,6 +24,7 @@ describe('/administrator/subscriptions/delete-subscription', function () {
     const freeTrialPrice = await TestHelper.createPrice(administrator, {
       productid: administrator.product.productid,
       publishedAt: 'true',
+      currency: 'usd',
       unit_amount: '100000',
       recurring_interval: 'month',
       recurring_usage_type: 'licensed'
@@ -31,6 +32,7 @@ describe('/administrator/subscriptions/delete-subscription', function () {
     const freePrice = await TestHelper.createPrice(administrator, {
       productid: administrator.product.productid,
       publishedAt: 'true',
+      currency: 'usd',
       unit_amount: '0',
       recurring_interval: 'month',
       recurring_usage_type: 'licensed'

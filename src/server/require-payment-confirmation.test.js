@@ -38,11 +38,7 @@ describe('server/stripe-subscriptions/require-payment-confirmation', function ()
     // })
 
     it('should ignore administrators with pending confirmations requesting administration pages', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        unit_amount: 3000,
-        recurring_interval: 'month',
-        recurring_usage_type: 'licensed'
-      })
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
       await TestHelper.createCustomer(administrator, {
         email: administrator.profile.contactEmail,
         country: 'US'
@@ -78,6 +74,7 @@ describe('server/stripe-subscriptions/require-payment-confirmation', function ()
       const administrator = await TestStripeAccounts.createOwnerWithPrice({
         unit_amount: 0,
         recurring_interval: 'month',
+        recurring_interval_count: '1',
         recurring_usage_type: 'licensed'
       })
       const user = await TestStripeAccounts.createUserWithFreeSubscription(administrator.price)

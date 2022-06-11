@@ -123,7 +123,7 @@ module.exports = {
         appid: req.appid || global.appid,
         subscriptionid: subscription.id,
         stripeObject: item
-      }) 
+      })
     }
     req.query.subscriptionid = subscription.id
     return global.api.user.subscriptions.Subscription.get(req)

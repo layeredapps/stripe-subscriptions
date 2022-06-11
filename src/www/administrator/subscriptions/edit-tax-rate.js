@@ -51,7 +51,7 @@ async function renderPage (req, res, messageTemplate) {
       submitForm.parentNode.removeChild(submitForm)
       return dashboard.Response.end(req, res, doc)
     }
-  }    
+  }
   if (req.body) {
     const displayNameField = doc.getElementById('display_name')
     displayNameField.setAttribute('value', dashboard.Format.replaceQuotes(req.body.display_name || ''))
@@ -96,9 +96,8 @@ async function submitForm (req, res) {
   if (!req.body.inclusive || (req.body.inclusive !== 'true' && req.body.inclusive !== 'false')) {
     return renderPage(req, res, 'invalid-inclusive')
   }
-  let taxRate
   try {
-    taxRate = await global.api.administrator.subscriptions.UpdateTaxRate.patch(req)
+    await global.api.administrator.subscriptions.UpdateTaxRate.patch(req)
   } catch (error) {
     return renderPage(req, res, error.message)
   }

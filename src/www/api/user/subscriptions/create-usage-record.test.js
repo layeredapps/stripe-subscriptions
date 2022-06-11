@@ -21,9 +21,14 @@ describe('/api/user/subscriptions/create-usage-record', function () {
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const administrator = await TestStripeAccounts.createOwnerWithPrice({
+      publishedAt: 'true',
       unit_amount: 3000,
+      currency: 'usd',
+      tax_behavior: 'inclusive',
       recurring_interval: 'month',
-      recurring_usage_type: 'metered'
+      recurring_interval_count: '1',
+      recurring_usage_type: 'metered',
+      recurring_aggregate_usage: 'sum'
     })
     const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     // invalid / missing subscriptionid
@@ -57,8 +62,12 @@ describe('/api/user/subscriptions/create-usage-record', function () {
     const price2 = await TestHelper.createPrice(administrator, {
       productid: administrator.product.productid,
       unit_amount: 3000,
+      currency: 'usd',
       recurring_interval: 'month',
+      recurring_interval_count: '1',
       recurring_usage_type: 'licensed',
+      recurring_aggregate_usage: 'sum',
+      tax_behavior: 'inclusive',
       publishedAt: 'true'
     })
     const user2 = await TestStripeAccounts.createUserWithPaidSubscription(price2)

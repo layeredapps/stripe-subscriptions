@@ -78,8 +78,8 @@ async function submitForm (req, res) {
   }
   try {
     const quantity = parseInt(req.body.quantity, 10)
-    if(quantity < 1) {
-      return renderPage(req, res, 'invalid-quantity')  
+    if (quantity < 1) {
+      return renderPage(req, res, 'invalid-quantity')
     }
   } catch (error) {
     return renderPage(req, res, 'invalid-quantity')

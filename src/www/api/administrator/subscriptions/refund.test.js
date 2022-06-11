@@ -39,8 +39,12 @@ describe('/api/administrator/subscriptions/refund', function () {
   describe('returns', () => {
     it('object', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice({
+        publishedAt: 'true',
         unit_amount: 3000,
+        currency: 'usd',
+        tax_behavior: 'inclusive',
         recurring_interval: 'month',
+        recurring_interval_count: '1',
         recurring_usage_type: 'licensed'
       })
       const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)

@@ -69,12 +69,12 @@ async function renderPage (req, res, messageTemplate) {
     } else {
       removeElements.push('pricing-tiers')
     }
-    if (req.data.price.type === 'one_time' ){
+    if (req.data.price.type === 'one_time') {
       removeElements.push('recurring-billing')
     }
-     if (!req.data.price.transform_quantity.divide_by) {
+    if (!req.data.price.transform_quantity.divide_by) {
       removeElements.push('transform-quantity')
-     }
+    }
   }
   for (const id of removeElements) {
     const element = doc.getElementById(id)

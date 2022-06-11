@@ -955,7 +955,7 @@ module.exports = async () => {
         await Customer.sync({ force: true })
         await Dispute.sync({ force: true })
         await Invoice.sync({ force: true })
-        await LineItem.sync({forcE: true })
+        await LineItem.sync({ force: true })
         await PaymentIntent.sync({ force: true })
         await PaymentMethod.sync({ force: true })
         await Payout.sync({ force: true })

@@ -70,7 +70,10 @@ describe('/api/user/subscriptions/create-cancelation-refund', function () {
       productid: administrator.product.productid,
       publishedAt: 'true',
       unit_amount: 0,
+      currency: 'usd',
+      tax_behavior: 'inclusive',
       recurring_interval: 'month',
+      recurring_interval_count: '1',
       recurring_usage_type: 'licensed'
     })
     const user4 = await TestStripeAccounts.createUserWithFreeSubscription(administrator.price)

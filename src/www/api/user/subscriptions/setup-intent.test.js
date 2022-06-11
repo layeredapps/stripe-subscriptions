@@ -23,7 +23,7 @@ describe('/api/user/subscriptions/setup-intent', function () {
     const user = await TestStripeAccounts.createUserWithPaymentMethod()
     const user2 = await TestHelper.createUser()
     // invalid account
-    const req = TestHelper.createRequest(`/api/user/subscriptions/setup-intent?setupintentid=${user.setupIntent.setupintentidid}`)
+    const req = TestHelper.createRequest(`/api/user/subscriptions/setup-intent?setupintentid=${user.setupIntent.setupintentid}`)
     req.account = user2.account
     req.session = user2.session
     try {
@@ -32,7 +32,7 @@ describe('/api/user/subscriptions/setup-intent', function () {
       cachedResponses.invalidAccount = error.message
     }
     // response
-    const req2 = TestHelper.createRequest(`/api/user/subscriptions/setup-intent?setupintentid=${user.setupIntent.setupintentidid}`)
+    const req2 = TestHelper.createRequest(`/api/user/subscriptions/setup-intent?setupintentid=${user.setupIntent.setupintentid}`)
     req2.account = user.account
     req2.session = user.session
     req2.filename = __filename

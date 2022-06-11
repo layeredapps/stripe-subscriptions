@@ -22,12 +22,14 @@ describe('/api/administrator/subscriptions/usage-records', function () {
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const administrator = await TestStripeAccounts.createOwnerWithPrice({
+      publishedAt: 'true',
       currency: 'usd',
       recurring_interval: 'month',
       recurring_interval_count: '1',
       recurring_usage_type: 'metered',
       recurring_aggregate_usage: 'sum',
       billing_scheme: 'tiered',
+      tax_behavior: 'inclusive',
       tiers_mode: 'volume',
       tier1_up_to: '1000',
       tier1_flat_amount: '9999',

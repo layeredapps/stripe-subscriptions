@@ -54,11 +54,7 @@ describe('/account/subscriptions/confirm-payment', function () {
       if (!process.env.SHOW_BROWSERS) {
         return assert.strictEqual(1, 1)
       }
-      const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        unit_amount: 3000,
-        recurring_interval: 'month',
-        recurring_usage_type: 'licensed'
-      })
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
       const user = await TestHelper.createUser()
       await TestHelper.createCustomer(user, {
         email: user.profile.contactEmail,

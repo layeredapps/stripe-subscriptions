@@ -47,11 +47,7 @@ describe('server/stripe-subscriptions/require-subscription', function () {
     })
 
     it('should ignore user with active subscription', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        unit_amount: 3000,
-        recurring_interval: 'month',
-        recurring_usage_type: 'licensed'
-      })
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
       const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
       const req = TestHelper.createRequest('/home')
       req.account = user.account

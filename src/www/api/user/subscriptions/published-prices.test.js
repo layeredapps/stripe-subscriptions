@@ -28,8 +28,13 @@ describe('/api/user/subscriptions/published-prices', function () {
     for (let i = 0, len = global.pageSize + 2; i < len; i++) {
       await TestHelper.createPrice(administrator, {
         productid: administrator.product.productid,
-        usage_type: 'licensed',
-        publishedAt: 'true'
+        currency: 'usd',
+        unit_amount: 3000,
+        recurring_interval: 'month',
+        recurring_interval_count: '1',
+        recurring_usage_type: 'licensed',
+        publishedAt: 'true',
+        tax_behavior: 'inclusive'
       })
       cachedPrices.unshift(administrator.price.priceid)
     }

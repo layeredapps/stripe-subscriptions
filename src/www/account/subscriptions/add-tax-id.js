@@ -64,7 +64,6 @@ async function renderPage (req, res, messageTemplate) {
   messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.customer, 'customer')
   if (messageTemplate) {
-    console.log(messageTemplate)
     dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
     if (req.removeContents) {
       const submitForm = doc.getElementById('submit-form')

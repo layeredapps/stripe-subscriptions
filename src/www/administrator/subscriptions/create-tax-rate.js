@@ -57,8 +57,8 @@ async function submitForm (req, res) {
   if (!req.body.active || (req.body.active !== 'true' && req.body.active !== 'false')) {
     return renderPage(req, res, 'invalid-active')
   }
-  if (!req.body.tax_type || 
-      (req.body.tax_type !== 'sales_tax' && 
+  if (!req.body.tax_type ||
+      (req.body.tax_type !== 'sales_tax' &&
        req.body.tax_type !== 'gst' &&
        req.body.tax_type !== 'vat' &&
        req.body.tax_type !== 'hst' &&

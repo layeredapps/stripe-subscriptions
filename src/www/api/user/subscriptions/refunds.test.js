@@ -29,10 +29,13 @@ describe('/api/user/subscriptions/refunds', function () {
     for (let i = 0, len = global.pageSize + 2; i < len; i++) {
       await TestHelper.createPrice(administrator, {
         productid: administrator.product.productid,
+        currency: 'usd',
         unit_amount: 3000,
         recurring_interval: 'month',
+        recurring_interval_count: '1',
         recurring_usage_type: 'licensed',
-        publishedAt: 'true'
+        publishedAt: 'true',
+        tax_behavior: 'inclusive'
       })
       await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, user)
       await TestHelper.createRefund(administrator, user.charge.chargeid)

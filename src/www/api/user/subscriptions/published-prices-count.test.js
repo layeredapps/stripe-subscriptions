@@ -8,15 +8,19 @@ describe('/api/user/subscriptions/published-prices-count', function () {
   describe('returns', () => {
     it('integer', async () => {
       const administrator = await TestHelper.createOwner()
-      const product = await TestHelper.createProduct(administrator, {
+      await TestHelper.createProduct(administrator, {
         publishedAt: 'true'
       })
       for (let i = 0, len = global.pageSize + 1; i < len; i++) {
         await TestHelper.createPrice(administrator, {
-          productid: product.productid,
-          publishedAt: 'true',
+          productid: administrator.product.productid,
+          currency: 'usd',
+          unit_amount: 3000,
+          tax_behavior: 'inclusive',
+          recurring_interval: 'month',
+          recurring_interval_count: '1',
           recurring_usage_type: 'licensed',
-          recurring_unit_amount: '2000'
+          publishedAt: 'true'
         })
       }
       const user = await TestHelper.createUser()

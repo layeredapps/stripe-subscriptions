@@ -27,6 +27,7 @@ describe('/account/subscriptions', function () {
     cachedCustomers.unshift(user.customer.customerid)
     await TestHelper.createPrice(administrator, {
       productid: administrator.product.productid,
+      currency: 'usd',
       publishedAt: 'true',
       unit_amount: '1000',
       recurring_interval: 'month',

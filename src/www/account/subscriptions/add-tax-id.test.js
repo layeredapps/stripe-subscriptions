@@ -41,7 +41,6 @@ describe('/account/subscriptions/add-tax-id', function () {
     ]
     await req.route.api.before(req)
     cachedResponses.before = req.data
-    console.log(cachedResponses.before)
     // csrf
     req.puppeteer = false
     req.body['csrf-token'] = 'invalid'

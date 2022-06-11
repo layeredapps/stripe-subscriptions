@@ -61,7 +61,7 @@ async function renderPage (req, res, messageTemplate) {
       submitForm.parentNode.removeChild(submitForm)
       return dashboard.Response.end(req, res, doc)
     }
-  } 
+  }
   return dashboard.Response.end(req, res, doc)
 }
 

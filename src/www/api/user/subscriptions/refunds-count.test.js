@@ -14,8 +14,11 @@ describe('/api/user/subscriptions/refunds-count', function () {
         await TestHelper.createPrice(administrator, {
           productid: administrator.product.productid,
           unit_amount: 3000,
+          currency: 'usd',
+          tax_behavior: 'inclusive',
           recurring_interval: 'month',
           recurring_usage_type: 'licensed',
+          recurring_interval_count: '1',
           publishedAt: 'true'
         })
         await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, user)

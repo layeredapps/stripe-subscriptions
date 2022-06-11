@@ -695,13 +695,13 @@ function createSubscription (date, customer, plan) {
       latest_invoice: 'in_1KoMEZAOHKfbb1V1eJungdGX',
       livemode: false,
       metadata: {},
-      next_pending_invoice_item_invoice: null,
+      next_pending_line_item_invoice: null,
       pause_collection: null,
       payment_settings: {
         payment_method_options: null,
         payment_method_types: null
       },
-      pending_invoice_item_interval: null,
+      pending_line_item_interval: null,
       pending_setup_intent: null,
       pending_update: null,
       plan,
