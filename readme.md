@@ -13,7 +13,7 @@
 - [Introduction](#introduction)
 - [Import this module](#import-this-module)
 - [Setting up your Stripe credentials](#setting-up-your-stripe-credentials)
-- [Configuring your products and plans](#configuring-your-products-and-plans)
+- [Configuring your products and prices](#configuring-your-products-and-prices)
 - [Provided server, content and proxy handlers](#provided-server-content-and-proxy-handlers)
 - [Storage engine](#storage-engine)
 - [Access the API](#access-the-api)
@@ -24,7 +24,7 @@
 
 Dashboard bundles everything a web app needs, all the "boilerplate" like signing in and changing passwords, into a parallel server so you can write a much smaller web app.
 
-The Stripe Subscriptions module adds a complete interface for creating and managing your Stripe products, plans, subscriptions etc and a complete interface for users to subscribe to plans.  Users can self-cancel their subscriptions at any time and you can nominate a 0+ day period allowing users to refund themselves too.  You can optionally require a subscription and/or no unpaid invoices from all users outside of the `/account/` and `/administrator/` content.  The [Stripe API documentation](https://stripe.com/docs/api) supplements this documentation.
+The Stripe Subscriptions module adds a complete interface for creating and managing your Stripe products, prices, subscriptions etc.  Users can self-cancel their subscriptions at any time and you can nominate a 0+ day period allowing users to refund themselves too.  You can optionally require a subscription and/or no unpaid invoices from all users outside of the `/account/` and `/administrator/` content.  The [Stripe API documentation](https://stripe.com/docs/api) supplements this documentation.
 
 ## Import this module
 
@@ -51,22 +51,72 @@ You will need to retrieve various keys from [Stripe](https://stripe.com).  Durin
     - environment STRIPE_PUBLISHABLE_KEY=pk_test_xxxxxxx
     - environment SUBSCRIPTIONS_WEBHOOK_ENDPOINT_SECRET=whsec_xxxxxxxx
 
-### Configuring your products and plans
+### Configuring your products and prices
 
-This module adds a complete interface for creating products and plans.  Stripe's nomenclature and structure is used directly so for more information refer to the <a href="https://stripe.com/docs">Stripe documentation</a> and <a href="https://stripe.com/docs/api">Stripe API documentation</a>.
+This module adds a complete interface for creating products and prices with one-time, recurring and tiered billing.  Stripe's nomenclature and structure is used directly so for more information refer to the <a href="https://stripe.com/docs">Stripe documentation</a> and <a href="https://stripe.com/docs/api">Stripe API documentation</a>.
 
-Users subscribe to plans and plans must be built from products.  Additionally, this module imposes a 'publish' status on products and plans that controls access to them by users.
+Users subscribe to prices and prices must be built from products.  Additionally, this module imposes a 'publish' status on products and prices that controls access to them by users.
 
 1.  Administrator creates product
 2.  Administrator publishes product
-3.  Administrator creates plan
-4.  Administrator publishes plan
-5.  User selects plan from published plans
-6.  User creates subscription optionally with payment
+3.  Administrator creates price(s)
+4.  Administrator publishes price(s)
+5.  User creates a billing profile, if your prices are free then they do not require payment information but their Customer object must still be created
+5.  User creates subscription to price(s)
 
-You can use links for users to create a subscription to a specific plan:
+Your application will need to use the API to create their subscription to the appropriate prices by POSTING:
 
-    /account/subscriptions/start-subscription?planid=X
+    {your_dashboard_server}/api/user/subscriptions/create-subscription?customerid=X
+
+POST data:
+
+    priceids=price1,price2,price3
+    quantities=1,1,1
+    taxrateids=optional
+    couponid=optional
+    trial_period_days=optional
+    billing_cycle_anchor=optional
+    paymentmethodid=optional (will use default customer payment method)
+
+The API will return their subscription object or throw an exception.  You can view the exceptions in `api.txt` or the documentation website.
+
+#### Example with plan selection screen:
+
+1) provide a page where users select their plan eg {your_application_server}/plans
+
+2) Plan buttons are linked to create billing profile with redirect to start subscription
+
+3) User enters payment information at `{your_dashboard_server}/account/subscriptions/create-billing-profile?return-url=/create-subscription%2Fplan=gold`
+
+4) user redirects to `{your_application_server}/create-subscription?plan=gold`
+
+5) Subscription is created via API at `{your_dashboard_server}/api/user/subscriptions/create-subscription?customerid=X`
+
+#### Example with just one subscription type
+
+1) Subscribe button is linked to create billing profile with redirect to start subscription
+    
+2) User enters payment information at `{your_dashboard_server}/account/subscriptions/create-billing-profile?return-url=/create-subscription`
+
+3) User redirects to `{your_application_server}/create-subscription`
+
+4) Subscription is created via API at `{your_dashboard_server}/api/user/subscriptions/create-subscription?customerid=X`
+
+#### Example with metered billing
+
+When you use metered billing prices are set based on usage amount, eg disk storage on a server.  You can set usage amounts using the API:
+
+    {your_dashboard_server}/api/user/subscriptions/create-usage-record?subscriptionid=X
+
+POST data:
+
+    subscriptionitemid=X
+    quantity=8
+    action=increment|set
+
+The subscription item id can be found in `subscription.items.data` array, eg `subscription.items.data[0].id`.
+
+The API will return their usage object or throw an exception.  You can view the exceptions in `api.txt` or the documentation website.
 
 ### Customizing billing information entry
 
@@ -92,10 +142,6 @@ Use `REQUIRE_BILLING_PROFILE_ADDRESS=false` to disable the address collection.  
     }
 
 If you use `AUTOMATIC_BILLING_PROFILE_EMAIL` and `AUTOMATIC_BILLING_PROFILE_FULL_NAME` but the user does not have a profile they provide those values as normal.  To ensure the user has a profile with this information use `REQUIRE_PROFILE=true` and `USER_PROFILE_FIELDS=contact-email,full-name` to collect it at registration.
-
-Use `VIEW_SUBSCRIPTION_PLANS=false` to prevent users from browsing published plans.  By default they can see which plans are published to subscribe or change between them.  If you do this the `/account/subscriptions/start-subscription` page will also be disabled as it lists plans for the user's selection. You can link users directly to `/account/subscriptions/confirm-subscription?planid=xxxx`.
-
-Use `SKIP_CONFIRM_SUBSCRIPTION=true` to automatically submit the `/account/subscription/confirm-subscription` page.  With this enabled the user can create their subscription directly after entering billing information by linking `/account/subscriptions/create-billing-profile?return-url=/account/subscriptions/confirm-subscription%3Fplanid=xxxx`.
 
 ### Styling the Stripe elements
 
