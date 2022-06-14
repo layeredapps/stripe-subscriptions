@@ -47,9 +47,6 @@ const stripe = require('stripe')({
     url: 'https://github.com/layeredapps/stripe-subscriptions'
   }
 })
-const stripeKey = {
-  apiKey: global.subscriptionsStripeKey || global.stripeKey || process.env.SUBSCRIPTIONS_STRIPE_KEY || process.env.STRIPE_KEY
-}
 
 module.exports = {
   setup: async () => {
@@ -79,7 +76,11 @@ module.exports = {
         require('./src/content/embed-stripe-element-style.js')
       )
     }
+    // retrieve tax codes from stripe
     let offset = 0
+    const stripeKey = {
+      apiKey: global.subscriptionsStripeKey || global.stripeKey || process.env.SUBSCRIPTIONS_STRIPE_KEY || process.env.STRIPE_KEY
+    }
     while (true) {
       const taxCodes = await stripe.taxCodes.list({ limit: 100, offset }, stripeKey)
       for (const item of taxCodes.data) {
