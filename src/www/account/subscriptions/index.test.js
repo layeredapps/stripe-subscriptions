@@ -31,7 +31,9 @@ describe('/account/subscriptions', function () {
       publishedAt: 'true',
       unit_amount: '1000',
       recurring_interval: 'month',
-      recurring_usage_type: 'licensed'
+      recurring_usage_type: 'licensed',
+      recurring_interval_count: '1',
+      tax_behavior: 'inclusive'
     })
     await TestHelper.createCustomer(user, {
       email: user.profile.contactEmail,

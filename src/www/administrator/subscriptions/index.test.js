@@ -28,6 +28,8 @@ describe('/administrator/subscriptions', function () {
       publishedAt: 'true',
       recurring_usage_type: 'licensed',
       unit_amount: '2000',
+      currency: 'usd',
+      tax_behavior: 'inclusive',
       recurring_interval: 'month',
       recurring_interval_count: '1'
     })

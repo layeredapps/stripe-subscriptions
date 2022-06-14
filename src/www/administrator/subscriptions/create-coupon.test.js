@@ -28,7 +28,8 @@ describe('/administrator/subscriptions/create-coupon', function () {
         duration: 'once',
         amount_off: '100',
         max_redemptions: '1',
-        currency: 'usd'
+        currency: 'usd',
+        name: 'coupon'
       }
       req.filename = __filename
       req.screenshots = [
@@ -57,7 +58,8 @@ describe('/administrator/subscriptions/create-coupon', function () {
         duration: 'once',
         amount_off: '100',
         max_redemptions: '1',
-        currency: 'usd'
+        currency: 'usd',
+        name: 'coupon'
       }
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
@@ -76,7 +78,8 @@ describe('/administrator/subscriptions/create-coupon', function () {
         duration: 'once',
         amount_off: '100',
         max_redemptions: '1',
-        currency: 'usd'
+        currency: 'usd',
+        name: 'coupon'
       }
       global.maximumCouponLength = 3
       const result = await req.post()
@@ -101,7 +104,8 @@ describe('/administrator/subscriptions/create-coupon', function () {
         duration: 'once',
         amount_off: '100',
         max_redemptions: '1',
-        currency: 'usd'
+        currency: 'usd',
+        name: 'coupon'
       }
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
@@ -120,7 +124,8 @@ describe('/administrator/subscriptions/create-coupon', function () {
         duration: '',
         amount_off: '100',
         max_redemptions: '1',
-        currency: 'usd'
+        currency: 'usd',
+        name: 'coupon'
       }
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
@@ -139,7 +144,8 @@ describe('/administrator/subscriptions/create-coupon', function () {
         duration: 'invalid',
         amount_off: '100',
         max_redemptions: '1',
-        currency: 'usd'
+        currency: 'usd',
+        name: 'coupon'
       }
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
@@ -158,7 +164,8 @@ describe('/administrator/subscriptions/create-coupon', function () {
         duration: 'once',
         amount_off: 'invalid',
         max_redemptions: '1',
-        currency: 'usd'
+        currency: 'usd',
+        name: 'coupon'
       }
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
@@ -177,7 +184,8 @@ describe('/administrator/subscriptions/create-coupon', function () {
         duration: 'once',
         percent_off: '-3',
         max_redemptions: '1',
-        currency: 'usd'
+        currency: 'usd',
+        name: 'coupon'
       }
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
@@ -196,7 +204,8 @@ describe('/administrator/subscriptions/create-coupon', function () {
         duration: 'once',
         percent_off: '30',
         max_redemptions: '-1',
-        currency: 'usd'
+        currency: 'usd',
+        name: 'coupon'
       }
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
@@ -214,7 +223,8 @@ describe('/administrator/subscriptions/create-coupon', function () {
         couponid: 'MISSINGAMOUNT',
         duration: 'once',
         max_redemptions: '1',
-        currency: 'usd'
+        currency: 'usd',
+        name: 'coupon'
       }
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
@@ -234,7 +244,8 @@ describe('/administrator/subscriptions/create-coupon', function () {
         duration_in_months: '-1',
         amount_off: '700',
         max_redemptions: '1',
-        currency: 'usd'
+        currency: 'usd',
+        name: 'coupon'
       }
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
@@ -255,7 +266,8 @@ describe('/administrator/subscriptions/create-coupon', function () {
         amount_off: '700',
         max_redemptions: '1',
         currency: 'usd',
-        redeem_by: new Date(new Date().getFullYear() - 1, 1, 1, 10, 53, 37).toISOString()
+        redeem_by: new Date(new Date().getFullYear() - 1, 1, 1, 10, 53, 37).toISOString(),
+        name: 'coupon'
       }
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
@@ -274,7 +286,8 @@ describe('/administrator/subscriptions/create-coupon', function () {
         duration: 'once',
         amount_off: '100',
         max_redemptions: '1',
-        currency: 'usd'
+        currency: 'usd',
+        name: 'coupon'
       }
       const result = await req.post()
       const doc = TestHelper.extractDoc(result.html)
@@ -295,6 +308,7 @@ describe('/administrator/subscriptions/create-coupon', function () {
         amount_off: '100',
         max_redemptions: '1',
         currency: 'usd',
+        name: 'coupon',
         'csrf-token': ''
       }
       const result = await req.post()

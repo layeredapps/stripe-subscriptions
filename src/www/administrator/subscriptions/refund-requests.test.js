@@ -26,18 +26,13 @@ describe('/administrator/subscriptions/refund-requests', function () {
     for (let i = 0, len = global.pageSize + 2; i < len; i++) {
       await TestHelper.createPrice(administrator, {
         productid: administrator.product.productid,
+        unit_amount: 2000,
         currency: 'usd',
+        tax_behavior: 'inclusive',
         recurring_interval: 'month',
         recurring_interval_count: '1',
-        recurring_usage_type: 'metered',
-        recurring_aggregate_usage: 'sum',
-        billing_scheme: 'tiered',
-        tax_behavior: 'inclusive',
-        tiers_mode: 'volume',
-        tier1_up_to: '1000',
-        tier1_flat_amount: '9999',
-        tier2_up_to: 'inf',
-        tier2_flat_amount: '8999'
+        recurring_usage_type: 'licensed',
+        publishedAt: 'true'
       })
       const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
       await TestHelper.requestRefund(user, user.charge.chargeid)

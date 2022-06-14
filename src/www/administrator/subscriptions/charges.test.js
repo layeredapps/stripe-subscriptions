@@ -26,6 +26,8 @@ describe('/administrator/subscriptions/charges', function () {
     for (let i = 0, len = global.pageSize + 2; i < len; i++) {
       await TestHelper.createPrice(administrator, {
         productid: administrator.product.productid,
+        tax_behavior: 'inclusive',
+        currency: 'usd',
         recurring_usage_type: 'licensed',
         recurring_interval: 'month',
         recurring_interval_count: '1',

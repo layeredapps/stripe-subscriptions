@@ -37,7 +37,8 @@ describe('/administrator/subscriptions/subscriptions', function () {
         tier1_up_to: '1000',
         tier1_flat_amount: '9999',
         tier2_up_to: 'inf',
-        tier2_flat_amount: '8999'
+        tier2_flat_amount: '8999',
+        publishedAt: 'true'
       })
       const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
       cachedSubscriptions.unshift(user.subscription.subscriptionid)

@@ -22,7 +22,10 @@ describe('/account/subscriptions/cancel-subscription', function () {
     const freePrice = await TestHelper.createPrice(administrator, {
       productid: administrator.product.productid,
       unit_amount: 0,
+      currency: 'usd',
+      tax_behavior: 'inclusive',
       recurring_interval: 'month',
+      recurring_interval_count: '1',
       recurring_usage_type: 'licensed',
       publishedAt: 'true'
     })

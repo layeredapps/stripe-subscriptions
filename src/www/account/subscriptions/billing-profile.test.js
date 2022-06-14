@@ -42,7 +42,15 @@ describe('/account/subscriptions/billing-profile', function () {
     })
 
     it('should have table for subscriptions', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPrice({ unit_amount: 0 })
+      const administrator = await TestStripeAccounts.createOwnerWithPrice({
+        unit_amount: 0,
+        currency: 'usd',
+        tax_behavior: 'inclusive',
+        recurring_interval: 'month',
+        recurring_interval_count: '1',
+        recurring_usage_type: 'licensed',
+        publishedAt: 'true'
+      })
       const user = await TestStripeAccounts.createUserWithFreeSubscription(administrator.price)
       const req = TestHelper.createRequest(`/account/subscriptions/billing-profile?customerid=${user.customer.customerid}`)
       req.account = user.account
@@ -71,7 +79,6 @@ describe('/account/subscriptions/billing-profile', function () {
         email: user.profile.contactEmail
       })
       await TestHelper.createTaxId(user, user.customer)
-      console.log(user.taxid)
       const req = TestHelper.createRequest(`/account/subscriptions/billing-profile?customerid=${user.customer.customerid}`)
       req.account = user.account
       req.session = user.session

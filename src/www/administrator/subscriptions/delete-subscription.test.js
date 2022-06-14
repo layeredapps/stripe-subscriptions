@@ -25,16 +25,20 @@ describe('/administrator/subscriptions/delete-subscription', function () {
       productid: administrator.product.productid,
       publishedAt: 'true',
       currency: 'usd',
+      tax_behavior: 'inclusive',
       unit_amount: '100000',
       recurring_interval: 'month',
-      recurring_usage_type: 'licensed'
+      recurring_usage_type: 'licensed',
+      recurring_interval_count: '1'
     })
     const freePrice = await TestHelper.createPrice(administrator, {
       productid: administrator.product.productid,
       publishedAt: 'true',
       currency: 'usd',
       unit_amount: '0',
+      tax_behavior: 'inclusive',
       recurring_interval: 'month',
+      recurring_interval_count: '1',
       recurring_usage_type: 'licensed'
     })
     const user = await TestStripeAccounts.createUserWithPaidSubscription(paidPrice)

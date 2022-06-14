@@ -75,12 +75,7 @@ describe('/administrator/subscriptions/publish-price', function () {
     })
 
     it('already-unpublished', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        amount: '1000',
-        interval: 'month',
-        usage_type: 'licensed',
-        publishedAt: 'true'
-      })
+      const administrator = await TestStripeAccounts.createOwnerWithPrice()
       await TestHelper.setPriceUnpublished(administrator, administrator.price)
       const req = TestHelper.createRequest(`/administrator/subscriptions/publish-price?priceid=${administrator.price.priceid}`)
       req.account = administrator.account

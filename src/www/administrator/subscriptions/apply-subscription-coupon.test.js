@@ -28,7 +28,16 @@ describe('/administrator/subscriptions/apply-subscription-coupon', function () {
     await req.route.api.before(req)
     cachedResponses.cancelingSubscription = req.error
     // free subscription
-    const administrator2 = await TestStripeAccounts.createOwnerWithPrice({ unit_amount: 0 })
+    const administrator2 = await TestStripeAccounts.createOwnerWithPrice({
+      productid: administrator.product.productid,
+      unit_amount: 0,
+      currency: 'usd',
+      tax_behavior: 'inclusive',
+      recurring_interval: 'month',
+      recurring_interval_count: '1',
+      recurring_usage_type: 'licensed',
+      publishedAt: 'true'
+    })
     const user2 = await TestStripeAccounts.createUserWithFreeSubscription(administrator2.price)
     const req2 = TestHelper.createRequest(`/administrator/subscriptions/apply-subscription-coupon?subscriptionid=${user2.subscription.subscriptionid}`)
     req2.account = administrator.account

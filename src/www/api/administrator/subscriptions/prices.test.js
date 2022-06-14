@@ -37,7 +37,8 @@ describe('/api/administrator/subscriptions/prices', function () {
         tier1_up_to: '1000',
         tier1_flat_amount: '9999',
         tier2_up_to: 'inf',
-        tier2_flat_amount: '8999'
+        tier2_flat_amount: '8999',
+        publishedAt: 'true'
       })
       cachedPrices.unshift(administrator.price.priceid)
     }

@@ -26,7 +26,7 @@ describe('/administrator/subscriptions/refund-charge', function () {
     req.account = administrator.account
     req.session = administrator.session
     req.body = {
-      amount: '3000'
+      amount: administrator.price.stripeObject.unit_amount.toString()
     }
     await req.route.api.before(req)
     cachedResponses.before = req.data
