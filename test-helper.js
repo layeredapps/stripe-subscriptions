@@ -190,7 +190,7 @@ const stripe = require('stripe')({
 })
 
 const stripeKey = {
-  apiKey: process.env.SUBSCRIPTIONS_STRIPE_KEY || process.env.STRIPE_KEY
+  apiKey: global.subscriptionsStripeKey || global.stripeKey || process.env.SUBSCRIPTIONS_STRIPE_KEY || process.env.STRIPE_KEY
 }
 const wait = util.promisify((time, callback) => {
   if (time && !callback) {
@@ -283,7 +283,7 @@ const createRequest = module.exports.createRequest = (rawURL) => {
   return req
 }
 
-let webhook, subscriptions, createdCustomer, createdProduct, createdCoupon
+let webhook, subscriptions, createdData
 
 // direct webhook access is set up before the tests a single time
 async function setupBefore () {
@@ -301,9 +301,7 @@ async function setupBefore () {
 
 async function setupBeforeEach () {
   Log.info('setupBeforeEach')
-  createdCustomer = false
-  createdCoupon = false
-  createdProduct = false
+  createdData = false
   const bindStripeKey = require.resolve('./src/server/bind-stripe-key.js')
   if (global.packageJSON.dashboard.serverFilePaths.indexOf(bindStripeKey) === -1) {
     global.packageJSON.dashboard.serverFilePaths.push(bindStripeKey)
@@ -411,37 +409,42 @@ async function deleteOldWebhooks () {
 
 async function deleteOldData () {
   Log.info('deleteOldData')
-  if (!createdCustomer && !createdProduct && !createdCoupon) {
+  if (!createdData) {
     return
   }
   // TODO: stripe don't support deleting invoices, charges, products
   // payment intents etc the issue with leaving this residual test
   // data is it may accumulate and overwhelm the ngrok connection
   // limits for webhook proxying
-  for (const field of ['subscriptions', 'customers', 'products', 'coupons']) {
+  for (const field of ['subscriptions', 'customers', 'products', 'coupons', 'taxRates']) {
     try {
       const listParameters = {
         limit: 100
       }
-      if (field === 'products') {
+      if (field === 'products' || field === 'taxRates') {
         listParameters.active = true
       }
-      const objects = await stripe[field].list(listParameters, stripeKey)
-      if (objects && objects.data && objects.data.length) {
-        for (const object of objects.data) {
-          if (field === 'products') {
-            // TODO: stripe don't support deleting products so they have to
-            // be marked as 'active=false' instead
-            // https://github.com/stripe/stripe-python/issues/658
-            await stripe[field].update(object.id, { active: false }, stripeKey)
-          } else {
-            try {
-              await stripe[field].del(object.id, stripeKey)
-            } catch (error) {
+      while (true) {
+        const objects = await stripe[field].list(listParameters, stripeKey)
+        if (objects && objects.data && objects.data.length) {
+          for (const object of objects.data) {
+            if (listParameters.active) {
+              // TODO: stripe don't support deleting products so they have to
+              // be marked as 'active=false' instead
+              // https://github.com/stripe/stripe-python/issues/658
               await stripe[field].update(object.id, { active: false }, stripeKey)
-              Log.error('delete old data item error', object.id, error)
+            } else {
+              try {
+                await stripe[field].del(object.id, stripeKey)
+              } catch (error) {
+                await stripe[field].update(object.id, { active: false }, stripeKey)
+                Log.error('delete old data item error', object.id, error)
+              }
             }
           }
+        }
+        if (!objects.has_more) {
+          break
         }
       }
     } catch (error) {
@@ -453,7 +456,7 @@ async function deleteOldData () {
 let productNumber = 0
 async function createProduct (administrator, properties) {
   Log.info('createProduct', administrator, properties)
-  createdProduct = true
+  createdData = true
   productNumber++
   const req = createRequest('/api/administrator/subscriptions/create-product')
   req.session = administrator.session
@@ -511,7 +514,7 @@ let couponNumber = 0
 let percentOff = 0
 async function createCoupon (administrator, properties) {
   Log.info('createCoupon', administrator, properties)
-  createdCoupon = true
+  createdData = true
   couponNumber++
   const req = createRequest('/api/administrator/subscriptions/create-coupon')
   req.session = administrator.session
@@ -614,6 +617,7 @@ async function deleteSubscriptionDiscount (administrator, subscription, coupon) 
 
 async function createTaxRate (administrator, properties) {
   Log.info('createTaxRate', administrator, properties)
+  createdData = true
   properties = properties || {}
   const req = createRequest('/api/administrator/subscriptions/create-tax-rate')
   req.session = administrator.session
@@ -716,7 +720,7 @@ const cardTypes = [
 
 async function createCustomer (user, properties) {
   Log.info('createCustomer', user, properties)
-  createdCustomer = true
+  createdData = true
   const req = createRequest(`/api/user/subscriptions/create-customer?accountid=${user.account.accountid}`)
   req.session = user.session
   req.account = user.account
