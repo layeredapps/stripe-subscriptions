@@ -61,13 +61,15 @@ http://localhost:8000
 | required posted duration_in_months                               | object   | invalid-couponid                                |
 | required posted currency                                         |          |  * missing posted couponid                      |
 | required posted amount_off                                       |          |  * invalid posted couponid is not alphanumeric  |
-| required posted couponid                                         |          | duplicate-couponid                              |
-| required posted duration                                         |          |  * invalid posted couponid is already used      |
-| optionally-required posted amount_off (integer, or percent_off)  |          | invalid-amount_off                              |
-| optionally-required posted currency (string, if amount_off)      |          |  * missing posted amount_off                    |
-| optionally-required posted percent_off (integer, or amount_off)  |          |  * invalid posted amount_off                    |
-| optionally-required posted redeem_by (date in future)            |          | invalid-currency                                |
-| optionally-required posted duration_in_months                    |          |  * missing posted currency                      |
+| required posted name                                             |          | duplicate-couponid                              |
+| required posted couponid                                         |          |  * invalid posted couponid is already used      |
+| required posted duration                                         |          | invalid-name                                    |
+| optionally-required posted amount_off (integer, or percent_off)  |          |  * missing posted name                          |
+| optionally-required posted currency (string, if amount_off)      |          | invalid-amount_off                              |
+| optionally-required posted percent_off (integer, or amount_off)  |          |  * missing posted amount_off                    |
+| optionally-required posted redeem_by (date in future)            |          |  * invalid posted amount_off                    |
+| optionally-required posted duration_in_months                    |          | invalid-currency                                |
+|                                                                  |          |  * missing posted currency                      |
 |                                                                  |          |  * invalid posted currency                      |
 |                                                                  |          | invalid-percent_off                             |
 |                                                                  |          |  * invalid posted percent_off                   |
@@ -104,6 +106,27 @@ http://localhost:8000
 |                                |          |  * invalid posted amount is negative     |
 |                                |          |  * invalid posted amount exceeds charge  |
 |--------------------------------|----------|------------------------------------------|
+
+|--------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/create-tax-rate                                     |
+| RECEIVES----------------------| RETURNS--| EXCEPTIONS--------------------------------|
+| required posted inclusive     | object   | invalid-percentage                        |
+| required posted display_name  |          |  * missing posted percentage              |
+| required posted percentage    |          |  * invalid posted percentage              |
+| required posted display_name  |          |  * invalid posted percentage is negative  |
+| required posted percentage    |          |  * invalid posted percentage exceeds 100  |
+| required posted inclusive     |          | invalid-display_name                      |
+| optional posted tax_type      |          |  * missing posted display_name            |
+| optional posted description   |          | invalid-inclusive                         |
+| optional posted jurisdiction  |          |  * missing posted inclusive               |
+| optional posted state         |          |  * invalid posted inclusive               |
+| optional posted country       |          | invalid-country                           |
+|                               |          |  * invalid posted country                 |
+|                               |          | invalid-state                             |
+|                               |          |  * invalid posted state                   |
+|                               |          | invalid-tax_type                          |
+|                               |          |  * invalid posted tax_type                |
+|-------------------------------|----------|-------------------------------------------|
 
 |----------------------------------------------------------------------------------|
 | /api/administrator/subscriptions/customer                                        |
@@ -152,6 +175,16 @@ http://localhost:8000
 |                                      |          | invalid-subscription                                  |
 |                                      |          |  * ineligible querystring subscription is not active  |
 |--------------------------------------|----------|-------------------------------------------------------|
+
+|--------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/delete-subscription-item                                        |
+| RECEIVES---------------------------------| RETURNS--| EXCEPTIONS---------------------------------|
+| required querystring subscriptionitemid  | object   | invalid-subscriptionitemid                 |
+|                                          |          |  * missing querystring subscriptionitemid  |
+|                                          |          |  * invalid querystring subscriptionitemid  |
+|                                          |          | only-item                                  |
+|                                          |          |  * invalid posted itemid is only item      |
+|------------------------------------------|----------|--------------------------------------------|
 
 |--------------------------------------------------------------------------------|
 | /api/administrator/subscriptions/invoice                                       |
@@ -275,6 +308,19 @@ http://localhost:8000
 | RETURNS-----------------------------------------|
 | integer                                         |
 |-------------------------------------------------|
+
+|--------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/remove-subscription-item-tax-rate                               |
+| RECEIVES---------------------------------| RETURNS--| EXCEPTIONS---------------------------------|
+| required posted taxrateid                | object   | invalid-subscriptionitemid                 |
+| required querystring subscriptionitemid  |          |  * missing querystring subscriptionitemid  |
+|                                          |          |  * invalid querystring subscriptionitemid  |
+|                                          |          | invalid-taxrateid                          |
+|                                          |          |  * missing posted taxrateid                |
+|                                          |          |  * invalid posted taxrateid                |
+|                                          |          | invalid-tax-rate                           |
+|                                          |          |  * invalid posted tax-rate                 |
+|------------------------------------------|----------|--------------------------------------------|
 
 |-------------------------------------------------------------------------------------|
 | /api/administrator/subscriptions/reset-customer-coupon                              |
@@ -403,6 +449,53 @@ http://localhost:8000
 |                                      |          |  * ineligible posted coupon is unpublished    |
 |--------------------------------------|----------|-----------------------------------------------|
 
+|------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-subscription-default-tax-rates                      |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS-----------------------------|
+| required posted taxrateids           | object   | invalid-subscriptionid                 |
+| required querystring subscriptionid  |          |  * missing querystring subscriptionid  |
+|                                      |          |  * invalid querystring subscriptionid  |
+|                                      |          | invalid-taxrateids                     |
+|                                      |          |  * missing posted taxrateids           |
+|                                      |          | invalid-taxrateid                      |
+|                                      |          |  * invalid posted taxrateid            |
+|                                      |          | invalid-tax-rate                       |
+|                                      |          |  * invalid posted tax-rate             |
+|--------------------------------------|----------|----------------------------------------|
+
+|--------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-subscription-item-quantity                                  |
+| RECEIVES---------------------------------| RETURNS--| EXCEPTIONS---------------------------------|
+| required querystring subscriptionitemid  | object   | invalid-subscriptionitemid                 |
+|                                          |          |  * missing querystring subscriptionitemid  |
+|                                          |          |  * invalid querystring subscriptionitemid  |
+|                                          |          | invalid-quantity                           |
+|                                          |          |  * invalid posted quantity                 |
+|                                          |          |  * invalid posted quantity is unchanged    |
+|                                          |          |  * invalid posted quantity is negative     |
+|                                          |          |  * invalid posted quantity is zero         |
+|------------------------------------------|----------|--------------------------------------------|
+
+|------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-tax-rate-active                               |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS----------------------------|
+| required querystring taxrateid  | object   | invalid-taxrateid                     |
+|                                 |          |  * missing querystring taxrateid      |
+|                                 |          |  * invalid querystring taxrateid      |
+|                                 |          | invalid-taxrate                       |
+|                                 |          |  * invalid taxrate is already active  |
+|---------------------------------|----------|---------------------------------------|
+
+|--------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-tax-rate-inactive                               |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS------------------------------|
+| required querystring taxrateid  | object   | invalid-taxrateid                       |
+|                                 |          |  * missing querystring taxrateid        |
+|                                 |          |  * invalid querystring taxrateid        |
+|                                 |          | invalid-taxrate                         |
+|                                 |          |  * invalid taxrate is already inactive  |
+|---------------------------------|----------|-----------------------------------------|
+
 |----------------------------------------------------------------------------------------|
 | /api/administrator/subscriptions/setup-intent                                          |
 | RECEIVES----------------------------| RETURNS--| EXCEPTIONS----------------------------|
@@ -433,6 +526,14 @@ http://localhost:8000
 |                                      |          |  * invalid querystring subscriptionid  |
 |--------------------------------------|----------|----------------------------------------|
 
+|--------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/subscription-item                                               |
+| RECEIVES---------------------------------| RETURNS--| EXCEPTIONS---------------------------------|
+| required querystring subscriptionitemid  | object   | invalid-subscriptionitemid                 |
+|                                          |          |  * missing querystring subscriptionitemid  |
+|                                          |          |  * invalid querystring subscriptionitemid  |
+|------------------------------------------|----------|--------------------------------------------|
+
 |----------------------------------------------------------------------------|
 | /api/administrator/subscriptions/subscriptions                             |
 | RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
@@ -446,6 +547,44 @@ http://localhost:8000
 | RETURNS-----------------------------------------------|
 | integer                                               |
 |-------------------------------------------------------|
+
+|--------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/tax-code                                      |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS------------------------|
+| required querystring taxcodeid  | object   | invalid-taxcodeid                 |
+|                                 |          |  * missing querystring taxcodeid  |
+|                                 |          |  * invalid querystring taxcodeid  |
+|---------------------------------|----------|-----------------------------------|
+
+|----------------------------------------------------------------------------|
+| /api/administrator/subscriptions/tax-codes                                 |
+| RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
+| optional querystring offset (integer)  | array    | environment PAGE_SIZE  |
+| optional querystring limit (integer)   |          |                        |
+| optional querystring all (boolean)     |          |                        |
+|----------------------------------------|----------|------------------------|
+
+|--------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/tax-rate                                      |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS------------------------|
+| required querystring taxrateid  | object   | invalid-taxrateid                 |
+|                                 |          |  * missing querystring taxrateid  |
+|                                 |          |  * invalid querystring taxrateid  |
+|---------------------------------|----------|-----------------------------------|
+
+|----------------------------------------------------------------------------|
+| /api/administrator/subscriptions/tax-rates                                 |
+| RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
+| optional querystring offset (integer)  | array    | environment PAGE_SIZE  |
+| optional querystring limit (integer)   |          |                        |
+| optional querystring all (boolean)     |          |                        |
+|----------------------------------------|----------|------------------------|
+
+|---------------------------------------------------|
+| /api/administrator/subscriptions/tax-rates-count  |
+| RETURNS-------------------------------------------|
+| integer                                           |
+|---------------------------------------------------|
 
 |----------------------------------------------------------------------------------------------|
 | /api/administrator/subscriptions/update-coupon                                               |
@@ -463,13 +602,13 @@ http://localhost:8000
 |-------------------------------------------------------------------------------------------------------------------------------------------------|
 | /api/administrator/subscriptions/update-product                                                                                                 |
 | RECEIVES------------------------------| RETURNS--| EXCEPTIONS----------------------------------------| CONFIGURATION----------------------------|
-| required querystring productid        | object   | invalid-productid                                 | environment MINIMUM_PRODUCT_NAME_LENGTH  |
-| optional posted name                  |          |  * missing querystring productid                  | environment MAXIMUM_PRODUCT_NAME_LENGTH  |
-| optional posted statement_descriptor  |          |  * invalid querystring productid                  |                                          |
-| optional posted unit_label            |          | invalid-product                                   |                                          |
-|                                       |          |  * ineligible querystring product is unpublished  |                                          |
-|                                       |          | invalid-name                                      |                                          |
-|                                       |          |  * invalid posted name                            |                                          |
+| required posted tax_code              | object   | invalid-productid                                 | environment MINIMUM_PRODUCT_NAME_LENGTH  |
+| required posted unit_label            |          |  * missing querystring productid                  | environment MAXIMUM_PRODUCT_NAME_LENGTH  |
+| required querystring productid        |          |  * invalid querystring productid                  |                                          |
+| required posted name                  |          | invalid-product                                   |                                          |
+| required posted statement_descriptor  |          |  * ineligible querystring product is unpublished  |                                          |
+| required posted unit_label            |          | invalid-name                                      |                                          |
+| required posted tax_code              |          |  * invalid posted name                            |                                          |
 |                                       |          | invalid-name-length                               |                                          |
 |                                       |          |  * posted name too short                          |                                          |
 |                                       |          |  * posted name too long                           |                                          |
@@ -480,7 +619,21 @@ http://localhost:8000
 |                                       |          |  * posted statement_descriptor too long           |                                          |
 |                                       |          | invalid-unit_label                                |                                          |
 |                                       |          |  * missing posted unit_label                      |                                          |
+|                                       |          | invalid-tax_code                                  |                                          |
+|                                       |          |  * missing posted tax_code                        |                                          |
+|                                       |          |  * invalid posted tax_code                        |                                          |
 |---------------------------------------|----------|---------------------------------------------------|------------------------------------------|
+
+|--------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/update-tax-rate                               |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS------------------------|
+| required querystring taxrateid  | object   | invalid-taxrateid                 |
+| required posted display_name    |          |  * missing querystring taxrateid  |
+| required posted inclusive       |          |  * invalid querystring taxrateid  |
+| required posted description     |          |                                   |
+| required posted jurisdiction    |          |                                   |
+| optional posted country         |          |                                   |
+|---------------------------------|----------|-----------------------------------|
 
 |----------------------------------------------------------------------------------------|
 | /api/administrator/subscriptions/usage-record                                          |
@@ -506,6 +659,28 @@ http://localhost:8000
 | RETURNS-----------------------------------------------|
 | integer                                               |
 |-------------------------------------------------------|
+
+|------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/add-subscription-item                                                  |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS-----------------------------------|
+| required posted priceid              | object   | invalid-subscriptionid                       |
+| required querystring subscriptionid  |          |  * missing querystring subscriptionid        |
+|                                      |          |  * invalid querystring subscriptionid        |
+|                                      |          | invalid-account                              |
+|                                      |          |  * ineligible accessing account              |
+|                                      |          | invalid-quantity                             |
+|                                      |          |  * invalid posted quantity                   |
+|                                      |          |  * invalid posted quantity is negative       |
+|                                      |          |  * invalid posted quantity is zero           |
+|                                      |          | invalid-priceid                              |
+|                                      |          |  * missing posted priceid                    |
+|                                      |          |  * invalid posted priceid                    |
+|                                      |          | invalid-price                                |
+|                                      |          |  * invalid price is not published            |
+|                                      |          |  * invalid price is unpublished              |
+|                                      |          | duplicate-price                              |
+|                                      |          |  * invalid price is already on subscription  |
+|--------------------------------------|----------|----------------------------------------------|
 
 |------------------------------------------------------------------------------|
 | /api/user/subscriptions/charge                                               |
@@ -625,20 +800,40 @@ http://localhost:8000
 |-----------------------------------------------------------------------------------------------------------|
 | /api/user/subscriptions/create-subscription                                                               |
 | RECEIVES-------------------------| RETURNS--| EXCEPTIONS--------------------------------------------------|
-| required posted planid           | object   | invalid-customerid                                          |
+| required posted priceids         | object   | invalid-customerid                                          |
 | required querystring customerid  |          |  * missing querystring customerid                           |
 |                                  |          |  * invalid querystring customerid                           |
 |                                  |          | invalid-customer                                            |
 |                                  |          |  * ineligible querystring customer requires payment method  |
 |                                  |          | invalid-account                                             |
 |                                  |          |  * ineligible accessing account                             |
-|                                  |          | invalid-planid                                              |
-|                                  |          |  * missing posted planid                                    |
-|                                  |          |  * invalid posted planid                                    |
-|                                  |          | invalid-plan                                                |
-|                                  |          |  * ineligible posted plan is not published                  |
-|                                  |          |  * ineligible posted plan is unpublished                    |
+|                                  |          | invalid-priceids                                            |
+|                                  |          |  * missing posted priceids                                  |
+|                                  |          | invalid-priceid                                             |
+|                                  |          |  * invalid posted priceids contains invalid price           |
+|                                  |          | invalid-price                                               |
+|                                  |          |  * invalid posted priceids contains not published price     |
+|                                  |          |  * invalid posted priceids contains unpublished price       |
+|                                  |          | invalid-taxrateid                                           |
+|                                  |          |  * invalid posted taxrateids contains invalid tax rate      |
+|                                  |          | invalid-tax-rate                                            |
+|                                  |          |  * invalid posted taxrateids contains inactive tax rate     |
 |----------------------------------|----------|-------------------------------------------------------------|
+
+|----------------------------------------------------------------------------------|
+| /api/user/subscriptions/create-tax-id                                            |
+| RECEIVES-------------------------| RETURNS--| EXCEPTIONS-------------------------|
+| required posted type             | object   | invalid-customerid                 |
+| required querystring customerid  |          |  * missing querystring customerid  |
+|                                  |          |  * invalid querystring customerid  |
+|                                  |          | invalid-account                    |
+|                                  |          |  * ineligible accessing account    |
+|                                  |          | invalid-type                       |
+|                                  |          |  * missing posted type             |
+|                                  |          |  * invalid posted type             |
+|                                  |          | invalid-value                      |
+|                                  |          |  * invalid posted value            |
+|----------------------------------|----------|------------------------------------|
 
 |---------------------------------------------------------------------------------------------------------|
 | /api/user/subscriptions/create-usage-record                                                             |
@@ -708,6 +903,31 @@ http://localhost:8000
 |                                      |          | invalid-subscription                                  |
 |                                      |          |  * ineligible querystring subscription is not active  |
 |--------------------------------------|----------|-------------------------------------------------------|
+
+|------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/delete-subscription-item                                         |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS-----------------------------|
+| required posted itemid               | object   | invalid-subscriptionid                 |
+| required querystring subscriptionid  |          |  * missing querystring subscriptionid  |
+|                                      |          |  * invalid querystring subscriptionid  |
+|                                      |          | invalid-account                        |
+|                                      |          |  * ineligible accessing account        |
+|                                      |          | invalid-itemid                         |
+|                                      |          |  * missing posted itemid               |
+|                                      |          |  * invalid posted itemid               |
+|                                      |          | only-item                              |
+|                                      |          |  * invalid posted itemid is only item  |
+|--------------------------------------|----------|----------------------------------------|
+
+|---------------------------------------------------------------------------|
+| /api/user/subscriptions/delete-tax-id                                     |
+| RECEIVES--------------------| RETURNS--| EXCEPTIONS-----------------------|
+| required querystring taxid  | boolean  | invalid-taxid                    |
+|                             |          |  * missing querystring taxid     |
+|                             |          |  * invalid querystring taxid     |
+|                             |          | invalid-account                  |
+|                             |          |  * ineligible accessing account  |
+|-----------------------------|----------|----------------------------------|
 
 |--------------------------------------------------------------------------------|
 | /api/user/subscriptions/invoice                                                |
@@ -994,6 +1214,16 @@ http://localhost:8000
 |                                      |          |  * ineligible accessing account        |
 |--------------------------------------|----------|----------------------------------------|
 
+|--------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/subscription-item                                                        |
+| RECEIVES---------------------------------| RETURNS--| EXCEPTIONS---------------------------------|
+| required querystring subscriptionitemid  | object   | invalid-subscriptionitemid                 |
+|                                          |          |  * missing querystring subscriptionitemid  |
+|                                          |          |  * invalid querystring subscriptionitemid  |
+|                                          |          | invalid-account                            |
+|                                          |          |  * ineligible accessing account            |
+|------------------------------------------|----------|--------------------------------------------|
+
 |----------------------------------------------------------------------------------------------------------------|
 | /api/user/subscriptions/subscriptions                                                                          |
 | RECEIVES-------------------------------| RETURNS--| EXCEPTIONS------------------------| CONFIGURATION----------|
@@ -1013,6 +1243,36 @@ http://localhost:8000
 |                                 |          | invalid-account                   |
 |                                 |          |  * ineligible accessing account   |
 |---------------------------------|----------|-----------------------------------|
+
+|---------------------------------------------------------------------------|
+| /api/user/subscriptions/tax-id                                            |
+| RECEIVES--------------------| RETURNS--| EXCEPTIONS-----------------------|
+| required querystring taxid  | object   | invalid-taxid                    |
+|                             |          |  * missing querystring taxid     |
+|                             |          |  * invalid querystring taxid     |
+|                             |          | invalid-account                  |
+|                             |          |  * ineligible accessing account  |
+|-----------------------------|----------|----------------------------------|
+
+|-----------------------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/tax-ids                                                                                 |
+| RECEIVES-------------------------------| RETURNS--| EXCEPTIONS-------------------------| CONFIGURATION----------|
+| required querystring customerid        | array    | invalid-customerid                 | environment PAGE_SIZE  |
+| optional querystring offset (integer)  |          |  * missing querystring customerid  |                        |
+| optional querystring limit (integer)   |          |  * invalid querystring customerid  |                        |
+| optional querystring all (boolean)     |          | invalid-account                    |                        |
+|                                        |          |  * ineligible accessing account    |                        |
+|----------------------------------------|----------|------------------------------------|------------------------|
+
+|--------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/tax-rate                                                           |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS------------------------------------|
+| required querystring taxrateid  | object   | invalid-taxrateid                             |
+|                                 |          |  * missing querystring taxrateid              |
+|                                 |          |  * invalid querystring taxrateid              |
+|                                 |          | invalid-taxrate                               |
+|                                 |          |  * invalid querystring taxrate is not active  |
+|---------------------------------|----------|-----------------------------------------------|
 
 |-------------------------------------------------------------------------------------------|
 | /api/user/subscriptions/upcoming-invoice                                                  |

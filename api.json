@@ -1,4 +1,61 @@
 {
+  "/api/administrator/subscriptions/add-subscription-item-tax-rate": {
+    "url": "/api/administrator/subscriptions/add-subscription-item-tax-rate",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionitemid": [
+        "missing querystring subscriptionitemid",
+        "invalid querystring subscriptionitemid"
+      ],
+      "invalid-taxrateid": [
+        "missing posted taxrateid",
+        "invalid posted taxrateid"
+      ],
+      "invalid-tax-rate": [
+        "invalid posted tax-rate"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/add-subscription-item": {
+    "url": "/api/administrator/subscriptions/add-subscription-item",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-quantity": [
+        "invalid posted quantity",
+        "invalid posted quantity is negative",
+        "invalid posted quantity is zero"
+      ],
+      "invalid-priceid": [
+        "missing posted priceid",
+        "invalid posted priceid"
+      ],
+      "invalid-price": [
+        "invalid price is not published",
+        "invalid price is unpublished"
+      ],
+      "duplicate-price": [
+        "invalid price is already on subscription"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
   "/api/administrator/subscriptions/charge": {
     "url": "/api/administrator/subscriptions/charge",
     "verb": "get",
@@ -133,6 +190,9 @@
       "duplicate-couponid": [
         "invalid posted couponid is already used"
       ],
+      "invalid-name": [
+        "missing posted name"
+      ],
       "invalid-amount_off": [
         "missing posted amount_off",
         "invalid posted amount_off"
@@ -166,7 +226,11 @@
     "verb": "post",
     "auth": false,
     "receives": [
-      "optional posted published (boolean)"
+      "optional posted published (boolean)",
+      "required posted name (string)",
+      "required posted statement_descriptor (string)",
+      "required posted unit_label (string)",
+      "required posted tax_code (string)"
     ],
     "exceptions": {
       "invalid-name": [
@@ -178,6 +242,10 @@
       ],
       "invalid-statement_descriptor": [
         "missing posted statement_descriptor"
+      ],
+      "invalid-tax_code": [
+        "missing posted tax_code",
+        "invalid posted tax_code"
       ]
     },
     "redacts": [],
@@ -204,6 +272,50 @@
         "invalid posted amount",
         "invalid posted amount is negative",
         "invalid posted amount exceeds charge"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/create-tax-rate": {
+    "url": "/api/administrator/subscriptions/create-tax-rate",
+    "verb": "post",
+    "auth": false,
+    "receives": [
+      "required posted display_name",
+      "required posted percentage",
+      "required posted inclusive",
+      "optional posted tax_type",
+      "optional posted description",
+      "optional posted jurisdiction",
+      "optional posted state",
+      "optional posted country"
+    ],
+    "exceptions": {
+      "invalid-percentage": [
+        "missing posted percentage",
+        "invalid posted percentage",
+        "invalid posted percentage is negative",
+        "invalid posted percentage exceeds 100"
+      ],
+      "invalid-display_name": [
+        "missing posted display_name"
+      ],
+      "invalid-inclusive": [
+        "missing posted inclusive",
+        "invalid posted inclusive"
+      ],
+      "invalid-country": [
+        "invalid posted country"
+      ],
+      "invalid-state": [
+        "invalid posted state"
+      ],
+      "invalid-tax_type": [
+        "invalid posted tax_type"
       ]
     },
     "redacts": [],
@@ -290,6 +402,26 @@
     "redacts": [],
     "returns": [
       "boolean"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/delete-subscription-item": {
+    "url": "/api/administrator/subscriptions/delete-subscription-item",
+    "verb": "delete",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionitemid": [
+        "missing querystring subscriptionitemid",
+        "invalid querystring subscriptionitemid"
+      ],
+      "only-item": [
+        "invalid posted itemid is only item"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
     ],
     "configuration": []
   },
@@ -577,6 +709,30 @@
       "environment PAGE_SIZE"
     ]
   },
+  "/api/administrator/subscriptions/remove-subscription-item-tax-rate": {
+    "url": "/api/administrator/subscriptions/remove-subscription-item-tax-rate",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionitemid": [
+        "missing querystring subscriptionitemid",
+        "invalid querystring subscriptionitemid"
+      ],
+      "invalid-taxrateid": [
+        "missing posted taxrateid",
+        "invalid posted taxrateid"
+      ],
+      "invalid-tax-rate": [
+        "invalid posted tax-rate"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
   "/api/administrator/subscriptions/reset-customer-coupon": {
     "url": "/api/administrator/subscriptions/reset-customer-coupon",
     "verb": "patch",
@@ -818,6 +974,95 @@
     ],
     "configuration": []
   },
+  "/api/administrator/subscriptions/set-subscription-default-tax-rates": {
+    "url": "/api/administrator/subscriptions/set-subscription-default-tax-rates",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-taxrateids": [
+        "missing posted taxrateids"
+      ],
+      "invalid-taxrateid": [
+        "invalid posted taxrateid"
+      ],
+      "invalid-tax-rate": [
+        "invalid posted tax-rate"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/set-subscription-item-quantity": {
+    "url": "/api/administrator/subscriptions/set-subscription-item-quantity",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionitemid": [
+        "missing querystring subscriptionitemid",
+        "invalid querystring subscriptionitemid"
+      ],
+      "invalid-quantity": [
+        "invalid posted quantity",
+        "invalid posted quantity is unchanged",
+        "invalid posted quantity is negative",
+        "invalid posted quantity is zero"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/set-tax-rate-active": {
+    "url": "/api/administrator/subscriptions/set-tax-rate-active",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-taxrateid": [
+        "missing querystring taxrateid",
+        "invalid querystring taxrateid"
+      ],
+      "invalid-taxrate": [
+        "invalid taxrate is already active"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/set-tax-rate-inactive": {
+    "url": "/api/administrator/subscriptions/set-tax-rate-inactive",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-taxrateid": [
+        "missing querystring taxrateid",
+        "invalid querystring taxrateid"
+      ],
+      "invalid-taxrate": [
+        "invalid taxrate is already inactive"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
   "/api/administrator/subscriptions/setup-intent": {
     "url": "/api/administrator/subscriptions/setup-intent",
     "verb": "get",
@@ -864,6 +1109,23 @@
     "configuration": [
       "environment PAGE_SIZE"
     ]
+  },
+  "/api/administrator/subscriptions/subscription-item": {
+    "url": "/api/administrator/subscriptions/subscription-item",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionitemid": [
+        "missing querystring subscriptionitemid",
+        "invalid querystring subscriptionitemid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
   },
   "/api/administrator/subscriptions/subscription": {
     "url": "/api/administrator/subscriptions/subscription",
@@ -912,6 +1174,88 @@
       "environment PAGE_SIZE"
     ]
   },
+  "/api/administrator/subscriptions/tax-code": {
+    "url": "/api/administrator/subscriptions/tax-code",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-taxcodeid": [
+        "missing querystring taxcodeid",
+        "invalid querystring taxcodeid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/tax-codes": {
+    "url": "/api/administrator/subscriptions/tax-codes",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/administrator/subscriptions/tax-rate": {
+    "url": "/api/administrator/subscriptions/tax-rate",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-taxrateid": [
+        "missing querystring taxrateid",
+        "invalid querystring taxrateid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/tax-rates-count": {
+    "url": "/api/administrator/subscriptions/tax-rates-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/tax-rates": {
+    "url": "/api/administrator/subscriptions/tax-rates",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
   "/api/administrator/subscriptions/update-coupon": {
     "url": "/api/administrator/subscriptions/update-coupon",
     "verb": "patch",
@@ -943,9 +1287,10 @@
     "verb": "patch",
     "auth": false,
     "receives": [
-      "optional posted name",
-      "optional posted statement_descriptor",
-      "optional posted unit_label"
+      "required posted name",
+      "required posted statement_descriptor",
+      "required posted unit_label",
+      "required posted tax_code"
     ],
     "exceptions": {
       "invalid-productid": [
@@ -971,6 +1316,10 @@
       ],
       "invalid-unit_label": [
         "missing posted unit_label"
+      ],
+      "invalid-tax_code": [
+        "missing posted tax_code",
+        "invalid posted tax_code"
       ]
     },
     "redacts": [],
@@ -981,6 +1330,29 @@
       "environment MINIMUM_PRODUCT_NAME_LENGTH",
       "environment MAXIMUM_PRODUCT_NAME_LENGTH"
     ]
+  },
+  "/api/administrator/subscriptions/update-tax-rate": {
+    "url": "/api/administrator/subscriptions/update-tax-rate",
+    "verb": "patch",
+    "auth": false,
+    "receives": [
+      "required posted display_name",
+      "required posted inclusive",
+      "required posted description",
+      "required posted jurisdiction",
+      "optional posted country"
+    ],
+    "exceptions": {
+      "invalid-taxrateid": [
+        "missing querystring taxrateid",
+        "invalid querystring taxrateid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
   },
   "/api/administrator/subscriptions/usage-record": {
     "url": "/api/administrator/subscriptions/usage-record",
@@ -1031,6 +1403,42 @@
     "configuration": [
       "environment PAGE_SIZE"
     ]
+  },
+  "/api/user/subscriptions/add-subscription-item": {
+    "url": "/api/user/subscriptions/add-subscription-item",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-quantity": [
+        "invalid posted quantity",
+        "invalid posted quantity is negative",
+        "invalid posted quantity is zero"
+      ],
+      "invalid-priceid": [
+        "missing posted priceid",
+        "invalid posted priceid"
+      ],
+      "invalid-price": [
+        "invalid price is not published",
+        "invalid price is unpublished"
+      ],
+      "duplicate-price": [
+        "invalid price is already on subscription"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
   },
   "/api/user/subscriptions/charge": {
     "url": "/api/user/subscriptions/charge",
@@ -1277,13 +1685,48 @@
       "invalid-account": [
         "ineligible accessing account"
       ],
-      "invalid-planid": [
-        "missing posted planid",
-        "invalid posted planid"
+      "invalid-priceids": [
+        "missing posted priceids"
       ],
-      "invalid-plan": [
-        "ineligible posted plan is not published",
-        "ineligible posted plan is unpublished"
+      "invalid-priceid": [
+        "invalid posted priceids contains invalid price"
+      ],
+      "invalid-price": [
+        "invalid posted priceids contains not published price",
+        "invalid posted priceids contains unpublished price"
+      ],
+      "invalid-taxrateid": [
+        "invalid posted taxrateids contains invalid tax rate"
+      ],
+      "invalid-tax-rate": [
+        "invalid posted taxrateids contains inactive tax rate"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/create-tax-id": {
+    "url": "/api/user/subscriptions/create-tax-id",
+    "verb": "post",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-customerid": [
+        "missing querystring customerid",
+        "invalid querystring customerid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-type": [
+        "missing posted type",
+        "invalid posted type"
+      ],
+      "invalid-value": [
+        "invalid posted value"
       ]
     },
     "redacts": [],
@@ -1409,6 +1852,33 @@
     ],
     "configuration": []
   },
+  "/api/user/subscriptions/delete-subscription-item": {
+    "url": "/api/user/subscriptions/delete-subscription-item",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-itemid": [
+        "missing posted itemid",
+        "invalid posted itemid"
+      ],
+      "only-item": [
+        "invalid posted itemid is only item"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
   "/api/user/subscriptions/delete-subscription": {
     "url": "/api/user/subscriptions/delete-subscription",
     "verb": "delete",
@@ -1424,6 +1894,26 @@
       ],
       "invalid-subscription": [
         "ineligible querystring subscription is not active"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "boolean"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/delete-tax-id": {
+    "url": "/api/user/subscriptions/delete-tax-id",
+    "verb": "delete",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-taxid": [
+        "missing querystring taxid",
+        "invalid querystring taxid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
       ]
     },
     "redacts": [],
@@ -1992,6 +2482,26 @@
       "environment PAGE_SIZE"
     ]
   },
+  "/api/user/subscriptions/subscription-item": {
+    "url": "/api/user/subscriptions/subscription-item",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionitemid": [
+        "missing querystring subscriptionitemid",
+        "invalid querystring subscriptionitemid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
   "/api/user/subscriptions/subscription": {
     "url": "/api/user/subscriptions/subscription",
     "verb": "get",
@@ -2057,6 +2567,72 @@
     "configuration": [
       "environment PAGE_SIZE"
     ]
+  },
+  "/api/user/subscriptions/tax-id": {
+    "url": "/api/user/subscriptions/tax-id",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-taxid": [
+        "missing querystring taxid",
+        "invalid querystring taxid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/tax-ids": {
+    "url": "/api/user/subscriptions/tax-ids",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {
+      "invalid-customerid": [
+        "missing querystring customerid",
+        "invalid querystring customerid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/tax-rate": {
+    "url": "/api/user/subscriptions/tax-rate",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-taxrateid": [
+        "missing querystring taxrateid",
+        "invalid querystring taxrateid"
+      ],
+      "invalid-taxrate": [
+        "invalid querystring taxrate is not active"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
   },
   "/api/user/subscriptions/upcoming-invoice": {
     "url": "/api/user/subscriptions/upcoming-invoice",

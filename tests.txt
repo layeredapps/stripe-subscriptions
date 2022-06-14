@@ -1,5 +1,5 @@
 
-> @layeredapps/stripe-subscriptions@1.0.59 test
+> @layeredapps/stripe-subscriptions@1.0.62 test
 > PORT=50012 NODE_ENV=testing STORAGE=sqlite DATABASE=subscriptions mocha --ignore 'node_modules/**/*' --timeout 480000 --slow 480000 --recursive --extension .test.js .
 
 
@@ -49,9 +49,6 @@
     REQUIRE_BILLING_PROFILE_ADDRESS
       Require address with billing information
         ✔ Boolean
-    VIEW_SUBSCRIPTION_PLANS
-      Allow users to browse published plans
-        ✔ Boolean
 
   server/stripe-subscriptions/bind-stripe-key
     after
@@ -69,7 +66,6 @@
       ✔ should ignore user with amount owed requesting account pages
       ✔ should ignore administrator with amount owed requesting administration pages
       ✔ should ignore user without amount owed
-      ✔ should ignore user with open but not overdue invoice
 
   server/stripe-subscriptions/require-subscription
     after
@@ -98,11 +94,26 @@
       ✔ invalid-xss-input
       ✔ invalid-csrf-token
 
+  /account/subscriptions/add-tax-id
+    before
+      ✔ should bind data to req
+    view
+      ✔ should present the form
+    submit
+      ✔ should create tax id (screenshots)
+    errors
+      ✔ invalid-customerid
+      ✔ invalid-account
+      ✔ invalid-csrf-token
+
   /account/subscriptions/billing-profile
     before
       ✔ should bind data to req
     view
-      ✔ should have row for customer (screenshots)
+      ✔ should present the customer table (screenshots)
+      ✔ should have table for subscriptions
+      ✔ should have table for invoices
+      ✔ should have table for tax ids
     errors
       ✔ invalid-customerid
       ✔ invalid-account
@@ -120,16 +131,13 @@
       ✔ should bind data to req
     view
       ✔ should present the form
-      ✔ should show fields for free plan cancelations
-      ✔ should show fields for free trial cancelations
-      ✔ should show fields for cancelation with credit or refund
     submit
       ✔ should cancel free subscription immediately (screenshots)
       ✔ should cancel free subscription at period end
       ✔ should cancel free trial immediately
       ✔ should cancel free trial at period end
-      ✔ should cancel paid subscription and credit account
-      ✔ should cancel paid subscription and show refund
+      ✔ should cancel paid subscription immediately
+      ✔ should cancel paid subscription at period end
     errors
       ✔ invalid-csrf-token
     error
@@ -137,36 +145,9 @@
       ✔ invalid-subscription
       ✔ invalid-account
 
-  /account/subscriptions/change-plan
-    before
-      ✔ should bind data to req
-    view
-      ✔ should present the form
-      ✔ should remove the form if there are no plans
-    submit
-      ✔ should apply plan update (screenshots)
-    errors
-      ✔ invalid-paymentmethodid
-      ✔ invalid-csrf-token
-
   /account/subscriptions/confirm-payment
     view
       ✔ should display stripe.js confirmation
-
-  /account/subscriptions/confirm-subscription
-    before
-      ✔ should bind data to req
-    view
-      ✔ should present the form
-    submit
-      ✔ should start subscription (screenshots)
-    configuration
-      ✔ environment SKIP_CONFIRM_SUBSCRIPTION
-    errors
-      ✔ invalid-paymentmethodid
-      ✔ invalid-planid
-      ✔ invalid-plan
-      ✔ invalid-csrf-token
 
   /account/subscriptions/create-billing-profile
     view
@@ -218,7 +199,7 @@
     before
       ✔ should bind data to req
     view
-      ✔ should have row for invoice (screenshots)
+      ✔ should present invoice table (screenshots)
     errors
       ✔ invalid-invoiceid
       ✔ invalid-account
@@ -244,36 +225,6 @@
       ✔ invoice-paid
       ✔ invalid-csrf-token
 
-  /account/subscriptions/plan
-    before
-      ✔ should bind data to req
-    view
-      ✔ should have row for plan (screenshots)
-    errors
-      ✔ invalid-planid
-      ✔ invalid-plan
-      ✔ unpublished-plan
-
-  /account/subscriptions/plans
-    before
-      ✔ should bind data to req
-    view
-      ✔ should return one page (screenshots)
-      ✔ should change page size
-      ✔ should change offset
-
-  /account/subscriptions/refund-invoice
-    before
-      ✔ should bind data to req
-    view
-      ✔ should present the form
-    submit
-      ✔ should cancel subscription (screenshots)
-    errors
-      ✔ invalid-invoiceid
-      ✔ invalid-account
-      ✔ invalid-csrf-token
-
   /account/subscriptions/refund
     before
       ✔ should bind data to req
@@ -287,6 +238,18 @@
       ✔ should return one page (screenshots)
       ✔ should change page size
       ✔ should change offset
+
+  /account/subscriptions/remove-tax-id
+    before
+      ✔ should bind data to req
+    view
+      ✔ should present the form
+    submit
+      ✔ should delete tax id (screenshots)
+    errors
+      ✔ invalid-taxid
+      ✔ invalid-account
+      ✔ invalid-csrf-token
 
   /account/subscriptions/request-refund
     before
@@ -314,14 +277,6 @@
       ✔ invalid-account
       ✔ invalid-csrf-token
 
-  /account/subscriptions/start-subscription
-    before
-      ✔ should bind data to req
-    view
-      ✔ should have option for each plan (screenshots)
-    errors
-      ✔ invalid-csrf-token
-
   /account/subscriptions/subscription
     before
       ✔ should bind data to req
@@ -338,6 +293,40 @@
       ✔ should return one page (screenshots)
       ✔ should change page size
       ✔ should change offset
+
+  /administrator/subscriptions/activate-tax-rate
+    before
+      ✔ should bind data to req
+    view
+      ✔ should present the form
+    submit
+      ✔ should activate tax rate (screenshots)
+    errors
+      ✔ invalid-taxrateid
+      ✔ already-active
+      ✔ invalid-csrf-token
+
+  /administrator/subscriptions/add-subscription-item-tax-rate
+    before
+      ✔ should bind data to req
+    view
+      ✔ should present the form
+    submit
+      ✔ should add tax rate (screenshots)
+    errors
+      ✔ invalid-subscriptionitemid
+      ✔ invalid-csrf-token
+
+  /administrator/subscriptions/adjust-subscription-item-quantity
+    before
+      ✔ should bind data to req
+    view
+      ✔ should present the form
+    submit
+      ✔ should adjust quantity (screenshots)
+    errors
+      ✔ invalid-subscriptionitemid
+      ✔ invalid-csrf-token
 
   /administrator/subscriptions/apply-customer-coupon
     before
@@ -401,42 +390,47 @@
     view
       ✔ should present the form
     submit
-      ✔ should reject missing couponid
-      ✔ should enforce couponid length
-      ✔ should reject duplicate couponid
-      ✔ should reject missing duration
-      ✔ should enforce invalid duration
-      ✔ should require valid amount off
-      ✔ should require valid percent off
-      ✔ should require valid max redemptions
-      ✔ should require amount or percent off
-      ✔ should require valid duration in months if repeating
-      ✔ should require valid redeem_by if provided
       ✔ should create coupon (screenshots)
     errors
+      ✔ invalid-couponid
+      ✔ invalid-couponid-length
+      ✔ invalid-couponid
+      ✔ invalid-duration
+      ✔ invalid-duration
+      ✔ invalid-amount_off
+      ✔ invalid-percent_off
+      ✔ invalid-max_redemptions
+      ✔ invalid-discount
+      ✔ invalid-duration_in_months
+      ✔ invalid-redeem_by
       ✔ invalid-xss-input
       ✔ invalid-csrf-token
 
-  /administrator/subscriptions/create-plan
+  /administrator/subscriptions/create-price
     view
       ✔ should present the form
     submit
-      ✔ should reject missing planid
-      ✔ should enforce planid length
-      ✔ should reject missing productid
-      ✔ should reject never published product
-      ✔ should reject unpublished product
-      ✔ should reject missing currency
-      ✔ should reject invalid currency
-      ✔ should reject missing usage_type
-      ✔ should reject missing amount
-      ✔ should reject invalid amount
-      ✔ should reject missing interval
-      ✔ should reject invalid interval
-      ✔ should reject invalid interval_count
-      ✔ should reject invalid trial_period_days
-      ✔ should create plan (screenshots)
+      ✔ should create-price (screenshots)
     errors
+      ✔ invalid-productid
+      ✔ invalid-tax_behavior
+      ✔ invalid-currency
+      ✔ invalid-nickname
+      ✔ invalid-type
+      ✔ invalid-billing_scheme
+      ✔ invalid-unit_amount
+      ✔ invalid-transform_quantity_divide_by
+      ✔ invalid-transform_quantity_round
+      ✔ invalid-recurring_interval
+      ✔ invalid-recurring_interval_count
+      ✔ invalid-recurring_usage_type
+      ✔ invalid-recurring_aggregate_usage
+      ✔ invalid-tier_mode
+      ✔ invalid-tier_up_to
+      ✔ invalid-tier_up_to_inf
+      ✔ invalid-tier_ambiguous_amount
+      ✔ invalid-tier_unit_amount
+      ✔ invalid-tier_flat_amount
       ✔ invalid-xss-input
       ✔ invalid-csrf-token
 
@@ -444,11 +438,26 @@
     view
       ✔ should present the form
     submit
-      ✔ should reject missing name
-      ✔ should enforce name length
-      ✔ should reject missing statement_descriptor
       ✔ should create product (screenshots)
     errors
+      ✔ invalid-name
+      ✔ invalid-product-name-length
+      ✔ invalid-statement_descriptor
+      ✔ invalid-tax_code
+      ✔ invalid-xss-input
+      ✔ invalid-csrf-token
+
+  /administrator/subscriptions/create-tax-rate
+    view
+      ✔ should present the form
+    submit
+      ✔ should create tax rate (screenshots)
+    errors
+      ✔ invalid-percentage
+      ✔ invalid-display_name
+      ✔ invalid-inclusive
+      ✔ invalid-country
+      ✔ invalid-tax_type
       ✔ invalid-xss-input
       ✔ invalid-csrf-token
 
@@ -468,6 +477,18 @@
       ✔ should change page size
       ✔ should change offset
 
+  /administrator/subscriptions/deactivate-tax-rate
+    before
+      ✔ should bind data to req
+    view
+      ✔ should present the form
+    submit
+      ✔ should deactivate tax rate (screenshots)
+    errors
+      ✔ invalid-taxrateid
+      ✔ already-inactive
+      ✔ invalid-csrf-token
+
   /administrator/subscriptions/delete-coupon
     before
       ✔ should bind data to req
@@ -479,15 +500,15 @@
       ✔ invalid-couponid
       ✔ invalid-csrf-token
 
-  /administrator/subscriptions/delete-plan
+  /administrator/subscriptions/delete-price
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
-      ✔ should delete plan (screenshots)
+      ✔ should delete price (screenshots)
     errors
-      ✔ invalid-planid
+      ✔ invalid-priceid
       ✔ invalid-csrf-token
 
   /administrator/subscriptions/delete-product
@@ -506,16 +527,13 @@
       ✔ should bind data to req
     view
       ✔ should present the form
-      ✔ should show fields for free plan cancelations
-      ✔ should show fields for free trial cancelations
-      ✔ should show fields for cancelation with credit or refund
     submit
       ✔ should cancel free subscription immediately (screenshots)
       ✔ should cancel free subscription at period end
       ✔ should cancel free trial immediately
       ✔ should cancel free trial at period end
-      ✔ should cancel paid subscription and credit account
-      ✔ should cancel paid subscription and show refund
+      ✔ should cancel paid subscription immediately
+      ✔ should cancel paid subscription at period end
     errors
       ✔ invalid-subscriptionid
       ✔ invalid-subscription
@@ -549,18 +567,16 @@
       ✔ invalid-xss-input
       ✔ invalid-csrf-token
 
-  /administrator/subscriptions/edit-plan
+  /administrator/subscriptions/edit-price
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
-      ✔ should reject missing productid
-      ✔ should reject invalid trial period
-      ✔ should update plan (screenshots)
+      ✔ should update price (screenshots)
     errors
-      ✔ invalid-planid
-      ✔ unpublished-plan
+      ✔ invalid-priceid
+      ✔ unpublished-price
       ✔ invalid-csrf-token
 
   /administrator/subscriptions/edit-product
@@ -569,14 +585,29 @@
     view
       ✔ should present the form
     submit
-      ✔ should reject missing name
-      ✔ should enforce name length
-      ✔ should reject missing statement_descriptor
-      ✔ should reject invalid unit_label
       ✔ should update product (screenshots)
     errors
       ✔ invalid-productid
       ✔ unpublished-product
+      ✔ invalid-name
+      ✔ invalid-product-name-length
+      ✔ invalid-statement_descriptor
+      ✔ invalid-unit_label
+      ✔ invalid-xss-input
+      ✔ invalid-csrf-token
+
+  /administrator/subscriptions/edit-tax-rate
+    view
+      ✔ should present the form
+    submit
+      ✔ should update tax rate (screenshots)
+    errors
+      ✔ invalid-taxrateid
+      ✔ invalid-display_name
+      ✔ invalid-description
+      ✔ invalid-jurisdiction
+      ✔ invalid-active
+      ✔ invalid-inclusive
       ✔ invalid-xss-input
       ✔ invalid-csrf-token
 
@@ -609,7 +640,6 @@
     before
       ✔ should bind data to req
     view
-      ✔ should have row for each plan
       ✔ should have row for each coupon
       ✔ should have row for each subscription (screenshots)
 
@@ -633,7 +663,7 @@
     before
       ✔ should bind data to req
     view
-      ✔ should have row for payment intent (screenshots)
+      ✔ should present payment intent table (screenshots)
     errors
       ✔ invalid-paymentintentid
 
@@ -649,7 +679,7 @@
     before
       ✔ should bind data to req
     view
-      ✔ should have row for payment method (screenshots)
+      ✔ should present payment method table (screenshots)
     error
       ✔ invalid-paymentmethodid
 
@@ -665,15 +695,18 @@
     errors
       ✔ invalid-payoutid
 
-  /administrator/subscriptions/plan
+  /administrator/subscriptions/price
     before
       ✔ should bind data to req
     view
-      ✔ should present the plan table (screenshots)
+      ✔ should present the price table (screenshots)
+      ✔ should present the pricing tiers
+      ✔ should present the quantity transformation
+      ✔ should present the recurring billing information
     errors
-      ✔ invalid-planid
+      ✔ invalid-priceid
 
-  /administrator/subscriptions/plans
+  /administrator/subscriptions/prices
     before
       ✔ should bind data to req
     view
@@ -685,7 +718,7 @@
     before
       ✔ should bind data to req
     view
-      ✔ should have row for product (screenshots)
+      ✔ should present product table (screenshots)
     errors
       ✔ invalid-productid
 
@@ -710,15 +743,15 @@
       ✔ already-unpublished
       ✔ invalid-csrf-token
 
-  /administrator/subscriptions/publish-plan
+  /administrator/subscriptions/publish-price
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
-      ✔ should publish plan (screenshots)
+      ✔ should publish price (screenshots)
     errors
-      ✔ invalid-planid
+      ✔ invalid-priceid
       ✔ already-published
       ✔ already-unpublished
       ✔ invalid-csrf-token
@@ -760,7 +793,7 @@
     before
       ✔ should bind data to req
     view
-      ✔ should have row for refund (screenshots)
+      ✔ should present refund table (screenshots)
     errors
       ✔ invalid-refundid
 
@@ -771,6 +804,27 @@
       ✔ should return one page (screenshots)
       ✔ should change page size
       ✔ should change offset
+
+  /administrator/subscriptions/remove-subscription-item-tax-rate
+    before
+      ✔ should bind data to req
+    view
+      ✔ should present the form
+    submit
+      ✔ should remove tax rate (screenshots)
+    errors
+      ✔ invalid-subscriptionitemid
+      ✔ invalid-csrf-token
+
+  /administrator/subscriptions/remove-subscription-item
+    before
+      ✔ should bind data to req
+    view
+      ✔ should present the form
+    submit
+      ✔ should remove item (screenshots)
+    errors
+      ✔ invalid-subscriptionid
 
   /administrator/subscriptions/revoke-customer-coupon
     before
@@ -800,7 +854,7 @@
     before
       ✔ should bind data to req
     view
-      ✔ should have row for setup intent (screenshots)
+      ✔ should present setup intent table (screenshots)
     errors
       ✔ invalid-setupintentid
 
@@ -812,6 +866,14 @@
       ✔ should change page size
       ✔ should change offset
 
+  /administrator/subscriptions/subscription-item
+    before
+      ✔ should bind data to req
+    view
+      ✔ should present the subscription table (screenshots)
+    errors
+      ✔ invalid-subscriptionitemid
+
   /administrator/subscriptions/subscription
     before
       ✔ should bind data to req
@@ -821,6 +883,22 @@
       ✔ invalid-subscriptionid
 
   /administrator/subscriptions/subscriptions
+    before
+      ✔ should bind data to req
+    view
+      ✔ should return one page (screenshots)
+      ✔ should change page size
+      ✔ should change offset
+
+  /administrator/subscriptions/tax-rate
+    before
+      ✔ should bind data to req
+    view
+      ✔ should present tax rate table (screenshots)
+    errors
+      ✔ invalid-taxrateid
+
+  /administrator/subscriptions/tax-rates
     before
       ✔ should bind data to req
     view
@@ -841,15 +919,15 @@
       ✔ already-unpublished
       ✔ invalid-csrf-token
 
-  /administrator/subscriptions/unpublish-plan
+  /administrator/subscriptions/unpublish-price
     before
       ✔ should bind data to req
     view
       ✔ should present the form
     submit
-      ✔ should unpublish plan (screenshots)
+      ✔ should unpublish price (screenshots)
     errors
-      ✔ invalid-planid
+      ✔ invalid-priceid
       ✔ not-published
       ✔ already-unpublished
       ✔ invalid-csrf-token
@@ -866,6 +944,39 @@
       ✔ not-published
       ✔ already-unpublished
       ✔ invalid-csrf-token
+
+  /api/administrator/subscriptions/add-subscription-item-tax-rate
+    exceptions
+      invalid-subscriptionitemid
+        ✔ missing querystring subscriptionitemid
+        ✔ invalid querystring subscriptionitemid
+      invalid-taxrateid
+        ✔ missing posted taxrateid
+        ✔ invalid posted taxrateid
+      invalid-tax-rate
+        ✔ invalid posted tax-rate
+    returns
+      ✔ object
+
+  /api/administrator/subscriptions/add-subscription-item
+    exceptions
+      invalid-subscriptionid
+        ✔ missing querystring subscriptionid
+        ✔ invalid querystring subscriptionid
+      invalid-quantity
+        ✔ invalid posted quantity
+        ✔ invalid posted quantity is negative
+        ✔ invalid posted quantity is zero
+      invalid-priceid
+        ✔ missing posted priceid
+        ✔ invalid posted priceid
+      invalid-price
+        ✔ invalid price is not published
+        ✔ invalid price is unpublished
+      duplicate-price
+        ✔ invalid price is already on subscription
+    returns
+      ✔ object
 
   /api/administrator/subscriptions/charge
     exceptions
@@ -928,6 +1039,8 @@
         ✔ invalid posted couponid is not alphanumeric
       duplicate-couponid
         ✔ invalid posted couponid is already used
+      invalid-name
+        ✔ missing posted name
       invalid-amount_off
         ✔ missing posted amount_off
         ✔ invalid posted amount_off
@@ -953,43 +1066,63 @@
     returns
       ✔ object
 
-  /api/administrator/subscriptions/create-plan
+  /api/administrator/subscriptions/create-price
     exceptions
-      invalid-planid
-        ✔ invalid posted planid is not alphanumeric_
-      invalid-planid-length
-        ✔ posted planid is too short
-        ✔ posted planid is too long
       invalid-productid
         ✔ missing posted productid
         ✔ invalid posted productid
       invalid-product
         ✔ ineligible posted product is not published
-      invalid-amount
-        ✔ missing posted amount
-        ✔ invalid posted amount
+      invalid-tax_behavior
+        ✔ invalid posted tax_behavior
+      invalid-unit_amount
+        ✔ invalid posted unit_amount
       invalid-currency
         ✔ missing posted currency
         ✔ invalid posted currency
-      invalid-interval
-        ✔ missing posted interval
-        ✔ invalid posted interval
-      invalid-interval-count
-        ✔ missing posted interval_count
-        ✔ invalid posted interval_count
-      invalid-trial_period
-        ✔ invalid posted trial_period
-      invalid-usage_type
-        ✔ invalid posted usage_type
+      invalid-recurring_interval
+        ✔ invalid posted recurring_interval
+      invalid-recurring_interval_count
+        ✔ missing posted recurring_interval_count
+        ✔ invalid posted recurring_interval_count
+        ✔ invalid posted recurring_interval_count exceeds one year
+      invalid-recurring_aggregate_usage
+        ✔ invalid posted recurring_aggregate_usage
+      invalid-recurring_usage_type
+        ✔ invalid posted recurring_usage_type
+      invalid-billing_scheme
+        ✔ invalid posted billing_scheme
+      invalid-transform_quantity_divide_by
+        ✔ invalid posted transform_quantity_divide_by
+      invalid-transform_quantity_round
+        ✔ invalid posted transform_quantity_round
+      invalid-tiers_mode
+        ✔ invalid posted tiers_mode
+      invalid-tier_up_to
+        ✔ invalid posted tier_up_to
+      invalid-tier_unit_amount
+        ✔ invalid posted tier_unit_amount
+      invalid-tier_flat_amount
+        ✔ invalid posted tier_flat_amount
     receives
+      ✔ required posted productid
+      ✔ required posted tax_behavior
+      ✔ required posted currency
+      ✔ optionally-required posted unit_amount
       ✔ optional posted published (boolean)
-      ✔ optional posted trial_period_days (integer)
-      ✔ optional posted usage_type (licensed|metered)
+      ✔ optional posted billing_scheme (per_unit|tiered)
+      ✔ optional posted recurring_usage_type (licensed|metered)
+      ✔ optional posted recurring_interval (day|week|month|year)
+      ✔ optionally-required posted recurring_interval_count
+      ✔ optionally-required posted recurring_aggregate_usage (sum|max|last_ever|last_during_period)
+      ✔ optional posted transform_quantity_divide_by
+      ✔ optionally-required posted transform_quantity_round (up|down)
+      ✔ optionally-required posted tiers_mode (graduated|volume)
+      ✔ optional posted tier(1...)_up_to
+      ✔ optional posted tier(1...)_unit_amount
+      ✔ optional posted tier(1...)_flat_amount
     returns
       ✔ object
-    configuration
-      ✔ environment MINIMUM_PLANID_LENGTH
-      ✔ environment MAXIMUM_PLANID_LENGTH
 
   /api/administrator/subscriptions/create-product
     exceptions
@@ -1000,8 +1133,15 @@
         ✔ posted name too long
       invalid-statement_descriptor
         ✔ missing posted statement_descriptor
+      invalid-tax_code
+        ✔ missing posted tax_code
+        ✔ invalid posted tax_code
     receives
       ✔ optional posted published (boolean)
+      ✔ required posted name (string)
+      ✔ required posted statement_descriptor (string)
+      ✔ required posted unit_label (string)
+      ✔ required posted tax_code (string)
     returns
       ✔ object
     configuration
@@ -1021,16 +1161,33 @@
     returns
       ✔ object
 
-  /api/administrator/subscriptions/create-refund
+  /api/administrator/subscriptions/create-tax-rate
     exceptions
-      invalid-chargeid
-        ✔ missing querystring chargeid
-        ✔ invalid querystring chargeid
-      invalid-amount
-        ✔ missing posted amount
-        ✔ invalid posted amount
-        ✔ invalid posted amount is negative
-        ✔ invalid posted amount exceeds charge
+      invalid-percentage
+        ✔ missing posted percentage
+        ✔ invalid posted percentage
+        ✔ invalid posted percentage is negative
+        ✔ invalid posted percentage exceeds 100
+      invalid-display_name
+        ✔ missing posted display_name
+      invalid-inclusive
+        ✔ missing posted inclusive
+        ✔ invalid posted inclusive
+      invalid-country
+        ✔ invalid posted country
+      invalid-state
+        ✔ invalid posted state
+      invalid-tax_type
+        ✔ invalid posted tax_type
+    receives
+      ✔ required posted display_name
+      ✔ required posted percentage
+      ✔ required posted inclusive
+      ✔ optional posted tax_type
+      ✔ optional posted description
+      ✔ optional posted jurisdiction
+      ✔ optional posted state
+      ✔ optional posted country
     returns
       ✔ object
 
@@ -1064,11 +1221,11 @@
     returns
       ✔ boolean
 
-  /api/administrator/subscriptions/delete-plan
+  /api/administrator/subscriptions/delete-price
     exceptions
-      invalid-planid
-        ✔ missing querystring planid
-        ✔ invalid querystring planid
+      invalid-priceid
+        ✔ missing querystring priceid
+        ✔ invalid querystring priceid
     returns
       ✔ boolean
 
@@ -1079,6 +1236,16 @@
         ✔ invalid querystring productid
     returns
       ✔ boolean
+
+  /api/administrator/subscriptions/delete-subscription-item
+    exceptions
+      invalid-subscriptionitemid
+        ✔ missing querystring subscriptionitemid
+        ✔ invalid querystring subscriptionitemid
+      only-item
+        ✔ invalid posted itemid is only item
+    returns
+      ✔ object
 
   /api/administrator/subscriptions/delete-subscription
     exceptions
@@ -1155,19 +1322,19 @@
     configuration
       ✔ environment PAGE_SIZE
 
-  /api/administrator/subscriptions/plan
+  /api/administrator/subscriptions/price
     exceptions
-      invalid-planid
-        ✔ missing querystring planid
-        ✔ invalid querystring planid
+      invalid-priceid
+        ✔ missing querystring priceid
+        ✔ invalid querystring priceid
     returns
       ✔ object
 
-  /api/administrator/subscriptions/plans-count
+  /api/administrator/subscriptions/prices-count
     returns
       ✔ integer
 
-  /api/administrator/subscriptions/plans
+  /api/administrator/subscriptions/prices
     receives
       ✔ optional querystring offset (integer)
       ✔ optional querystring limit (integer)
@@ -1233,6 +1400,19 @@
       ✔ array
     configuration
       ✔ environment PAGE_SIZE
+
+  /api/administrator/subscriptions/remove-subscription-item-tax-rate
+    exceptions
+      invalid-subscriptionitemid
+        ✔ missing querystring subscriptionitemid
+        ✔ invalid querystring subscriptionitemid
+      invalid-taxrateid
+        ✔ missing posted taxrateid
+        ✔ invalid posted taxrateid
+      invalid-tax-rate
+        ✔ invalid posted tax-rate
+    returns
+      ✔ object
 
   /api/administrator/subscriptions/reset-customer-coupon
     exceptions
@@ -1313,24 +1493,24 @@
     returns
       ✔ object
 
-  /api/administrator/subscriptions/set-plan-published
+  /api/administrator/subscriptions/set-price-published
     exceptions
-      invalid-planid
-        ✔ missing querystring planid
-        ✔ invalid querystring planid
-      invalid-plan
-        ✔ ineligible querystring plan is published
+      invalid-priceid
+        ✔ missing querystring priceid
+        ✔ invalid querystring priceid
+      invalid-price
+        ✔ ineligible querystring price is published
     returns
       ✔ object
 
-  /api/administrator/subscriptions/set-plan-unpublished
+  /api/administrator/subscriptions/set-price-unpublished
     exceptions
-      invalid-planid
-        ✔ missing querystring planid
-        ✔ invalid querystring planid
-      invalid-plan
-        ✔ ineligible querystring plan is not published
-        ✔ ineligible querystring plan is already unpublished
+      invalid-priceid
+        ✔ missing querystring priceid
+        ✔ invalid querystring priceid
+      invalid-price
+        ✔ ineligible querystring price is not published
+        ✔ ineligible querystring price is already unpublished
     returns
       ✔ object
 
@@ -1393,6 +1573,53 @@
     returns
       ✔ object
 
+  /api/administrator/subscriptions/set-subscription-default-tax-rates
+    exceptions
+      invalid-subscriptionid
+        ✔ missing querystring subscriptionid
+        ✔ invalid querystring subscriptionid
+      invalid-taxrateids
+        ✔ missing posted taxrateids
+      invalid-taxrateid
+        ✔ invalid posted taxrateid
+      invalid-tax-rate
+        ✔ invalid posted tax-rate
+    returns
+      ✔ object
+
+  /api/administrator/subscriptions/set-subscription-item-quantity
+    exceptions
+      invalid-subscriptionitemid
+        ✔ missing querystring subscriptionitemid
+        ✔ invalid querystring subscriptionitemid
+      invalid-quantity
+        ✔ invalid posted quantity
+        ✔ invalid posted quantity is unchanged
+        ✔ invalid posted quantity is negative
+        ✔ invalid posted quantity is zero
+    returns
+      ✔ object
+
+  /api/administrator/subscriptions/set-tax-rate-active
+    exceptions
+      invalid-taxrateid
+        ✔ missing querystring taxrateid
+        ✔ invalid querystring taxrateid
+      invalid-taxrate
+        ✔ invalid taxrate is already active
+    returns
+      ✔ object
+
+  /api/administrator/subscriptions/set-tax-rate-inactive
+    exceptions
+      invalid-taxrateid
+        ✔ missing querystring taxrateid
+        ✔ invalid querystring taxrateid
+      invalid-taxrate
+        ✔ invalid taxrate is already inactive
+    returns
+      ✔ object
+
   /api/administrator/subscriptions/setup-intent
     exceptions
       invalid-setupintentid
@@ -1415,6 +1642,14 @@
     configuration
       ✔ environment PAGE_SIZE
 
+  /api/administrator/subscriptions/subscription-item
+    exceptions
+      invalid-subscriptionitemid
+        ✔ missing querystring subscriptionitemid
+        ✔ invalid querystring subscriptionitemid
+    returns
+      ✔ object
+
   /api/administrator/subscriptions/subscription
     exceptions
       invalid-subscriptionid
@@ -1428,6 +1663,46 @@
       ✔ integer
 
   /api/administrator/subscriptions/subscriptions
+    receives
+      ✔ optional querystring offset (integer)
+      ✔ optional querystring limit (integer)
+      ✔ optional querystring all (boolean)
+    returns
+      ✔ array
+    configuration
+      ✔ environment PAGE_SIZE
+
+  /api/administrator/subscriptions/tax-code
+    exceptions
+      invalid-taxcodeid
+        ✔ missing querystring taxcodeid
+        ✔ invalid querystring taxcodeid
+    returns
+      ✔ object
+
+  /api/administrator/subscriptions/tax-codes
+    receives
+      ✔ optional querystring offset (integer)
+      ✔ optional querystring limit (integer)
+      ✔ optional querystring all (boolean)
+    returns
+      ✔ array
+    configuration
+      ✔ environment PAGE_SIZE
+
+  /api/administrator/subscriptions/tax-rate
+    exceptions
+      invalid-taxrateid
+        ✔ missing querystring taxrateid
+        ✔ invalid querystring taxrateid
+    returns
+      ✔ object
+
+  /api/administrator/subscriptions/tax-rates-count
+    returns
+      ✔ integer
+
+  /api/administrator/subscriptions/tax-rates
     receives
       ✔ optional querystring offset (integer)
       ✔ optional querystring limit (integer)
@@ -1452,24 +1727,17 @@
     returns
       ✔ object
 
-  /api/administrator/subscriptions/update-plan
+  /api/administrator/subscriptions/update-price
     exceptions
-      invalid-planid
-        ✔ missing querystring planid
-        ✔ invalid querystring planid
-      invalid-plan
-        ✔ ineligible querystring plan is unpublished
-      invalid-productid
-        ✔ invalid posted productid
-      invalid-product
-        ✔ ineligible posted product is not published
-        ✔ ineligible posted product is unpublished
-      invalid-trial_period_days
-        ✔ invalid posted trial_period_days
-        ✔ ineligible posted trial_period_days is negative
-        ✔ ineligible posted trial_period_days greater than 365
+      invalid-priceid
+        ✔ missing querystring priceid
+        ✔ invalid querystring priceid
+      invalid-price
+        ✔ ineligible querystring price is unpublished
+      invalid-nickname
+        ✔ missing posted nickname
     receives
-      ✔ optional posted trial_period_days (integer)
+      ✔ required posted nickname (string)
     returns
       ✔ object
 
@@ -1492,15 +1760,33 @@
         ✔ posted statement_descriptor too long
       invalid-unit_label
         ✔ missing posted unit_label
+      invalid-tax_code
+        ✔ missing posted tax_code
+        ✔ invalid posted tax_code
     receives
-      ✔ optional posted name
-      ✔ optional posted statement_descriptor
-      ✔ optional posted unit_label
+      ✔ required posted name
+      ✔ required posted statement_descriptor
+      ✔ required posted unit_label
+      ✔ required posted tax_code
     returns
       ✔ object
     configuration
       ✔ environment MINIMUM_PRODUCT_NAME_LENGTH
       ✔ environment MAXIMUM_PRODUCT_NAME_LENGTH
+
+  /api/administrator/subscriptions/update-tax-rate
+    exceptions
+      invalid-taxrateid
+        ✔ missing querystring taxrateid
+        ✔ invalid querystring taxrateid
+    receives
+      ✔ required posted display_name
+      ✔ required posted inclusive
+      ✔ required posted description
+      ✔ required posted jurisdiction
+      ✔ optional posted country
+    returns
+      ✔ object
 
   /api/administrator/subscriptions/usage-record
     exceptions
@@ -1526,6 +1812,28 @@
       ✔ array
     configuration
       ✔ environment PAGE_SIZE
+
+  /api/user/subscriptions/add-subscription-item
+    exceptions
+      invalid-subscriptionid
+        ✔ missing querystring subscriptionid
+        ✔ invalid querystring subscriptionid
+      invalid-account
+        ✔ ineligible accessing account
+      invalid-quantity
+        ✔ invalid posted quantity
+        ✔ invalid posted quantity is negative
+        ✔ invalid posted quantity is zero
+      invalid-priceid
+        ✔ missing posted priceid
+        ✔ invalid posted priceid
+      invalid-price
+        ✔ invalid price is not published
+        ✔ invalid price is unpublished
+      duplicate-price
+        ✔ invalid price is already on subscription
+    returns
+      ✔ object
 
   /api/user/subscriptions/charge
     exceptions
@@ -1663,12 +1971,32 @@
         ✔ ineligible querystring customer requires payment method
       invalid-account
         ✔ ineligible accessing account
-      invalid-planid
-        ✔ missing posted planid
-        ✔ invalid posted planid
-      invalid-plan
-        ✔ ineligible posted plan is not published
-        ✔ ineligible posted plan is unpublished
+      invalid-priceids
+        ✔ missing posted priceids
+      invalid-priceid
+        ✔ invalid posted priceids contains invalid price
+      invalid-price
+        ✔ invalid posted priceids contains not published price
+        ✔ invalid posted priceids contains unpublished price
+      invalid-taxrateid
+        ✔ invalid posted taxrateids contains invalid tax rate
+      invalid-tax-rate
+        ✔ invalid posted taxrateids contains inactive tax rate
+    returns
+      ✔ object
+
+  /api/user/subscriptions/create-tax-id
+    exceptions
+      invalid-customerid
+        ✔ missing querystring customerid
+        ✔ invalid querystring customerid
+      invalid-account
+        ✔ ineligible accessing account
+      invalid-type
+        ✔ missing posted type
+        ✔ invalid posted type
+      invalid-value
+        ✔ invalid posted value
     returns
       ✔ object
 
@@ -1737,6 +2065,21 @@
     returns
       ✔ boolean
 
+  /api/user/subscriptions/delete-subscription-item
+    exceptions
+      invalid-subscriptionid
+        ✔ missing querystring subscriptionid
+        ✔ invalid querystring subscriptionid
+      invalid-account
+        ✔ ineligible accessing account
+      invalid-itemid
+        ✔ missing posted itemid
+        ✔ invalid posted itemid
+      only-item
+        ✔ invalid posted itemid is only item
+    returns
+      ✔ object
+
   /api/user/subscriptions/delete-subscription
     exceptions
       invalid-subscriptionid
@@ -1746,6 +2089,16 @@
         ✔ ineligible accessing account
       invalid-subscription
         ✔ ineligible querystring subscription is not active
+    returns
+      ✔ boolean
+
+  /api/user/subscriptions/delete-tax-id
+    exceptions
+      invalid-taxid
+        ✔ missing querystring taxid
+        ✔ invalid querystring taxid
+      invalid-account
+        ✔ ineligible accessing account
     returns
       ✔ boolean
 
@@ -1849,21 +2202,21 @@
     returns
       ✔ object
 
-  /api/user/subscriptions/published-plan
+  /api/user/subscriptions/published-price
     exceptions
-      invalid-planid
-        ✔ missing querystring planid
-        ✔ invalid querystring planid
-      invalid-plan
-        ✔ ineligible querystring plan is not published
+      invalid-priceid
+        ✔ missing querystring priceid
+        ✔ invalid querystring priceid
+      invalid-price
+        ✔ ineligible querystring price is not published
     returns
       ✔ object
 
-  /api/user/subscriptions/published-plans-count
+  /api/user/subscriptions/published-prices-count
     returns
       ✔ integer
 
-  /api/user/subscriptions/published-plans
+  /api/user/subscriptions/published-prices
     receives
       ✔ optional querystring offset (integer)
       ✔ optional querystring limit (integer)
@@ -2038,30 +2391,11 @@
     returns
       ✔ object
 
-  /api/user/subscriptions/set-subscription-plan
+  /api/user/subscriptions/set-subscription-item-quantity
     exceptions
-      invalid-subscriptionid
-        ✔ missing querystring subscriptionid
-        ✔ invalid querystring subscriptionid
-      invalid-account
-        ✔ ineligible accessing account
-      invalid-planid
-        ✔ missing posted planid
-        ✔ invalid posted planid
-      invalid-plan
-        ✔ invalid posted plan is not published
-        ✔ invalid posted plan is unpublished
-        ✔ invalid posted plan is unchanged
-    invalid-paymentmethodid
-      ✔ invalid customer requires payments method
-    returns
-      ✔ object
-
-  /api/user/subscriptions/set-subscription-quantity
-    exceptions
-      invalid-subscriptionid
-        ✔ missing querystring subscriptionid
-        ✔ invalid querystring subscriptionid
+      invalid-subscriptionitemid
+        ✔ missing querystring subscriptionitemid
+        ✔ invalid querystring subscriptionitemid
       invalid-account
         ✔ ineligible accessing account
       invalid-quantity
@@ -2100,6 +2434,16 @@
     configuration
       ✔ environment PAGE_SIZE
 
+  /api/user/subscriptions/subscription-item
+    exceptions
+      invalid-subscriptionitemid
+        ✔ missing querystring subscriptionitemid
+        ✔ invalid querystring subscriptionitemid
+      invalid-account
+        ✔ ineligible accessing account
+    returns
+      ✔ object
+
   /api/user/subscriptions/subscription
     exceptions
       invalid-subscriptionid
@@ -2136,6 +2480,42 @@
     configuration
       ✔ environment PAGE_SIZE
 
+  /api/user/subscriptions/tax-id
+    exceptions
+      invalid-taxid
+        ✔ missing querystring taxid
+        ✔ invalid querystring taxid
+      invalid-account
+        ✔ ineligible accessing account
+    returns
+      ✔ object
+
+  /api/user/subscriptions/tax-ids
+    exceptions
+      invalid-customerid
+        ✔ missing querystring customerid
+        ✔ invalid querystring customerid
+      invalid-account
+        ✔ ineligible accessing account
+    receives
+      ✔ optional querystring offset (integer)
+      ✔ optional querystring limit (integer)
+      ✔ optional querystring all (boolean)
+    returns
+      ✔ array
+    configuration
+      ✔ environment PAGE_SIZE
+
+  /api/user/subscriptions/tax-rate
+    exceptions
+      invalid-taxrateid
+        ✔ missing querystring taxrateid
+        ✔ invalid querystring taxrateid
+      invalid-taxrate
+        ✔ invalid querystring taxrate is not active
+    returns
+      ✔ object
+
   /api/user/subscriptions/upcoming-invoice
     exceptions
       invalid-subscriptionid
@@ -2163,5 +2543,5 @@
       ✔ environment PAGE_SIZE
 
 
-  1044 passing (2h)
+  1235 passing (2h)
 

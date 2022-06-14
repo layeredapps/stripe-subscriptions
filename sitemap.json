@@ -586,6 +586,26 @@
       "jsFilePath": "/src/www/account/subscriptions/subscriptions.js",
       "verbs": "GET"
     },
+    "/administrator/subscriptions/activate-tax-rate": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/activate-tax-rate.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/activate-tax-rate.js",
+      "verbs": "GET POST"
+    },
+    "/administrator/subscriptions/add-line-item-tax-rate": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/add-line-item-tax-rate.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/add-line-item-tax-rate.js",
+      "verbs": "GET POST"
+    },
+    "/administrator/subscriptions/add-subscription-item-tax-rate": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/add-subscription-item-tax-rate.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/add-subscription-item-tax-rate.js",
+      "verbs": "GET POST"
+    },
+    "/administrator/subscriptions/adjust-subscription-item-quantity": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/adjust-subscription-item-quantity.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/adjust-subscription-item-quantity.js",
+      "verbs": "GET POST"
+    },
     "/administrator/subscriptions/apply-customer-coupon": {
       "htmlFilePath": "/src/www/administrator/subscriptions/apply-customer-coupon.html",
       "jsFilePath": "/src/www/administrator/subscriptions/apply-customer-coupon.js",
@@ -631,6 +651,11 @@
       "jsFilePath": "/src/www/administrator/subscriptions/create-product.js",
       "verbs": "GET POST"
     },
+    "/administrator/subscriptions/create-tax-rate": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/create-tax-rate.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/create-tax-rate.js",
+      "verbs": "GET POST"
+    },
     "/administrator/subscriptions/customer": {
       "htmlFilePath": "/src/www/administrator/subscriptions/customer.html",
       "jsFilePath": "/src/www/administrator/subscriptions/customer.js",
@@ -640,6 +665,11 @@
       "htmlFilePath": "/src/www/administrator/subscriptions/customers.html",
       "jsFilePath": "/src/www/administrator/subscriptions/customers.js",
       "verbs": "GET"
+    },
+    "/administrator/subscriptions/deactivate-tax-rate": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/deactivate-tax-rate.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/deactivate-tax-rate.js",
+      "verbs": "GET POST"
     },
     "/administrator/subscriptions/delete-coupon": {
       "htmlFilePath": "/src/www/administrator/subscriptions/delete-coupon.html",
@@ -681,6 +711,11 @@
       "jsFilePath": "/src/www/administrator/subscriptions/edit-product.js",
       "verbs": "GET POST"
     },
+    "/administrator/subscriptions/edit-tax-rate": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/edit-tax-rate.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/edit-tax-rate.js",
+      "verbs": "GET POST"
+    },
     "/administrator/subscriptions/flag-charge": {
       "htmlFilePath": "/src/www/administrator/subscriptions/flag-charge.html",
       "jsFilePath": "/src/www/administrator/subscriptions/flag-charge.js",
@@ -696,6 +731,10 @@
       "jsFilePath": "/src/www/administrator/subscriptions/index.js",
       "verbs": "GET"
     },
+    "/administrator/subscriptions/invoice-item": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/invoice-item.html",
+      "verbs": ""
+    },
     "/administrator/subscriptions/invoice": {
       "htmlFilePath": "/src/www/administrator/subscriptions/invoice.html",
       "jsFilePath": "/src/www/administrator/subscriptions/invoice.js",
@@ -704,6 +743,11 @@
     "/administrator/subscriptions/invoices": {
       "htmlFilePath": "/src/www/administrator/subscriptions/invoices.html",
       "jsFilePath": "/src/www/administrator/subscriptions/invoices.js",
+      "verbs": "GET"
+    },
+    "/administrator/subscriptions/line-item": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/line-item.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/line-item.js",
       "verbs": "GET"
     },
     "/administrator/subscriptions/payment-intent": {
@@ -791,6 +835,16 @@
       "jsFilePath": "/src/www/administrator/subscriptions/refunds.js",
       "verbs": "GET"
     },
+    "/administrator/subscriptions/remove-subscription-item-tax-rate": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/remove-subscription-item-tax-rate.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/remove-subscription-item-tax-rate.js",
+      "verbs": "GET POST"
+    },
+    "/administrator/subscriptions/remove-subscription-item": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/remove-subscription-item.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/remove-subscription-item.js",
+      "verbs": "GET POST"
+    },
     "/administrator/subscriptions/revoke-customer-coupon": {
       "htmlFilePath": "/src/www/administrator/subscriptions/revoke-customer-coupon.html",
       "jsFilePath": "/src/www/administrator/subscriptions/revoke-customer-coupon.js",
@@ -811,6 +865,11 @@
       "jsFilePath": "/src/www/administrator/subscriptions/setup-intents.js",
       "verbs": "GET"
     },
+    "/administrator/subscriptions/subscription-item": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/subscription-item.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/subscription-item.js",
+      "verbs": "GET"
+    },
     "/administrator/subscriptions/subscription": {
       "htmlFilePath": "/src/www/administrator/subscriptions/subscription.html",
       "jsFilePath": "/src/www/administrator/subscriptions/subscription.js",
@@ -819,6 +878,16 @@
     "/administrator/subscriptions/subscriptions": {
       "htmlFilePath": "/src/www/administrator/subscriptions/subscriptions.html",
       "jsFilePath": "/src/www/administrator/subscriptions/subscriptions.js",
+      "verbs": "GET"
+    },
+    "/administrator/subscriptions/tax-rate": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/tax-rate.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/tax-rate.js",
+      "verbs": "GET"
+    },
+    "/administrator/subscriptions/tax-rates": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/tax-rates.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/tax-rates.js",
       "verbs": "GET"
     },
     "/administrator/subscriptions/unpublish-coupon": {
@@ -835,6 +904,18 @@
       "htmlFilePath": "/src/www/administrator/subscriptions/unpublish-product.html",
       "jsFilePath": "/src/www/administrator/subscriptions/unpublish-product.js",
       "verbs": "GET POST"
+    },
+    "/api/administrator/subscriptions/add-line-item-tax-rate": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/add-line-item-tax-rate.js",
+      "verbs": "PATCH"
+    },
+    "/api/administrator/subscriptions/add-subscription-item-tax-rate": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/add-subscription-item-tax-rate.js",
+      "verbs": "PATCH"
+    },
+    "/api/administrator/subscriptions/add-subscription-item": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/add-subscription-item.js",
+      "verbs": "PATCH"
     },
     "/api/administrator/subscriptions/charge": {
       "jsFilePath": "/src/www/api/administrator/subscriptions/charge.js",
@@ -906,6 +987,10 @@
     },
     "/api/administrator/subscriptions/delete-product": {
       "jsFilePath": "/src/www/api/administrator/subscriptions/delete-product.js",
+      "verbs": "DELETE"
+    },
+    "/api/administrator/subscriptions/delete-subscription-item": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/delete-subscription-item.js",
       "verbs": "DELETE"
     },
     "/api/administrator/subscriptions/delete-subscription": {
@@ -1004,6 +1089,10 @@
       "jsFilePath": "/src/www/api/administrator/subscriptions/refunds.js",
       "verbs": "GET"
     },
+    "/api/administrator/subscriptions/remove-subscription-item-tax-rate": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/remove-subscription-item-tax-rate.js",
+      "verbs": "PATCH"
+    },
     "/api/administrator/subscriptions/reset-customer-coupon": {
       "jsFilePath": "/src/www/api/administrator/subscriptions/reset-customer-coupon.js",
       "verbs": "PATCH"
@@ -1060,6 +1149,14 @@
       "jsFilePath": "/src/www/api/administrator/subscriptions/set-subscription-coupon.js",
       "verbs": "PATCH"
     },
+    "/api/administrator/subscriptions/set-subscription-default-tax-rates": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/set-subscription-default-tax-rates.js",
+      "verbs": "PATCH"
+    },
+    "/api/administrator/subscriptions/set-subscription-item-quantity": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/set-subscription-item-quantity.js",
+      "verbs": "PATCH"
+    },
     "/api/administrator/subscriptions/set-tax-rate-active": {
       "jsFilePath": "/src/www/api/administrator/subscriptions/set-tax-rate-active.js",
       "verbs": "PATCH"
@@ -1078,6 +1175,10 @@
     },
     "/api/administrator/subscriptions/setup-intents": {
       "jsFilePath": "/src/www/api/administrator/subscriptions/setup-intents.js",
+      "verbs": "GET"
+    },
+    "/api/administrator/subscriptions/subscription-item": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/subscription-item.js",
       "verbs": "GET"
     },
     "/api/administrator/subscriptions/subscription": {
@@ -1211,6 +1312,10 @@
     "/api/user/subscriptions/delete-customer": {
       "jsFilePath": "/src/www/api/user/subscriptions/delete-customer.js",
       "verbs": "DELETE"
+    },
+    "/api/user/subscriptions/delete-subscription-item": {
+      "jsFilePath": "/src/www/api/user/subscriptions/delete-subscription-item.js",
+      "verbs": "PATCH"
     },
     "/api/user/subscriptions/delete-subscription": {
       "jsFilePath": "/src/www/api/user/subscriptions/delete-subscription.js",
