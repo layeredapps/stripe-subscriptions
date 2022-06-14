@@ -8,7 +8,6 @@ module.exports = {
 }
 
 async function beforeRequest (req) {
-  console.log('before', req.method, req.query, req.body)
   if (!req.query || !req.query.subscriptionitemid) {
     req.error = 'invalid-subscriptionitemid'
     req.removeContents = true
@@ -51,7 +50,6 @@ async function beforeRequest (req) {
 
 async function renderPage (req, res, messageTemplate) {
   messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
-  console.log('messageTemplate', messageTemplate)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.subscriptionItem, 'subscription_item')
   if (messageTemplate) {
     dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
@@ -64,14 +62,11 @@ async function renderPage (req, res, messageTemplate) {
 }
 
 async function submitForm (req, res) {
-  console.log('submitting', req.body)
   try {
     await global.api.administrator.subscriptions.DeleteSubscriptionItem.delete(req)
   } catch (error) {
-    console.log('errored', error)
     return renderPage(req, res, error.message)
   }
-  console.log('got success')
   if (req.query['return-url']) {
     return dashboard.Response.redirect(req, res, req.query['return-url'])
   } else {

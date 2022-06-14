@@ -15,7 +15,6 @@ module.exports = {
         }
       })
       if (!setupIntentInfo) {
-        console.log('could not find setup intent', req.query)
         throw new Error('invalid-setupintentid')
       }
       if (setupIntentInfo.dataValues.accountid !== req.account.accountid) {

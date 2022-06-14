@@ -8,7 +8,6 @@ module.exports = {
 }
 
 async function beforeRequest (req) {
-  console.log('before', req.method, req.query, req.body)
   if (!req.query || !req.query.subscriptionitemid) {
     req.error = 'invalid-subscriptionitemid'
     req.removeContents = true
@@ -63,7 +62,6 @@ async function beforeRequest (req) {
 
 async function renderPage (req, res, messageTemplate) {
   messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
-  console.log('messageTemplate', messageTemplate)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.subscriptionItem, 'subscription_item')
   if (messageTemplate) {
     dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
