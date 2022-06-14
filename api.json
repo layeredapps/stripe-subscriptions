@@ -221,6 +221,88 @@
     ],
     "configuration": []
   },
+  "/api/administrator/subscriptions/create-price": {
+    "url": "/api/administrator/subscriptions/create-price",
+    "verb": "post",
+    "auth": false,
+    "receives": [
+      "required posted productid",
+      "required posted tax_behavior",
+      "required posted currency",
+      "optionally-required posted unit_amount",
+      "optional posted published (boolean)",
+      "optional posted billing_scheme (per_unit|tiered)",
+      "optional posted recurring_usage_type (licensed|metered)",
+      "optional posted recurring_interval (day|week|month|year)",
+      "optionally-required posted recurring_interval_count",
+      "optionally-required posted recurring_aggregate_usage (sum|max|last_ever|last_during_period)",
+      "optional posted transform_quantity_divide_by",
+      "optionally-required posted transform_quantity_round (up|down)",
+      "optionally-required posted tiers_mode (graduated|volume)",
+      "optional posted tier(1...)_up_to",
+      "optional posted tier(1...)_unit_amount",
+      "optional posted tier(1...)_flat_amount"
+    ],
+    "exceptions": {
+      "invalid-productid": [
+        "missing posted productid",
+        "invalid posted productid"
+      ],
+      "invalid-product": [
+        "ineligible posted product is not published"
+      ],
+      "invalid-tax_behavior": [
+        "invalid posted tax_behavior"
+      ],
+      "invalid-unit_amount": [
+        "invalid posted unit_amount"
+      ],
+      "invalid-currency": [
+        "missing posted currency",
+        "invalid posted currency"
+      ],
+      "invalid-recurring_interval": [
+        "invalid posted recurring_interval"
+      ],
+      "invalid-recurring_interval_count": [
+        "missing posted recurring_interval_count",
+        "invalid posted recurring_interval_count",
+        "invalid posted recurring_interval_count exceeds one year"
+      ],
+      "invalid-recurring_aggregate_usage": [
+        "invalid posted recurring_aggregate_usage"
+      ],
+      "invalid-recurring_usage_type": [
+        "invalid posted recurring_usage_type"
+      ],
+      "invalid-billing_scheme": [
+        "invalid posted billing_scheme"
+      ],
+      "invalid-transform_quantity_divide_by": [
+        "invalid posted transform_quantity_divide_by"
+      ],
+      "invalid-transform_quantity_round": [
+        "invalid posted transform_quantity_round"
+      ],
+      "invalid-tiers_mode": [
+        "invalid posted tiers_mode"
+      ],
+      "invalid-tier_up_to": [
+        "invalid posted tier_up_to"
+      ],
+      "invalid-tier_unit_amount": [
+        "invalid posted tier_unit_amount"
+      ],
+      "invalid-tier_flat_amount": [
+        "invalid posted tier_flat_amount"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
   "/api/administrator/subscriptions/create-product": {
     "url": "/api/administrator/subscriptions/create-product",
     "verb": "post",
@@ -380,6 +462,23 @@
       "invalid-couponid": [
         "missing querystring couponid",
         "invalid querystring couponid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "boolean"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/delete-price": {
+    "url": "/api/administrator/subscriptions/delete-price",
+    "verb": "delete",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-priceid": [
+        "missing querystring priceid",
+        "invalid querystring priceid"
       ]
     },
     "redacts": [],
@@ -569,6 +668,53 @@
   },
   "/api/administrator/subscriptions/payment-methods": {
     "url": "/api/administrator/subscriptions/payment-methods",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/administrator/subscriptions/price": {
+    "url": "/api/administrator/subscriptions/price",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-priceid": [
+        "missing querystring priceid",
+        "invalid querystring priceid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/prices-count": {
+    "url": "/api/administrator/subscriptions/prices-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/prices": {
+    "url": "/api/administrator/subscriptions/prices",
     "verb": "get",
     "auth": false,
     "receives": [
@@ -855,6 +1001,47 @@
       "invalid-coupon": [
         "ineligible posted coupon is not published",
         "ineligible posted coupon is unpublished"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/set-price-published": {
+    "url": "/api/administrator/subscriptions/set-price-published",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-priceid": [
+        "missing querystring priceid",
+        "invalid querystring priceid"
+      ],
+      "invalid-price": [
+        "ineligible querystring price is published"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/set-price-unpublished": {
+    "url": "/api/administrator/subscriptions/set-price-unpublished",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-priceid": [
+        "missing querystring priceid",
+        "invalid querystring priceid"
+      ],
+      "invalid-price": [
+        "ineligible querystring price is not published",
+        "ineligible querystring price is already unpublished"
       ]
     },
     "redacts": [],
@@ -1274,6 +1461,31 @@
       "invalid-name": [
         "missing posted name",
         "invalid posted name"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/update-price": {
+    "url": "/api/administrator/subscriptions/update-price",
+    "verb": "patch",
+    "auth": false,
+    "receives": [
+      "required posted nickname (string)"
+    ],
+    "exceptions": {
+      "invalid-priceid": [
+        "missing querystring priceid",
+        "invalid querystring priceid"
+      ],
+      "invalid-price": [
+        "ineligible querystring price is unpublished"
+      ],
+      "invalid-nickname": [
+        "missing posted nickname"
       ]
     },
     "redacts": [],
@@ -2116,6 +2328,56 @@
     ],
     "configuration": []
   },
+  "/api/user/subscriptions/published-price": {
+    "url": "/api/user/subscriptions/published-price",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-priceid": [
+        "missing querystring priceid",
+        "invalid querystring priceid"
+      ],
+      "invalid-price": [
+        "ineligible querystring price is not published"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/published-prices-count": {
+    "url": "/api/user/subscriptions/published-prices-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/published-prices": {
+    "url": "/api/user/subscriptions/published-prices",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
   "/api/user/subscriptions/published-product": {
     "url": "/api/user/subscriptions/published-product",
     "verb": "get",
@@ -2418,6 +2680,32 @@
         "invalid posted coupon is not published",
         "invalid posted coupon is unpublished",
         "invalid posted coupon is other currency"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/set-subscription-item-quantity": {
+    "url": "/api/user/subscriptions/set-subscription-item-quantity",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionitemid": [
+        "missing querystring subscriptionitemid",
+        "invalid querystring subscriptionitemid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-quantity": [
+        "invalid posted quantity",
+        "invalid posted quantity is unchanged",
+        "invalid posted quantity is negative",
+        "invalid posted quantity is zero"
       ]
     },
     "redacts": [],

@@ -1412,10 +1412,6 @@
       "jsFilePath": "/src/www/api/user/subscriptions/refunds.js",
       "verbs": "GET"
     },
-    "/api/user/subscriptions/remove-subscription-item": {
-      "jsFilePath": "/src/www/api/user/subscriptions/remove-subscription-item.js",
-      "verbs": "PATCH"
-    },
     "/api/user/subscriptions/reset-subscription-canceling": {
       "jsFilePath": "/src/www/api/user/subscriptions/reset-subscription-canceling.js",
       "verbs": "PATCH"
@@ -1464,6 +1460,10 @@
       "jsFilePath": "/src/www/api/user/subscriptions/setup-intents.js",
       "verbs": "GET"
     },
+    "/api/user/subscriptions/subscription-item": {
+      "jsFilePath": "/src/www/api/user/subscriptions/subscription-item.js",
+      "verbs": "GET"
+    },
     "/api/user/subscriptions/subscription-prorated-invoice": {
       "jsFilePath": "/src/www/api/user/subscriptions/subscription-prorated-invoice.js",
       "verbs": "GET"
@@ -1486,6 +1486,10 @@
     },
     "/api/user/subscriptions/tax-ids": {
       "jsFilePath": "/src/www/api/user/subscriptions/tax-ids.js",
+      "verbs": "GET"
+    },
+    "/api/user/subscriptions/tax-rate": {
+      "jsFilePath": "/src/www/api/user/subscriptions/tax-rate.js",
       "verbs": "GET"
     },
     "/api/user/subscriptions/upcoming-invoice": {
