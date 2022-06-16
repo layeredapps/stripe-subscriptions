@@ -22,7 +22,7 @@ describe('/api/user/subscriptions/setup-intents', function () {
     await TestHelper.setupBeforeEach()
     const administrator = await TestHelper.createOwner()
     await TestHelper.createProduct(administrator, {
-      publishedAt: 'true'
+      active: 'true'
     })
     const user = await TestHelper.createUser()
     await TestHelper.createCustomer(user, {

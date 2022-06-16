@@ -21,7 +21,7 @@ describe('/administrator/subscriptions/invoices', function () {
     await TestHelper.setupBeforeEach()
     const administrator = await TestHelper.createOwner()
     await TestHelper.createProduct(administrator, {
-      publishedAt: 'true'
+      active: 'true'
     })
     for (let i = 0, len = global.pageSize + 2; i < len; i++) {
       await TestHelper.createPrice(administrator, {
@@ -38,7 +38,7 @@ describe('/administrator/subscriptions/invoices', function () {
         tier1_flat_amount: '9999',
         tier2_up_to: 'inf',
         tier2_flat_amount: '8999',
-        publishedAt: 'true'
+        active: 'true'
       })
       const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
       cachedInvoices.unshift(user.invoice.invoiceid)

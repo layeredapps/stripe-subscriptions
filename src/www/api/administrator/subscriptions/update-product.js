@@ -11,7 +11,7 @@ module.exports = {
     if (!product) {
       throw new Error('invalid-productid')
     }
-    if (product.unpublishedAt) {
+    if (!product.stripeObject.active) {
       throw new Error('invalid-product')
     }
     const updateInfo = {}

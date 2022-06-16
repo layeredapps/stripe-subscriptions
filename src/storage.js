@@ -95,8 +95,7 @@ module.exports = async () => {
         this.setDataValue('stripeObject', JSON.stringify(value))
       }
     },
-    publishedAt: dateType,
-    unpublishedAt: dateType,
+    active: DataTypes.BOOLEAN,
     appid: {
       type: DataTypes.STRING(64),
       defaultValue: global.appid
@@ -442,8 +441,7 @@ module.exports = async () => {
       }
     },
     productid: DataTypes.STRING(64),
-    publishedAt: dateType,
-    unpublishedAt: dateType,
+    active: DataTypes.BOOLEAN,
     appid: {
       type: DataTypes.STRING(64),
       defaultValue: global.appid
@@ -485,8 +483,7 @@ module.exports = async () => {
         this.setDataValue('stripeObject', JSON.stringify(value))
       }
     },
-    publishedAt: dateType,
-    unpublishedAt: dateType,
+    active: DataTypes.BOOLEAN,
     appid: {
       type: DataTypes.STRING(64),
       defaultValue: global.appid

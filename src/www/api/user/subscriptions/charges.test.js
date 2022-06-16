@@ -23,13 +23,13 @@ describe('/api/user/subscriptions/charges', function () {
     await TestHelper.setupBeforeEach()
     const administrator = await TestHelper.createOwner()
     await TestHelper.createProduct(administrator, {
-      publishedAt: 'true'
+      active: 'true'
     })
     const user = await TestStripeAccounts.createUserWithPaymentMethod()
     for (let i = 0, len = global.pageSize + 2; i < len; i++) {
       await TestHelper.createPrice(administrator, {
         productid: administrator.product.productid,
-        publishedAt: 'true',
+        active: 'true',
         unit_amount: 3000,
         currency: 'usd',
         tax_behavior: 'inclusive',

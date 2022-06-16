@@ -256,12 +256,10 @@ module.exports = {
   flagCharge,
   forgiveInvoice,
   removeSubscriptionItem,
-  setPricePublished,
-  setPriceUnpublished,
-  setProductPublished,
-  setProductUnpublished,
-  setCouponPublished,
-  setCouponUnpublished,
+  setPriceActive,
+  setPriceInactive,
+  setProductActive,
+  setProductInactive,
   toggleRefunds,
   toggleOverdueInvoiceThreshold,
   requestRefund,
@@ -432,12 +430,12 @@ async function deleteOldData () {
               // TODO: stripe don't support deleting products so they have to
               // be marked as 'active=false' instead
               // https://github.com/stripe/stripe-python/issues/658
-              await stripe[field].update(object.id, { active: false }, stripeKey)
+              await stripe[field].update(object.id, { active: 'false' }, stripeKey)
             } else {
               try {
                 await stripe[field].del(object.id, stripeKey)
               } catch (error) {
-                await stripe[field].update(object.id, { active: false }, stripeKey)
+                await stripe[field].update(object.id, { active: 'false' }, stripeKey)
                 Log.error('delete old data item error', object.id, error)
               }
             }
@@ -473,8 +471,8 @@ async function createProduct (administrator, properties) {
     }
   }
   let product = await req.post()
-  if (properties && properties.unpublishedAt) {
-    const req2 = createRequest(`/api/administrator/subscriptions/set-product-unpublished?productid=${product.productid}`)
+  if (properties && properties.active === 'false') {
+    const req2 = createRequest(`/api/administrator/subscriptions/set-product-inactive?productid=${product.productid}`)
     req2.session = req.session
     req2.account = req.account
     product = await req2.patch(req2)
@@ -497,11 +495,11 @@ async function createPrice (administrator, properties) {
     usage_type: 'licensed',
     unit_amount: '0',
     tax_behavior: 'inclusive',
-    publishedAt: 'true'
+    active: 'true'
   }
   let price = await req.post()
-  if (properties && properties.unpublishedAt) {
-    const req2 = createRequest(`/api/administrator/subscriptions/set-price-unpublished?priceid=${price.priceid}`)
+  if (properties && properties.active === 'false') {
+    const req2 = createRequest(`/api/administrator/subscriptions/set-price-inactive?priceid=${price.priceid}`)
     req2.session = req.session
     req2.account = req.account
     price = await req2.patch(req2)
@@ -551,13 +549,7 @@ async function createCoupon (administrator, properties) {
       req.body.duration_in_months = (3 + Math.ceil(Math.random() * 6)).toString()
     }
   }
-  let coupon = await req.post()
-  if (properties && properties.unpublishedAt) {
-    const req2 = createRequest(`/api/administrator/subscriptions/set-coupon-unpublished?couponid=${coupon.couponid}`)
-    req2.session = req.session
-    req2.account = req.account
-    coupon = await req2.patch(req2)
-  }
+  const coupon = await req.post()
   administrator.coupon = coupon
   return coupon
 }
@@ -937,54 +929,36 @@ async function cancelSubscription (user) {
   return user.subscription
 }
 
-async function setPricePublished (administrator, price) {
-  Log.info('setPricePublished', administrator, price)
-  const req = createRequest(`/api/administrator/subscriptions/set-price-published?priceid=${price.priceid}`)
+async function setPriceActive (administrator, price) {
+  Log.info('setPriceActive', administrator, price)
+  const req = createRequest(`/api/administrator/subscriptions/set-price-active?priceid=${price.priceid}`)
   req.session = administrator.session
   req.account = administrator.account
   req.stripeKey = stripeKey
   return req.patch()
 }
 
-async function setPriceUnpublished (administrator, price) {
-  Log.info('setPriceUnpublished', administrator, price)
-  const req = createRequest(`/api/administrator/subscriptions/set-price-unpublished?priceid=${price.priceid}`)
+async function setPriceInactive (administrator, price) {
+  Log.info('setPriceInactive', administrator, price)
+  const req = createRequest(`/api/administrator/subscriptions/set-price-inactive?priceid=${price.priceid}`)
   req.session = administrator.session
   req.account = administrator.account
   req.stripeKey = stripeKey
   return req.patch()
 }
 
-async function setProductPublished (administrator, product) {
-  Log.info('setProductPublished', administrator, product)
-  const req = createRequest(`/api/administrator/subscriptions/set-product-published?productid=${product.productid}`)
+async function setProductActive (administrator, product) {
+  Log.info('setProductActive', administrator, product)
+  const req = createRequest(`/api/administrator/subscriptions/set-product-active?productid=${product.productid}`)
   req.session = administrator.session
   req.account = administrator.account
   req.stripeKey = stripeKey
   return req.patch()
 }
 
-async function setProductUnpublished (administrator, product) {
-  Log.info('setProductUnpublished', administrator, product)
-  const req = createRequest(`/api/administrator/subscriptions/set-product-unpublished?productid=${product.productid}`)
-  req.session = administrator.session
-  req.account = administrator.account
-  req.stripeKey = stripeKey
-  return req.patch()
-}
-
-async function setCouponPublished (administrator, coupon) {
-  Log.info('setCouponPublished', administrator, coupon)
-  const req = createRequest(`/api/administrator/subscriptions/set-coupon-published?couponid=${coupon.couponid}`)
-  req.session = administrator.session
-  req.account = administrator.account
-  req.stripeKey = stripeKey
-  return req.patch()
-}
-
-async function setCouponUnpublished (administrator, coupon) {
-  Log.info('setCouponUnpublished', administrator, coupon)
-  const req = createRequest(`/api/administrator/subscriptions/set-coupon-unpublished?couponid=${coupon.couponid}`)
+async function setProductInactive (administrator, product) {
+  Log.info('setProductInactive', administrator, product)
+  const req = createRequest(`/api/administrator/subscriptions/set-product-inactive?productid=${product.productid}`)
   req.session = administrator.session
   req.account = administrator.account
   req.stripeKey = stripeKey

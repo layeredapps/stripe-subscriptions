@@ -37,8 +37,8 @@ async function beforeRequest (req) {
     return
   }
   const price = formatStripeObject(priceRaw)
-  if (price.unpublishedAt) {
-    req.error = 'unpublished-price'
+  if (!price.active) {
+    req.error = 'inactive-price'
     req.removeContents = true
     req.data = {
       price: {

@@ -138,7 +138,7 @@ describe('/api/administrator/subscriptions/create-product', function () {
   })
 
   describe('receives', () => {
-    it('optional posted published (boolean)', async () => {
+    it('optional posted active (boolean)', async () => {
       const administrator = await TestHelper.createOwner()
       const req = TestHelper.createRequest('/api/administrator/subscriptions/create-product')
       req.account = administrator.account
@@ -147,12 +147,11 @@ describe('/api/administrator/subscriptions/create-product', function () {
         name: 'product name',
         statement_descriptor: 'description',
         unit_label: 'thing',
-        publishedAt: 'true',
+        active: 'true',
         tax_code: 'txcd_41060003'
       }
       const product = await req.post()
-      assert.notStrictEqual(product.publishedAt, undefined)
-      assert.notStrictEqual(product.publishedAt, null)
+      assert.strictEqual(product.stripeObject.active, true)
     })
 
     it('required posted name (string)', async () => {
@@ -164,7 +163,7 @@ describe('/api/administrator/subscriptions/create-product', function () {
         name: 'product name',
         statement_descriptor: 'description',
         unit_label: 'thing',
-        publishedAt: 'true',
+        active: 'true',
         tax_code: 'txcd_41060003'
       }
       const product = await req.post()
@@ -180,7 +179,7 @@ describe('/api/administrator/subscriptions/create-product', function () {
         name: 'product name',
         statement_descriptor: 'description',
         unit_label: 'thing',
-        publishedAt: 'true',
+        active: 'true',
         tax_code: 'txcd_41060003'
       }
       const product = await req.post()
@@ -196,7 +195,7 @@ describe('/api/administrator/subscriptions/create-product', function () {
         name: 'product name',
         statement_descriptor: 'description',
         unit_label: 'thing',
-        publishedAt: 'true',
+        active: 'true',
         tax_code: 'txcd_41060003'
       }
       const product = await req.post()
@@ -212,7 +211,7 @@ describe('/api/administrator/subscriptions/create-product', function () {
         name: 'product name',
         statement_descriptor: 'description',
         unit_label: 'thing',
-        publishedAt: 'true',
+        active: 'true',
         tax_code: 'txcd_41060003'
       }
       const product = await req.post()

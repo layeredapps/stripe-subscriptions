@@ -23,7 +23,7 @@ describe('/api/user/subscriptions/payment-intents', function () {
     await TestHelper.setupBeforeEach()
     const administrator = await TestHelper.createOwner()
     await TestHelper.createProduct(administrator, {
-      publishedAt: 'true'
+      active: 'true'
     })
     const user = await TestStripeAccounts.createUserWithPaymentMethod()
     for (let i = 0, len = global.pageSize + 2; i < len; i++) {

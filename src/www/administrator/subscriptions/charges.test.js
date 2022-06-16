@@ -21,7 +21,7 @@ describe('/administrator/subscriptions/charges', function () {
     await TestHelper.setupBeforeEach()
     const administrator = await TestHelper.createOwner()
     await TestHelper.createProduct(administrator, {
-      publishedAt: 'true'
+      active: 'true'
     })
     for (let i = 0, len = global.pageSize + 2; i < len; i++) {
       await TestHelper.createPrice(administrator, {
@@ -31,7 +31,7 @@ describe('/administrator/subscriptions/charges', function () {
         recurring_usage_type: 'licensed',
         recurring_interval: 'month',
         recurring_interval_count: '1',
-        publishedAt: 'true',
+        active: 'true',
         unit_amount: '100000'
       })
       const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)

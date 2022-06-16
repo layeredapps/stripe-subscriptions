@@ -22,17 +22,6 @@ describe('/api/administrator/subscriptions/set-customer-coupon', function () {
     await TestHelper.setupBeforeEach()
     const administrator = await TestStripeAccounts.createOwnerWithPrice()
     const coupon = await TestHelper.createCoupon(administrator, {
-      publishedAt: 'true',
-      duration: 'repeating',
-      duration_in_months: '3'
-    })
-    const notPublishedCoupon = await TestHelper.createCoupon(administrator, {
-      duration: 'repeating',
-      duration_in_months: '3'
-    })
-    const unpublishedCoupon = await TestHelper.createCoupon(administrator, {
-      publishedAt: 'true',
-      unpublishedAt: 'true',
       duration: 'repeating',
       duration_in_months: '3'
     })
@@ -97,29 +86,6 @@ describe('/api/administrator/subscriptions/set-customer-coupon', function () {
     } catch (error) {
       cachedResponses.invalidCoupon = error.message
     }
-    // not published and unpublished coupon
-    const req6 = TestHelper.createRequest(`/api/administrator/subscriptions/set-customer-coupon?customerid=${user.customer.customerid}`)
-    req6.account = administrator.account
-    req6.session = administrator.session
-    req6.body = {
-      couponid: notPublishedCoupon.couponid
-    }
-    try {
-      await req6.patch()
-    } catch (error) {
-      cachedResponses.notPublishedCoupon = error.message
-    }
-    const req7 = TestHelper.createRequest(`/api/administrator/subscriptions/set-customer-coupon?customerid=${user.customer.customerid}`)
-    req7.account = administrator.account
-    req7.session = administrator.session
-    req7.body = {
-      couponid: unpublishedCoupon.couponid
-    }
-    try {
-      await req7.patch()
-    } catch (error) {
-      cachedResponses.unpublishedAtCoupon = error.message
-    }
     // returns
     const req8 = TestHelper.createRequest(`/api/administrator/subscriptions/set-customer-coupon?customerid=${user.customer.customerid}`)
     req8.account = administrator.account
@@ -167,20 +133,6 @@ describe('/api/administrator/subscriptions/set-customer-coupon', function () {
         await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidCoupon
         assert.strictEqual(errorMessage, 'invalid-couponid')
-      })
-    })
-
-    describe('invalid-coupon', () => {
-      it('ineligible posted coupon is not published', async function () {
-        await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.notPublishedCoupon
-        assert.strictEqual(errorMessage, 'invalid-coupon')
-      })
-
-      it('ineligible posted coupon is unpublished', async function () {
-        await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.unpublishedAtCoupon
-        assert.strictEqual(errorMessage, 'invalid-coupon')
       })
     })
   })

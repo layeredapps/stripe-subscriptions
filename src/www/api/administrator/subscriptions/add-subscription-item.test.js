@@ -22,18 +22,8 @@ describe('/api/administrator/subscriptions/add-subscription-item', function () {
     await TestHelper.setupBeforeEach()
     const administrator = await TestStripeAccounts.createOwnerWithPrice()
     const price2 = administrator.price
-    const price3 = await TestHelper.createPrice(administrator, {
-      productid: administrator.product.productid,
-      publishedAt: true,
-      unpublishedAt: true,
-      unit_amount: 2000,
-      currency: 'usd',
-      tax_behavior: 'inclusive',
-      recurring_interval: 'month',
-      recurring_interval_count: '1',
-      recurring_usage_type: 'licensed'
-    })
-    const price4 = await TestHelper.createPrice(administrator, {
+    const inactivePrice = await TestHelper.createPrice(administrator, {
+      active: 'false',
       productid: administrator.product.productid,
       unit_amount: 2000,
       currency: 'usd',
@@ -100,24 +90,12 @@ describe('/api/administrator/subscriptions/add-subscription-item', function () {
     req.session = administrator.session
     req.body = {
       quantity: '7',
-      priceid: price3.priceid
+      priceid: inactivePrice.priceid
     }
     try {
       await req.patch()
     } catch (error) {
-      cachedResponses.invalidPriceUnpublished = error.message
-    }
-    req = TestHelper.createRequest(`/api/administrator/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
-    req.account = administrator.account
-    req.session = administrator.session
-    req.body = {
-      quantity: '7',
-      priceid: price4.priceid
-    }
-    try {
-      await req.patch()
-    } catch (error) {
-      cachedResponses.invalidPriceNotPublished = error.message
+      cachedResponses.invalidPriceNotActive = error.message
     }
     // invalid quantity
     req = TestHelper.createRequest(`/api/administrator/subscriptions/add-subscription-item?subscriptionid=${user.subscription.subscriptionid}`)
@@ -232,15 +210,9 @@ describe('/api/administrator/subscriptions/add-subscription-item', function () {
     })
 
     describe('invalid-price', () => {
-      it('invalid price is not published', async function () {
+      it('invalid price is not active', async function () {
         await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.invalidPriceNotPublished
-        assert.strictEqual(errorMessage, 'invalid-price')
-      })
-
-      it('invalid price is unpublished', async function () {
-        await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.invalidPriceUnpublished
+        const errorMessage = cachedResponses.invalidPriceNotActive
         assert.strictEqual(errorMessage, 'invalid-price')
       })
     })

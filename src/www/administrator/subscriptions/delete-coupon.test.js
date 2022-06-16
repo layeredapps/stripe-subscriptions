@@ -8,7 +8,6 @@ describe('/administrator/subscriptions/delete-coupon', function () {
     it('should bind data to req', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -24,7 +23,6 @@ describe('/administrator/subscriptions/delete-coupon', function () {
     it('should present the form', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -42,7 +40,6 @@ describe('/administrator/subscriptions/delete-coupon', function () {
     it('should delete coupon (screenshots)', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -82,7 +79,6 @@ describe('/administrator/subscriptions/delete-coupon', function () {
     it('invalid-csrf-token', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })

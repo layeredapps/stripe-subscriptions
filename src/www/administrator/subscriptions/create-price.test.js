@@ -8,7 +8,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('should present the form', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -24,7 +24,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('should create-price (screenshots)', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -87,7 +87,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('invalid-tax_behavior', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -115,7 +115,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('invalid-currency', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -143,7 +143,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('invalid-nickname', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -171,7 +171,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('invalid-type', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -199,7 +199,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('invalid-billing_scheme', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -227,7 +227,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('invalid-unit_amount', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -251,7 +251,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('invalid-transform_quantity_divide_by', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -277,7 +277,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('invalid-transform_quantity_round', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -303,7 +303,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('invalid-recurring_interval', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -331,7 +331,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('invalid-recurring_interval_count', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -361,7 +361,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('invalid-recurring_usage_type', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -391,7 +391,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('invalid-recurring_aggregate_usage', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -421,7 +421,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('invalid-tier_mode', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -456,7 +456,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('invalid-tier_up_to', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -491,7 +491,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('invalid-tier_up_to_inf', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -526,7 +526,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('invalid-tier_ambiguous_amount', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -562,7 +562,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('invalid-tier_unit_amount', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -595,7 +595,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('invalid-tier_flat_amount', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -628,7 +628,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('invalid-xss-input', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -662,7 +662,7 @@ describe('/administrator/subscriptions/create-price', function () {
     it('invalid-csrf-token', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/administrator/subscriptions/create-price')
       req.puppeteer = false

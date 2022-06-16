@@ -10,7 +10,7 @@ describe('/api/user/subscriptions/invoices-count', function () {
     it('integer', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const user = await TestStripeAccounts.createUserWithPaymentMethod()
       for (let i = 0, len = global.pageSize + 1; i < len; i++) {
@@ -22,7 +22,7 @@ describe('/api/user/subscriptions/invoices-count', function () {
           recurring_interval: 'month',
           recurring_interval_count: '1',
           recurring_usage_type: 'licensed',
-          publishedAt: 'true'
+          active: 'true'
         })
         await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, user)
       }

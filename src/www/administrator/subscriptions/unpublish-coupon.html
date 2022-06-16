@@ -3,24 +3,24 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8" /> 
-    <title translate="yes">Unpublish coupon</title>
+    <title translate="yes">Deactivate coupon</title>
     <link href="/public/content.css" rel="stylesheet">
     <link href="/public/content-additional.css" rel="stylesheet">
     <base href="/" target="_top">
   </head>
   <body>
     <div class="container">
-      <h1 translate="yes">Unpublish coupon</h1>
+      <h1 translate="yes">Deactivate coupon</h1>
       <p translate="yes">The coupon will immediately become unusable by anyone else.</p>
       <div id="message-container"></div>
-      <form id="submit-form" method="post" class="input-form" action="/administrator/subscriptions/unpublish-coupon?couponid=${coupon.id}" name="submit-form">
+      <form id="submit-form" method="post" class="input-form" action="/administrator/subscriptions/deactivate-coupon?couponid=${coupon.id}" name="submit-form">
         <input type="hidden" name="csrf-token" />
-        <button id="submit-button" type="submit" class="button" translate="yes">Unpublish coupon</button>
+        <button id="submit-button" type="submit" class="button" translate="yes">Deactivate coupon</button>
       </form>
     </div>
     <template id="success">
       <div class="success message" translate="yes">
-        Success! The coupon has been unpublished
+        Success! The coupon has been set inactive
       </div>
     </template>
     <template id="unknown-error">
@@ -38,14 +38,9 @@
         Error! An invalid coupon was specified
       </div>
     </template>
-    <template id="not-published">
+    <template id="already-inactive">
       <div class="error message" translate="yes">
-        The selected coupon is not published
-      </div>
-    </template>
-    <template id="already-unpublished">
-      <div class="error message" translate="yes">
-        The selected coupon is already unpublished
+        The selected coupon is already inactive
       </div>
     </template>
     <template id="invalid-csrf-token">

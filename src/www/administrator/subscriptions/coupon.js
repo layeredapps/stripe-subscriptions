@@ -1,5 +1,4 @@
 const dashboard = require('@layeredapps/dashboard')
-const navbar = require('./navbar-coupon.js')
 const formatStripeObject = require('../../../stripe-object.js')
 const statuses = ['active', 'trialing', 'past_due', 'canceled', 'unpaid']
 
@@ -59,7 +58,6 @@ async function beforeRequest (req) {
 async function renderPage (req, res, messageTemplate) {
   messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.coupon, 'coupon')
-  navbar.setup(doc, req.data.coupon)
   const removeElements = []
   if (messageTemplate) {
     dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
@@ -67,13 +65,6 @@ async function renderPage (req, res, messageTemplate) {
       removeElements.push('coupons-table')
     }
   } else {
-    if (!req.data.coupon.publishedAt) {
-      removeElements.push('published', 'unpublished')
-    } else if (req.data.coupon.unpublishedAt) {
-      removeElements.push('published', 'not-published')
-    } else {
-      removeElements.push('unpublished', 'not-published')
-    }
     if (req.data.coupon.amount_off) {
       removeElements.push('percent_off-heading', 'percent_off-value')
     } else {

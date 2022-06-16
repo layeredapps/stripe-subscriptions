@@ -9,16 +9,16 @@ module.exports = {
 
 async function beforeRequest (req) {
   const products = await global.api.administrator.subscriptions.Products.get(req)
-  const published = []
+  const active = []
   if (products && products.length) {
     for (const i in products) {
       const product = formatStripeObject(products[i])
-      if (product.publishedAt && !product.unpublishedAt) {
-        published.push(product)
+      if (product.active) {
+        active.push(product)
       }
     }
   }
-  req.data = { products: published }
+  req.data = { products: active }
 }
 
 async function renderPage (req, res, messageTemplate) {

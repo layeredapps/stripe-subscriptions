@@ -92,7 +92,6 @@ describe('/administrator/subscriptions/create-coupon', function () {
     it('invalid-couponid', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })

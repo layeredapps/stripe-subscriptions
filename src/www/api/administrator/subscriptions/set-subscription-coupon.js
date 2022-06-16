@@ -25,9 +25,6 @@ module.exports = {
     if (!coupon) {
       throw new Error('invalid-couponid')
     }
-    if (!coupon.publishedAt || coupon.unpublishedAt) {
-      throw new Error('invalid-coupon')
-    }
     const subscriptionInfo = {
       coupon: req.body.couponid
     }

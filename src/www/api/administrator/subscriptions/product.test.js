@@ -41,7 +41,7 @@ describe('/api/administrator/subscriptions/product', function () {
     it('object', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/api/administrator/subscriptions/product?productid=${administrator.product.productid}`)
       req.account = administrator.account

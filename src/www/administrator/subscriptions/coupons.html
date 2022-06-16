@@ -23,7 +23,6 @@
             <tr>
               <th>ID</th>
               <th translate="yes">Discount</th>
-              <th translate="yes">Status</th>
               <th translate="yes">Created</th>
             </tr>
           </thead>
@@ -43,9 +42,6 @@
         </td>
         <td id="amount_off-${coupon.id}">${coupon.amountOffFormatted} ${coupon.currency}</td>
         <td id="percent_off-${coupon.id}">${coupon.percent_off}%</td>
-        <td id="draft-coupon-${coupon.id}" translate="yes">Draft</td>
-        <td id="published-coupon-${coupon.id}" translate="yes">Published</td>
-        <td id="unpublished-coupon-${coupon.id}" translate="yes">Unpublished</td>
         <td>${coupon.createdAtFormatted}</td>
       </tr>
     </template>

@@ -52,7 +52,6 @@ describe('/api/administrator/subscriptions/reset-customer-coupon', function () {
     }
     // returns
     await TestHelper.createCoupon(administrator, {
-      publishedAt: 'true',
       duration: 'repeating',
       duration_in_months: '3'
     })

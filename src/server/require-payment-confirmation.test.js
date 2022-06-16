@@ -78,7 +78,7 @@ describe('server/stripe-subscriptions/require-payment-confirmation', function ()
         recurring_interval: 'month',
         recurring_interval_count: '1',
         recurring_usage_type: 'licensed',
-        publishedAt: 'true'
+        active: 'true'
       })
       const user = await TestStripeAccounts.createUserWithFreeSubscription(administrator.price)
       const req = TestHelper.createRequest('/home')

@@ -14,7 +14,6 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
         country: 'US'
       })
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -36,7 +35,6 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
         country: 'US'
       })
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -60,7 +58,6 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
         country: 'US'
       })
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -104,7 +101,6 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
     it('no-discount', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice()
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -128,7 +124,6 @@ describe('/administrator/subscriptions/revoke-customer-coupon', function () {
         country: 'US'
       })
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })

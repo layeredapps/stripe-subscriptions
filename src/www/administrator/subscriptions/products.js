@@ -19,6 +19,7 @@ async function beforeRequest (req) {
 
 async function renderPage (req, res) {
   const doc = dashboard.HTML.parse(req.html || req.route.html)
+  const removeElements = []
   if (req.data.products && req.data.products.length) {
     dashboard.HTML.renderTable(doc, req.data.products, 'product-row', 'products-table')
     if (req.data.total <= global.pageSize) {
@@ -28,28 +29,19 @@ async function renderPage (req, res) {
       dashboard.HTML.renderPagination(doc, req.data.offset, req.data.total)
     }
     for (const product of req.data.products) {
-      if (product.unpublishedAt) {
-        const published = doc.getElementById(`published-${product.id}`)
-        published.parentNode.removeChild(published)
-        const notPublished = doc.getElementById(`not-published-${product.id}`)
-        notPublished.parentNode.removeChild(notPublished)
-      } else if (product.publishedAt) {
-        const unpublished = doc.getElementById(`unpublished-${product.id}`)
-        unpublished.parentNode.removeChild(unpublished)
-        const notPublished = doc.getElementById(`not-published-${product.id}`)
-        notPublished.parentNode.removeChild(notPublished)
+      if (product.active) {
+        removeElements.push(`inactive-${product.id}`)
       } else {
-        const published = doc.getElementById(`published-${product.id}`)
-        published.parentNode.removeChild(published)
-        const unpublished = doc.getElementById(`unpublished-${product.id}`)
-        unpublished.parentNode.removeChild(unpublished)
+        removeElements.push(`active-${product.id}`)
       }
     }
-    const noProducts = doc.getElementById('no-products')
-    noProducts.parentNode.removeChild(noProducts)
+    removeElements.push('no-products')
   } else {
-    const productsTable = doc.getElementById('products-table')
-    productsTable.parentNode.removeChild(productsTable)
+    removeElements.push('products-table')
+  }
+  for (const id of removeElements) {
+    const element = doc.getElementById(id)
+    element.parentNode.removeChild(element)
   }
   return dashboard.Response.end(req, res, doc)
 }

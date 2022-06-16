@@ -8,7 +8,7 @@ describe('/administrator/subscriptions/edit-product', function () {
     it('should bind data to req', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/edit-product?productid=${administrator.product.productid}`)
       req.account = administrator.account
@@ -22,7 +22,7 @@ describe('/administrator/subscriptions/edit-product', function () {
     it('should present the form', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/edit-product?productid=${administrator.product.productid}`)
       req.account = administrator.account
@@ -38,7 +38,7 @@ describe('/administrator/subscriptions/edit-product', function () {
     it('should update product (screenshots)', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/edit-product?productid=${administrator.product.productid}`)
       req.account = administrator.account
@@ -78,23 +78,22 @@ describe('/administrator/subscriptions/edit-product', function () {
       assert.strictEqual(req.error, 'invalid-productid')
     })
 
-    it('unpublished-product', async () => {
+    it('inactive-product', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true',
-        unpublishedAt: 'true'
+        active: 'false'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/edit-product?productid=${administrator.product.productid}`)
       req.account = administrator.account
       req.session = administrator.session
       await req.route.api.before(req)
-      assert.strictEqual(req.error, 'unpublished-product')
+      assert.strictEqual(req.error, 'inactive-product')
     })
 
     it('invalid-name', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/edit-product?productid=${administrator.product.productid}`)
       req.account = administrator.account
@@ -113,7 +112,7 @@ describe('/administrator/subscriptions/edit-product', function () {
     it('invalid-product-name-length', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/edit-product?productid=${administrator.product.productid}`)
       req.account = administrator.account
@@ -133,7 +132,7 @@ describe('/administrator/subscriptions/edit-product', function () {
     it('invalid-statement_descriptor', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/edit-product?productid=${administrator.product.productid}`)
       req.account = administrator.account
@@ -152,7 +151,7 @@ describe('/administrator/subscriptions/edit-product', function () {
     it('invalid-unit_label', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/edit-product?productid=${administrator.product.productid}`)
       req.account = administrator.account
@@ -172,7 +171,7 @@ describe('/administrator/subscriptions/edit-product', function () {
     it('invalid-xss-input', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/edit-product?productid=${administrator.product.productid}`)
       req.account = administrator.account
@@ -192,7 +191,7 @@ describe('/administrator/subscriptions/edit-product', function () {
     it('invalid-csrf-token', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/edit-product?productid=${administrator.product.productid}`)
       req.puppeteer = false

@@ -8,7 +8,7 @@ describe('/administrator/subscriptions/product', function () {
     it('should bind data to req', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/product?productid=${administrator.product.productid}`)
       req.account = administrator.account
@@ -22,7 +22,7 @@ describe('/administrator/subscriptions/product', function () {
     it('should present product table (screenshots)', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/product?productid=${administrator.product.productid}`)
       req.account = administrator.account

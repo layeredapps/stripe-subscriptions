@@ -19,7 +19,7 @@ describe('/api/user/subscriptions/refunds-count', function () {
           recurring_interval: 'month',
           recurring_usage_type: 'licensed',
           recurring_interval_count: '1',
-          publishedAt: 'true'
+          active: 'true'
         })
         await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, user)
         await TestHelper.createRefund(administrator, user.charge.chargeid)

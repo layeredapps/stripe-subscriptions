@@ -14,7 +14,7 @@ module.exports = {
       throw new Error('invalid-taxrate')
     }
     const taxRateInfo = {
-      active: false
+      active: 'false'
     }
     const taxRateNow = await stripeCache.execute('taxRates', 'update', req.query.taxrateid, taxRateInfo, req.stripeKey)
     await subscriptions.Storage.TaxRate.update({

@@ -40,7 +40,7 @@ describe('/api/administrator/subscriptions/set-tax-rate-inactive', function () {
       it('invalid taxrate is already inactive', async function () {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createTaxRate(administrator, {
-          active: false
+          active: 'false'
         })
         const req = TestHelper.createRequest(`/api/administrator/subscriptions/set-tax-rate-inactive?taxrateid=${administrator.taxRate.taxrateid}`)
         req.account = administrator.account

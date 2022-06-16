@@ -56,20 +56,17 @@ async function beforeRequest (req) {
   }
   req.query.all = true
   const coupons = await global.api.administrator.subscriptions.Coupons.get(req)
-  const published = []
+  const active = []
   if (coupons && coupons.length) {
     for (const i in coupons) {
       const coupon = formatStripeObject(coupons[i])
-      if (!coupon.publishedAt || coupon.unpublishedAt) {
-        continue
-      }
       if (coupon.max_redemptions && coupon.max_redemptions === coupon.times_redeemed) {
         continue
       }
-      published.push(coupon)
+      active.push(coupon)
     }
   }
-  req.data = { customer, coupons: published }
+  req.data = { customer, coupons: active }
 }
 
 async function renderPage (req, res, messageTemplate) {
@@ -101,10 +98,7 @@ async function submitForm (req, res) {
   } catch (error) {
     return renderPage(req, res, error.message)
   }
-  if (coupon.unpublishedAt ||
-      !coupon.publishedAt ||
-      (coupon.max_redemptions &&
-      coupon.max_redemptions === coupon.times_redeemed)) {
+  if (coupon.max_redemptions && coupon.max_redemptions === coupon.times_redeemed) {
     return renderPage(req, res, 'invalid-coupon')
   }
   try {

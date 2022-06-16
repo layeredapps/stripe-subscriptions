@@ -38,8 +38,8 @@ describe('/api/administrator/subscriptions/update-price', function () {
     })
 
     describe('invalid-price', () => {
-      it('ineligible querystring price is unpublished', async () => {
-        const administrator = await TestStripeAccounts.createOwnerWithUnpublishedPrice()
+      it('ineligible querystring price is not active', async () => {
+        const administrator = await TestStripeAccounts.createOwnerWithInactivePrice()
         const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-price?priceid=${administrator.price.priceid}`)
         req.account = administrator.account
         req.session = administrator.session

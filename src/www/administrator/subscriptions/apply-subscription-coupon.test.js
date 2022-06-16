@@ -35,8 +35,7 @@ describe('/administrator/subscriptions/apply-subscription-coupon', function () {
       tax_behavior: 'inclusive',
       recurring_interval: 'month',
       recurring_interval_count: '1',
-      recurring_usage_type: 'licensed',
-      publishedAt: 'true'
+      recurring_usage_type: 'licensed'
     })
     const user2 = await TestStripeAccounts.createUserWithFreeSubscription(administrator2.price)
     const req2 = TestHelper.createRequest(`/administrator/subscriptions/apply-subscription-coupon?subscriptionid=${user2.subscription.subscriptionid}`)
@@ -47,7 +46,6 @@ describe('/administrator/subscriptions/apply-subscription-coupon', function () {
     // has coupon
     const user3 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     await TestHelper.createCoupon(administrator, {
-      publishedAt: 'true',
       duration: 'repeating',
       duration_in_months: '3'
     })

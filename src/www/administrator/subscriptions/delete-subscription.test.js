@@ -23,7 +23,7 @@ describe('/administrator/subscriptions/delete-subscription', function () {
     const paidPrice = administrator.price
     const freeTrialPrice = await TestHelper.createPrice(administrator, {
       productid: administrator.product.productid,
-      publishedAt: 'true',
+      active: 'true',
       currency: 'usd',
       tax_behavior: 'inclusive',
       unit_amount: '100000',
@@ -33,7 +33,7 @@ describe('/administrator/subscriptions/delete-subscription', function () {
     })
     const freePrice = await TestHelper.createPrice(administrator, {
       productid: administrator.product.productid,
-      publishedAt: 'true',
+      active: 'true',
       currency: 'usd',
       unit_amount: '0',
       tax_behavior: 'inclusive',

@@ -42,38 +42,10 @@ describe('/api/administrator/subscriptions/update-coupon', function () {
       })
     })
 
-    describe('invalid-coupon', () => {
-      it('ineligible querystring coupon is unpublished', async () => {
-        const administrator = await TestHelper.createOwner()
-        await TestHelper.createCoupon(administrator, {
-          publishedAt: 'true',
-          unpublishedAt: 'true',
-          duration: 'repeating',
-          duration_in_months: '3'
-        })
-        const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-coupon?couponid=${administrator.coupon.couponid}`)
-        req.account = administrator.account
-        req.session = administrator.session
-        req.body = {
-          name: 'new-name',
-          statement_descriptor: 'new-description',
-          unit_label: 'new-thing'
-        }
-        let errorMessage
-        try {
-          await req.patch(req)
-        } catch (error) {
-          errorMessage = error.message
-        }
-        assert.strictEqual(errorMessage, 'invalid-coupon')
-      })
-    })
-
     describe('invalid-name', () => {
       it('missing posted name', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createCoupon(administrator, {
-          publishedAt: 'true',
           duration: 'repeating',
           duration_in_months: '3'
         })
@@ -95,7 +67,6 @@ describe('/api/administrator/subscriptions/update-coupon', function () {
       it('invalid posted name', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createCoupon(administrator, {
-          publishedAt: 'true',
           duration: 'repeating',
           duration_in_months: '3'
         })
@@ -120,7 +91,6 @@ describe('/api/administrator/subscriptions/update-coupon', function () {
     it('required posted name', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -139,7 +109,6 @@ describe('/api/administrator/subscriptions/update-coupon', function () {
     it('object', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })

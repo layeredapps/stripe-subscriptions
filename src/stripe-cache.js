@@ -86,6 +86,9 @@ function formatError (error, group) {
   if (error.raw && error.raw.message.indexOf('Invalid subscription_item') > -1) {
     return 'invalid-subscriptionitemid'
   }
+  if (error.raw && error.raw.message.indexOf('combine currencies')) {
+    return 'invalid-currency'
+  }
   return 'unknown-error'
 }
 

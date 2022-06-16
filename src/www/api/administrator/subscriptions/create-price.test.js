@@ -10,7 +10,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       it('missing posted productid', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
         req.account = administrator.account
@@ -35,7 +35,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       it('invalid posted productid', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
         req.account = administrator.account
@@ -59,9 +59,11 @@ describe('/api/administrator/subscriptions/create-price', function () {
     })
 
     describe('invalid-product', () => {
-      it('ineligible posted product is not published', async () => {
+      it('ineligible posted product is not active', async () => {
         const administrator = await TestHelper.createOwner()
-        await TestHelper.createProduct(administrator, {})
+        await TestHelper.createProduct(administrator, {
+          active: 'false'
+        })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
         req.account = administrator.account
         req.session = administrator.session
@@ -87,7 +89,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       it('invalid posted tax_behavior', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
         req.account = administrator.account
@@ -114,7 +116,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       it('invalid posted unit_amount', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
         req.account = administrator.account
@@ -141,7 +143,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       it('missing posted currency', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
         req.account = administrator.account
@@ -166,7 +168,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       it('invalid posted currency', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
         req.account = administrator.account
@@ -193,7 +195,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       it('invalid posted recurring_interval', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
         req.account = administrator.account
@@ -220,7 +222,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       it('missing posted recurring_interval_count', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
         req.account = administrator.account
@@ -245,7 +247,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       it('invalid posted recurring_interval_count', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
         req.account = administrator.account
@@ -270,7 +272,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       it('invalid posted recurring_interval_count exceeds one year', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
         req.account = administrator.account
@@ -297,7 +299,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       it('invalid posted recurring_aggregate_usage', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
         req.account = administrator.account
@@ -326,7 +328,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       it('invalid posted recurring_usage_type', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
         req.account = administrator.account
@@ -355,7 +357,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       it('invalid posted billing_scheme', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
         req.account = administrator.account
@@ -385,7 +387,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       it('invalid posted transform_quantity_divide_by', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
         req.account = administrator.account
@@ -417,7 +419,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       it('invalid posted transform_quantity_round', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
         req.account = administrator.account
@@ -449,7 +451,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       it('invalid posted tiers_mode', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
         req.account = administrator.account
@@ -480,7 +482,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       it('invalid posted tier_up_to', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
         req.account = administrator.account
@@ -514,7 +516,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       it('invalid posted tier_unit_amount', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
         req.account = administrator.account
@@ -547,7 +549,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
       it('invalid posted tier_flat_amount', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
         req.account = administrator.account
@@ -581,7 +583,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
     it('required posted productid', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -603,7 +605,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
     it('required posted tax_behavior', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -625,7 +627,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
     it('required posted currency', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -647,7 +649,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
     it('optionally-required posted unit_amount', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -666,11 +668,9 @@ describe('/api/administrator/subscriptions/create-price', function () {
       assert.strictEqual(price.stripeObject.unit_amount, 1000)
     })
 
-    it('optional posted published (boolean)', async () => {
+    it('optional posted active (boolean)', async () => {
       const administrator = await TestHelper.createOwner()
-      await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
-      })
+      await TestHelper.createProduct(administrator)
       const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
       req.account = administrator.account
       req.session = administrator.session
@@ -681,17 +681,16 @@ describe('/api/administrator/subscriptions/create-price', function () {
         recurring_interval: 'month',
         recurring_interval_count: '1',
         productid: administrator.product.productid,
-        publishedAt: 'true'
+        active: 'true'
       }
       const price = await req.post()
-      assert.notStrictEqual(price.publishedAt, undefined)
-      assert.notStrictEqual(price.publishedAt, null)
+      assert.strictEqual(price.stripeObject.active, true)
     })
 
     it('optional posted billing_scheme (per_unit|tiered)', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -714,7 +713,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
     it('optional posted recurring_usage_type (licensed|metered)', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -736,7 +735,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
     it('optional posted recurring_interval (day|week|month|year)', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -758,7 +757,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
     it('optionally-required posted recurring_interval_count', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -780,7 +779,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
     it('optionally-required posted recurring_aggregate_usage (sum|max|last_ever|last_during_period)', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -802,7 +801,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
     it('optional posted transform_quantity_divide_by', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -826,7 +825,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
     it('optionally-required posted transform_quantity_round (up|down)', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -850,7 +849,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
     it('optionally-required posted tiers_mode (graduated|volume)', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -877,7 +876,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
     it('optional posted tier(1...)_up_to', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -904,7 +903,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
     it('optional posted tier(1...)_unit_amount', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -931,7 +930,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
     it('optional posted tier(1...)_flat_amount', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
       req.account = administrator.account
@@ -960,7 +959,7 @@ describe('/api/administrator/subscriptions/create-price', function () {
     it('object', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest('/api/administrator/subscriptions/create-price')
       req.account = administrator.account

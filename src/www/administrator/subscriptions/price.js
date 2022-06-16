@@ -53,12 +53,10 @@ async function renderPage (req, res, messageTemplate) {
       removeElements.push('prices-table')
     }
   } else {
-    if (req.data.price.unpublishedAt) {
-      removeElements.push('published', 'not-published')
-    } else if (req.data.price.publishedAt) {
-      removeElements.push('unpublished', 'not-published')
+    if (req.data.price.active) {
+      removeElements.push('inactive')
     } else {
-      removeElements.push('published', 'unpublished')
+      removeElements.push('active')
     }
     if (req.data.price.billing_scheme !== 'per_unit') {
       removeElements.push('unit-billing')

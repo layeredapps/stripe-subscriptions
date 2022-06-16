@@ -11,7 +11,7 @@ module.exports = {
     if (!price) {
       throw new Error('invalid-priceid')
     }
-    if (price.unpublishedAt) {
+    if (!price.stripeObject.active) {
       throw new Error('invalid-price')
     }
     if (!req.body || !req.body.nickname) {

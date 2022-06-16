@@ -1,12 +1,10 @@
 module.exports = {
   setup: (doc, price) => {
     const removeElements = []
-    if (price.unpublishedAt) {
-      removeElements.push('navbar-edit-link', 'navbar-publish-link', 'navbar-unpublish-link')
-    } else if (price.publishedAt) {
-      removeElements.push('navbar-publish-link')
+    if (!price.active) {
+      removeElements.push('navbar-edit-link', 'navbar-deactivate-link')
     } else {
-      removeElements.push('navbar-unpublish-link')
+      removeElements.push('navbar-activate-link')
     }
     const template = doc.getElementById('navbar')
     for (const id of removeElements) {

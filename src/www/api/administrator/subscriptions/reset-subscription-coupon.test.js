@@ -22,7 +22,6 @@ describe('/api/administrator/subscriptions/reset-subscription-coupon', function 
     await TestHelper.setupBeforeEach()
     const administrator = await TestStripeAccounts.createOwnerWithPrice()
     await TestHelper.createCoupon(administrator, {
-      publishedAt: 'true',
       duration: 'repeating',
       duration_in_months: '3'
     })

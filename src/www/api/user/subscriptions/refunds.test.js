@@ -23,7 +23,7 @@ describe('/api/user/subscriptions/refunds', function () {
     await TestHelper.setupBeforeEach()
     const administrator = await TestHelper.createOwner()
     await TestHelper.createProduct(administrator, {
-      publishedAt: 'true'
+      active: 'true'
     })
     const user = await TestStripeAccounts.createUserWithPaymentMethod()
     for (let i = 0, len = global.pageSize + 2; i < len; i++) {
@@ -34,7 +34,7 @@ describe('/api/user/subscriptions/refunds', function () {
         recurring_interval: 'month',
         recurring_interval_count: '1',
         recurring_usage_type: 'licensed',
-        publishedAt: 'true',
+        active: 'true',
         tax_behavior: 'inclusive'
       })
       await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, user)

@@ -22,7 +22,7 @@ describe('/api/user/subscriptions/customers', function () {
     await TestHelper.setupBeforeEach()
     const administrator = await TestHelper.createOwner()
     await TestHelper.createProduct(administrator, {
-      publishedAt: 'true'
+      active: 'true'
     })
     const user = await TestHelper.createUser()
     for (let i = 0, len = global.pageSize + 2; i < len; i++) {

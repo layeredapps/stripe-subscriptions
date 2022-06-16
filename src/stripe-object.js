@@ -13,12 +13,6 @@ module.exports = (sequelizeObject) => {
   }
   clone.createdAtFormatted = dashboard.Format.date(clone.createdAt)
   clone.updatedAtFormatted = dashboard.Format.date(clone.updatedAt)
-  if (clone.publishedAt) {
-    clone.publishedAtFormatted = dashboard.Format.date(clone.publishedAt)
-  }
-  if (clone.unpublishedAt) {
-    clone.unpublishedAtFormatted = dashboard.Format.date(clone.unpublishedAt)
-  }
   if (clone.refundRequested) {
     clone.refundRequestedFormatted = dashboard.Format.date(clone.refundRequested)
   }

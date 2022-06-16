@@ -18,12 +18,9 @@ module.exports = {
       throw new Error('invalid-customer')
     }
     req.query.couponid = req.body.couponid
-    const coupon = await global.api.user.subscriptions.PublishedCoupon.get(req)
+    const coupon = await global.api.user.subscriptions.Coupon.get(req)
     if (!coupon) {
       throw new Error('invalid-couponid')
-    }
-    if (!coupon.publishedAt || coupon.unpublishedAt) {
-      throw new Error('invalid-coupon')
     }
     const customerInfo = {
       coupon: req.body.couponid

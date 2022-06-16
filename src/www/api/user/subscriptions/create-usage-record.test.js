@@ -21,7 +21,7 @@ describe('/api/user/subscriptions/create-usage-record', function () {
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const administrator = await TestStripeAccounts.createOwnerWithPrice({
-      publishedAt: 'true',
+      active: 'true',
       unit_amount: 3000,
       currency: 'usd',
       tax_behavior: 'inclusive',
@@ -68,7 +68,7 @@ describe('/api/user/subscriptions/create-usage-record', function () {
       recurring_usage_type: 'licensed',
       recurring_aggregate_usage: 'sum',
       tax_behavior: 'inclusive',
-      publishedAt: 'true'
+      active: 'true'
     })
     const user2 = await TestStripeAccounts.createUserWithPaidSubscription(price2)
     const req3 = TestHelper.createRequest(`/api/user/subscriptions/create-usage-record?subscriptionid=${user2.subscription.subscriptionid}`)

@@ -41,7 +41,6 @@ describe('/api/administrator/subscriptions/coupon', function () {
     it('object', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })

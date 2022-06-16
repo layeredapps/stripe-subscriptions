@@ -28,7 +28,6 @@ describe('/administrator/subscriptions/revoke-subscription-coupon', function () 
     cachedResponses.noDiscount = req.error
     // before
     await TestHelper.createCoupon(administrator, {
-      publishedAt: 'true',
       duration: 'repeating',
       duration_in_months: '3'
     })

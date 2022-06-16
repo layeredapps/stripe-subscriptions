@@ -42,7 +42,6 @@ describe('/administrator/subscriptions/apply-customer-coupon', function () {
     it('should apply coupon (screenshots)', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -90,7 +89,6 @@ describe('/administrator/subscriptions/apply-customer-coupon', function () {
     it('invalid-customer', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -113,7 +111,6 @@ describe('/administrator/subscriptions/apply-customer-coupon', function () {
     it('invalid-csrf-token', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })

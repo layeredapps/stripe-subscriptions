@@ -1,5 +1,4 @@
 const dashboard = require('@layeredapps/dashboard')
-const navbar = require('./navbar-coupon.js')
 const formatStripeObject = require('../../../stripe-object.js')
 
 module.exports = {
@@ -37,23 +36,12 @@ async function beforeRequest (req) {
     return
   }
   const coupon = formatStripeObject(couponRaw)
-  if (coupon.unpublishedAt) {
-    req.error = 'invalid-coupon'
-    req.removeContents = true
-    req.data = {
-      coupon: {
-        couponid: ''
-      }
-    }
-    return
-  }
   req.data = { coupon }
 }
 
 async function renderPage (req, res, messageTemplate) {
   messageTemplate = req.error || messageTemplate || (req.query ? req.query.message : null)
   const doc = dashboard.HTML.parse(req.html || req.route.html, req.data.coupon, 'coupon')
-  navbar.setup(doc, req.data.coupon)
   if (messageTemplate) {
     dashboard.HTML.renderTemplate(doc, null, messageTemplate, 'message-container')
     if (req.removeContents) {

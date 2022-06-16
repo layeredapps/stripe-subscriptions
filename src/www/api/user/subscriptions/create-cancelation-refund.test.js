@@ -68,7 +68,7 @@ describe('/api/user/subscriptions/create-cancelation-refund', function () {
     }
     await TestHelper.createPrice(administrator, {
       productid: administrator.product.productid,
-      publishedAt: 'true',
+      active: 'true',
       unit_amount: 0,
       currency: 'usd',
       tax_behavior: 'inclusive',

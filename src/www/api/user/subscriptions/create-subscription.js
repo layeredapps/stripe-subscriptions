@@ -16,11 +16,11 @@ module.exports = {
     let metered = false
     for (const priceid of priceids) {
       req.query.priceid = priceid
-      const price = await global.api.user.subscriptions.PublishedPrice.get(req)
+      const price = await global.api.user.subscriptions.ActivePrice.get(req)
       if (!price) {
         throw new Error('invalid-priceid')
       }
-      if (price.unpublishedAt) {
+      if (!price.stripeObject.active) {
         throw new Error('invalid-price')
       }
       if (price.stripeObject.recurring.usage_type === 'metered') {
@@ -46,7 +46,7 @@ module.exports = {
     }
     if (req.body.couponid) {
       req.query.couponid = req.body.couponid
-      const coupon = await global.api.user.subscriptions.PublishedCoupon.get(req)
+      const coupon = await global.api.user.subscriptions.Coupon.get(req)
       if (!coupon) {
         throw new Error('invalid-couponid')
       }

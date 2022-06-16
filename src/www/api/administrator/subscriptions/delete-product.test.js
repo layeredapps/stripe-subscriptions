@@ -41,7 +41,7 @@ describe('/api/administrator/subscriptions/delete-product', function () {
     it('boolean', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/api/administrator/subscriptions/delete-product?productid=${administrator.product.productid}`)
       req.account = administrator.account

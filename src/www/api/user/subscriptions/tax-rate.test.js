@@ -40,7 +40,7 @@ describe('/api/user/subscriptions/tax-rate', function () {
       it('invalid querystring taxrate is not active', async () => {
         const owner = await TestHelper.createOwner()
         await TestHelper.createTaxRate(owner, {
-          active: false
+          active: 'false'
         })
         const user = await TestHelper.createUser()
         const req = TestHelper.createRequest(`/api/user/subscriptions/tax-rate?taxrateid=${owner.taxRate.taxrateid}`)

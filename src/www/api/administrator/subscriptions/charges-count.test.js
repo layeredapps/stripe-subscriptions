@@ -10,12 +10,12 @@ describe('/api/administrator/subscriptions/charges-count', function () {
     it('integer', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       for (let i = 0, len = global.pageSize + 1; i < len; i++) {
         await TestHelper.createPrice(administrator, {
           productid: administrator.product.productid,
-          publishedAt: 'true',
+          active: 'true',
           currency: 'usd',
           tax_behavior: 'inclusive',
           unit_amount: 3000,

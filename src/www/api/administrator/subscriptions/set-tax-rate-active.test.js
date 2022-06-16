@@ -60,7 +60,7 @@ describe('/api/administrator/subscriptions/set-tax-rate-active', function () {
     it('object', async function () {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createTaxRate(administrator, {
-        active: false
+        active: 'false'
       })
       const req = TestHelper.createRequest(`/api/administrator/subscriptions/set-tax-rate-active?taxrateid=${administrator.taxRate.taxrateid}`)
       req.account = administrator.account

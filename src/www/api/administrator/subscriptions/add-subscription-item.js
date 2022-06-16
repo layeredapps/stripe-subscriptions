@@ -22,7 +22,7 @@ module.exports = {
     if (!price) {
       throw new Error('invalid-priceid')
     }
-    if (!price.publishedAt || price.unpublishedAt) {
+    if (!price.active) {
       throw new Error('invalid-price')
     }
     try {

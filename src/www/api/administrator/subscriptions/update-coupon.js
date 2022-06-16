@@ -11,9 +11,6 @@ module.exports = {
     if (!coupon) {
       throw new Error('invalid-couponid')
     }
-    if (coupon.unpublishedAt) {
-      throw new Error('invalid-coupon')
-    }
     if (!req.body.name || !req.body.name.length) {
       throw new Error('invalid-name')
     }

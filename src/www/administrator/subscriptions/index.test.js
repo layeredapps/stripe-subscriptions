@@ -25,7 +25,7 @@ describe('/administrator/subscriptions', function () {
     cachedSubscriptions.unshift(user1.subscription.subscriptionid)
     await TestHelper.createPrice(administrator, {
       productid: administrator.product.productid,
-      publishedAt: 'true',
+      active: 'true',
       recurring_usage_type: 'licensed',
       unit_amount: '2000',
       currency: 'usd',
@@ -36,13 +36,11 @@ describe('/administrator/subscriptions', function () {
     const user2 = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     cachedSubscriptions.unshift(user2.subscription.subscriptionid)
     const coupon1 = await TestHelper.createCoupon(administrator, {
-      publishedAt: 'true',
       duration: 'repeating',
       duration_in_months: '3'
     })
     cachedCoupons.unshift(coupon1.couponid)
     const coupon2 = await TestHelper.createCoupon(administrator, {
-      publishedAt: 'true',
       duration: 'repeating',
       duration_in_months: '3'
     })

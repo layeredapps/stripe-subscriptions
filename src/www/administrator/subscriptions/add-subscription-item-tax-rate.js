@@ -47,17 +47,17 @@ async function beforeRequest (req) {
   }
   req.query.all = true
   const taxRates = await global.api.administrator.subscriptions.TaxRates.get(req)
-  const published = []
+  const active = []
   if (taxRates && taxRates.length) {
     for (const i in taxRates) {
       const taxRate = formatStripeObject(taxRates[i])
       if (!taxRate.active) {
         continue
       }
-      published.push(taxRate)
+      active.push(taxRate)
     }
   }
-  req.data = { subscriptionItem, taxRates: published }
+  req.data = { subscriptionItem, taxRates: active }
 }
 
 async function renderPage (req, res, messageTemplate) {

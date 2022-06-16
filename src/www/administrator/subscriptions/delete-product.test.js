@@ -8,7 +8,7 @@ describe('/administrator/subscriptions/delete-product', function () {
     it('should bind data to req', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/delete-product?productid=${administrator.product.productid}`)
       req.account = administrator.account
@@ -22,7 +22,7 @@ describe('/administrator/subscriptions/delete-product', function () {
     it('should present the form', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/delete-product?productid=${administrator.product.productid}`)
       req.account = administrator.account
@@ -38,7 +38,7 @@ describe('/administrator/subscriptions/delete-product', function () {
     it('should delete product (screenshots)', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/delete-product?productid=${administrator.product.productid}`)
       req.account = administrator.account
@@ -76,7 +76,7 @@ describe('/administrator/subscriptions/delete-product', function () {
     it('invalid-csrf-token', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/delete-product?productid=${administrator.product.productid}`)
       req.puppeteer = false

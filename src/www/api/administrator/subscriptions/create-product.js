@@ -33,6 +33,9 @@ module.exports = {
       unit_label: req.body.unit_label,
       tax_code: req.body.tax_code
     }
+    if (req.body.active) {
+      productInfo.active = true
+    }
     const product = await stripeCache.execute('products', 'create', productInfo, req.stripeKey)
     if (!product) {
       throw new Error()
@@ -40,8 +43,8 @@ module.exports = {
     await subscriptions.Storage.Product.create({
       appid: req.appid || global.appid,
       productid: product.id,
-      publishedAt: req.body.publishedAt ? new Date() : undefined,
-      stripeObject: product
+      stripeObject: product,
+      active: product.active
     })
     req.query = req.query || {}
     req.query.productid = product.id

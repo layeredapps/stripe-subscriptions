@@ -21,8 +21,7 @@ describe('/api/administrator/subscriptions/set-subscription-coupon', function ()
     await DashboardTestHelper.setupBeforeEach()
     await TestHelper.setupBeforeEach()
     const administrator = await TestStripeAccounts.createOwnerWithPrice()
-    const publishedCoupon = await TestHelper.createCoupon(administrator, {
-      publishedAt: 'true',
+    const coupon = await TestHelper.createCoupon(administrator, {
       duration: 'repeating',
       duration_in_months: '3'
     })
@@ -78,45 +77,11 @@ describe('/api/administrator/subscriptions/set-subscription-coupon', function ()
     } catch (error) {
       cachedResponses.invalidCoupon = error.message
     }
-    // not-published and unpublished coupon
-    await TestHelper.createCoupon(administrator, {
-      duration: 'repeating',
-      duration_in_months: '3'
-    })
-    const req5 = TestHelper.createRequest(`/api/administrator/subscriptions/set-subscription-coupon?subscriptionid=${user3.subscription.subscriptionid}`)
-    req5.account = administrator.account
-    req5.session = administrator.session
-    req5.body = {
-      couponid: administrator.coupon.couponid
-    }
-    try {
-      await req5.patch(req)
-    } catch (error) {
-      cachedResponses.notPublished = error.message
-    }
-    await TestHelper.createCoupon(administrator, {
-      publishedAt: 'true',
-      unpublishedAt: 'true',
-      duration: 'repeating',
-      duration_in_months: '3'
-    })
-    const req6 = TestHelper.createRequest(`/api/administrator/subscriptions/set-subscription-coupon?subscriptionid=${user3.subscription.subscriptionid}`)
-    req6.account = administrator.account
-    req6.session = administrator.session
-    req6.body = {
-      couponid: administrator.coupon.couponid
-    }
-    try {
-      await req6.patch(req)
-    } catch (error) {
-      cachedResponses.unpublishedAt = error.message
-    }
-    // success
     const req7 = TestHelper.createRequest(`/api/administrator/subscriptions/set-subscription-coupon?subscriptionid=${user3.subscription.subscriptionid}`)
     req7.account = administrator.account
     req7.session = administrator.session
     req7.body = {
-      couponid: publishedCoupon.couponid
+      couponid: coupon.couponid
     }
     req7.filename = __filename
     req7.saveResponse = true
@@ -188,20 +153,6 @@ describe('/api/administrator/subscriptions/set-subscription-coupon', function ()
         await bundledData(this.test.currentRetry())
         const errorMessage = cachedResponses.invalidCoupon
         assert.strictEqual(errorMessage, 'invalid-couponid')
-      })
-    })
-
-    describe('invalid-coupon', () => {
-      it('ineligible posted coupon is not published', async function () {
-        await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.notPublished
-        assert.strictEqual(errorMessage, 'invalid-coupon')
-      })
-
-      it('ineligible posted coupon is unpublished', async function () {
-        await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.unpublishedAt
-        assert.strictEqual(errorMessage, 'invalid-coupon')
       })
     })
   })

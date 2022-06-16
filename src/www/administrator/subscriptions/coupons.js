@@ -30,13 +30,6 @@ async function renderPage (req, res) {
       } else {
         removeElements.push(`amount_off-${coupon.id}`)
       }
-      if (coupon.unpublishedAt) {
-        removeElements.push(`draft-coupon-${coupon.id}`, `published-coupon-${coupon.id}`)
-      } else if (coupon.publishedAt) {
-        removeElements.push(`draft-coupon-${coupon.id}`, `unpublished-coupon-${coupon.id}`)
-      } else {
-        removeElements.push(`published-coupon-${coupon.id}`, `unpublished-coupon-${coupon.id}`)
-      }
     }
     if (req.data.total <= global.pageSize) {
       removeElements.push('page-links')

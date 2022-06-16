@@ -10,7 +10,6 @@ describe('/api/administrator/subscriptions/coupons-count', function () {
       const administrator = await TestHelper.createOwner()
       for (let i = 0, len = global.pageSize + 1; i < len; i++) {
         await TestHelper.createCoupon(administrator, {
-          publishedAt: 'true',
           duration: 'repeating',
           duration_in_months: '3'
         })

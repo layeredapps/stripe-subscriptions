@@ -11,7 +11,6 @@
   <body>
     <div class="container">
       <h1 translate="yes">Prices</h1>
-      <p translate="yes">Users create subscriptions to published prices.</p>
       <p><a href="/administrator/subscriptions/create-price" class="button" translate="yes">Create price</a></p>
       <div id="no-prices">
         <p translate="yes">No prices have been created yet.</p>
@@ -43,11 +42,8 @@
         <td><a href="/administrator/subscriptions/product?productid=${price.product}">${price.product}</a></td>
         <td id="amount-price-${price.priceid}">${price.amountFormatted}${price.currency} x  ${price.interval}</td>
         <td id="free-price-${price.priceid}">Free</td>
-        <td id="trial-price-${price.priceid}">${price.trial_period_days} days</td>
-        <td id="no-trial-price-${price.priceid}">None</td>
-        <td id="draft-price-${price.priceid}" translate="yes">Draft</td>
-        <td id="published-price-${price.priceid}" translate="yes">Published</td>
-        <td id="unpublished-price-${price.priceid}" translate="yes">Unpublished</td>
+        <td id="active-price-${price.priceid}" translate="yes">Active</td>
+        <td id="inactive-price-${price.priceid}" translate="yes">Inactive</td>
         <td>${price.createdAtFormatted}</td>
       </tr>
     </template>

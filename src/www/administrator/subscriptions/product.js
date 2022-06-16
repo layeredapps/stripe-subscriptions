@@ -50,12 +50,10 @@ async function renderPage (req, res, messageTemplate) {
       removeElements.push('products-table')
     }
   } else {
-    if (req.data.product.unpublishedAt) {
-      removeElements.push('published', 'not-published')
-    } else if (req.data.product.publishedAt) {
-      removeElements.push('unpublished', 'not-published')
+    if (req.data.product.active) {
+      removeElements.push('inactive')
     } else {
-      removeElements.push('published', 'unpublished')
+      removeElements.push('active')
     }
   }
   for (const id of removeElements) {

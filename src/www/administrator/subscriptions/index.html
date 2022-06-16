@@ -80,7 +80,6 @@
             <tr>
               <th>ID</th>
               <th translate="yes">Discount</th>
-              <th translate="yes">Status</th>
               <th translate="yes">Created</th>
             </tr>
           </thead>
@@ -109,9 +108,6 @@
         <td><a href="/administrator/subscriptions/coupon?couponid=${coupon.id}">${coupon.id}</a></td>
         <td id="amount_off-${coupon.id}">${coupon.amountOffFormatted} ${coupon.currency}</td>
         <td id="percent_off-${coupon.id}">${coupon.percent_off}%</td>
-        <td id="draft-coupon-${coupon.id}">Draft</td>
-        <td id="published-coupon-${coupon.id}">Published</td>
-        <td id="unpublished-coupon-${coupon.id}">Unpublished</td>
         <td>${coupon.createdAtFormatted}</td>
       </tr>
     </template>

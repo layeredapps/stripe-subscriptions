@@ -37,8 +37,8 @@ async function beforeRequest (req) {
     return
   }
   const product = formatStripeObject(productRaw)
-  if (product.unpublishedAt) {
-    req.error = 'unpublished-product'
+  if (!product.active) {
+    req.error = 'inactive-product'
     req.removeContents = true
     req.data = {
       product: {

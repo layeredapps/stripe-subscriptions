@@ -27,7 +27,7 @@ describe('/account/subscriptions/cancel-subscription', function () {
       recurring_interval: 'month',
       recurring_interval_count: '1',
       recurring_usage_type: 'licensed',
-      publishedAt: 'true'
+      active: 'true'
     })
     const paid1 = await TestStripeAccounts.createUserWithPaidSubscription(paidPrice)
     const paid2 = await TestStripeAccounts.createUserWithPaidSubscription(paidPrice)

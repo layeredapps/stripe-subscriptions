@@ -65,13 +65,6 @@ async function renderPage (req, res) {
   if (req.data.coupons && req.data.coupons.length) {
     dashboard.HTML.renderTable(doc, req.data.coupons, 'coupon-row', 'coupons-table')
     for (const coupon of req.data.coupons) {
-      if (coupon.unpublishedAt) {
-        removeElements.push(`draft-coupon-${coupon.id}`, `published-coupon-${coupon.id}`)
-      } else if (coupon.publishedAt) {
-        removeElements.push(`draft-coupon-${coupon.id}`, `unpublished-coupon-${coupon.id}`)
-      } else {
-        removeElements.push(`published-coupon-${coupon.id}`, `unpublished-coupon-${coupon.id}`)
-      }
       if (coupon.amount_off) {
         removeElements.push(`percent_off-${coupon.id}`)
       } else {

@@ -103,8 +103,8 @@ describe('/api/user/subscriptions/create-subscription', function () {
     } catch (error) {
       cachedResponses.invalidPrice = error.message
     }
-    // not published price
-    const administrator2 = await TestStripeAccounts.createOwnerWithNotPublishedPrice()
+    // not active price
+    const administrator2 = await TestStripeAccounts.createOwnerWithInactivePrice()
     req.body = {
       priceids: administrator2.price.priceid,
       quantities: '1'
@@ -112,22 +112,11 @@ describe('/api/user/subscriptions/create-subscription', function () {
     try {
       await req.post()
     } catch (error) {
-      cachedResponses.notPublishedPrice = error.message
-    }
-    // unpublished price
-    const administrator3 = await TestStripeAccounts.createOwnerWithUnpublishedPrice()
-    req.body = {
-      priceids: administrator3.price.priceid,
-      quantities: '1'
-    }
-    try {
-      await req.post()
-    } catch (error) {
-      cachedResponses.unpublishedPrice = error.message
+      cachedResponses.notActivePrice = error.message
     }
     // default tax rates
     const taxRate1 = await TestHelper.createTaxRate(administrator, {
-      active: false
+      active: 'false'
     })
     req = TestHelper.createRequest(`/api/user/subscriptions/create-subscription?customerid=${user3.customer.customerid}`)
     req.account = user3.account
@@ -225,15 +214,9 @@ describe('/api/user/subscriptions/create-subscription', function () {
     })
 
     describe('invalid-price', () => {
-      it('invalid posted priceids contains not published price', async function () {
+      it('invalid posted priceids contains not active price', async function () {
         await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.notPublishedPrice
-        assert.strictEqual(errorMessage, 'invalid-price')
-      })
-
-      it('invalid posted priceids contains unpublished price', async function () {
-        await bundledData(this.test.currentRetry())
-        const errorMessage = cachedResponses.unpublishedPrice
+        const errorMessage = cachedResponses.notActivePrice
         assert.strictEqual(errorMessage, 'invalid-price')
       })
     })

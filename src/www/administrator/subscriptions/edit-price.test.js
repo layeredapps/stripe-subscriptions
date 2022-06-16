@@ -68,19 +68,19 @@ describe('/administrator/subscriptions/edit-price', function () {
       assert.strictEqual(req.error, 'invalid-priceid')
     })
 
-    it('unpublished-price', async () => {
-      const administrator = await TestStripeAccounts.createOwnerWithUnpublishedPrice()
+    it('inactive-price', async () => {
+      const administrator = await TestStripeAccounts.createOwnerWithInactivePrice()
       const req = TestHelper.createRequest(`/administrator/subscriptions/edit-price?priceid=${administrator.price.priceid}`)
       req.account = administrator.account
       req.session = administrator.session
       await req.route.api.before(req)
-      assert.strictEqual(req.error, 'unpublished-price')
+      assert.strictEqual(req.error, 'inactive-price')
     })
 
     it('invalid-csrf-token', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice()
       const product2 = await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/edit-price?priceid=${administrator.price.priceid}`)
       req.puppeteer = false

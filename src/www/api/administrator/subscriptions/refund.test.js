@@ -39,7 +39,7 @@ describe('/api/administrator/subscriptions/refund', function () {
   describe('returns', () => {
     it('object', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        publishedAt: 'true',
+        active: 'true',
         unit_amount: 3000,
         currency: 'usd',
         tax_behavior: 'inclusive',

@@ -25,7 +25,7 @@ describe('/api/administrator/subscriptions/set-subscription-default-tax-rates', 
     const taxRate1 = await TestHelper.createTaxRate(administrator)
     const taxRate2 = await TestHelper.createTaxRate(administrator)
     const taxRate3 = await TestHelper.createTaxRate(administrator, {
-      active: false
+      active: 'false'
     })
     // missing and invalid id
     let req = TestHelper.createRequest('/api/administrator/subscriptions/set-subscription-default-tax-rates')

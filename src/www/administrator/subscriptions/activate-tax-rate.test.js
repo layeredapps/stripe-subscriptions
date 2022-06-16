@@ -8,7 +8,7 @@ describe('/administrator/subscriptions/activate-tax-rate', function () {
     it('should bind data to req', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createTaxRate(administrator, {
-        active: false
+        active: 'false'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/activate-tax-rate?taxrateid=${administrator.taxRate.taxrateid}`)
       req.account = administrator.account
@@ -22,7 +22,7 @@ describe('/administrator/subscriptions/activate-tax-rate', function () {
     it('should present the form', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createTaxRate(administrator, {
-        active: false
+        active: 'false'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/activate-tax-rate?taxrateid=${administrator.taxRate.taxrateid}`)
       req.account = administrator.account
@@ -38,7 +38,7 @@ describe('/administrator/subscriptions/activate-tax-rate', function () {
     it('should activate tax rate (screenshots)', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createTaxRate(administrator, {
-        active: false
+        active: 'false'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/activate-tax-rate?taxrateid=${administrator.taxRate.taxrateid}`)
       req.account = administrator.account
@@ -88,7 +88,7 @@ describe('/administrator/subscriptions/activate-tax-rate', function () {
     it('invalid-csrf-token', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createTaxRate(administrator, {
-        active: false
+        active: 'false'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/activate-tax-rate?taxrateid=${administrator.taxRate.taxrateid}`)
       req.puppeteer = false

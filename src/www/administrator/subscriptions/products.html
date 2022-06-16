@@ -40,9 +40,8 @@
         <td><a href="/administrator/subscriptions/product?productid=${product.id}">${product.id}</a></td>
         <td>${product.name}</td>
         <td>${product.statement_descriptor}</td>
-        <td id="not-published-${product.id}" translate="yes">Not published yet</td>
-        <td id="published-${product.id}" translate="yes">Published</td>
-        <td id="unpublished-${product.id}" translate="yes">Unpublished</td>
+        <td id="active-${product.id}" translate="yes">Active</td>
+        <td id="inactive-${product.id}" translate="yes">Inactive</td>
       </tr>
     </template>
   </body>

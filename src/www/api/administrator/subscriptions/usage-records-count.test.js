@@ -9,7 +9,7 @@ describe('/api/administrator/subscriptions/usage-records-count', function () {
   describe('returns', () => {
     it('integer', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        publishedAt: 'true',
+        active: 'true',
         currency: 'usd',
         recurring_interval: 'month',
         recurring_interval_count: '1',

@@ -28,7 +28,7 @@ describe('/account/subscriptions', function () {
     await TestHelper.createPrice(administrator, {
       productid: administrator.product.productid,
       currency: 'usd',
-      publishedAt: 'true',
+      active: 'true',
       unit_amount: '1000',
       recurring_interval: 'month',
       recurring_usage_type: 'licensed',

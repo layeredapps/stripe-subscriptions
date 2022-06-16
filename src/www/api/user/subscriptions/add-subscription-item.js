@@ -18,11 +18,11 @@ module.exports = {
       throw new Error('invalid-priceid')
     }
     req.query.priceid = req.body.priceid
-    const price = await global.api.user.subscriptions.PublishedPrice.get(req)
+    const price = await global.api.user.subscriptions.ActivePrice.get(req)
     if (!price) {
       throw new Error('invalid-priceid')
     }
-    if (price.unpublishedAt) {
+    if (!price.stripeObject.active) {
       throw new Error('invalid-price')
     }
     try {

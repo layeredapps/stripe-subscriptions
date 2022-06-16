@@ -8,7 +8,6 @@ describe('/administrator/subscriptions/edit-coupon', function () {
     it('should bind data to req', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -24,7 +23,6 @@ describe('/administrator/subscriptions/edit-coupon', function () {
     it('should present the form', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -42,7 +40,6 @@ describe('/administrator/subscriptions/edit-coupon', function () {
     it('should reject missing name', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -62,7 +59,6 @@ describe('/administrator/subscriptions/edit-coupon', function () {
     it('should update coupon (screenshots)', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -102,25 +98,9 @@ describe('/administrator/subscriptions/edit-coupon', function () {
       assert.strictEqual(req.error, 'invalid-couponid')
     })
 
-    it('invalid-coupon', async () => {
-      const administrator = await TestHelper.createOwner()
-      await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
-        unpublishedAt: 'true',
-        duration: 'repeating',
-        duration_in_months: '3'
-      })
-      const req = TestHelper.createRequest(`/administrator/subscriptions/edit-coupon?couponid=${administrator.coupon.couponid}`)
-      req.account = administrator.account
-      req.session = administrator.session
-      await req.route.api.before(req)
-      assert.strictEqual(req.error, 'invalid-coupon')
-    })
-
     it('invalid-xss-input', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })
@@ -140,7 +120,6 @@ describe('/administrator/subscriptions/edit-coupon', function () {
     it('invalid-csrf-token', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createCoupon(administrator, {
-        publishedAt: 'true',
         duration: 'repeating',
         duration_in_months: '3'
       })

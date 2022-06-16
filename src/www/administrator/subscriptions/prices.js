@@ -25,17 +25,10 @@ async function renderPage (req, res) {
   if (req.data.prices && req.data.prices.length) {
     dashboard.HTML.renderTable(doc, req.data.prices, 'price-row', 'prices-table')
     for (const price of req.data.prices) {
-      if (price.unpublishedAt) {
-        removeElements.push(`published-price-${price.priceid}`, `draft-price-${price.priceid}`)
-      } else if (price.publishedAt) {
-        removeElements.push(`unpublished-price-${price.priceid}`, `draft-price-${price.priceid}`)
+      if (price.active) {
+        removeElements.push(`inactive-price-${price.priceid}`)
       } else {
-        removeElements.push(`published-price-${price.priceid}`, `unpublished-price-${price.priceid}`)
-      }
-      if (!price.trial_period_days) {
-        removeElements.push(`trial-price-${price.priceid}`)
-      } else {
-        removeElements.push(`no-trial-price-${price.priceid}`)
+        removeElements.push(`active-price-${price.priceid}`)
       }
       if (!price.amount) {
         removeElements.push(`amount-price-${price.priceid}`)

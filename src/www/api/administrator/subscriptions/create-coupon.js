@@ -111,7 +111,6 @@ module.exports = {
     await subscriptions.Storage.Coupon.create({
       appid: req.appid || global.appid,
       couponid: coupon.id,
-      publishedAt: req.body.publishedAt ? new Date() : undefined,
       stripeObject: coupon
     })
     req.query = req.query || {}

@@ -23,7 +23,7 @@ describe('/api/user/subscriptions/subscriptions', function () {
     await TestHelper.setupBeforeEach()
     const administrator = await TestHelper.createOwner()
     await TestHelper.createProduct(administrator, {
-      publishedAt: 'true'
+      active: 'true'
     })
     const user = await TestStripeAccounts.createUserWithPaymentMethod()
     for (let i = 0, len = global.pageSize + 2; i < len; i++) {
@@ -35,7 +35,7 @@ describe('/api/user/subscriptions/subscriptions', function () {
         recurring_interval_count: '1',
         recurring_usage_type: 'licensed',
         tax_behavior: 'inclusive',
-        publishedAt: 'true'
+        active: 'true'
       })
       await TestStripeAccounts.createUserWithPaidSubscription(administrator.price, user)
       cachedSubscriptions.unshift(user.subscription.subscriptionid)

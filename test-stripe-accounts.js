@@ -30,14 +30,14 @@ const TestStripeAccounts = module.exports = {
   createOwnerWithPrice: async (priceData) => {
     const owner = await TestHelper.createOwner()
     await TestHelper.createProduct(owner, {
-      publishedAt: 'true'
+      active: 'true'
     })
     if (priceData && !priceData.productid) {
       priceData.productid = owner.product.productid
     }
     await TestHelper.createPrice(owner, priceData || {
       productid: owner.product.productid,
-      publishedAt: 'true',
+      active: 'true',
       tax_behavior: 'inclusive',
       unit_amount: 1000,
       currency: 'usd',
@@ -47,40 +47,20 @@ const TestStripeAccounts = module.exports = {
     })
     return owner
   },
-  createOwnerWithUnpublishedPrice: async (priceData) => {
+  createOwnerWithInactivePrice: async (priceData) => {
     const owner = await TestHelper.createOwner()
     await TestHelper.createProduct(owner, {
-      publishedAt: 'true'
+      active: 'true'
     })
     if (priceData && !priceData.productid) {
       priceData.productid = owner.product.productid
     }
     await TestHelper.createPrice(owner, priceData || {
       productid: owner.product.productid,
-      publishedAt: 'true',
-      unpublishedAt: 'true',
+      active: 'false',
       tax_behavior: 'inclusive',
       unit_amount: 1000,
       currency: 'usd',
-      recurring_interval: 'month',
-      recurring_interval_count: 1,
-      recurring_usage_type: 'licensed'
-    })
-    return owner
-  },
-  createOwnerWithNotPublishedPrice: async (priceData) => {
-    const owner = await TestHelper.createOwner()
-    await TestHelper.createProduct(owner, {
-      publishedAt: 'true'
-    })
-    if (priceData && !priceData.productid) {
-      priceData.productid = owner.product.productid
-    }
-    await TestHelper.createPrice(owner, priceData || {
-      productid: owner.product.productid,
-      unit_amount: 1000,
-      currency: 'usd',
-      tax_behavior: 'inclusive',
       recurring_interval: 'month',
       recurring_interval_count: 1,
       recurring_usage_type: 'licensed'

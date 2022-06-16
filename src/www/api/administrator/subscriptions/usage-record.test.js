@@ -41,7 +41,7 @@ describe('/api/administrator/subscriptions/usage-record', function () {
   describe('returns', () => {
     it('object', async () => {
       const administrator = await TestStripeAccounts.createOwnerWithPrice({
-        publishedAt: 'true',
+        active: 'true',
         currency: 'usd',
         recurring_interval: 'month',
         recurring_interval_count: '1',

@@ -21,17 +21,22 @@ module.exports = {
       throw new Error('invalid-subscription')
     }
     req.query.couponid = req.body.couponid
-    const coupon = await global.api.user.subscriptions.PublishedCoupon.get(req)
+    const coupon = await global.api.user.subscriptions.Coupon.get(req)
     if (!coupon) {
       throw new Error('invalid-couponid')
-    }
-    if (coupon.unpublishedAt) {
-      throw new Error('invalid-coupon')
     }
     const subscriptionInfo = {
       coupon: req.body.couponid
     }
-    const subscriptionNow = await stripeCache.execute('subscriptions', 'update', req.query.subscriptionid, subscriptionInfo, req.stripeKey)
+    let subscriptionNow
+    try {
+      subscriptionNow = await stripeCache.execute('subscriptions', 'update', req.query.subscriptionid, subscriptionInfo, req.stripeKey)
+    } catch (error) {
+      if (error.message === 'invalid-currency') {
+        throw new Error('invalid-coupon')
+      }
+      throw error
+    }
     await subscriptions.Storage.Subscription.update({
       stripeObject: subscriptionNow,
       couponid: req.body.couponid

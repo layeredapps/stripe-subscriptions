@@ -66,7 +66,7 @@ describe('/api/user/subscriptions/subscriptions-count', function () {
         recurring_interval: 'month',
         recurring_interval_count: '1',
         recurring_usage_type: 'licensed',
-        publishedAt: 'true',
+        active: 'true',
         tax_behavior: 'inclusive'
       })
       const user = await TestStripeAccounts.createUserWithPaidSubscription(price1)

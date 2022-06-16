@@ -551,8 +551,6 @@ function createProduct (date) {
       updated: Math.floor(date.getTime() / 1000),
       url: null
     },
-    publishedAt: date,
-    unpublishedAt: null,
     appid: global.appid,
     createdAt: date,
     updatedAt: date
@@ -588,8 +586,6 @@ function createPlan (product) {
       usage_type: 'licensed'
     },
     productid: product.productid,
-    publishedAt: product.publishedAt,
-    unpublishedAt: null,
     appid: global.appid,
     createdAt: product.createdAt,
     updatedAt: product.updatedAt
@@ -1100,10 +1096,7 @@ function createCoupon (date) {
     coupon.stripeObject.duration_in_months = 3 + Math.ceil(Math.random() * 6)
   }
   if (Math.random() < 0.75) {
-    coupon.publishedAt = date
-    if (Math.random() < 0.25) {
-      coupon.unpublishedAt = date
-    }
+    coupon.stripeObject.active = true
   }
   return coupon
 }

@@ -10,7 +10,7 @@ describe('/api/administrator/subscriptions/update-product', function () {
       it('missing querystring productid', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/update-product')
         req.account = administrator.account
@@ -33,7 +33,7 @@ describe('/api/administrator/subscriptions/update-product', function () {
       it('invalid querystring productid', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest('/api/administrator/subscriptions/update-product?productid=invalid')
         req.account = administrator.account
@@ -55,11 +55,10 @@ describe('/api/administrator/subscriptions/update-product', function () {
     })
 
     describe('invalid-product', () => {
-      it('ineligible querystring product is unpublished', async () => {
+      it('ineligible querystring product is not active', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true',
-          unpublishedAt: 'true'
+          active: 'false'
         })
         const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-product?productid=${administrator.product.productid}`)
         req.account = administrator.account
@@ -84,7 +83,7 @@ describe('/api/administrator/subscriptions/update-product', function () {
       it('invalid posted name', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-product?productid=${administrator.product.productid}`)
         req.account = administrator.account
@@ -109,7 +108,7 @@ describe('/api/administrator/subscriptions/update-product', function () {
       it('posted name too short', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-product?productid=${administrator.product.productid}`)
         req.account = administrator.account
@@ -133,7 +132,7 @@ describe('/api/administrator/subscriptions/update-product', function () {
       it('posted name too long', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-product?productid=${administrator.product.productid}`)
         req.account = administrator.account
@@ -159,7 +158,7 @@ describe('/api/administrator/subscriptions/update-product', function () {
       it('invalid posted statement_descriptor', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-product?productid=${administrator.product.productid}`)
         req.account = administrator.account
@@ -184,7 +183,7 @@ describe('/api/administrator/subscriptions/update-product', function () {
       it('posted statement_descriptor too short', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-product?productid=${administrator.product.productid}`)
         req.account = administrator.account
@@ -207,7 +206,7 @@ describe('/api/administrator/subscriptions/update-product', function () {
       it('posted statement_descriptor too long', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-product?productid=${administrator.product.productid}`)
         req.account = administrator.account
@@ -232,7 +231,7 @@ describe('/api/administrator/subscriptions/update-product', function () {
       it('missing posted unit_label', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-product?productid=${administrator.product.productid}`)
         req.account = administrator.account
@@ -257,7 +256,7 @@ describe('/api/administrator/subscriptions/update-product', function () {
       it('missing posted tax_code', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-product?productid=${administrator.product.productid}`)
         req.account = administrator.account
@@ -280,7 +279,7 @@ describe('/api/administrator/subscriptions/update-product', function () {
       it('invalid posted tax_code', async () => {
         const administrator = await TestHelper.createOwner()
         await TestHelper.createProduct(administrator, {
-          publishedAt: 'true'
+          active: 'true'
         })
         const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-product?productid=${administrator.product.productid}`)
         req.account = administrator.account
@@ -306,7 +305,7 @@ describe('/api/administrator/subscriptions/update-product', function () {
     it('required posted name', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-product?productid=${administrator.product.productid}`)
       req.account = administrator.account
@@ -324,7 +323,7 @@ describe('/api/administrator/subscriptions/update-product', function () {
     it('required posted statement_descriptor', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-product?productid=${administrator.product.productid}`)
       req.account = administrator.account
@@ -342,7 +341,7 @@ describe('/api/administrator/subscriptions/update-product', function () {
     it('required posted unit_label', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-product?productid=${administrator.product.productid}`)
       req.account = administrator.account
@@ -360,7 +359,7 @@ describe('/api/administrator/subscriptions/update-product', function () {
     it('required posted tax_code', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-product?productid=${administrator.product.productid}`)
       req.account = administrator.account
@@ -380,7 +379,7 @@ describe('/api/administrator/subscriptions/update-product', function () {
     it('object', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-product?productid=${administrator.product.productid}`)
       req.account = administrator.account
@@ -402,7 +401,7 @@ describe('/api/administrator/subscriptions/update-product', function () {
     it('environment MINIMUM_PRODUCT_NAME_LENGTH', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       global.minimumProductNameLength = 100
       const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-product?productid=${administrator.product.productid}`)
@@ -426,7 +425,7 @@ describe('/api/administrator/subscriptions/update-product', function () {
     it('environment MAXIMUM_PRODUCT_NAME_LENGTH', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createProduct(administrator, {
-        publishedAt: 'true'
+        active: 'true'
       })
       global.maximumProductNameLength = 1
       const req = TestHelper.createRequest(`/api/administrator/subscriptions/update-product?productid=${administrator.product.productid}`)

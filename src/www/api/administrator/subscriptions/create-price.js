@@ -15,7 +15,7 @@ module.exports = {
     if (!product) {
       throw new Error('invalid-productid')
     }
-    if (!product.publishedAt || product.unpublishedAt) {
+    if (!product.active) {
       throw new Error('invalid-product')
     }
     if (!req.body.tax_behavior || (req.body.tax_behavior !== 'inclusive' && req.body.tax_behavior !== 'exclusive')) {
@@ -231,6 +231,9 @@ module.exports = {
         }
       }
     }
+    if (req.body.active) {
+      priceInfo.active = true
+    }
     const price = await stripeCache.execute('prices', 'create', priceInfo, req.stripeKey)
     const priceExpanded = await stripeCache.execute('prices', 'retrieve', price.id, {
       expand: ['tiers']
@@ -239,8 +242,8 @@ module.exports = {
       appid: req.appid || global.appid,
       priceid: price.id,
       productid: req.body.productid,
-      publishedAt: req.body.publishedAt ? new Date() : undefined,
-      stripeObject: priceExpanded
+      stripeObject: priceExpanded,
+      active: price.active
     })
     req.query.priceid = price.id
     return global.api.administrator.subscriptions.Price.get(req)

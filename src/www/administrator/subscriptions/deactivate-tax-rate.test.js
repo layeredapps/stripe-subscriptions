@@ -76,7 +76,7 @@ describe('/administrator/subscriptions/deactivate-tax-rate', function () {
     it('already-inactive', async () => {
       const administrator = await TestHelper.createOwner()
       await TestHelper.createTaxRate(administrator, {
-        active: false
+        active: 'false'
       })
       const req = TestHelper.createRequest(`/administrator/subscriptions/deactivate-tax-rate?taxrateid=${administrator.taxRate.taxrateid}`)
       req.account = administrator.account

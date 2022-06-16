@@ -24,7 +24,7 @@ describe('/api/administrator/subscriptions/add-subscription-item-tax-rate', func
     const user = await TestStripeAccounts.createUserWithPaidSubscription(administrator.price)
     const taxRate1 = await TestHelper.createTaxRate(administrator)
     const taxRate3 = await TestHelper.createTaxRate(administrator, {
-      active: false
+      active: 'false'
     })
     // missing and invalid id
     let req = TestHelper.createRequest('/api/administrator/subscriptions/add-subscription-item-tax-rate')
