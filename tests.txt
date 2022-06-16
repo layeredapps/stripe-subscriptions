@@ -1,5 +1,5 @@
 
-> @layeredapps/stripe-subscriptions@1.0.62 test
+> @layeredapps/stripe-subscriptions@1.0.65 test
 > PORT=50012 NODE_ENV=testing STORAGE=sqlite DATABASE=subscriptions mocha --ignore 'node_modules/**/*' --timeout 480000 --slow 480000 --recursive --extension .test.js .
 
 
@@ -294,6 +294,30 @@
       ✔ should change page size
       ✔ should change offset
 
+  /administrator/subscriptions/activate-price
+    before
+      ✔ should bind data to req
+    view
+      ✔ should present the form
+    submit
+      ✔ should activate price (screenshots)
+    errors
+      ✔ invalid-priceid
+      ✔ already-active
+      ✔ invalid-csrf-token
+
+  /administrator/subscriptions/activate-product
+    before
+      ✔ should bind data to req
+    view
+      ✔ should present the form
+    submit
+      ✔ should activate product (screenshots)
+    errors
+      ✔ invalid-productid
+      ✔ already-active
+      ✔ invalid-csrf-token
+
   /administrator/subscriptions/activate-tax-rate
     before
       ✔ should bind data to req
@@ -477,6 +501,30 @@
       ✔ should change page size
       ✔ should change offset
 
+  /administrator/subscriptions/deactivate-price
+    before
+      ✔ should bind data to req
+    view
+      ✔ should present the form
+    submit
+      ✔ should deactivate price (screenshots)
+    errors
+      ✔ invalid-priceid
+      ✔ already-inactive
+      ✔ invalid-csrf-token
+
+  /administrator/subscriptions/deactivate-product
+    before
+      ✔ should bind data to req
+    view
+      ✔ should present the form
+    submit
+      ✔ should unpudeactivateblish product (screenshots)
+    errors
+      ✔ invalid-productid
+      ✔ already-inactive
+      ✔ invalid-csrf-token
+
   /administrator/subscriptions/deactivate-tax-rate
     before
       ✔ should bind data to req
@@ -563,7 +611,6 @@
       ✔ should update coupon (screenshots)
     errors
       ✔ invalid-couponid
-      ✔ invalid-coupon
       ✔ invalid-xss-input
       ✔ invalid-csrf-token
 
@@ -576,7 +623,7 @@
       ✔ should update price (screenshots)
     errors
       ✔ invalid-priceid
-      ✔ unpublished-price
+      ✔ inactive-price
       ✔ invalid-csrf-token
 
   /administrator/subscriptions/edit-product
@@ -588,7 +635,7 @@
       ✔ should update product (screenshots)
     errors
       ✔ invalid-productid
-      ✔ unpublished-product
+      ✔ inactive-product
       ✔ invalid-name
       ✔ invalid-product-name-length
       ✔ invalid-statement_descriptor
@@ -730,45 +777,6 @@
       ✔ should change page size
       ✔ should change offset
 
-  /administrator/subscriptions/publish-coupon
-    before
-      ✔ should bind data to req
-    view
-      ✔ should present the form
-    submit
-      ✔ should publish coupon (screenshots)
-    errors
-      ✔ invalid-couponid
-      ✔ already-published
-      ✔ already-unpublished
-      ✔ invalid-csrf-token
-
-  /administrator/subscriptions/publish-price
-    before
-      ✔ should bind data to req
-    view
-      ✔ should present the form
-    submit
-      ✔ should publish price (screenshots)
-    errors
-      ✔ invalid-priceid
-      ✔ already-published
-      ✔ already-unpublished
-      ✔ invalid-csrf-token
-
-  /administrator/subscriptions/publish-product
-    before
-      ✔ should bind data to req
-    view
-      ✔ should present the form
-    submit
-      ✔ should publish product (screenshots)
-    errors
-      ✔ invalid-productid
-      ✔ already-published
-      ✔ already-unpublished
-      ✔ invalid-csrf-token
-
   /administrator/subscriptions/refund-charge
     before
       ✔ should bind data to req
@@ -906,45 +914,6 @@
       ✔ should change page size
       ✔ should change offset
 
-  /administrator/subscriptions/unpublish-coupon
-    before
-      ✔ should bind data to req
-    view
-      ✔ should present the form
-    submit
-      ✔ should unpublish coupon (screenshots)
-    errors
-      ✔ invalid-couponid
-      ✔ not-published
-      ✔ already-unpublished
-      ✔ invalid-csrf-token
-
-  /administrator/subscriptions/unpublish-price
-    before
-      ✔ should bind data to req
-    view
-      ✔ should present the form
-    submit
-      ✔ should unpublish price (screenshots)
-    errors
-      ✔ invalid-priceid
-      ✔ not-published
-      ✔ already-unpublished
-      ✔ invalid-csrf-token
-
-  /administrator/subscriptions/unpublish-product
-    before
-      ✔ should bind data to req
-    view
-      ✔ should present the form
-    submit
-      ✔ should unpublish product (screenshots)
-    errors
-      ✔ invalid-productid
-      ✔ not-published
-      ✔ already-unpublished
-      ✔ invalid-csrf-token
-
   /api/administrator/subscriptions/add-subscription-item-tax-rate
     exceptions
       invalid-subscriptionitemid
@@ -971,8 +940,7 @@
         ✔ missing posted priceid
         ✔ invalid posted priceid
       invalid-price
-        ✔ invalid price is not published
-        ✔ invalid price is unpublished
+        ✔ invalid price is not active
       duplicate-price
         ✔ invalid price is already on subscription
     returns
@@ -1072,7 +1040,7 @@
         ✔ missing posted productid
         ✔ invalid posted productid
       invalid-product
-        ✔ ineligible posted product is not published
+        ✔ ineligible posted product is not active
       invalid-tax_behavior
         ✔ invalid posted tax_behavior
       invalid-unit_amount
@@ -1109,7 +1077,7 @@
       ✔ required posted tax_behavior
       ✔ required posted currency
       ✔ optionally-required posted unit_amount
-      ✔ optional posted published (boolean)
+      ✔ optional posted active (boolean)
       ✔ optional posted billing_scheme (per_unit|tiered)
       ✔ optional posted recurring_usage_type (licensed|metered)
       ✔ optional posted recurring_interval (day|week|month|year)
@@ -1137,7 +1105,7 @@
         ✔ missing posted tax_code
         ✔ invalid posted tax_code
     receives
-      ✔ optional posted published (boolean)
+      ✔ optional posted active (boolean)
       ✔ required posted name (string)
       ✔ required posted statement_descriptor (string)
       ✔ required posted unit_label (string)
@@ -1444,28 +1412,6 @@
     returns
       ✔ object
 
-  /api/administrator/subscriptions/set-coupon-published
-    exceptions
-      invalid-couponid
-        ✔ missing querystring couponid
-        ✔ invalid querystring couponid
-      invalid-coupon
-        ✔ ineligible querystring coupon is published
-        ✔ ineligible querystring coupon is unpublished
-    returns
-      ✔ object
-
-  /api/administrator/subscriptions/set-coupon-unpublished
-    exceptions
-      invalid-couponid
-        ✔ missing querystring couponid
-        ✔ invalid querystring couponid
-      invalid-coupon
-        ✔ ineligible querystring coupon is not published
-        ✔ ineligible querystring coupon is already unpublished
-    returns
-      ✔ object
-
   /api/administrator/subscriptions/set-customer-coupon
     exceptions
       invalid-customerid
@@ -1476,9 +1422,6 @@
       invalid-couponid
         ✔ missing posted couponid
         ✔ invalid posted couponid
-      invalid-coupon
-        ✔ ineligible posted coupon is not published
-        ✔ ineligible posted coupon is unpublished
     returns
       ✔ object
 
@@ -1493,45 +1436,44 @@
     returns
       ✔ object
 
-  /api/administrator/subscriptions/set-price-published
+  /api/administrator/subscriptions/set-price-active
     exceptions
       invalid-priceid
         ✔ missing querystring priceid
         ✔ invalid querystring priceid
       invalid-price
-        ✔ ineligible querystring price is published
+        ✔ ineligible querystring price is active
     returns
       ✔ object
 
-  /api/administrator/subscriptions/set-price-unpublished
+  /api/administrator/subscriptions/set-price-inactive
     exceptions
       invalid-priceid
         ✔ missing querystring priceid
         ✔ invalid querystring priceid
       invalid-price
-        ✔ ineligible querystring price is not published
-        ✔ ineligible querystring price is already unpublished
+        ✔ ineligible querystring price is not active
+        ✔ ineligible querystring price is already inactive
     returns
       ✔ object
 
-  /api/administrator/subscriptions/set-product-published
+  /api/administrator/subscriptions/set-product-active
     exceptions
       invalid-productid
         ✔ missing querystring productid
         ✔ invalid querystring productid
       invalid-product
-        ✔ invalid querystring product is already published
+        ✔ invalid querystring product is already active
     returns
       ✔ object
 
-  /api/administrator/subscriptions/set-product-unpublished
+  /api/administrator/subscriptions/set-product-inactive
     exceptions
       invalid-productid
         ✔ missing querystring productid
         ✔ invalid querystring productid
       invalid-product
-        ✔ ineligible querystring product is not published
-        ✔ ineligible querystring product is already unpublished
+        ✔ ineligible querystring product is not active
     returns
       ✔ object
 
@@ -1567,9 +1509,6 @@
       invalid-couponid
         ✔ missing posted couponid
         ✔ invalid posted couponid
-      invalid-coupon
-        ✔ ineligible posted coupon is not published
-        ✔ ineligible posted coupon is unpublished
     returns
       ✔ object
 
@@ -1717,8 +1656,6 @@
       invalid-couponid
         ✔ missing querystring couponid
         ✔ invalid querystring couponid
-      invalid-coupon
-        ✔ ineligible querystring coupon is unpublished
       invalid-name
         ✔ missing posted name
         ✔ invalid posted name
@@ -1733,7 +1670,7 @@
         ✔ missing querystring priceid
         ✔ invalid querystring priceid
       invalid-price
-        ✔ ineligible querystring price is unpublished
+        ✔ ineligible querystring price is not active
       invalid-nickname
         ✔ missing posted nickname
     receives
@@ -1747,7 +1684,7 @@
         ✔ missing querystring productid
         ✔ invalid querystring productid
       invalid-product
-        ✔ ineligible querystring product is unpublished
+        ✔ ineligible querystring product is not active
       invalid-name
         ✔ invalid posted name
       invalid-name-length
@@ -1813,6 +1750,26 @@
     configuration
       ✔ environment PAGE_SIZE
 
+  /api/user/subscriptions/active-price
+    exceptions
+      invalid-priceid
+        ✔ missing querystring priceid
+        ✔ invalid querystring priceid
+      invalid-price
+        ✔ ineligible querystring price is not active
+    returns
+      ✔ object
+
+  /api/user/subscriptions/active-product
+    exceptions
+      invalid-productid
+        ✔ missing querystring productid
+        ✔ invalid querystring productid
+      invalid-product
+        ✔ ineligible querystring product is not active
+    returns
+      ✔ object
+
   /api/user/subscriptions/add-subscription-item
     exceptions
       invalid-subscriptionid
@@ -1828,8 +1785,7 @@
         ✔ missing posted priceid
         ✔ invalid posted priceid
       invalid-price
-        ✔ invalid price is not published
-        ✔ invalid price is unpublished
+        ✔ invalid price is not active
       duplicate-price
         ✔ invalid price is already on subscription
     returns
@@ -1864,6 +1820,14 @@
       ✔ array
     configuration
       ✔ environment PAGE_SIZE
+
+  /api/user/subscriptions/coupon
+    exceptions
+      invalid-couponid
+        ✔ missing querystring couponid
+        ✔ invalid querystring couponid
+    returns
+      ✔ object
 
   /api/user/subscriptions/create-cancelation-refund
     exceptions
@@ -1976,8 +1940,7 @@
       invalid-priceid
         ✔ invalid posted priceids contains invalid price
       invalid-price
-        ✔ invalid posted priceids contains not published price
-        ✔ invalid posted priceids contains unpublished price
+        ✔ invalid posted priceids contains not active price
       invalid-taxrateid
         ✔ invalid posted taxrateids contains invalid tax rate
       invalid-tax-rate
@@ -2192,64 +2155,6 @@
     configuration
       ✔ environment PAGE_SIZE
 
-  /api/user/subscriptions/published-coupon
-    exceptions
-      invalid-couponid
-        ✔ missing querystring couponid
-        ✔ invalid querystring couponid
-      invalid-coupon
-        ✔ ineligible querystring coupon is not published
-    returns
-      ✔ object
-
-  /api/user/subscriptions/published-price
-    exceptions
-      invalid-priceid
-        ✔ missing querystring priceid
-        ✔ invalid querystring priceid
-      invalid-price
-        ✔ ineligible querystring price is not published
-    returns
-      ✔ object
-
-  /api/user/subscriptions/published-prices-count
-    returns
-      ✔ integer
-
-  /api/user/subscriptions/published-prices
-    receives
-      ✔ optional querystring offset (integer)
-      ✔ optional querystring limit (integer)
-      ✔ optional querystring all (boolean)
-    returns
-      ✔ array
-    configuration
-      ✔ environment PAGE_SIZE
-
-  /api/user/subscriptions/published-product
-    exceptions
-      invalid-productid
-        ✔ missing querystring productid
-        ✔ invalid querystring productid
-      invalid-product
-        ✔ ineligible querystring product is not published
-    returns
-      ✔ object
-
-  /api/user/subscriptions/published-products-count
-    returns
-      ✔ integer
-
-  /api/user/subscriptions/published-products
-    receives
-      ✔ optional querystring offset (integer)
-      ✔ optional querystring limit (integer)
-      ✔ optional querystring all (boolean)
-    returns
-      ✔ array
-    configuration
-      ✔ environment PAGE_SIZE
-
   /api/user/subscriptions/refund
     exceptions
       invalid-refundid
@@ -2300,13 +2205,10 @@
       invalid-customer
         ✔ invalid querystring customer has coupon
       invalid-account
-        ✔ ineligible account accessing
+        ✔ ineligible accessing account
       invalid-couponid
         ✔ missing posted couponid
         ✔ invalid posted couponid
-      invalid-coupon
-        ✔ invalid posted coupon is not published
-        ✔ invalid posted coupon is unpublished
     returns
       ✔ object
 
@@ -2385,8 +2287,6 @@
         ✔ missing posted couponid
         ✔ invalid posted couponid
       invalid-coupon
-        ✔ invalid posted coupon is not published
-        ✔ invalid posted coupon is unpublished
         ✔ invalid posted coupon is other currency
     returns
       ✔ object
@@ -2543,5 +2443,5 @@
       ✔ environment PAGE_SIZE
 
 
-  1235 passing (2h)
+  1180 passing (2h)
 

@@ -586,6 +586,16 @@
       "jsFilePath": "/src/www/account/subscriptions/subscriptions.js",
       "verbs": "GET"
     },
+    "/administrator/subscriptions/activate-price": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/activate-price.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/activate-price.js",
+      "verbs": "GET POST"
+    },
+    "/administrator/subscriptions/activate-product": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/activate-product.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/activate-product.js",
+      "verbs": "GET POST"
+    },
     "/administrator/subscriptions/activate-tax-rate": {
       "htmlFilePath": "/src/www/administrator/subscriptions/activate-tax-rate.html",
       "jsFilePath": "/src/www/administrator/subscriptions/activate-tax-rate.js",
@@ -665,6 +675,16 @@
       "htmlFilePath": "/src/www/administrator/subscriptions/customers.html",
       "jsFilePath": "/src/www/administrator/subscriptions/customers.js",
       "verbs": "GET"
+    },
+    "/administrator/subscriptions/deactivate-price": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/deactivate-price.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/deactivate-price.js",
+      "verbs": "GET POST"
+    },
+    "/administrator/subscriptions/deactivate-product": {
+      "htmlFilePath": "/src/www/administrator/subscriptions/deactivate-product.html",
+      "jsFilePath": "/src/www/administrator/subscriptions/deactivate-product.js",
+      "verbs": "GET POST"
     },
     "/administrator/subscriptions/deactivate-tax-rate": {
       "htmlFilePath": "/src/www/administrator/subscriptions/deactivate-tax-rate.html",
@@ -802,18 +822,15 @@
     },
     "/administrator/subscriptions/publish-coupon": {
       "htmlFilePath": "/src/www/administrator/subscriptions/publish-coupon.html",
-      "jsFilePath": "/src/www/administrator/subscriptions/publish-coupon.js",
-      "verbs": "GET POST"
+      "verbs": ""
     },
     "/administrator/subscriptions/publish-price": {
       "htmlFilePath": "/src/www/administrator/subscriptions/publish-price.html",
-      "jsFilePath": "/src/www/administrator/subscriptions/publish-price.js",
-      "verbs": "GET POST"
+      "verbs": ""
     },
     "/administrator/subscriptions/publish-product": {
       "htmlFilePath": "/src/www/administrator/subscriptions/publish-product.html",
-      "jsFilePath": "/src/www/administrator/subscriptions/publish-product.js",
-      "verbs": "GET POST"
+      "verbs": ""
     },
     "/administrator/subscriptions/refund-charge": {
       "htmlFilePath": "/src/www/administrator/subscriptions/refund-charge.html",
@@ -892,18 +909,15 @@
     },
     "/administrator/subscriptions/unpublish-coupon": {
       "htmlFilePath": "/src/www/administrator/subscriptions/unpublish-coupon.html",
-      "jsFilePath": "/src/www/administrator/subscriptions/unpublish-coupon.js",
-      "verbs": "GET POST"
+      "verbs": ""
     },
     "/administrator/subscriptions/unpublish-price": {
       "htmlFilePath": "/src/www/administrator/subscriptions/unpublish-price.html",
-      "jsFilePath": "/src/www/administrator/subscriptions/unpublish-price.js",
-      "verbs": "GET POST"
+      "verbs": ""
     },
     "/administrator/subscriptions/unpublish-product": {
       "htmlFilePath": "/src/www/administrator/subscriptions/unpublish-product.html",
-      "jsFilePath": "/src/www/administrator/subscriptions/unpublish-product.js",
-      "verbs": "GET POST"
+      "verbs": ""
     },
     "/api/administrator/subscriptions/add-line-item-tax-rate": {
       "jsFilePath": "/src/www/api/administrator/subscriptions/add-line-item-tax-rate.js",
@@ -1105,14 +1119,6 @@
       "jsFilePath": "/src/www/api/administrator/subscriptions/set-charge-flagged.js",
       "verbs": "PATCH"
     },
-    "/api/administrator/subscriptions/set-coupon-published": {
-      "jsFilePath": "/src/www/api/administrator/subscriptions/set-coupon-published.js",
-      "verbs": "PATCH"
-    },
-    "/api/administrator/subscriptions/set-coupon-unpublished": {
-      "jsFilePath": "/src/www/api/administrator/subscriptions/set-coupon-unpublished.js",
-      "verbs": "PATCH"
-    },
     "/api/administrator/subscriptions/set-customer-coupon": {
       "jsFilePath": "/src/www/api/administrator/subscriptions/set-customer-coupon.js",
       "verbs": "PATCH"
@@ -1121,20 +1127,20 @@
       "jsFilePath": "/src/www/api/administrator/subscriptions/set-invoice-uncollectible.js",
       "verbs": "PATCH"
     },
-    "/api/administrator/subscriptions/set-price-published": {
-      "jsFilePath": "/src/www/api/administrator/subscriptions/set-price-published.js",
+    "/api/administrator/subscriptions/set-price-active": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/set-price-active.js",
       "verbs": "PATCH"
     },
-    "/api/administrator/subscriptions/set-price-unpublished": {
-      "jsFilePath": "/src/www/api/administrator/subscriptions/set-price-unpublished.js",
+    "/api/administrator/subscriptions/set-price-inactive": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/set-price-inactive.js",
       "verbs": "PATCH"
     },
-    "/api/administrator/subscriptions/set-product-published": {
-      "jsFilePath": "/src/www/api/administrator/subscriptions/set-product-published.js",
+    "/api/administrator/subscriptions/set-product-active": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/set-product-active.js",
       "verbs": "PATCH"
     },
-    "/api/administrator/subscriptions/set-product-unpublished": {
-      "jsFilePath": "/src/www/api/administrator/subscriptions/set-product-unpublished.js",
+    "/api/administrator/subscriptions/set-product-inactive": {
+      "jsFilePath": "/src/www/api/administrator/subscriptions/set-product-inactive.js",
       "verbs": "PATCH"
     },
     "/api/administrator/subscriptions/set-refund-request-denied": {
@@ -1241,6 +1247,16 @@
       "jsFilePath": "/src/www/api/administrator/subscriptions/usage-records.js",
       "verbs": "GET"
     },
+    "/api/user/subscriptions/active-price": {
+      "jsFilePath": "/src/www/api/user/subscriptions/active-price.js",
+      "verbs": "GET",
+      "auth": "GUEST"
+    },
+    "/api/user/subscriptions/active-product": {
+      "jsFilePath": "/src/www/api/user/subscriptions/active-product.js",
+      "verbs": "GET",
+      "auth": "GUEST"
+    },
     "/api/user/subscriptions/add-subscription-item": {
       "jsFilePath": "/src/www/api/user/subscriptions/add-subscription-item.js",
       "verbs": "PATCH"
@@ -1256,6 +1272,11 @@
     "/api/user/subscriptions/charges": {
       "jsFilePath": "/src/www/api/user/subscriptions/charges.js",
       "verbs": "GET"
+    },
+    "/api/user/subscriptions/coupon": {
+      "jsFilePath": "/src/www/api/user/subscriptions/coupon.js",
+      "verbs": "GET",
+      "auth": "GUEST"
     },
     "/api/user/subscriptions/create-cancelation-refund": {
       "jsFilePath": "/src/www/api/user/subscriptions/create-cancelation-refund.js",
@@ -1367,37 +1388,6 @@
     },
     "/api/user/subscriptions/payment-methods": {
       "jsFilePath": "/src/www/api/user/subscriptions/payment-methods.js",
-      "verbs": "GET"
-    },
-    "/api/user/subscriptions/published-coupon": {
-      "jsFilePath": "/src/www/api/user/subscriptions/published-coupon.js",
-      "verbs": "GET",
-      "auth": "GUEST"
-    },
-    "/api/user/subscriptions/published-price": {
-      "jsFilePath": "/src/www/api/user/subscriptions/published-price.js",
-      "verbs": "GET",
-      "auth": "GUEST"
-    },
-    "/api/user/subscriptions/published-prices-count": {
-      "jsFilePath": "/src/www/api/user/subscriptions/published-prices-count.js",
-      "verbs": "GET"
-    },
-    "/api/user/subscriptions/published-prices": {
-      "jsFilePath": "/src/www/api/user/subscriptions/published-prices.js",
-      "verbs": "GET"
-    },
-    "/api/user/subscriptions/published-product": {
-      "jsFilePath": "/src/www/api/user/subscriptions/published-product.js",
-      "verbs": "GET",
-      "auth": "GUEST"
-    },
-    "/api/user/subscriptions/published-products-count": {
-      "jsFilePath": "/src/www/api/user/subscriptions/published-products-count.js",
-      "verbs": "GET"
-    },
-    "/api/user/subscriptions/published-products": {
-      "jsFilePath": "/src/www/api/user/subscriptions/published-products.js",
       "verbs": "GET"
     },
     "/api/user/subscriptions/refund": {

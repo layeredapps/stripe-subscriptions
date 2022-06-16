@@ -1,5 +1,5 @@
 @layeredapps/dashboard 0.0.143
-http://localhost:8000
+http://localhost:50011
 
 |------------------------------------------------------------------------------------------------|
 | /api/administrator/subscriptions/add-subscription-item                                         |
@@ -15,8 +15,7 @@ http://localhost:8000
 |                                      |          |  * missing posted priceid                    |
 |                                      |          |  * invalid posted priceid                    |
 |                                      |          | invalid-price                                |
-|                                      |          |  * invalid price is not published            |
-|                                      |          |  * invalid price is unpublished              |
+|                                      |          |  * invalid price is not active               |
 |                                      |          | duplicate-price                              |
 |                                      |          |  * invalid price is already on subscription  |
 |--------------------------------------|----------|----------------------------------------------|
@@ -122,10 +121,10 @@ http://localhost:8000
 | required posted currency                                                                     |          |  * missing posted productid                                  |
 | required posted productid                                                                    |          |  * invalid posted productid                                  |
 | required posted productid                                                                    |          | invalid-product                                              |
-| required posted tax_behavior                                                                 |          |  * ineligible posted product is not published                |
+| required posted tax_behavior                                                                 |          |  * ineligible posted product is not active                   |
 | required posted currency                                                                     |          | invalid-tax_behavior                                         |
 | optionally-required posted unit_amount                                                       |          |  * invalid posted tax_behavior                               |
-| optional posted published (boolean)                                                          |          | invalid-unit_amount                                          |
+| optional posted active (boolean)                                                             |          | invalid-unit_amount                                          |
 | optional posted billing_scheme (per_unit|tiered)                                             |          |  * invalid posted unit_amount                                |
 | optional posted recurring_usage_type (licensed|metered)                                      |          | invalid-currency                                             |
 | optional posted recurring_interval (day|week|month|year)                                     |          |  * missing posted currency                                   |
@@ -162,7 +161,7 @@ http://localhost:8000
 | required posted tax_code                       | object   | invalid-name                            | environment MINIMUM_PRODUCT_NAME_LENGTH  |
 | required posted statement_descriptor           |          |  * missing posted name                  | environment MAXIMUM_PRODUCT_NAME_LENGTH  |
 | required posted name                           |          | invalid-product-name-length             |                                          |
-| optional posted published (boolean)            |          |  * posted name too short                |                                          |
+| optional posted active (boolean)               |          |  * posted name too short                |                                          |
 | required posted name (string)                  |          |  * posted name too long                 |                                          |
 | required posted statement_descriptor (string)  |          | invalid-statement_descriptor            |                                          |
 | required posted unit_label (string)            |          |  * missing posted statement_descriptor  |                                          |
@@ -459,85 +458,59 @@ http://localhost:8000
 |                              |          |  * ineligible querystring charge is already flagged  |
 |------------------------------|----------|------------------------------------------------------|
 
-|----------------------------------------------------------------------------------------------|
-| /api/administrator/subscriptions/set-coupon-published                                        |
-| RECEIVES-----------------------| RETURNS--| EXCEPTIONS---------------------------------------|
-| required querystring couponid  | object   | invalid-couponid                                 |
-|                                |          |  * missing querystring couponid                  |
-|                                |          |  * invalid querystring couponid                  |
-|                                |          | invalid-coupon                                   |
-|                                |          |  * ineligible querystring coupon is published    |
-|                                |          |  * ineligible querystring coupon is unpublished  |
-|--------------------------------|----------|--------------------------------------------------|
+|----------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-customer-coupon                             |
+| RECEIVES-------------------------| RETURNS--| EXCEPTIONS-------------------------|
+| required posted couponid         | object   | invalid-customerid                 |
+| required querystring customerid  |          |  * missing querystring customerid  |
+|                                  |          |  * invalid querystring customerid  |
+|                                  |          | invalid-customer                   |
+|                                  |          |  * ineligible customer has coupon  |
+|                                  |          | invalid-couponid                   |
+|                                  |          |  * missing posted couponid         |
+|                                  |          |  * invalid posted couponid         |
+|----------------------------------|----------|------------------------------------|
 
-|------------------------------------------------------------------------------------------------------|
-| /api/administrator/subscriptions/set-coupon-unpublished                                              |
-| RECEIVES-----------------------| RETURNS--| EXCEPTIONS-----------------------------------------------|
-| required querystring couponid  | object   | invalid-couponid                                         |
-|                                |          |  * missing querystring couponid                          |
-|                                |          |  * invalid querystring couponid                          |
-|                                |          | invalid-coupon                                           |
-|                                |          |  * ineligible querystring coupon is not published        |
-|                                |          |  * ineligible querystring coupon is already unpublished  |
-|--------------------------------|----------|----------------------------------------------------------|
+|---------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-price-active                                     |
+| RECEIVES----------------------| RETURNS--| EXCEPTIONS---------------------------------|
+| required querystring priceid  | object   | invalid-priceid                            |
+|                               |          |  * missing querystring priceid             |
+|                               |          |  * invalid querystring priceid             |
+|                               |          | invalid-price                              |
+|                               |          |  * ineligible querystring price is active  |
+|-------------------------------|----------|--------------------------------------------|
 
-|---------------------------------------------------------------------------------------------|
-| /api/administrator/subscriptions/set-customer-coupon                                        |
-| RECEIVES-------------------------| RETURNS--| EXCEPTIONS------------------------------------|
-| required posted couponid         | object   | invalid-customerid                            |
-| required querystring customerid  |          |  * missing querystring customerid             |
-|                                  |          |  * invalid querystring customerid             |
-|                                  |          | invalid-customer                              |
-|                                  |          |  * ineligible customer has coupon             |
-|                                  |          | invalid-couponid                              |
-|                                  |          |  * missing posted couponid                    |
-|                                  |          |  * invalid posted couponid                    |
-|                                  |          | invalid-coupon                                |
-|                                  |          |  * ineligible posted coupon is not published  |
-|                                  |          |  * ineligible posted coupon is unpublished    |
-|----------------------------------|----------|-----------------------------------------------|
+|-------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-price-inactive                                             |
+| RECEIVES----------------------| RETURNS--| EXCEPTIONS-------------------------------------------|
+| required querystring priceid  | object   | invalid-priceid                                      |
+|                               |          |  * missing querystring priceid                       |
+|                               |          |  * invalid querystring priceid                       |
+|                               |          | invalid-price                                        |
+|                               |          |  * ineligible querystring price is not active        |
+|                               |          |  * ineligible querystring price is already inactive  |
+|-------------------------------|----------|------------------------------------------------------|
 
-|------------------------------------------------------------------------------------------|
-| /api/administrator/subscriptions/set-price-published                                     |
-| RECEIVES----------------------| RETURNS--| EXCEPTIONS------------------------------------|
-| required querystring priceid  | object   | invalid-priceid                               |
-|                               |          |  * missing querystring priceid                |
-|                               |          |  * invalid querystring priceid                |
-|                               |          | invalid-price                                 |
-|                               |          |  * ineligible querystring price is published  |
-|-------------------------------|----------|-----------------------------------------------|
+|------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-product-active                                            |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS----------------------------------------|
+| required querystring productid  | object   | invalid-productid                                 |
+|                                 |          |  * missing querystring productid                  |
+|                                 |          |  * invalid querystring productid                  |
+|                                 |          | invalid-product                                   |
+|                                 |          |  * invalid querystring product is already active  |
+|---------------------------------|----------|---------------------------------------------------|
 
-|----------------------------------------------------------------------------------------------------|
-| /api/administrator/subscriptions/set-price-unpublished                                             |
-| RECEIVES----------------------| RETURNS--| EXCEPTIONS----------------------------------------------|
-| required querystring priceid  | object   | invalid-priceid                                         |
-|                               |          |  * missing querystring priceid                          |
-|                               |          |  * invalid querystring priceid                          |
-|                               |          | invalid-price                                           |
-|                               |          |  * ineligible querystring price is not published        |
-|                               |          |  * ineligible querystring price is already unpublished  |
-|-------------------------------|----------|---------------------------------------------------------|
-
-|---------------------------------------------------------------------------------------------------|
-| /api/administrator/subscriptions/set-product-published                                            |
-| RECEIVES------------------------| RETURNS--| EXCEPTIONS-------------------------------------------|
-| required querystring productid  | object   | invalid-productid                                    |
-|                                 |          |  * missing querystring productid                     |
-|                                 |          |  * invalid querystring productid                     |
-|                                 |          | invalid-product                                      |
-|                                 |          |  * invalid querystring product is already published  |
-|---------------------------------|----------|------------------------------------------------------|
-
-|--------------------------------------------------------------------------------------------------------|
-| /api/administrator/subscriptions/set-product-unpublished                                               |
-| RECEIVES------------------------| RETURNS--| EXCEPTIONS------------------------------------------------|
-| required querystring productid  | object   | invalid-productid                                         |
-|                                 |          |  * missing querystring productid                          |
-|                                 |          |  * invalid querystring productid                          |
-|                                 |          | invalid-product                                           |
-|                                 |          |  * ineligible querystring product is not published        |
-|                                 |          |  * ineligible querystring product is already unpublished  |
-|---------------------------------|----------|-----------------------------------------------------------|
+|-----------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-product-inactive                                         |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS---------------------------------------|
+| required querystring productid  | object   | invalid-productid                                |
+|                                 |          |  * missing querystring productid                 |
+|                                 |          |  * invalid querystring productid                 |
+|                                 |          | invalid-product                                  |
+|                                 |          |  * ineligible querystring product is not active  |
+|---------------------------------|----------|--------------------------------------------------|
 
 |----------------------------------------------------------------------------------------------------------|
 | /api/administrator/subscriptions/set-refund-request-denied                                               |
@@ -560,22 +533,19 @@ http://localhost:8000
 |                                      |          |  * ineligible querystring subscription is not active  |
 |--------------------------------------|----------|-------------------------------------------------------|
 
-|-------------------------------------------------------------------------------------------------|
-| /api/administrator/subscriptions/set-subscription-coupon                                        |
-| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS------------------------------------|
-| required posted couponid             | object   | invalid-subscriptionid                        |
-| required querystring subscriptionid  |          |  * missing querystring subscriptionid         |
-|                                      |          |  * invalid querystring subscriptionid         |
-|                                      |          | invalid-subscription                          |
-|                                      |          |  * ineligible subscription is canceling       |
-|                                      |          |  * ineligible subscription has coupon         |
-|                                      |          | invalid-couponid                              |
-|                                      |          |  * missing posted couponid                    |
-|                                      |          |  * invalid posted couponid                    |
-|                                      |          | invalid-coupon                                |
-|                                      |          |  * ineligible posted coupon is not published  |
-|                                      |          |  * ineligible posted coupon is unpublished    |
-|--------------------------------------|----------|-----------------------------------------------|
+|--------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-subscription-coupon                                   |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS-------------------------------|
+| required posted couponid             | object   | invalid-subscriptionid                   |
+| required querystring subscriptionid  |          |  * missing querystring subscriptionid    |
+|                                      |          |  * invalid querystring subscriptionid    |
+|                                      |          | invalid-subscription                     |
+|                                      |          |  * ineligible subscription is canceling  |
+|                                      |          |  * ineligible subscription has coupon    |
+|                                      |          | invalid-couponid                         |
+|                                      |          |  * missing posted couponid               |
+|                                      |          |  * invalid posted couponid               |
+|--------------------------------------|----------|------------------------------------------|
 
 |------------------------------------------------------------------------------------------|
 | /api/administrator/subscriptions/set-subscription-default-tax-rates                      |
@@ -714,55 +684,53 @@ http://localhost:8000
 | integer                                           |
 |---------------------------------------------------|
 
-|----------------------------------------------------------------------------------------------|
-| /api/administrator/subscriptions/update-coupon                                               |
-| RECEIVES-----------------------| RETURNS--| EXCEPTIONS---------------------------------------|
-| required posted name           | object   | invalid-couponid                                 |
-| required querystring couponid  |          |  * missing querystring couponid                  |
-| required posted name           |          |  * invalid querystring couponid                  |
-|                                |          | invalid-coupon                                   |
-|                                |          |  * ineligible querystring coupon is unpublished  |
-|                                |          | invalid-name                                     |
-|                                |          |  * missing posted name                           |
-|                                |          |  * invalid posted name                           |
-|--------------------------------|----------|--------------------------------------------------|
+|------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/update-coupon                               |
+| RECEIVES-----------------------| RETURNS--| EXCEPTIONS-----------------------|
+| required posted name           | object   | invalid-couponid                 |
+| required querystring couponid  |          |  * missing querystring couponid  |
+| required posted name           |          |  * invalid querystring couponid  |
+|                                |          | invalid-name                     |
+|                                |          |  * missing posted name           |
+|                                |          |  * invalid posted name           |
+|--------------------------------|----------|----------------------------------|
 
-|-------------------------------------------------------------------------------------------------|
-| /api/administrator/subscriptions/update-price                                                   |
-| RECEIVES---------------------------| RETURNS--| EXCEPTIONS--------------------------------------|
-| required posted nickname           | object   | invalid-priceid                                 |
-| required querystring priceid       |          |  * missing querystring priceid                  |
-| required posted nickname (string)  |          |  * invalid querystring priceid                  |
-|                                    |          | invalid-price                                   |
-|                                    |          |  * ineligible querystring price is unpublished  |
-|                                    |          | invalid-nickname                                |
-|                                    |          |  * missing posted nickname                      |
-|------------------------------------|----------|-------------------------------------------------|
+|------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/update-price                                                  |
+| RECEIVES---------------------------| RETURNS--| EXCEPTIONS-------------------------------------|
+| required posted nickname           | object   | invalid-priceid                                |
+| required querystring priceid       |          |  * missing querystring priceid                 |
+| required posted nickname (string)  |          |  * invalid querystring priceid                 |
+|                                    |          | invalid-price                                  |
+|                                    |          |  * ineligible querystring price is not active  |
+|                                    |          | invalid-nickname                               |
+|                                    |          |  * missing posted nickname                     |
+|------------------------------------|----------|------------------------------------------------|
 
-|-------------------------------------------------------------------------------------------------------------------------------------------------|
-| /api/administrator/subscriptions/update-product                                                                                                 |
-| RECEIVES------------------------------| RETURNS--| EXCEPTIONS----------------------------------------| CONFIGURATION----------------------------|
-| required posted tax_code              | object   | invalid-productid                                 | environment MINIMUM_PRODUCT_NAME_LENGTH  |
-| required posted unit_label            |          |  * missing querystring productid                  | environment MAXIMUM_PRODUCT_NAME_LENGTH  |
-| required querystring productid        |          |  * invalid querystring productid                  |                                          |
-| required posted name                  |          | invalid-product                                   |                                          |
-| required posted statement_descriptor  |          |  * ineligible querystring product is unpublished  |                                          |
-| required posted unit_label            |          | invalid-name                                      |                                          |
-| required posted tax_code              |          |  * invalid posted name                            |                                          |
-|                                       |          | invalid-name-length                               |                                          |
-|                                       |          |  * posted name too short                          |                                          |
-|                                       |          |  * posted name too long                           |                                          |
-|                                       |          | invalid-statement_descriptor                      |                                          |
-|                                       |          |  * invalid posted statement_descriptor            |                                          |
-|                                       |          | invalid-statement_descriptor-length               |                                          |
-|                                       |          |  * posted statement_descriptor too short          |                                          |
-|                                       |          |  * posted statement_descriptor too long           |                                          |
-|                                       |          | invalid-unit_label                                |                                          |
-|                                       |          |  * missing posted unit_label                      |                                          |
-|                                       |          | invalid-tax_code                                  |                                          |
-|                                       |          |  * missing posted tax_code                        |                                          |
-|                                       |          |  * invalid posted tax_code                        |                                          |
-|---------------------------------------|----------|---------------------------------------------------|------------------------------------------|
+|------------------------------------------------------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/update-product                                                                                                |
+| RECEIVES------------------------------| RETURNS--| EXCEPTIONS---------------------------------------| CONFIGURATION----------------------------|
+| required posted tax_code              | object   | invalid-productid                                | environment MINIMUM_PRODUCT_NAME_LENGTH  |
+| required posted unit_label            |          |  * missing querystring productid                 | environment MAXIMUM_PRODUCT_NAME_LENGTH  |
+| required querystring productid        |          |  * invalid querystring productid                 |                                          |
+| required posted name                  |          | invalid-product                                  |                                          |
+| required posted statement_descriptor  |          |  * ineligible querystring product is not active  |                                          |
+| required posted unit_label            |          | invalid-name                                     |                                          |
+| required posted tax_code              |          |  * invalid posted name                           |                                          |
+|                                       |          | invalid-name-length                              |                                          |
+|                                       |          |  * posted name too short                         |                                          |
+|                                       |          |  * posted name too long                          |                                          |
+|                                       |          | invalid-statement_descriptor                     |                                          |
+|                                       |          |  * invalid posted statement_descriptor           |                                          |
+|                                       |          | invalid-statement_descriptor-length              |                                          |
+|                                       |          |  * posted statement_descriptor too short         |                                          |
+|                                       |          |  * posted statement_descriptor too long          |                                          |
+|                                       |          | invalid-unit_label                               |                                          |
+|                                       |          |  * missing posted unit_label                     |                                          |
+|                                       |          | invalid-tax_code                                 |                                          |
+|                                       |          |  * missing posted tax_code                       |                                          |
+|                                       |          |  * invalid posted tax_code                       |                                          |
+|---------------------------------------|----------|--------------------------------------------------|------------------------------------------|
 
 |--------------------------------------------------------------------------------|
 | /api/administrator/subscriptions/update-tax-rate                               |
@@ -800,6 +768,26 @@ http://localhost:8000
 | integer                                               |
 |-------------------------------------------------------|
 
+|-------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/active-price                                                      |
+| RECEIVES----------------------| RETURNS--| EXCEPTIONS-------------------------------------|
+| required querystring priceid  | object   | invalid-priceid                                |
+|                               |          |  * missing querystring priceid                 |
+|                               |          |  * invalid querystring priceid                 |
+|                               |          | invalid-price                                  |
+|                               |          |  * ineligible querystring price is not active  |
+|-------------------------------|----------|------------------------------------------------|
+
+|-----------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/active-product                                                        |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS---------------------------------------|
+| required querystring productid  | object   | invalid-productid                                |
+|                                 |          |  * missing querystring productid                 |
+|                                 |          |  * invalid querystring productid                 |
+|                                 |          | invalid-product                                  |
+|                                 |          |  * ineligible querystring product is not active  |
+|---------------------------------|----------|--------------------------------------------------|
+
 |------------------------------------------------------------------------------------------------|
 | /api/user/subscriptions/add-subscription-item                                                  |
 | RECEIVES-----------------------------| RETURNS--| EXCEPTIONS-----------------------------------|
@@ -816,8 +804,7 @@ http://localhost:8000
 |                                      |          |  * missing posted priceid                    |
 |                                      |          |  * invalid posted priceid                    |
 |                                      |          | invalid-price                                |
-|                                      |          |  * invalid price is not published            |
-|                                      |          |  * invalid price is unpublished              |
+|                                      |          |  * invalid price is not active               |
 |                                      |          | duplicate-price                              |
 |                                      |          |  * invalid price is already on subscription  |
 |--------------------------------------|----------|----------------------------------------------|
@@ -847,6 +834,14 @@ http://localhost:8000
 | RETURNS--------------------------------|
 | integer                                |
 |----------------------------------------|
+
+|------------------------------------------------------------------------------|
+| /api/user/subscriptions/coupon                                               |
+| RECEIVES-----------------------| RETURNS--| EXCEPTIONS-----------------------|
+| required querystring couponid  | object   | invalid-couponid                 |
+|                                |          |  * missing querystring couponid  |
+|                                |          |  * invalid querystring couponid  |
+|--------------------------------|----------|----------------------------------|
 
 |---------------------------------------------------------------------------------------------------------|
 | /api/user/subscriptions/create-cancelation-refund                                                       |
@@ -952,8 +947,7 @@ http://localhost:8000
 |                                  |          | invalid-priceid                                             |
 |                                  |          |  * invalid posted priceids contains invalid price           |
 |                                  |          | invalid-price                                               |
-|                                  |          |  * invalid posted priceids contains not published price     |
-|                                  |          |  * invalid posted priceids contains unpublished price       |
+|                                  |          |  * invalid posted priceids contains not active price        |
 |                                  |          | invalid-taxrateid                                           |
 |                                  |          |  * invalid posted taxrateids contains invalid tax rate      |
 |                                  |          | invalid-tax-rate                                            |
@@ -1147,64 +1141,6 @@ http://localhost:8000
 | integer                                        |
 |------------------------------------------------|
 
-|------------------------------------------------------------------------------------------------|
-| /api/user/subscriptions/published-coupon                                                       |
-| RECEIVES-----------------------| RETURNS--| EXCEPTIONS-----------------------------------------|
-| required querystring couponid  | object   | invalid-couponid                                   |
-|                                |          |  * missing querystring couponid                    |
-|                                |          |  * invalid querystring couponid                    |
-|                                |          | invalid-coupon                                     |
-|                                |          |  * ineligible querystring coupon is not published  |
-|--------------------------------|----------|----------------------------------------------------|
-
-|----------------------------------------------------------------------------------------------|
-| /api/user/subscriptions/published-price                                                      |
-| RECEIVES----------------------| RETURNS--| EXCEPTIONS----------------------------------------|
-| required querystring priceid  | object   | invalid-priceid                                   |
-|                               |          |  * missing querystring priceid                    |
-|                               |          |  * invalid querystring priceid                    |
-|                               |          | invalid-price                                     |
-|                               |          |  * ineligible querystring price is not published  |
-|-------------------------------|----------|---------------------------------------------------|
-
-|----------------------------------------------------------------------------|
-| /api/user/subscriptions/published-prices                                   |
-| RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
-| optional querystring offset (integer)  | array    | environment PAGE_SIZE  |
-| optional querystring limit (integer)   |          |                        |
-| optional querystring all (boolean)     |          |                        |
-|----------------------------------------|----------|------------------------|
-
-|-------------------------------------------------|
-| /api/user/subscriptions/published-prices-count  |
-| RETURNS-----------------------------------------|
-| integer                                         |
-|-------------------------------------------------|
-
-|--------------------------------------------------------------------------------------------------|
-| /api/user/subscriptions/published-product                                                        |
-| RECEIVES------------------------| RETURNS--| EXCEPTIONS------------------------------------------|
-| required querystring productid  | object   | invalid-productid                                   |
-|                                 |          |  * missing querystring productid                    |
-|                                 |          |  * invalid querystring productid                    |
-|                                 |          | invalid-product                                     |
-|                                 |          |  * ineligible querystring product is not published  |
-|---------------------------------|----------|-----------------------------------------------------|
-
-|----------------------------------------------------------------------------|
-| /api/user/subscriptions/published-products                                 |
-| RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
-| optional querystring offset (integer)  | array    | environment PAGE_SIZE  |
-| optional querystring limit (integer)   |          |                        |
-| optional querystring all (boolean)     |          |                        |
-|----------------------------------------|----------|------------------------|
-
-|---------------------------------------------------|
-| /api/user/subscriptions/published-products-count  |
-| RETURNS-------------------------------------------|
-| integer                                           |
-|---------------------------------------------------|
-
 |------------------------------------------------------------------------------|
 | /api/user/subscriptions/refund                                               |
 | RECEIVES-----------------------| RETURNS--| EXCEPTIONS-----------------------|
@@ -1252,13 +1188,10 @@ http://localhost:8000
 |                                  |          | invalid-customer                            |
 |                                  |          |  * invalid querystring customer has coupon  |
 |                                  |          | invalid-account                             |
-|                                  |          |  * ineligible account accessing             |
+|                                  |          |  * ineligible accessing account             |
 |                                  |          | invalid-couponid                            |
 |                                  |          |  * missing posted couponid                  |
 |                                  |          |  * invalid posted couponid                  |
-|                                  |          | invalid-coupon                              |
-|                                  |          |  * invalid posted coupon is not published   |
-|                                  |          |  * invalid posted coupon is unpublished     |
 |----------------------------------|----------|---------------------------------------------|
 
 |-------------------------------------------------------------------------------------------------------|
@@ -1337,8 +1270,6 @@ http://localhost:8000
 |                                      |          |  * missing posted couponid                        |
 |                                      |          |  * invalid posted couponid                        |
 |                                      |          | invalid-coupon                                    |
-|                                      |          |  * invalid posted coupon is not published         |
-|                                      |          |  * invalid posted coupon is unpublished           |
 |                                      |          |  * invalid posted coupon is other currency        |
 |--------------------------------------|----------|---------------------------------------------------|
 
@@ -1475,4 +1406,4 @@ http://localhost:8000
 |-----------------------------------------------|-----------------------|--------------------------------------------|------------------------|
 
 
-2022-06-14T03:23:22.516Z
+2022-06-16T11:07:49.229Z

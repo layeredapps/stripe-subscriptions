@@ -1,5 +1,5 @@
 @layeredapps/dashboard 0.0.143
-http://localhost:8000
+http://localhost:50011
 
 Administrator menu:
 @layeredapps/stripe-subscriptions/src/www/administrator/subscriptions "Stripe Subscriptions <span translate="yes">module</span>"
@@ -93,6 +93,8 @@ URL --------------------------------------------------------------- AUTH - TEMPL
 /administrator/session                                                                GET             @layeredapps/dashboard         @layeredapps/dashboard    
 /administrator/sessions                                                               GET             @layeredapps/dashboard         @layeredapps/dashboard    
 /administrator/subscriptions                                                          GET             /src/www                       /src/www                  
+/administrator/subscriptions/activate-price                                           GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/activate-product                                         GET POST        /src/www                       /src/www                  
 /administrator/subscriptions/activate-tax-rate                                        GET POST        /src/www                       /src/www                  
 /administrator/subscriptions/add-line-item-tax-rate                                   GET POST        /src/www                       /src/www                  
 /administrator/subscriptions/add-subscription-item-tax-rate                           GET POST        /src/www                       /src/www                  
@@ -109,6 +111,8 @@ URL --------------------------------------------------------------- AUTH - TEMPL
 /administrator/subscriptions/create-tax-rate                                          GET POST        /src/www                       /src/www                  
 /administrator/subscriptions/customer                                                 GET             /src/www                       /src/www                  
 /administrator/subscriptions/customers                                                GET             /src/www                       /src/www                  
+/administrator/subscriptions/deactivate-price                                         GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/deactivate-product                                       GET POST        /src/www                       /src/www                  
 /administrator/subscriptions/deactivate-tax-rate                                      GET POST        /src/www                       /src/www                  
 /administrator/subscriptions/delete-coupon                                            GET POST        /src/www                       /src/www                  
 /administrator/subscriptions/delete-price                                             GET POST        /src/www                       /src/www                  
@@ -135,9 +139,9 @@ URL --------------------------------------------------------------- AUTH - TEMPL
 /administrator/subscriptions/prices                                                   GET             /src/www                       /src/www                  
 /administrator/subscriptions/product                                                  GET             /src/www                       /src/www                  
 /administrator/subscriptions/products                                                 GET             /src/www                       /src/www                  
-/administrator/subscriptions/publish-coupon                                           GET POST        /src/www                       /src/www                  
-/administrator/subscriptions/publish-price                                            GET POST        /src/www                       /src/www                  
-/administrator/subscriptions/publish-product                                          GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/publish-coupon                                                           static-page                    /src/www                  
+/administrator/subscriptions/publish-price                                                            static-page                    /src/www                  
+/administrator/subscriptions/publish-product                                                          static-page                    /src/www                  
 /administrator/subscriptions/refund                                                   GET             /src/www                       /src/www                  
 /administrator/subscriptions/refund-charge                                            GET POST        /src/www                       /src/www                  
 /administrator/subscriptions/refund-requests                                          GET             /src/www                       /src/www                  
@@ -153,9 +157,9 @@ URL --------------------------------------------------------------- AUTH - TEMPL
 /administrator/subscriptions/subscriptions                                            GET             /src/www                       /src/www                  
 /administrator/subscriptions/tax-rate                                                 GET             /src/www                       /src/www                  
 /administrator/subscriptions/tax-rates                                                GET             /src/www                       /src/www                  
-/administrator/subscriptions/unpublish-coupon                                         GET POST        /src/www                       /src/www                  
-/administrator/subscriptions/unpublish-price                                          GET POST        /src/www                       /src/www                  
-/administrator/subscriptions/unpublish-product                                        GET POST        /src/www                       /src/www                  
+/administrator/subscriptions/unpublish-coupon                                                         static-page                    /src/www                  
+/administrator/subscriptions/unpublish-price                                                          static-page                    /src/www                  
+/administrator/subscriptions/unpublish-product                                                        static-page                    /src/www                  
 /administrator/transfer-ownership                                                     GET POST        @layeredapps/dashboard         @layeredapps/dashboard    
 /api/administrator/account                                                            GET             @layeredapps/dashboard                                   
 /api/administrator/accounts                                                           GET             @layeredapps/dashboard                                   
@@ -231,14 +235,12 @@ URL --------------------------------------------------------------- AUTH - TEMPL
 /api/administrator/subscriptions/reset-customer-coupon                                PATCH           /src/www                                                 
 /api/administrator/subscriptions/reset-subscription-coupon                            PATCH           /src/www                                                 
 /api/administrator/subscriptions/set-charge-flagged                                   PATCH           /src/www                                                 
-/api/administrator/subscriptions/set-coupon-published                                 PATCH           /src/www                                                 
-/api/administrator/subscriptions/set-coupon-unpublished                               PATCH           /src/www                                                 
 /api/administrator/subscriptions/set-customer-coupon                                  PATCH           /src/www                                                 
 /api/administrator/subscriptions/set-invoice-uncollectible                            PATCH           /src/www                                                 
-/api/administrator/subscriptions/set-price-published                                  PATCH           /src/www                                                 
-/api/administrator/subscriptions/set-price-unpublished                                PATCH           /src/www                                                 
-/api/administrator/subscriptions/set-product-published                                PATCH           /src/www                                                 
-/api/administrator/subscriptions/set-product-unpublished                              PATCH           /src/www                                                 
+/api/administrator/subscriptions/set-price-active                                     PATCH           /src/www                                                 
+/api/administrator/subscriptions/set-price-inactive                                   PATCH           /src/www                                                 
+/api/administrator/subscriptions/set-product-active                                   PATCH           /src/www                                                 
+/api/administrator/subscriptions/set-product-inactive                                 PATCH           /src/www                                                 
 /api/administrator/subscriptions/set-refund-request-denied                            PATCH           /src/www                                                 
 /api/administrator/subscriptions/set-subscription-canceled                            PATCH           /src/www                                                 
 /api/administrator/subscriptions/set-subscription-coupon                              PATCH           /src/www                                                 
@@ -291,10 +293,13 @@ URL --------------------------------------------------------------- AUTH - TEMPL
 /api/user/set-account-username                                                        PATCH           @layeredapps/dashboard                                   
 /api/user/set-session-ended                                                           PATCH           @layeredapps/dashboard                                   
 /api/user/set-session-verified                                                        PATCH           @layeredapps/dashboard                                   
+/api/user/subscriptions/active-price                                GUEST             GET             /src/www                                                 
+/api/user/subscriptions/active-product                              GUEST             GET             /src/www                                                 
 /api/user/subscriptions/add-subscription-item                                         PATCH           /src/www                                                 
 /api/user/subscriptions/charge                                                        GET             /src/www                                                 
 /api/user/subscriptions/charges                                                       GET             /src/www                                                 
 /api/user/subscriptions/charges-count                                                 GET             /src/www                                                 
+/api/user/subscriptions/coupon                                      GUEST             GET             /src/www                                                 
 /api/user/subscriptions/create-cancelation-refund                                     POST            /src/www                                                 
 /api/user/subscriptions/create-customer                                               POST            /src/www                                                 
 /api/user/subscriptions/create-payment-intent                                         POST            /src/www                                                 
@@ -323,13 +328,6 @@ URL --------------------------------------------------------------- AUTH - TEMPL
 /api/user/subscriptions/payment-method                                                GET             /src/www                                                 
 /api/user/subscriptions/payment-methods                                               GET             /src/www                                                 
 /api/user/subscriptions/payment-methods-count                                         GET             /src/www                                                 
-/api/user/subscriptions/published-coupon                            GUEST             GET             /src/www                                                 
-/api/user/subscriptions/published-price                             GUEST             GET             /src/www                                                 
-/api/user/subscriptions/published-prices                                              GET             /src/www                                                 
-/api/user/subscriptions/published-prices-count                                        GET             /src/www                                                 
-/api/user/subscriptions/published-product                           GUEST             GET             /src/www                                                 
-/api/user/subscriptions/published-products                                            GET             /src/www                                                 
-/api/user/subscriptions/published-products-count                                      GET             /src/www                                                 
 /api/user/subscriptions/refund                                                        GET             /src/www                                                 
 /api/user/subscriptions/refunds                                                       GET             /src/www                                                 
 /api/user/subscriptions/refunds-count                                                 GET             /src/www                                                 
@@ -360,4 +358,4 @@ URL --------------------------------------------------------------- AUTH - TEMPL
 /home                                                                                                 static-page                    /src/www                  
 /webhooks/subscriptions/index-subscription-data                     GUEST             POST            /src/www                       /src/www                  
 
-2022-06-14T03:23:22.506Z
+2022-06-16T11:07:49.219Z
