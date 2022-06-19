@@ -10,7 +10,6 @@ describe('/api/administrator/subscriptions/update-tax-rate', function () {
   async function bundledData (retryNumber) {
     if (retryNumber > 0) {
       cachedResponses = {}
-      await TestHelper.rotateWebhook(true)
     }
     if (cachedResponses && cachedResponses.finished) {
       return

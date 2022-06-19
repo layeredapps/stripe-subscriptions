@@ -11,7 +11,6 @@ describe('/api/administrator/subscriptions/set-subscription-item-quantity', func
   async function bundledData (retryNumber) {
     if (retryNumber > 0) {
       cachedResponses = {}
-      await TestHelper.rotateWebhook(true)
     }
     if (cachedResponses && cachedResponses.finished) {
       return

@@ -11,7 +11,6 @@ describe('/api/administrator/subscriptions/add-subscription-item-tax-rate', func
   async function bundledData (retryNumber) {
     if (retryNumber > 0) {
       cachedResponses = {}
-      await TestHelper.rotateWebhook(true)
     }
     if (cachedResponses && cachedResponses.finished) {
       return

@@ -10,7 +10,6 @@ describe('/account/subscriptions/request-refund', function () {
   async function bundledData (retryNumber) {
     if (retryNumber > 0) {
       cachedResponses = {}
-      await TestHelper.rotateWebhook(true)
     }
     if (cachedResponses && cachedResponses.finished) {
       return

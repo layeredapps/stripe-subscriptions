@@ -99,7 +99,6 @@ const TestStripeAccounts = module.exports = {
     await waitForWebhook('payment_method.attached', (stripeEvent) => {
       return stripeEvent.data.object.customer === user.customer.customerid
     })
-    await TestHelper.rotateWebhook()
     user.customer = await global.api.administrator.subscriptions.Customer.get({
       query: {
         customerid: user.customer.customerid
@@ -138,7 +137,6 @@ const TestStripeAccounts = module.exports = {
     await waitForWebhook(['invoice.finalized', 'invoice.paid', 'invoice.payment_succeeded'], (stripeEvent) => {
       return stripeEvent.data.object.id === invoiceid
     })
-    await TestHelper.rotateWebhook()
     user.subscription = await global.api.administrator.subscriptions.Subscription.get({
       query: {
         subscriptionid: user.subscription.subscriptionid
@@ -177,7 +175,6 @@ const TestStripeAccounts = module.exports = {
     await waitForWebhook(['invoice.finalized', 'invoice.paid', 'invoice.payment_succeeded'], (stripeEvent) => {
       return stripeEvent.data.object.id === invoiceid
     })
-    await TestHelper.rotateWebhook()
     user.subscription = await global.api.administrator.subscriptions.Subscription.get({
       query: {
         subscriptionid: user.subscription.subscriptionid
@@ -218,7 +215,6 @@ const TestStripeAccounts = module.exports = {
         return stripeEvent.data.object.invoice === invoiceid
       })
     }
-    await TestHelper.rotateWebhook()
     user.subscription = await global.api.administrator.subscriptions.Subscription.get({
       query: {
         subscriptionid: user.subscription.subscriptionid

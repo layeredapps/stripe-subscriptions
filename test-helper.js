@@ -24,170 +24,21 @@ global.testConfiguration.stripeKey = process.env.SUBSCRIPTIONS_STRIPE_KEY || pro
 global.testConfiguration.stripePublishableKey = process.env.SUBSCRIPTIONS_STRIPE_PUBLISHABLE_KEY || process.env.STRIPE_PUBLISHABLE_KEY
 global.testConfiguration.subscriptionWebhookEndPointSecret = process.env.SUBSCRIPTIONS_WEBHOOK_SECRET || false
 
-const enabledEvents = [
-  'setup_intent.canceled',
-  'setup_intent.created',
-  'setup_intent.setup_failed',
-  'setup_intent.succeeded',
-  // 'sigma.scheduled_query_run.created',
-  // 'review.closed',
-  // 'review.opened',
-  // 'sku.created',
-  // 'sku.deleted',
-  // 'sku.updated',
-  'source.canceled',
-  'source.chargeable',
-  'source.failed',
-  'source.mandate_notification',
-  'source.refund_attributes_required',
-  'source.transaction.created',
-  'source.transaction.updated',
-  // 'tax_rate.created',
-  // 'tax_rate.updated',
-  // 'topup.canceled',
-  // 'topup.created',
-  // 'topup.failed',
-  // 'topup.reversed',
-  // 'topup.succeeded',
-  // 'transfer.created',
-  // 'transfer.failed',
-  // 'transfer.paid',
-  // 'transfer.reversed',
-  // 'transfer.updated',
-  // 'reporting.report_run.failed',
-  // 'reporting.report_run.succeeded',
-  // 'reporting.report_type.updated',
-  // 'product.created',
-  // 'product.deleted',
-  // 'product.updated',
-  // 'price.created',
-  // 'price.deleted',
-  // 'price.updated',
-  // 'order_return.created',
-  'payment_intent.amount_capturable_updated',
-  'payment_intent.canceled',
-  'payment_intent.created',
-  'payment_intent.payment_failed',
-  'payment_intent.processing',
-  'payment_intent.succeeded',
-  // 'order.payment_succeeded',
-  'payment_method.attached',
-  'payment_method.card_automatically_updated',
-  'payment_method.detached',
-  'payment_method.updated',
-  // 'payout.canceled',
-  // 'payout.created',
-  // 'payout.failed',
-  // 'payout.paid',
-  // 'payout.updated',
-  // 'mandate.updated',
-  // 'person.created',
-  // 'person.deleted',
-  // 'person.updated',
-  // 'issuing_card.created',
-  // 'issuing_card.updated',
-  // 'order.created',
-  // 'order.payment_failed',
-  // 'order.updated',
-  // 'issuing_dispute.created',
-  // 'issuing_dispute.funds_reinstated',
-  // 'issuing_dispute.updated',
-  // 'issuing_transaction.created',
-  // 'issuing_transaction.updated',
-  // 'issuing_authorization.created',
-  // 'issuing_authorization.request',
-  // 'issuing_authorization.updated',
-  // 'file.created',
-  // 'credit_note.created',
-  // 'credit_note.updated',
-  // 'credit_note.voided',
-  // 'issuing_cardholder.created',
-  // 'issuing_cardholder.updated',
-  // 'invoiceitem.created',
-  // 'invoiceitem.deleted',
-  // 'invoiceitem.updated',
-  'invoice.created',
-  // 'invoice.deleted',
-  'invoice.finalized',
-  'invoice.marked_uncollectible',
-  'invoice.paid',
-  'invoice.payment_action_required',
-  'invoice.payment_failed',
-  'invoice.payment_succeeded',
-  'invoice.sent',
-  'invoice.upcoming',
-  'invoice.updated',
-  'invoice.voided',
-  // 'coupon.created',
-  // 'coupon.deleted',
-  // 'coupon.updated',
-  // 'checkout.session.async_payment_failed',
-  // 'checkout.session.async_payment_succeeded',
-  // 'checkout.session.completed',
-  // 'customer.created',
-  // 'customer.deleted',
-  'customer.updated',
-  'customer.discount.created',
-  // 'customer.discount.deleted',
-  'customer.discount.updated',
-  // 'customer.source.created',
-  // 'customer.source.deleted',
-  'customer.source.expiring',
-  'customer.source.updated',
-  // 'customer.subscription.created',
-  // 'customer.subscription.deleted',
-  'customer.subscription.pending_update_applied',
-  'customer.subscription.pending_update_expired',
-  'customer.subscription.trial_will_end',
-  'customer.subscription.updated',
-  // 'customer.tax_id.created',
-  // 'customer.tax_id.deleted',
-  // 'customer.tax_id.updated',
-  // 'account.external_account.deleted',
-  'charge.captured',
-  'charge.expired',
-  'charge.failed',
-  'charge.pending',
-  'charge.refunded',
-  'charge.succeeded',
-  'charge.updated',
-  'charge.dispute.closed',
-  'charge.dispute.created',
-  'charge.dispute.funds_reinstated',
-  'charge.dispute.funds_withdrawn',
-  'charge.dispute.updated',
-  'charge.refund.updated'
-  // 'capability.updated',
-  // 'balance.available',
-  // 'account.updated',
-  // 'account.external_account.created',
-  // 'account.external_account.updated',
-  // 'subscription_schedule.aborted',
-  // 'subscription_schedule.canceled',
-  // 'subscription_schedule.completed',
-  // 'subscription_schedule.created',
-  // 'subscription_schedule.expiring',
-  // 'subscription_schedule.released',
-  // 'subscription_schedule.updated'
-]
-
 const util = require('util')
 const TestHelper = require('@layeredapps/dashboard/test-helper.js')
 const TestHelperPuppeteer = require('@layeredapps/dashboard/test-helper-puppeteer.js')
 const Log = require('@layeredapps/dashboard/src/log.js')('test-helper-subscriptions')
-const ngrok = require('ngrok')
-const ngrokLog = require('@layeredapps/dashboard/src/log.js')('test-helper-ngrok')
-const packageJSON = require('./package.json')
-const stripe = require('stripe')({
-  apiVersion: global.stripeAPIVersion,
-  telemetry: false,
-  maxNetworkRetries: global.maximumStripeRetries || 0,
-  appInfo: {
-    version: packageJSON.version,
-    name: '@layeredapps/stripe-subscriptions (test suite)',
-    url: 'https://github.com/layeredapps/stripe-subscriptions'
-  }
-})
+// const packageJSON = require('./package.json')
+// const stripe = require('stripe')({
+//   apiVersion: global.stripeAPIVersion,
+//   telemetry: false,
+//   maxNetworkRetries: global.maximumStripeRetries || 0,
+//   appInfo: {
+//     version: packageJSON.version,
+//     name: '@layeredapps/stripe-subscriptions (test suite)',
+//     url: 'https://github.com/layeredapps/stripe-subscriptions'
+//   }
+// })
 
 const stripeKey = {
   apiKey: global.subscriptionsStripeKey || global.stripeKey || process.env.SUBSCRIPTIONS_STRIPE_KEY || process.env.STRIPE_KEY
@@ -248,7 +99,6 @@ module.exports = {
   createSubscription,
   createSubscriptionDiscount,
   deleteCustomerDiscount,
-  deleteOldWebhooks,
   deleteSubscription,
   deleteSubscriptionDiscount,
   deleteTaxId,
@@ -263,9 +113,7 @@ module.exports = {
   toggleRefunds,
   toggleOverdueInvoiceThreshold,
   requestRefund,
-  rotateWebhook,
   waitForWebhook,
-  setupWebhook,
   setupBefore,
   setupBeforeEach
 }
@@ -281,15 +129,16 @@ const createRequest = module.exports.createRequest = (rawURL) => {
   return req
 }
 
-let webhook, subscriptions, createdData
+let webhook, tunnel, subscriptions//, createdData
 
 // direct webhook access is set up before the tests a single time
 async function setupBefore () {
   Log.info('setupBefore')
   subscriptions = require('./index.js')
   await subscriptions.setup()
-  await deleteOldWebhooks(true)
-  await setupWebhook()
+  webhook = await createWebHook()
+  global.subscriptionWebhookEndPointSecret = webhook
+  global.testConfiguration.subscriptionWebhookEndPointSecret = webhook
   const helperRoutes = require('./test-helper-routes.js')
   global.sitemap['/api/create-fake-payout'] = helperRoutes.createFakePayout
   global.sitemap['/api/fake-amount-owed'] = helperRoutes.fakeAmountOwed
@@ -299,7 +148,8 @@ async function setupBefore () {
 
 async function setupBeforeEach () {
   Log.info('setupBeforeEach')
-  createdData = false
+  // createdData = false
+  global.webhooks = []
   const bindStripeKey = require.resolve('./src/server/bind-stripe-key.js')
   if (global.packageJSON.dashboard.serverFilePaths.indexOf(bindStripeKey) === -1) {
     global.packageJSON.dashboard.serverFilePaths.push(bindStripeKey)
@@ -318,53 +168,26 @@ async function setupBeforeEach () {
   )
   await subscriptions.Storage.flush()
   await deleteOldData()
-  if (!global.webhooks || global.webhooks.length) {
-    await rotateWebhook(true)
-    global.webhooks = []
-  }
 }
 
-let webhookRotation = 0
-
-async function rotateWebhook (remake) {
-  Log.info('rotateWebhook', remake)
-  if (!global.webhooks) {
-    global.webhooks = []
-    return setupWebhook()
-  } else if (global.webhooks.length) {
-    webhookRotation += global.webhooks.length
-    if (remake || webhookRotation >= 10) {
-      webhookRotation = 0
-      return setupWebhook()
+const createWebHook = util.promisify((callback) => {
+  const endpoint = `${global.dashboardServer}/webhooks/subscriptions/index-subscription-data`
+  const childProcess = require('child_process')
+  tunnel = childProcess.spawn('stripe', ['--log-level', 'debug', '--api-key', stripeKey.apiKey, 'listen', '--forward-to', endpoint.substring(endpoint.indexOf('://') + 3), '--latest'], { detached: true })
+  // TODO: for some reason the webhook returns on stderr
+  // tunnel.stdout.on('data', (raw) => {
+  //   console.log('out', raw.toString())
+  // })
+  tunnel.stderr.on('data', (raw) => {
+    // console.log('err', raw.toString())
+    const data = (raw || '').toString()
+    if (data.indexOf('whsec') > -1) {
+      let secret = data.substring(data.indexOf('whsec'))
+      secret = secret.substring(0, secret.indexOf(' '))
+      return callback(null, secret)
     }
-  }
-}
-
-async function setupWebhook () {
-  Log.info('setupWebhook')
-  webhook = null
-  while (!webhook) {
-    try {
-      await deleteOldWebhooks()
-      await ngrok.kill()
-      const tunnel = await ngrok.connect({
-        port: global.port,
-        // auth: process.env.NGROK_AUTH,
-        onLogEvent: ngrokLog.info
-      })
-      webhook = await stripe.webhookEndpoints.create({
-        url: `${tunnel}/webhooks/subscriptions/index-subscription-data`,
-        enabled_events: enabledEvents
-      }, stripeKey)
-      global.subscriptionWebhookEndPointSecret = webhook.secret
-      global.testConfiguration.subscriptionWebhookEndPointSecret = webhook.secret
-    } catch (error) {
-    }
-    if (!webhook) {
-      await wait(100)
-    }
-  }
-}
+  })
+})
 
 before(deleteOldData)
 before(setupBefore)
@@ -375,86 +198,71 @@ afterEach(async () => {
   await subscriptions.Storage.flush()
   await deleteOldData()
   if (global.webhooks.length) {
-    await rotateWebhook()
+    process.kill(-tunnel.pid)
+    webhook = await createWebHook()
+    global.connectWebhookEndPointSecret = webhook
+    global.testConfiguration.connectWebhookEndPointSecret = webhook
   }
 })
 
 after(async () => {
   Log.info('after')
+  process.kill(-tunnel.pid)
   await deleteOldData()
-  await deleteOldWebhooks()
-  await ngrok.kill()
   await subscriptions.Storage.flush()
   await TestHelperPuppeteer.close()
 })
 
-async function deleteOldWebhooks () {
-  Log.info('deleteOldWebhooks')
-  webhook = null
-  try {
-    const webhooks = await stripe.webhookEndpoints.list({ limit: 100 }, stripeKey)
-    if (webhooks && webhooks.data && webhooks.data.length) {
-      for (const webhook of webhooks.data) {
-        if (webhook === 0) {
-          continue
-        }
-        await stripe.webhookEndpoints.del(webhook.id, stripeKey)
-      }
-    }
-  } catch (error) {
-  }
-}
-
 async function deleteOldData () {
-  Log.info('deleteOldData')
-  if (!createdData) {
-    return
-  }
-  // TODO: stripe don't support deleting invoices, charges, products
-  // payment intents etc the issue with leaving this residual test
-  // data is it may accumulate and overwhelm the ngrok connection
-  // limits for webhook proxying
-  for (const field of ['subscriptions', 'customers', 'products', 'coupons', 'taxRates']) {
-    try {
-      const listParameters = {
-        limit: 100
-      }
-      if (field === 'products' || field === 'taxRates') {
-        listParameters.active = true
-      }
-      while (true) {
-        const objects = await stripe[field].list(listParameters, stripeKey)
-        if (objects && objects.data && objects.data.length) {
-          for (const object of objects.data) {
-            if (listParameters.active) {
-              // TODO: stripe don't support deleting products so they have to
-              // be marked as 'active=false' instead
-              // https://github.com/stripe/stripe-python/issues/658
-              await stripe[field].update(object.id, { active: 'false' }, stripeKey)
-            } else {
-              try {
-                await stripe[field].del(object.id, stripeKey)
-              } catch (error) {
-                await stripe[field].update(object.id, { active: 'false' }, stripeKey)
-                Log.error('delete old data item error', object.id, error)
-              }
-            }
-          }
-        }
-        if (!objects.has_more) {
-          break
-        }
-      }
-    } catch (error) {
-      Log.error('delete old data list error', field, error)
-    }
-  }
+  // Log.info('deleteOldData')
+  // if (!createdData) {
+  //   return
+  // }
+  // // TODO: stripe don't support deleting invoices, charges, products
+  // // payment intents etc the issue with leaving this residual test
+  // // data is it may accumulate and overwhelm the ngrok connection
+  // // limits for webhook proxying
+  // for (const field of ['subscriptions', 'customers', 'products', 'coupons', 'taxRates']) {
+  //   try {
+  //     const listParameters = {
+  //       limit: 100
+  //     }
+  //     if (field === 'products' || field === 'taxRates') {
+  //       listParameters.active = true
+  //     }
+  //     while (true) {
+  //       const objects = await stripe[field].list(listParameters, stripeKey)
+  //       if (objects && objects.data && objects.data.length) {
+  //         for (const object of objects.data) {
+  //           if (listParameters.active) {
+  //             // TODO: stripe don't support deleting products so they have to
+  //             // be marked as 'active=false' instead
+  //             // https://github.com/stripe/stripe-python/issues/658
+  //             await stripe[field].update(object.id, { active: 'false' }, stripeKey)
+  //           } else {
+  //             try {
+  //               await stripe[field].del(object.id, stripeKey)
+  //             } catch (error) {
+  //               await stripe[field].update(object.id, { active: 'false' }, stripeKey)
+  //               Log.error('delete old data item error', object.id, error)
+  //             }
+  //           }
+  //         }
+  //       }
+  //       if (!objects.has_more) {
+  //         break
+  //       }
+  //     }
+  //   } catch (error) {
+  //     Log.error('delete old data list error', field, error)
+  //   }
+  // }
 }
 
 let productNumber = 0
 async function createProduct (administrator, properties) {
   Log.info('createProduct', administrator, properties)
-  createdData = true
+  // createdData = true
   productNumber++
   const req = createRequest('/api/administrator/subscriptions/create-product')
   req.session = administrator.session
@@ -512,7 +320,7 @@ let couponNumber = 0
 let percentOff = 0
 async function createCoupon (administrator, properties) {
   Log.info('createCoupon', administrator, properties)
-  createdData = true
+  // createdData = true
   couponNumber++
   const req = createRequest('/api/administrator/subscriptions/create-coupon')
   req.session = administrator.session
@@ -609,7 +417,7 @@ async function deleteSubscriptionDiscount (administrator, subscription, coupon) 
 
 async function createTaxRate (administrator, properties) {
   Log.info('createTaxRate', administrator, properties)
-  createdData = true
+  // createdData = true
   properties = properties || {}
   const req = createRequest('/api/administrator/subscriptions/create-tax-rate')
   req.session = administrator.session
@@ -712,7 +520,7 @@ const cardTypes = [
 
 async function createCustomer (user, properties) {
   Log.info('createCustomer', user, properties)
-  createdData = true
+  // createdData = true
   const req = createRequest(`/api/user/subscriptions/create-customer?accountid=${user.account.accountid}`)
   req.session = user.session
   req.account = user.account

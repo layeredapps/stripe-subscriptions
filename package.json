@@ -16,7 +16,6 @@
   "devDependencies": {
     "@layeredapps/dashboard": "latest",
     "@faker-js/faker": "latest",
-    "ngrok": "latest",
     "ibm_db": "latest",
     "mocha": "latest",
     "mysql2": "latest",
