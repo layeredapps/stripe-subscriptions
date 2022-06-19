@@ -6,13 +6,16 @@ async function addXPlansHeader (req, proxyRequestOptions) {
   }
   req.query = req.query || {}
   req.query.all = true
-  const prices = await global.api.user.subscriptions.ActivePrices.get(req)
+  const prices = await global.api.administrator.subscriptions.Prices.get(req)
   if (!prices) {
     proxyRequestOptions.headers['x-active-prices'] = '[]'
     return
   }
-  for (const i in prices) {
-    prices[i] = prices[i].stripeObject
+  const active = []
+  for (const price of prices) {
+    if (price.stripeObject.active) {
+      active.push(price.stripeObject)
+    }
   }
-  proxyRequestOptions.headers['x-active-prices'] = JSON.stringify(prices)
+  proxyRequestOptions.headers['x-active-prices'] = JSON.stringify(active)
 }
