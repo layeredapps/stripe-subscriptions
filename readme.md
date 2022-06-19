@@ -14,6 +14,7 @@
 - [Import this module](#import-this-module)
 - [Setting up your Stripe credentials](#setting-up-your-stripe-credentials)
 - [Configuring your products and prices](#configuring-your-products-and-prices)
+- [Starting subscriptions](#starting-subscriptions)
 - [Provided server, content and proxy handlers](#provided-server-content-and-proxy-handlers)
 - [Storage engine](#storage-engine)
 - [Access the API](#access-the-api)
@@ -55,16 +56,34 @@ You will need to retrieve various keys from [Stripe](https://stripe.com).  Durin
 
 This module adds a complete interface for creating products and prices with one-time, recurring and tiered billing.  Stripe's nomenclature and structure is used directly so for more information refer to the <a href="https://stripe.com/docs">Stripe documentation</a> and <a href="https://stripe.com/docs/api">Stripe API documentation</a>.
 
-Users subscribe to prices and prices must be built from products.  Additionally, this module imposes a 'publish' status on products and prices that controls access to them by users.
+A subscription is created for one or more "Price" objects, which each hold pricing information for "Product" objects.  These objects must be set active before they can be used by users.
 
 1.  Administrator creates product
-2.  Administrator publishes product
+2.  Administrator activates product
 3.  Administrator creates price(s)
-4.  Administrator publishes price(s)
-5.  User creates a billing profile, if your prices are free then they do not require payment information but their Customer object must still be created
-5.  User creates subscription to price(s)
+4.  Administrator activates price(s)
 
-Your application will need to use the API to create their subscription to the appropriate prices by POSTING:
+### Starting subscriptions 
+
+To create a subscription the user creates a billing profile ie a "Customer" object in Stripe.  If your Price objects are free then they do not require payment information, but their Customer object must still be created with basic information.
+
+You can require a suscription by including the `server` handler `@stripe-subscriptions/src/server/require-subscription.js` in your `package.json`.  When the user requests URLs outside of /account and /administrator they will be redirected to start a subscription if they do not have one already.
+
+    "dashboard": {
+        "server": [
+            "@stripe-subscriptions/src/server/require-subscription.js"
+        ]
+    }
+
+You control where they are redirected to with the `env` variable `START_SUBSCRIPTION_PATH`:
+
+    environment START_SUBSCRIPTION_PATH=/select-plan
+
+You can automatically redirect to your `START_SUBSCRIPTION_PATH` upon creating a billing profile by linking with a `redirect-url`.
+
+    <a href="/account/subscriptions/create-billing-profile?redirect-url=/select-plan%2Fplan=gold">Gold plan</a>
+
+Your application uses the API to create their subscription to the Price(s) by POSTING to your Dashboard server:
 
     {your_dashboard_server}/api/user/subscriptions/create-subscription?customerid=X
 
@@ -82,29 +101,45 @@ The API will return their subscription object or throw an exception.  You can vi
 
 #### Example with plan selection screen:
 
-1) provide a page where users select their plan eg {your_application_server}/plans
+In these examples "plans" are referred to, these are just identifiers you would have to correlate with Price objects (which are replacing Plan objects in Stripe).
 
-2) Plan buttons are linked to create billing profile with redirect to start subscription
+1) create a page on your application server where users select their plan eg `/plans`
 
-3) User enters payment information at `{your_dashboard_server}/account/subscriptions/create-billing-profile?return-url=/create-subscription%2Fplan=gold`
+2) add the `require-subscription` server script to your `package.json` and set the env var `START_SUBSCRIPTION=/plans`
 
-4) user redirects to `{your_application_server}/create-subscription?plan=gold`
+3) user registers and is immediately redirected to the `/plans` page, where plan buttons are linked to create billing profile using the redirect-url parameter to return the user after `/account/subscriptions/create-billing-profile?return-url=/plans%2Fplan=gold%26start=true`
 
-5) Subscription is created via API at `{your_dashboard_server}/api/user/subscriptions/create-subscription?customerid=X`
+4) after creating their payment information user is redirected back to `/plans?plan=gold&start=true`, you observe the plan and start parameters and post to the Dashboard API to start their subscription
+
+    {your_dashboard_server}/api/user/subscriptions/create-subscription?customerid=X
+
+POST data:
+
+    priceids=price1
+    quantities=1
 
 #### Example with just one subscription type
 
-1) Subscribe button is linked to create billing profile with redirect to start subscription
+1) create a page on your application server where users select their plan eg `/subscribe`
+
+2) add the `require-subscription` server script and `x-has-customer-billing` proxy script to your `package.json` and set the env var `START_SUBSCRIPTION=/subscribe`
     
-2) User enters payment information at `{your_dashboard_server}/account/subscriptions/create-billing-profile?return-url=/create-subscription`
+3) user registers and is immediately redirected to `/subscribe`, where you check the x-has-customer-billing header received fom Dashboad and if not, redirect to create billing profile using the redirect-url parameter to return the user after `/account/subscriptions/create-billing-profile?return-url=/subscribe`
 
-3) User redirects to `{your_application_server}/create-subscription`
+4) after creating their payment information user is redirected back to `/plans?plan=gold&start=true`, you observe the plan and start parameters and post to the Dashboard API to start their subscription
 
-4) Subscription is created via API at `{your_dashboard_server}/api/user/subscriptions/create-subscription?customerid=X`
+    {your_dashboard_server}/api/user/subscriptions/create-subscription?customerid=X
+
+POST data:
+
+    priceids=price1
+    quantities=1
 
 #### Example with metered billing
 
-When you use metered billing prices are set based on usage amount, eg disk storage on a server.  You can set usage amounts using the API:
+When you use metered billing prices are set based on usage amount, eg disk storage on a server.
+
+You can set usage amounts using the API:
 
     {your_dashboard_server}/api/user/subscriptions/create-usage-record?subscriptionid=X
 
@@ -114,15 +149,13 @@ POST data:
     quantity=8
     action=increment|set
 
-The subscription item id can be found in `subscription.items.data` array, eg `subscription.items.data[0].id`.
-
-The API will return their usage object or throw an exception.  You can view the exceptions in `api.txt` or the documentation website.
+The subscription item id can be found in `subscription.items.data` array, eg `subscription.items.data[0].id`.  You can include the users' subscription information in requests Dashboard makes to your server by adding the `x-subscriptions` proxy script in your `package.json` so this information is automatically sent to your application server.
 
 ### Customizing billing information entry
 
 You can adjust certain parts of the payment information collection with environment variables.
 
-Use `AUTOMATIC_BILLING_PROFILE_DESCRIPTION=true` to skip customers assigning a desciption to their profiles.
+Use `AUTOMATIC_BILLING_PROFILE_DESCRIPTION=true` to skip customers assigning a description to their profiles.
 
 Use `AUTOMATIC_BILLING_PROFILE_FULL_NAME=true` to use the full name from the user's profile which you can collect at registration.  The user can update their profile to keep these matched.
 
