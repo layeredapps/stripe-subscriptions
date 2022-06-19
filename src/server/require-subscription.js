@@ -26,7 +26,7 @@ async function requireSubscription (req, res) {
     startSubscriptionPath += '?'
   }
   startSubscriptionPath += 'return-url=' + req.url
-  if (req.url.startsWith(startSubscriptionPath)) {
+  if (req.url.startsWith(global.startSubscriptionPath)) {
     return
   }
   const queryWas = req.query
