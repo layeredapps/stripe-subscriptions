@@ -28,17 +28,17 @@ const util = require('util')
 const TestHelper = require('@layeredapps/dashboard/test-helper.js')
 const TestHelperPuppeteer = require('@layeredapps/dashboard/test-helper-puppeteer.js')
 const Log = require('@layeredapps/dashboard/src/log.js')('test-helper-subscriptions')
-// const packageJSON = require('./package.json')
-// const stripe = require('stripe')({
-//   apiVersion: global.stripeAPIVersion,
-//   telemetry: false,
-//   maxNetworkRetries: global.maximumStripeRetries || 0,
-//   appInfo: {
-//     version: packageJSON.version,
-//     name: '@layeredapps/stripe-subscriptions (test suite)',
-//     url: 'https://github.com/layeredapps/stripe-subscriptions'
-//   }
-// })
+const packageJSON = require('./package.json')
+const stripe = require('stripe')({
+  apiVersion: global.stripeAPIVersion,
+  telemetry: false,
+  maxNetworkRetries: global.maximumStripeRetries || 0,
+  appInfo: {
+    version: packageJSON.version,
+    name: '@layeredapps/stripe-subscriptions (test suite)',
+    url: 'https://github.com/layeredapps/stripe-subscriptions'
+  }
+})
 
 const stripeKey = {
   apiKey: global.subscriptionsStripeKey || global.stripeKey || process.env.SUBSCRIPTIONS_STRIPE_KEY || process.env.STRIPE_KEY
@@ -196,9 +196,10 @@ beforeEach(setupBeforeEach)
 afterEach(async () => {
   Log.info('afterEach')
   await subscriptions.Storage.flush()
-  await deleteOldData()
   if (global.webhooks.length) {
+    await deleteOldData()
     process.kill(-tunnel.pid)
+    tunnel.kill()
     webhook = await createWebHook()
     global.connectWebhookEndPointSecret = webhook
     global.testConfiguration.connectWebhookEndPointSecret = webhook
@@ -208,55 +209,52 @@ afterEach(async () => {
 after(async () => {
   Log.info('after')
   process.kill(-tunnel.pid)
+  tunnel.kill()
   await deleteOldData()
   await subscriptions.Storage.flush()
   await TestHelperPuppeteer.close()
 })
 
 async function deleteOldData () {
-  // Log.info('deleteOldData')
-  // if (!createdData) {
-  //   return
-  // }
-  // // TODO: stripe don't support deleting invoices, charges, products
-  // // payment intents etc the issue with leaving this residual test
-  // // data is it may accumulate and overwhelm the ngrok connection
-  // // limits for webhook proxying
-  // for (const field of ['subscriptions', 'customers', 'products', 'coupons', 'taxRates']) {
-  //   try {
-  //     const listParameters = {
-  //       limit: 100
-  //     }
-  //     if (field === 'products' || field === 'taxRates') {
-  //       listParameters.active = true
-  //     }
-  //     while (true) {
-  //       const objects = await stripe[field].list(listParameters, stripeKey)
-  //       if (objects && objects.data && objects.data.length) {
-  //         for (const object of objects.data) {
-  //           if (listParameters.active) {
-  //             // TODO: stripe don't support deleting products so they have to
-  //             // be marked as 'active=false' instead
-  //             // https://github.com/stripe/stripe-python/issues/658
-  //             await stripe[field].update(object.id, { active: 'false' }, stripeKey)
-  //           } else {
-  //             try {
-  //               await stripe[field].del(object.id, stripeKey)
-  //             } catch (error) {
-  //               await stripe[field].update(object.id, { active: 'false' }, stripeKey)
-  //               Log.error('delete old data item error', object.id, error)
-  //             }
-  //           }
-  //         }
-  //       }
-  //       if (!objects.has_more) {
-  //         break
-  //       }
-  //     }
-  //   } catch (error) {
-  //     Log.error('delete old data list error', field, error)
-  //   }
-  // }
+  if (!global.webhooks || !global.webhooks.length) {
+    return
+  }
+  Log.info('deleteOldData')
+  // TODO: stripe don't support deleting invoices, charges, products
+  // payment intents etc the issue with leaving this residual test
+  // data is it may accumulate and overwhelm the API limits
+  for (const field of ['subscriptions', 'customers', 'products', 'coupons', 'taxRates']) {
+    try {
+      const listParameters = {
+        limit: 100
+      }
+      if (field === 'products' || field === 'taxRates') {
+        listParameters.active = true
+      }
+      while (true) {
+        const objects = await stripe[field].list(listParameters, stripeKey)
+        if (objects && objects.data && objects.data.length) {
+          for (const object of objects.data) {
+            if (listParameters.active) {
+              await stripe[field].update(object.id, { active: 'false' }, stripeKey)
+            } else {
+              try {
+                await stripe[field].del(object.id, stripeKey)
+              } catch (error) {
+                await stripe[field].update(object.id, { active: 'false' }, stripeKey)
+                Log.error('delete old data item error', object.id, error)
+              }
+            }
+          }
+        }
+        if (!objects.has_more) {
+          break
+        }
+      }
+    } catch (error) {
+      Log.error('delete old data list error', field, error)
+    }
+  }
 }
 
 let productNumber = 0
