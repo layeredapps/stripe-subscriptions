@@ -175,8 +175,10 @@ async function updateProduct (stripeEvent, stripeKey) {
   return subscriptions.Storage.Product.update({
     stripeObject
   }, {
-    productid: exists.dataValues.productid,
-    appid: exists.dataValues.appid
+    where: {
+      productid: exists.dataValues.productid,
+      appid: exists.dataValues.appid
+    }
   })
 }
 
