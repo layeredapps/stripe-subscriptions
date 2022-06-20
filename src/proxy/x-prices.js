@@ -8,7 +8,7 @@ async function addXPlansHeader (req, proxyRequestOptions) {
   req.query.all = true
   const prices = await global.api.administrator.subscriptions.Prices.get(req)
   if (!prices) {
-    proxyRequestOptions.headers['x-active-prices'] = '[]'
+    proxyRequestOptions.headers['x-prices'] = '[]'
     return
   }
   const active = []
@@ -17,5 +17,5 @@ async function addXPlansHeader (req, proxyRequestOptions) {
       active.push(price.stripeObject)
     }
   }
-  proxyRequestOptions.headers['x-active-prices'] = JSON.stringify(active)
+  proxyRequestOptions.headers['x-prices'] = JSON.stringify(active)
 }
