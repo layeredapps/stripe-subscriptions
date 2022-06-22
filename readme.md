@@ -67,30 +67,33 @@ A subscription is created for one or more "Price" objects, which each hold prici
 
 To create a subscription the user creates a billing profile ie a "Customer" object in Stripe.  If your Price objects are free then they do not require payment information, but their Customer object must still be created with basic information.
 
-You can require a suscription by including the `server` handler `@stripe-subscriptions/src/server/require-subscription.js` in your `package.json`.  When the user requests URLs outside of /account and /administrator they will be redirected to start a subscription if they do not have one already.
+You can check if a user has a suscription by including the `x-has-subscription` proxy script `@stripe-subscriptions/src/proxy/x-has-subscription.js` in your `package.json`.  When requests are made to your application server the `x-has-subscription` header will be set `true` or `false`.  Alternatively you can include `x-subscrpitions` or `x-subscriptions-active` to include their Stripe Subscription objects.
 
     "dashboard": {
-        "server": [
-            "@stripe-subscriptions/src/server/require-subscription.js"
+        "proxy": [
+            "@stripe-subscriptions/src/proxy/x-has-subscription.js",
+            "@stripe-subscriptions/src/proxy/x-subscriptions.js",
+            "@stripe-subscriptions/src/proxy/x-subscriptions-active.js"
         ]
     }
 
-You control where they are redirected to with the `env` variable `START_SUBSCRIPTION_PATH`:
+When a user needs to create a subscription you can respond with a HTTP redirect that Dashboard will follow, example:
 
-    environment START_SUBSCRIPTION_PATH=/select-plan
+    HTTP/1.1 302 Found
+    Location: /select-plan
 
-You can automatically redirect to your `START_SUBSCRIPTION_PATH` upon creating a billing profile by linking with a `redirect-url`.
+On a plan selection page you can automatically redirect after creating a billing profile by including a `redirect-url` URL parameter.
 
-    <a href="/account/subscriptions/create-billing-profile?redirect-url=/select-plan%2Fplan=gold">Gold plan</a>
+    <a href="/account/subscriptions/create-billing-profile?redirect-url=/select-plan%3Fplan=gold%26other=data">Gold plan</a>
 
 Your application uses the API to create their subscription to the Price(s) by POSTING to your Dashboard server:
 
     {your_dashboard_server}/api/user/subscriptions/create-subscription?customerid=X
 
-POST data:
+The POST data can include comma-delimited priceids and quantities if there are multiple billing items:
 
-    priceids=price1,price2,price3
-    quantities=1,1,1
+    priceids=priceid
+    quantities=1
     taxrateids=optional
     couponid=optional
     trial_period_days=optional
@@ -105,11 +108,13 @@ In these examples "plans" are referred to, these are just identifiers you would 
 
 1) create a page on your application server where users select their plan eg `/plans`
 
-2) add the `require-subscription` server script to your `package.json` and set the env var `START_SUBSCRIPTION=/plans`
+2) add the `x-has-subscription` proxy script to your `package.json`
 
-3) user registers and is immediately redirected to the `/plans` page, where plan buttons are linked to create billing profile using the redirect-url parameter to return the user after `/account/subscriptions/create-billing-profile?return-url=/plans%2Fplan=gold%26start=true`
+3) user registers and requests your `/home` path, where you determine they need to create a subscription and redirect to your `/plans` page
 
-4) after creating their payment information user is redirected back to `/plans?plan=gold&start=true`, you observe the plan and start parameters and post to the Dashboard API to start their subscription
+4) user clicks plan button which links to `/account/subscriptions/create-billing-profile?return-url=/plans%3Fplan=gold%26start=true`
+
+5) after creating their payment information user is redirected back to your `/plans?plan=gold&start=true`, you observe the plan and start parameters and post to the Dashboard API to start their subscription:
 
     {your_dashboard_server}/api/user/subscriptions/create-subscription?customerid=X
 
@@ -120,13 +125,15 @@ POST data:
 
 #### Example with just one subscription type
 
-1) create a page on your application server where users select their plan eg `/subscribe`
+1) create a page on your application server where the user consents to creating a subscription eg `/subscribe`
 
-2) add the `require-subscription` server script and `x-has-customer-billing` proxy script to your `package.json` and set the env var `START_SUBSCRIPTION=/subscribe`
+2) add the `x-has-customer-billing` and `x-has-subscription` proxy scripts to your `package.json`
     
-3) user registers and is immediately redirected to `/subscribe`, where you check the x-has-customer-billing header received fom Dashboad and if not, redirect to create billing profile using the redirect-url parameter to return the user after `/account/subscriptions/create-billing-profile?return-url=/subscribe`
+3) user registers and enters your application at your `/home` path where you determine they need to create a subscription
 
-4) after creating their payment information user is redirected back to `/plans?plan=gold&start=true`, you observe the plan and start parameters and post to the Dashboard API to start their subscription
+4) if the user needs billing information you redirect to `/account/subscriptions/create-billing-profile?return-url=/subscribe` and after the user is redirected back to your `/subscribe` page 
+
+5) create the subscription:
 
     {your_dashboard_server}/api/user/subscriptions/create-subscription?customerid=X
 
@@ -134,6 +141,27 @@ POST data:
 
     priceids=price1
     quantities=1
+
+#### Example with subscriptions shared by users
+
+If you were using this module in conjunction with the [Organizations module](https://github.com/layeredapps/organizations) you might want one person to create a subscription that is shared by members of their org.
+
+1) create a page on your application server where users select their plan and organization eg `/subscribe`
+
+2) add the `x-has-subscription` proxy script to your `package.json`, and the `x-organizations` proxy script from the Organizations module so you have that information for the plan
+    
+3) user registers and requests your `/home` path, where you determine they need to create a subscription and redirect to `/account/subscriptions/create-billing-profile?return-url=/subscribe`
+
+4) after creating their payment information user is redirected back to your `/subscribe` page and you create the subscription:
+
+    {your_dashboard_server}/api/user/subscriptions/create-subscription?customerid=X
+
+POST data:
+
+    priceids=price1
+    quantities=1
+
+5) store the organization and subscription ids in your database so you can identify when users are members of an organization with a subscription
 
 #### Example with metered billing
 
@@ -236,7 +264,6 @@ This module comes with some convenience scripts you can add to your `package.jso
 | server   | @layeredapps/stripe-subscriptions/src/server/check-before-cancel-subscription.js  | Require users complete steps, such as deleting data, before canceling their subscription.  Set a `CHECK_BEFORE_CANCEL_SUBSCRIPTION` path such as `/check-delete` on your Application server, Dashboard will query this API passing `?subscriptionid=xxxxx` and you may respond with { "redirect": "/your-delete-requirements" } or { "redirect": false }" to enforce the requirements. |
 | server   | @layeredapps/stripe-subscriptions/src/server/require-payment-confirmation.js      | If the user has an invoice requiring payment confirmation they will be redirected to provide it.  They can still access `/account` and `/administrator` routes (if an administrator)                                                                                                                                                                                                   |
 | server   | @layeredapps/stripe-subscriptions/src/server/require-payment.js                   | If the user has an invoice requiring payment they will be redirected to provide it.  They can still access `/account` and `/administrator` routes (if an administrator)                                                                                                                                                                                                                |
-| server   | @layeredapps/stripe-subscriptions/src/server/require-subscription.js              | If the user does not have a subscription they will be redirected to create one.  They can still access `/account` and `/administrator` routes (if an administrator)                                                                                                                                                                                                                    |
 
 This module includes "private" content scripts that are configured automatically:
 
