@@ -1,5 +1,5 @@
 
-> @layeredapps/stripe-subscriptions@1.0.65 test
+> @layeredapps/stripe-subscriptions@1.0.70 test
 > PORT=50012 NODE_ENV=testing STORAGE=sqlite DATABASE=subscriptions mocha --ignore 'node_modules/**/*' --timeout 480000 --slow 480000 --recursive --extension .test.js .
 
 
@@ -26,10 +26,6 @@
       Duration in days to allow open invoices before enforcing payment
         ✔ default 1
         ✔ Integer
-    START_SUBSCRIPTION_PATH
-      Alternate URL path to your start subscription flow
-        ✔ default /account/subscriptions/start-subscription
-        ✔ String
     SUBSCRIPTION_REFUND_PERIOD
       Time in seconds after an invoice is paid that users may refund a charge
         ✔ default 3600
@@ -66,14 +62,6 @@
       ✔ should ignore user with amount owed requesting account pages
       ✔ should ignore administrator with amount owed requesting administration pages
       ✔ should ignore user without amount owed
-
-  server/stripe-subscriptions/require-subscription
-    after
-      ✔ should ignore guests
-      ✔ should ignore user without subscription requesting account pages
-      ✔ should ignore administrator without subscription requesting administration pages
-      ✔ should ignore user with active subscription
-      ✔ should require user create subscription
 
   /account/subscriptions/add-payment-method
     view
@@ -2443,5 +2431,4 @@
       ✔ environment PAGE_SIZE
 
 
-  1180 passing (2h)
-
+  1173 passing (2h)
