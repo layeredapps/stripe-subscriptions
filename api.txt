@@ -1,5 +1,1409 @@
 @layeredapps/dashboard 0.0.150
-http://localhost:50012
+http://localhost:8000
+
+|------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/add-subscription-item                                         |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS-----------------------------------|
+| required posted priceid              | object   | invalid-subscriptionid                       |
+| required querystring subscriptionid  |          |  * missing querystring subscriptionid        |
+|                                      |          |  * invalid querystring subscriptionid        |
+|                                      |          | invalid-quantity                             |
+|                                      |          |  * invalid posted quantity                   |
+|                                      |          |  * invalid posted quantity is negative       |
+|                                      |          |  * invalid posted quantity is zero           |
+|                                      |          | invalid-priceid                              |
+|                                      |          |  * missing posted priceid                    |
+|                                      |          |  * invalid posted priceid                    |
+|                                      |          | invalid-price                                |
+|                                      |          |  * invalid price is not active               |
+|                                      |          | duplicate-price                              |
+|                                      |          |  * invalid price is already on subscription  |
+|--------------------------------------|----------|----------------------------------------------|
+
+|--------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/add-subscription-item-tax-rate                                  |
+| RECEIVES---------------------------------| RETURNS--| EXCEPTIONS---------------------------------|
+| required posted taxrateid                | object   | invalid-subscriptionitemid                 |
+| required querystring subscriptionitemid  |          |  * missing querystring subscriptionitemid  |
+|                                          |          |  * invalid querystring subscriptionitemid  |
+|                                          |          | invalid-taxrateid                          |
+|                                          |          |  * missing posted taxrateid                |
+|                                          |          |  * invalid posted taxrateid                |
+|                                          |          | invalid-tax-rate                           |
+|                                          |          |  * invalid posted tax-rate                 |
+|------------------------------------------|----------|--------------------------------------------|
+
+|------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/charge                                      |
+| RECEIVES-----------------------| RETURNS--| EXCEPTIONS-----------------------|
+| required querystring chargeid  | object   | invalid-chargeid                 |
+|                                |          |  * missing querystring chargeid  |
+|                                |          |  * invalid querystring chargeid  |
+|--------------------------------|----------|----------------------------------|
+
+|----------------------------------------------------------------------------|
+| /api/administrator/subscriptions/charges                                   |
+| RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
+| optional querystring offset (integer)  | array    | environment PAGE_SIZE  |
+| optional querystring limit (integer)   |          |                        |
+| optional querystring all (boolean)     |          |                        |
+|----------------------------------------|----------|------------------------|
+
+|-------------------------------------------------|
+| /api/administrator/subscriptions/charges-count  |
+| RETURNS-----------------------------------------|
+| integer                                         |
+|-------------------------------------------------|
+
+|------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/coupon                                      |
+| RECEIVES-----------------------| RETURNS--| EXCEPTIONS-----------------------|
+| required querystring couponid  | object   | invalid-couponid                 |
+|                                |          |  * missing querystring couponid  |
+|                                |          |  * invalid querystring couponid  |
+|--------------------------------|----------|----------------------------------|
+
+|----------------------------------------------------------------------------|
+| /api/administrator/subscriptions/coupons                                   |
+| RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
+| optional querystring offset (integer)  | array    | environment PAGE_SIZE  |
+| optional querystring limit (integer)   |          |                        |
+| optional querystring all (boolean)     |          |                        |
+|----------------------------------------|----------|------------------------|
+
+|-------------------------------------------------|
+| /api/administrator/subscriptions/coupons-count  |
+| RETURNS-----------------------------------------|
+| integer                                         |
+|-------------------------------------------------|
+
+|---------------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/create-cancelation-refund                                              |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS--------------------------------------------|
+| required querystring subscriptionid  | object   | invalid-subscriptionid                                |
+|                                      |          |  * missing querystring subscriptionid                 |
+|                                      |          |  * invalid querystring subscriptionid                 |
+|                                      |          | invalid-subscription                                  |
+|                                      |          |  * ineligible querystring subscription is not active  |
+|--------------------------------------|----------|-------------------------------------------------------|
+
+|-------------------------------------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/create-coupon                                                                                |
+| RECEIVES---------------------------------------------------------| RETURNS--| EXCEPTIONS--------------------------------------|
+| required posted duration_in_months                               | object   | invalid-couponid                                |
+| required posted currency                                         |          |  * missing posted couponid                      |
+| required posted amount_off                                       |          |  * invalid posted couponid is not alphanumeric  |
+| required posted name                                             |          | duplicate-couponid                              |
+| required posted couponid                                         |          |  * invalid posted couponid is already used      |
+| required posted duration                                         |          | invalid-name                                    |
+| optionally-required posted amount_off (integer, or percent_off)  |          |  * missing posted name                          |
+| optionally-required posted currency (string, if amount_off)      |          | invalid-amount_off                              |
+| optionally-required posted percent_off (integer, or amount_off)  |          |  * missing posted amount_off                    |
+| optionally-required posted redeem_by (date in future)            |          |  * invalid posted amount_off                    |
+| optionally-required posted duration_in_months                    |          | invalid-currency                                |
+|                                                                  |          |  * missing posted currency                      |
+|                                                                  |          |  * invalid posted currency                      |
+|                                                                  |          | invalid-percent_off                             |
+|                                                                  |          |  * invalid posted percent_off                   |
+|                                                                  |          | invalid-duration                                |
+|                                                                  |          |  * invalid posted duration                      |
+|                                                                  |          | invalid-duration_in_months                      |
+|                                                                  |          |  * missing posted duration_in_months            |
+|                                                                  |          |  * invalid posted duration_in_months            |
+|                                                                  |          | invalid-redeem_by                               |
+|                                                                  |          |  * invalid posted redeem_by                     |
+|------------------------------------------------------------------|----------|-------------------------------------------------|
+
+|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/create-price                                                                                                                          |
+| RECEIVES-------------------------------------------------------------------------------------| RETURNS--| EXCEPTIONS---------------------------------------------------|
+| required posted recurring_interval_count                                                     | object   | invalid-productid                                            |
+| required posted currency                                                                     |          |  * missing posted productid                                  |
+| required posted productid                                                                    |          |  * invalid posted productid                                  |
+| required posted productid                                                                    |          | invalid-product                                              |
+| required posted tax_behavior                                                                 |          |  * ineligible posted product is not active                   |
+| required posted currency                                                                     |          | invalid-tax_behavior                                         |
+| optionally-required posted unit_amount                                                       |          |  * invalid posted tax_behavior                               |
+| optional posted active (boolean)                                                             |          | invalid-unit_amount                                          |
+| optional posted billing_scheme (per_unit|tiered)                                             |          |  * invalid posted unit_amount                                |
+| optional posted recurring_usage_type (licensed|metered)                                      |          | invalid-currency                                             |
+| optional posted recurring_interval (day|week|month|year)                                     |          |  * missing posted currency                                   |
+| optionally-required posted recurring_interval_count                                          |          |  * invalid posted currency                                   |
+| optionally-required posted recurring_aggregate_usage (sum|max|last_ever|last_during_period)  |          | invalid-recurring_interval                                   |
+| optional posted transform_quantity_divide_by                                                 |          |  * invalid posted recurring_interval                         |
+| optionally-required posted transform_quantity_round (up|down)                                |          | invalid-recurring_interval_count                             |
+| optionally-required posted tiers_mode (graduated|volume)                                     |          |  * missing posted recurring_interval_count                   |
+| optional posted tier(1...)_up_to                                                             |          |  * invalid posted recurring_interval_count                   |
+| optional posted tier(1...)_unit_amount                                                       |          |  * invalid posted recurring_interval_count exceeds one year  |
+| optional posted tier(1...)_flat_amount                                                       |          | invalid-recurring_aggregate_usage                            |
+|                                                                                              |          |  * invalid posted recurring_aggregate_usage                  |
+|                                                                                              |          | invalid-recurring_usage_type                                 |
+|                                                                                              |          |  * invalid posted recurring_usage_type                       |
+|                                                                                              |          | invalid-billing_scheme                                       |
+|                                                                                              |          |  * invalid posted billing_scheme                             |
+|                                                                                              |          | invalid-transform_quantity_divide_by                         |
+|                                                                                              |          |  * invalid posted transform_quantity_divide_by               |
+|                                                                                              |          | invalid-transform_quantity_round                             |
+|                                                                                              |          |  * invalid posted transform_quantity_round                   |
+|                                                                                              |          | invalid-tiers_mode                                           |
+|                                                                                              |          |  * invalid posted tiers_mode                                 |
+|                                                                                              |          | invalid-tier_up_to                                           |
+|                                                                                              |          |  * invalid posted tier_up_to                                 |
+|                                                                                              |          | invalid-tier_unit_amount                                     |
+|                                                                                              |          |  * invalid posted tier_unit_amount                           |
+|                                                                                              |          | invalid-tier_flat_amount                                     |
+|                                                                                              |          |  * invalid posted tier_flat_amount                           |
+|----------------------------------------------------------------------------------------------|----------|--------------------------------------------------------------|
+
+|------------------------------------------------------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/create-product                                                                                                |
+| RECEIVES---------------------------------------| RETURNS--| EXCEPTIONS------------------------------| CONFIGURATION----------------------------|
+| required posted tax_code                       | object   | invalid-name                            | environment MINIMUM_PRODUCT_NAME_LENGTH  |
+| required posted statement_descriptor           |          |  * missing posted name                  | environment MAXIMUM_PRODUCT_NAME_LENGTH  |
+| required posted name                           |          | invalid-product-name-length             |                                          |
+| optional posted active (boolean)               |          |  * posted name too short                |                                          |
+| required posted name (string)                  |          |  * posted name too long                 |                                          |
+| required posted statement_descriptor (string)  |          | invalid-statement_descriptor            |                                          |
+| required posted unit_label (string)            |          |  * missing posted statement_descriptor  |                                          |
+| required posted tax_code (string)              |          | invalid-tax_code                        |                                          |
+|                                                |          |  * missing posted tax_code              |                                          |
+|                                                |          |  * invalid posted tax_code              |                                          |
+|------------------------------------------------|----------|-----------------------------------------|------------------------------------------|
+
+|--------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/create-refund                                       |
+| RECEIVES-----------------------| RETURNS--| EXCEPTIONS-------------------------------|
+| required posted amount         | object   | invalid-chargeid                         |
+| required querystring chargeid  |          |  * missing querystring chargeid          |
+|                                |          |  * invalid querystring chargeid          |
+|                                |          | invalid-amount                           |
+|                                |          |  * missing posted amount                 |
+|                                |          |  * invalid posted amount                 |
+|                                |          |  * invalid posted amount is negative     |
+|                                |          |  * invalid posted amount exceeds charge  |
+|--------------------------------|----------|------------------------------------------|
+
+|--------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/create-tax-rate                                     |
+| RECEIVES----------------------| RETURNS--| EXCEPTIONS--------------------------------|
+| required posted inclusive     | object   | invalid-percentage                        |
+| required posted display_name  |          |  * missing posted percentage              |
+| required posted percentage    |          |  * invalid posted percentage              |
+| required posted display_name  |          |  * invalid posted percentage is negative  |
+| required posted percentage    |          |  * invalid posted percentage exceeds 100  |
+| required posted inclusive     |          | invalid-display_name                      |
+| optional posted tax_type      |          |  * missing posted display_name            |
+| optional posted description   |          | invalid-inclusive                         |
+| optional posted jurisdiction  |          |  * missing posted inclusive               |
+| optional posted state         |          |  * invalid posted inclusive               |
+| optional posted country       |          | invalid-country                           |
+|                               |          |  * invalid posted country                 |
+|                               |          | invalid-state                             |
+|                               |          |  * invalid posted state                   |
+|                               |          | invalid-tax_type                          |
+|                               |          |  * invalid posted tax_type                |
+|-------------------------------|----------|-------------------------------------------|
+
+|----------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/customer                                        |
+| RECEIVES-------------------------| RETURNS--| EXCEPTIONS-------------------------|
+| required querystring customerid  | object   | invalid-customerid                 |
+|                                  |          |  * missing querystring customerid  |
+|                                  |          |  * invalid querystring customerid  |
+|----------------------------------|----------|------------------------------------|
+
+|----------------------------------------------------------------------------|
+| /api/administrator/subscriptions/customers                                 |
+| RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
+| optional querystring offset (integer)  | array    | environment PAGE_SIZE  |
+| optional querystring limit (integer)   |          |                        |
+| optional querystring all (boolean)     |          |                        |
+|----------------------------------------|----------|------------------------|
+
+|---------------------------------------------------|
+| /api/administrator/subscriptions/customers-count  |
+| RETURNS-------------------------------------------|
+| integer                                           |
+|---------------------------------------------------|
+
+|------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/delete-coupon                               |
+| RECEIVES-----------------------| RETURNS--| EXCEPTIONS-----------------------|
+| required querystring couponid  | boolean  | invalid-couponid                 |
+|                                |          |  * missing querystring couponid  |
+|                                |          |  * invalid querystring couponid  |
+|--------------------------------|----------|----------------------------------|
+
+|----------------------------------------------------------------------------|
+| /api/administrator/subscriptions/delete-price                              |
+| RECEIVES----------------------| RETURNS--| EXCEPTIONS----------------------|
+| required querystring priceid  | boolean  | invalid-priceid                 |
+|                               |          |  * missing querystring priceid  |
+|                               |          |  * invalid querystring priceid  |
+|-------------------------------|----------|---------------------------------|
+
+|--------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/delete-product                                |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS------------------------|
+| required querystring productid  | boolean  | invalid-productid                 |
+|                                 |          |  * missing querystring productid  |
+|                                 |          |  * invalid querystring productid  |
+|---------------------------------|----------|-----------------------------------|
+
+|---------------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/delete-subscription                                                    |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS--------------------------------------------|
+| required querystring subscriptionid  | boolean  | invalid-subscriptionid                                |
+|                                      |          |  * missing querystring subscriptionid                 |
+|                                      |          |  * invalid querystring subscriptionid                 |
+|                                      |          | invalid-subscription                                  |
+|                                      |          |  * ineligible querystring subscription is not active  |
+|--------------------------------------|----------|-------------------------------------------------------|
+
+|--------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/delete-subscription-item                                        |
+| RECEIVES---------------------------------| RETURNS--| EXCEPTIONS---------------------------------|
+| required querystring subscriptionitemid  | object   | invalid-subscriptionitemid                 |
+|                                          |          |  * missing querystring subscriptionitemid  |
+|                                          |          |  * invalid querystring subscriptionitemid  |
+|                                          |          | only-item                                  |
+|                                          |          |  * invalid posted itemid is only item      |
+|------------------------------------------|----------|--------------------------------------------|
+
+|--------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/invoice                                       |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS------------------------|
+| required querystring invoiceid  | object   | invalid-invoiceid                 |
+|                                 |          |  * missing querystring invoiceid  |
+|                                 |          |  * invalid querystring invoiceid  |
+|---------------------------------|----------|-----------------------------------|
+
+|----------------------------------------------------------------------------|
+| /api/administrator/subscriptions/invoices                                  |
+| RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
+| optional querystring offset (integer)  | array    | environment PAGE_SIZE  |
+| optional querystring limit (integer)   |          |                        |
+| optional querystring all (boolean)     |          |                        |
+|----------------------------------------|----------|------------------------|
+
+|--------------------------------------------------|
+| /api/administrator/subscriptions/invoices-count  |
+| RETURNS------------------------------------------|
+| integer                                          |
+|--------------------------------------------------|
+
+|--------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/payment-intent                                            |
+| RECEIVES------------------------------| RETURNS--| EXCEPTIONS------------------------------|
+| required querystring paymentintentid  | object   | invalid-paymentintentid                 |
+|                                       |          |  * missing querystring paymentintentid  |
+|                                       |          |  * invalid querystring paymentintentid  |
+|---------------------------------------|----------|-----------------------------------------|
+
+|----------------------------------------------------------------------------|
+| /api/administrator/subscriptions/payment-intents                           |
+| RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
+| optional querystring offset (integer)  | array    | environment PAGE_SIZE  |
+| optional querystring all (boolean)     |          |                        |
+|----------------------------------------|----------|------------------------|
+
+|---------------------------------------------------------|
+| /api/administrator/subscriptions/payment-intents-count  |
+| RETURNS-------------------------------------------------|
+| integer                                                 |
+|---------------------------------------------------------|
+
+|--------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/payment-method                                            |
+| RECEIVES------------------------------| RETURNS--| EXCEPTIONS------------------------------|
+| required querystring paymentmethodid  | object   | invalid-paymentmethodid                 |
+|                                       |          |  * missing querystring paymentmethodid  |
+|                                       |          |  * invalid querystring paymentmethodid  |
+|---------------------------------------|----------|-----------------------------------------|
+
+|----------------------------------------------------------------------------|
+| /api/administrator/subscriptions/payment-methods                           |
+| RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
+| optional querystring offset (integer)  | array    | environment PAGE_SIZE  |
+| optional querystring limit (integer)   |          |                        |
+| optional querystring all (boolean)     |          |                        |
+|----------------------------------------|----------|------------------------|
+
+|---------------------------------------------------------|
+| /api/administrator/subscriptions/payment-methods-count  |
+| RETURNS-------------------------------------------------|
+| integer                                                 |
+|---------------------------------------------------------|
+
+|----------------------------------------------------------------------------|
+| /api/administrator/subscriptions/price                                     |
+| RECEIVES----------------------| RETURNS--| EXCEPTIONS----------------------|
+| required querystring priceid  | object   | invalid-priceid                 |
+|                               |          |  * missing querystring priceid  |
+|                               |          |  * invalid querystring priceid  |
+|-------------------------------|----------|---------------------------------|
+
+|----------------------------------------------------------------------------|
+| /api/administrator/subscriptions/prices                                    |
+| RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
+| optional querystring offset (integer)  | array    | environment PAGE_SIZE  |
+| optional querystring limit (integer)   |          |                        |
+| optional querystring all (boolean)     |          |                        |
+|----------------------------------------|----------|------------------------|
+
+|------------------------------------------------|
+| /api/administrator/subscriptions/prices-count  |
+| RETURNS----------------------------------------|
+| integer                                        |
+|------------------------------------------------|
+
+|--------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/product                                       |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS------------------------|
+| required querystring productid  | object   | invalid-productid                 |
+|                                 |          |  * missing querystring productid  |
+|                                 |          |  * invalid querystring productid  |
+|---------------------------------|----------|-----------------------------------|
+
+|----------------------------------------------------------------------------|
+| /api/administrator/subscriptions/products                                  |
+| RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
+| optional querystring offset (integer)  | array    | environment PAGE_SIZE  |
+| optional querystring limit (integer)   |          |                        |
+| optional querystring all (boolean)     |          |                        |
+|----------------------------------------|----------|------------------------|
+
+|--------------------------------------------------|
+| /api/administrator/subscriptions/products-count  |
+| RETURNS------------------------------------------|
+| integer                                          |
+|--------------------------------------------------|
+
+|------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/refund                                      |
+| RECEIVES-----------------------| RETURNS--| EXCEPTIONS-----------------------|
+| required querystring refundid  | object   | undefined                        |
+|                                |          |  * invalid querystring refundid  |
+|                                |          |  * missing querystring refundid  |
+|--------------------------------|----------|----------------------------------|
+
+|----------------------------------------------------------------------------|
+| /api/administrator/subscriptions/refund-requests                           |
+| RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
+| optional querystring offset (integer)  | array    | environment PAGE_SIZE  |
+| optional querystring limit (integer)   |          |                        |
+| optional querystring all (boolean)     |          |                        |
+|----------------------------------------|----------|------------------------|
+
+|---------------------------------------------------------|
+| /api/administrator/subscriptions/refund-requests-count  |
+| RETURNS-------------------------------------------------|
+| integer                                                 |
+|---------------------------------------------------------|
+
+|----------------------------------------------------------------------------|
+| /api/administrator/subscriptions/refunds                                   |
+| RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
+| optional querystring offset (integer)  | array    | environment PAGE_SIZE  |
+| optional querystring limit (integer)   |          |                        |
+| optional querystring all (boolean)     |          |                        |
+|----------------------------------------|----------|------------------------|
+
+|-------------------------------------------------|
+| /api/administrator/subscriptions/refunds-count  |
+| RETURNS-----------------------------------------|
+| integer                                         |
+|-------------------------------------------------|
+
+|--------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/remove-subscription-item-tax-rate                               |
+| RECEIVES---------------------------------| RETURNS--| EXCEPTIONS---------------------------------|
+| required posted taxrateid                | object   | invalid-subscriptionitemid                 |
+| required querystring subscriptionitemid  |          |  * missing querystring subscriptionitemid  |
+|                                          |          |  * invalid querystring subscriptionitemid  |
+|                                          |          | invalid-taxrateid                          |
+|                                          |          |  * missing posted taxrateid                |
+|                                          |          |  * invalid posted taxrateid                |
+|                                          |          | invalid-tax-rate                           |
+|                                          |          |  * invalid posted tax-rate                 |
+|------------------------------------------|----------|--------------------------------------------|
+
+|-------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/reset-customer-coupon                              |
+| RECEIVES-------------------------| EXCEPTIONS---------------------------------------|
+| required querystring customerid  | invalid-customerid                               |
+| object                           |  * missing querystring customerid                |
+|                                  |  * invalid querystring customerid                |
+|                                  | invalid-customer                                 |
+|                                  |  * invalid querystring customer has no discount  |
+|----------------------------------|--------------------------------------------------|
+
+|-----------------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/reset-subscription-coupon                                                |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS----------------------------------------------|
+| required querystring subscriptionid  | object   | invalid-subscriptionid                                  |
+|                                      |          |  * missing querystring subscriptionid                   |
+|                                      |          |  * invalid querystring subscriptionid                   |
+|                                      |          | invalid-subscription                                    |
+|                                      |          |  * ineligible querystring subscription has no discount  |
+|--------------------------------------|----------|---------------------------------------------------------|
+
+|------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-charge-flagged                                            |
+| RECEIVES---------------------| RETURNS--| EXCEPTIONS-------------------------------------------|
+| required querystring charge  | object   | invalid-chargeid                                     |
+|                              |          |  * missing querystring charge                        |
+|                              |          |  * invalid querystring charge                        |
+|                              |          | invalid-charge                                       |
+|                              |          |  * ineligible querystring charge is already flagged  |
+|------------------------------|----------|------------------------------------------------------|
+
+|----------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-customer-coupon                             |
+| RECEIVES-------------------------| RETURNS--| EXCEPTIONS-------------------------|
+| required posted couponid         | object   | invalid-customerid                 |
+| required querystring customerid  |          |  * missing querystring customerid  |
+|                                  |          |  * invalid querystring customerid  |
+|                                  |          | invalid-customer                   |
+|                                  |          |  * ineligible customer has coupon  |
+|                                  |          | invalid-couponid                   |
+|                                  |          |  * missing posted couponid         |
+|                                  |          |  * invalid posted couponid         |
+|----------------------------------|----------|------------------------------------|
+
+|---------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-price-active                                     |
+| RECEIVES----------------------| RETURNS--| EXCEPTIONS---------------------------------|
+| required querystring priceid  | object   | invalid-priceid                            |
+|                               |          |  * missing querystring priceid             |
+|                               |          |  * invalid querystring priceid             |
+|                               |          | invalid-price                              |
+|                               |          |  * ineligible querystring price is active  |
+|-------------------------------|----------|--------------------------------------------|
+
+|-------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-price-inactive                                             |
+| RECEIVES----------------------| RETURNS--| EXCEPTIONS-------------------------------------------|
+| required querystring priceid  | object   | invalid-priceid                                      |
+|                               |          |  * missing querystring priceid                       |
+|                               |          |  * invalid querystring priceid                       |
+|                               |          | invalid-price                                        |
+|                               |          |  * ineligible querystring price is not active        |
+|                               |          |  * ineligible querystring price is already inactive  |
+|-------------------------------|----------|------------------------------------------------------|
+
+|------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-product-active                                            |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS----------------------------------------|
+| required querystring productid  | object   | invalid-productid                                 |
+|                                 |          |  * missing querystring productid                  |
+|                                 |          |  * invalid querystring productid                  |
+|                                 |          | invalid-product                                   |
+|                                 |          |  * invalid querystring product is already active  |
+|---------------------------------|----------|---------------------------------------------------|
+
+|-----------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-product-inactive                                         |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS---------------------------------------|
+| required querystring productid  | object   | invalid-productid                                |
+|                                 |          |  * missing querystring productid                 |
+|                                 |          |  * invalid querystring productid                 |
+|                                 |          | invalid-product                                  |
+|                                 |          |  * ineligible querystring product is not active  |
+|---------------------------------|----------|--------------------------------------------------|
+
+|----------------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-refund-request-denied                                               |
+| RECEIVES-----------------------| RETURNS--| EXCEPTIONS---------------------------------------------------|
+| required querystring chargeid  | object   | invalid-chargeid                                             |
+|                                |          |  * missing querystring chargeid                              |
+|                                |          |  * invalid querystring chargeid                              |
+|                                |          | invalid-charge                                               |
+|                                |          |  * ineligible querystring charge has no refund request       |
+|                                |          |  * ineligible querystring charge has denied request already  |
+|--------------------------------|----------|--------------------------------------------------------------|
+
+|---------------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-subscription-canceled                                              |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS--------------------------------------------|
+| required querystring subscriptionid  | object   | invalid-subscriptionid                                |
+|                                      |          |  * missing querystring subscriptionid                 |
+|                                      |          |  * invalid querystring subscriptionid                 |
+|                                      |          | invalid-subscription                                  |
+|                                      |          |  * ineligible querystring subscription is not active  |
+|--------------------------------------|----------|-------------------------------------------------------|
+
+|--------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-subscription-coupon                                   |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS-------------------------------|
+| required posted couponid             | object   | invalid-subscriptionid                   |
+| required querystring subscriptionid  |          |  * missing querystring subscriptionid    |
+|                                      |          |  * invalid querystring subscriptionid    |
+|                                      |          | invalid-subscription                     |
+|                                      |          |  * ineligible subscription is canceling  |
+|                                      |          |  * ineligible subscription has coupon    |
+|                                      |          | invalid-couponid                         |
+|                                      |          |  * missing posted couponid               |
+|                                      |          |  * invalid posted couponid               |
+|--------------------------------------|----------|------------------------------------------|
+
+|------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-subscription-default-tax-rates                      |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS-----------------------------|
+| required posted taxrateids           | object   | invalid-subscriptionid                 |
+| required querystring subscriptionid  |          |  * missing querystring subscriptionid  |
+|                                      |          |  * invalid querystring subscriptionid  |
+|                                      |          | invalid-taxrateids                     |
+|                                      |          |  * missing posted taxrateids           |
+|                                      |          | invalid-taxrateid                      |
+|                                      |          |  * invalid posted taxrateid            |
+|                                      |          | invalid-tax-rate                       |
+|                                      |          |  * invalid posted tax-rate             |
+|--------------------------------------|----------|----------------------------------------|
+
+|--------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-subscription-item-quantity                                  |
+| RECEIVES---------------------------------| RETURNS--| EXCEPTIONS---------------------------------|
+| required querystring subscriptionitemid  | object   | invalid-subscriptionitemid                 |
+|                                          |          |  * missing querystring subscriptionitemid  |
+|                                          |          |  * invalid querystring subscriptionitemid  |
+|                                          |          | invalid-quantity                           |
+|                                          |          |  * invalid posted quantity                 |
+|                                          |          |  * invalid posted quantity is unchanged    |
+|                                          |          |  * invalid posted quantity is negative     |
+|                                          |          |  * invalid posted quantity is zero         |
+|------------------------------------------|----------|--------------------------------------------|
+
+|------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-tax-rate-active                               |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS----------------------------|
+| required querystring taxrateid  | object   | invalid-taxrateid                     |
+|                                 |          |  * missing querystring taxrateid      |
+|                                 |          |  * invalid querystring taxrateid      |
+|                                 |          | invalid-taxrate                       |
+|                                 |          |  * invalid taxrate is already active  |
+|---------------------------------|----------|---------------------------------------|
+
+|--------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/set-tax-rate-inactive                               |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS------------------------------|
+| required querystring taxrateid  | object   | invalid-taxrateid                       |
+|                                 |          |  * missing querystring taxrateid        |
+|                                 |          |  * invalid querystring taxrateid        |
+|                                 |          | invalid-taxrate                         |
+|                                 |          |  * invalid taxrate is already inactive  |
+|---------------------------------|----------|-----------------------------------------|
+
+|----------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/setup-intent                                          |
+| RECEIVES----------------------------| RETURNS--| EXCEPTIONS----------------------------|
+| required querystring setupintentid  | object   | invalid-setupintentid                 |
+|                                     |          |  * missing querystring setupintentid  |
+|                                     |          |  * invalid querystring setupintentid  |
+|-------------------------------------|----------|---------------------------------------|
+
+|----------------------------------------------------------------------------|
+| /api/administrator/subscriptions/setup-intents                             |
+| RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
+| optional querystring offset (integer)  | array    | environment PAGE_SIZE  |
+| optional querystring limit (integer)   |          |                        |
+| optional querystring all (boolean)     |          |                        |
+|----------------------------------------|----------|------------------------|
+
+|-------------------------------------------------------|
+| /api/administrator/subscriptions/setup-intents-count  |
+| RETURNS-----------------------------------------------|
+| integer                                               |
+|-------------------------------------------------------|
+
+|------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/subscription                                            |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS-----------------------------|
+| required querystring subscriptionid  | object   | invalid-subscriptionid                 |
+|                                      |          |  * missing querystring subscriptionid  |
+|                                      |          |  * invalid querystring subscriptionid  |
+|--------------------------------------|----------|----------------------------------------|
+
+|--------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/subscription-item                                               |
+| RECEIVES---------------------------------| RETURNS--| EXCEPTIONS---------------------------------|
+| required querystring subscriptionitemid  | object   | invalid-subscriptionitemid                 |
+|                                          |          |  * missing querystring subscriptionitemid  |
+|                                          |          |  * invalid querystring subscriptionitemid  |
+|------------------------------------------|----------|--------------------------------------------|
+
+|----------------------------------------------------------------------------|
+| /api/administrator/subscriptions/subscriptions                             |
+| RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
+| optional querystring offset (integer)  | array    | environment PAGE_SIZE  |
+| optional querystring limit (integer)   |          |                        |
+| optional querystring all (boolean)     |          |                        |
+|----------------------------------------|----------|------------------------|
+
+|-------------------------------------------------------|
+| /api/administrator/subscriptions/subscriptions-count  |
+| RETURNS-----------------------------------------------|
+| integer                                               |
+|-------------------------------------------------------|
+
+|--------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/tax-code                                      |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS------------------------|
+| required querystring taxcodeid  | object   | invalid-taxcodeid                 |
+|                                 |          |  * missing querystring taxcodeid  |
+|                                 |          |  * invalid querystring taxcodeid  |
+|---------------------------------|----------|-----------------------------------|
+
+|----------------------------------------------------------------------------|
+| /api/administrator/subscriptions/tax-codes                                 |
+| RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
+| optional querystring offset (integer)  | array    | environment PAGE_SIZE  |
+| optional querystring limit (integer)   |          |                        |
+| optional querystring all (boolean)     |          |                        |
+|----------------------------------------|----------|------------------------|
+
+|--------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/tax-rate                                      |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS------------------------|
+| required querystring taxrateid  | object   | invalid-taxrateid                 |
+|                                 |          |  * missing querystring taxrateid  |
+|                                 |          |  * invalid querystring taxrateid  |
+|---------------------------------|----------|-----------------------------------|
+
+|----------------------------------------------------------------------------|
+| /api/administrator/subscriptions/tax-rates                                 |
+| RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
+| optional querystring offset (integer)  | array    | environment PAGE_SIZE  |
+| optional querystring limit (integer)   |          |                        |
+| optional querystring all (boolean)     |          |                        |
+|----------------------------------------|----------|------------------------|
+
+|---------------------------------------------------|
+| /api/administrator/subscriptions/tax-rates-count  |
+| RETURNS-------------------------------------------|
+| integer                                           |
+|---------------------------------------------------|
+
+|------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/update-coupon                               |
+| RECEIVES-----------------------| RETURNS--| EXCEPTIONS-----------------------|
+| required posted name           | object   | invalid-couponid                 |
+| required querystring couponid  |          |  * missing querystring couponid  |
+| required posted name           |          |  * invalid querystring couponid  |
+|                                |          | invalid-name                     |
+|                                |          |  * missing posted name           |
+|                                |          |  * invalid posted name           |
+|--------------------------------|----------|----------------------------------|
+
+|------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/update-price                                                  |
+| RECEIVES---------------------------| RETURNS--| EXCEPTIONS-------------------------------------|
+| required posted nickname           | object   | invalid-priceid                                |
+| required querystring priceid       |          |  * missing querystring priceid                 |
+| required posted nickname (string)  |          |  * invalid querystring priceid                 |
+|                                    |          | invalid-price                                  |
+|                                    |          |  * ineligible querystring price is not active  |
+|                                    |          | invalid-nickname                               |
+|                                    |          |  * missing posted nickname                     |
+|------------------------------------|----------|------------------------------------------------|
+
+|------------------------------------------------------------------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/update-product                                                                                                |
+| RECEIVES------------------------------| RETURNS--| EXCEPTIONS---------------------------------------| CONFIGURATION----------------------------|
+| required posted tax_code              | object   | invalid-productid                                | environment MINIMUM_PRODUCT_NAME_LENGTH  |
+| required posted unit_label            |          |  * missing querystring productid                 | environment MAXIMUM_PRODUCT_NAME_LENGTH  |
+| required querystring productid        |          |  * invalid querystring productid                 |                                          |
+| required posted name                  |          | invalid-product                                  |                                          |
+| required posted statement_descriptor  |          |  * ineligible querystring product is not active  |                                          |
+| required posted unit_label            |          | invalid-name                                     |                                          |
+| required posted tax_code              |          |  * invalid posted name                           |                                          |
+|                                       |          | invalid-name-length                              |                                          |
+|                                       |          |  * posted name too short                         |                                          |
+|                                       |          |  * posted name too long                          |                                          |
+|                                       |          | invalid-statement_descriptor                     |                                          |
+|                                       |          |  * invalid posted statement_descriptor           |                                          |
+|                                       |          | invalid-statement_descriptor-length              |                                          |
+|                                       |          |  * posted statement_descriptor too short         |                                          |
+|                                       |          |  * posted statement_descriptor too long          |                                          |
+|                                       |          | invalid-unit_label                               |                                          |
+|                                       |          |  * missing posted unit_label                     |                                          |
+|                                       |          | invalid-tax_code                                 |                                          |
+|                                       |          |  * missing posted tax_code                       |                                          |
+|                                       |          |  * invalid posted tax_code                       |                                          |
+|---------------------------------------|----------|--------------------------------------------------|------------------------------------------|
+
+|--------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/update-tax-rate                               |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS------------------------|
+| required querystring taxrateid  | object   | invalid-taxrateid                 |
+| required posted display_name    |          |  * missing querystring taxrateid  |
+| required posted inclusive       |          |  * invalid querystring taxrateid  |
+| required posted description     |          |                                   |
+| required posted jurisdiction    |          |                                   |
+| optional posted country         |          |                                   |
+|---------------------------------|----------|-----------------------------------|
+
+|----------------------------------------------------------------------------------------|
+| /api/administrator/subscriptions/usage-record                                          |
+| RECEIVES----------------------------| RETURNS--| EXCEPTIONS----------------------------|
+| required querystring usagerecordid  | object   | invalid-usagerecordid                 |
+|                                     |          |  * missing querystring usagerecordid  |
+|                                     |          |  * invalid querystring usagerecordid  |
+|-------------------------------------|----------|---------------------------------------|
+
+|----------------------------------------------------------------------------|
+| /api/administrator/subscriptions/usage-records                             |
+| RECEIVES-------------------------------| RETURNS--| CONFIGURATION----------|
+| optional querystring offset (integer)  | array    | environment PAGE_SIZE  |
+| optional querystring limit (integer)   |          |                        |
+| optional querystring all (boolean)     |          |                        |
+| optional querystring accountid         |          |                        |
+| optional querystring customerid        |          |                        |
+| optional querystring subscriptionid    |          |                        |
+|----------------------------------------|----------|------------------------|
+
+|-------------------------------------------------------|
+| /api/administrator/subscriptions/usage-records-count  |
+| RETURNS-----------------------------------------------|
+| integer                                               |
+|-------------------------------------------------------|
+
+|-------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/active-price                                                      |
+| RECEIVES----------------------| RETURNS--| EXCEPTIONS-------------------------------------|
+| required querystring priceid  | object   | invalid-priceid                                |
+|                               |          |  * missing querystring priceid                 |
+|                               |          |  * invalid querystring priceid                 |
+|                               |          | invalid-price                                  |
+|                               |          |  * ineligible querystring price is not active  |
+|-------------------------------|----------|------------------------------------------------|
+
+|-----------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/active-product                                                        |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS---------------------------------------|
+| required querystring productid  | object   | invalid-productid                                |
+|                                 |          |  * missing querystring productid                 |
+|                                 |          |  * invalid querystring productid                 |
+|                                 |          | invalid-product                                  |
+|                                 |          |  * ineligible querystring product is not active  |
+|---------------------------------|----------|--------------------------------------------------|
+
+|------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/add-subscription-item                                                  |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS-----------------------------------|
+| required posted priceid              | object   | invalid-subscriptionid                       |
+| required querystring subscriptionid  |          |  * missing querystring subscriptionid        |
+|                                      |          |  * invalid querystring subscriptionid        |
+|                                      |          | invalid-account                              |
+|                                      |          |  * ineligible accessing account              |
+|                                      |          | invalid-quantity                             |
+|                                      |          |  * invalid posted quantity                   |
+|                                      |          |  * invalid posted quantity is negative       |
+|                                      |          |  * invalid posted quantity is zero           |
+|                                      |          | invalid-priceid                              |
+|                                      |          |  * missing posted priceid                    |
+|                                      |          |  * invalid posted priceid                    |
+|                                      |          | invalid-price                                |
+|                                      |          |  * invalid price is not active               |
+|                                      |          | duplicate-price                              |
+|                                      |          |  * invalid price is already on subscription  |
+|--------------------------------------|----------|----------------------------------------------|
+
+|------------------------------------------------------------------------------|
+| /api/user/subscriptions/charge                                               |
+| RECEIVES-----------------------| RETURNS--| EXCEPTIONS-----------------------|
+| required querystring chargeid  | object   | invalid-chargeid                 |
+|                                |          |  * missing querystring chargeid  |
+|                                |          |  * invalid querystring chargeid  |
+|                                |          | invalid-account                  |
+|                                |          |  * ineligible accessing account  |
+|--------------------------------|----------|----------------------------------|
+
+|----------------------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/charges                                                                                |
+| RECEIVES-------------------------------| RETURNS--| EXCEPTIONS------------------------| CONFIGURATION----------|
+| required querystring accountid         | array    | invalid-accountid                 | environment PAGE_SIZE  |
+| optional querystring offset (integer)  |          |  * missing querystring accountid  |                        |
+| optional querystring limit (integer)   |          |  * invalid querystring accountid  |                        |
+| optional querystring all (boolean)     |          | invalid-account                   |                        |
+|                                        |          |  * ineligible accessing account   |                        |
+|----------------------------------------|----------|-----------------------------------|------------------------|
+
+|----------------------------------------|
+| /api/user/subscriptions/charges-count  |
+| RETURNS--------------------------------|
+| integer                                |
+|----------------------------------------|
+
+|------------------------------------------------------------------------------|
+| /api/user/subscriptions/coupon                                               |
+| RECEIVES-----------------------| RETURNS--| EXCEPTIONS-----------------------|
+| required querystring couponid  | object   | invalid-couponid                 |
+|                                |          |  * missing querystring couponid  |
+|                                |          |  * invalid querystring couponid  |
+|--------------------------------|----------|----------------------------------|
+
+|---------------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/create-cancelation-refund                                                       |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS--------------------------------------------|
+| required querystring subscriptionid  | object   | invalid-subscriptionid                                |
+|                                      |          |  * missing querystring subscriptionid                 |
+|                                      |          |  * invalid querystring subscriptionid                 |
+|                                      |          | invalid-account                                       |
+|                                      |          |  * ineligible accessing account                       |
+|                                      |          | invalid-subscription                                  |
+|                                      |          |  * ineligible querystring subscription is not active  |
+|                                      |          |  * ineligible querystring subscription is free        |
+|--------------------------------------|----------|-------------------------------------------------------|
+
+|--------------------------------------------------------------------------------|
+| /api/user/subscriptions/create-customer                                        |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS------------------------|
+| required querystring accountid  | object   | invalid-accountid                 |
+|                                 |          |  * missing querystring accountid  |
+|                                 |          |  * invalid querystring accountid  |
+|                                 |          | invalid-account                   |
+|                                 |          |  * ineligible accessing account   |
+|---------------------------------|----------|-----------------------------------|
+
+|-------------------------------------------------------------------------|
+| /api/user/subscriptions/create-payment-intent                           |
+| RECEIVES-------------------------| EXCEPTIONS---------------------------|
+| required posted paymentmethodid  | invalid-customerid                   |
+| required querystring customerid  |  * missing querystring customerid    |
+|                                  |  * invalid querystring customerid    |
+|                                  | invalid-account                      |
+|                                  |  * ineligible accessing account      |
+|                                  |  * ineligible posted payment method  |
+|                                  | invalid-paymentmethodid              |
+|                                  |  * missing posted paymentmethodid    |
+|                                  |  * invalid posted paymentmethodid    |
+|                                  | object                               |
+|----------------------------------|--------------------------------------|
+
+|----------------------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/create-payment-method                                                                  |
+| RECEIVES------------------------------| RETURNS--| EXCEPTIONS-------------------------| CONFIGURATION----------|
+| required querystring customerid       | object   | invalid-customerid                 | environment STRIPE_JS  |
+| optionally-required posted name       |          |  * missing querystring customerid  |                        |
+| optionally-required posted cvc        |          |  * invalid querystring customerid  |                        |
+| optionally-required posted number     |          | invalid-account                    |                        |
+| optionally-required posted exp_month  |          |  * ineligible accessing account    |                        |
+| optionally-required posted exp_year   |          |                                    |                        |
+| optionally-required posted token      |          |                                    |                        |
+|---------------------------------------|----------|------------------------------------|------------------------|
+
+|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/create-refund                                                                                                           |
+| RECEIVES-----------------------| RETURNS--| EXCEPTIONS------------------------------------------------| CONFIGURATION---------------------------|
+| required querystring chargeid  | object   | invalid-chargeid                                          | environment SUBSCRIPTION_REFUND_PERIOD  |
+|                                |          |  * missing querystring chargeid                           |                                         |
+|                                |          |  * invalid querystring chargeid                           |                                         |
+|                                |          | invalid-charge                                            |                                         |
+|                                |          |  * ineligible querystring charge is refunded              |                                         |
+|                                |          |  * ineligible querystring charge is out of refund period  |                                         |
+|                                |          | invalid-account                                           |                                         |
+|                                |          |  * ineligible accessing account                           |                                         |
+|--------------------------------|----------|-----------------------------------------------------------|-----------------------------------------|
+
+|--------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/create-refund-request                                                    |
+| RECEIVES-----------------------| RETURNS--| EXCEPTIONS-------------------------------------------|
+| required querystring chargeid  | object   | invalid-chargeid                                     |
+|                                |          |  * missing querystring chargeid                      |
+|                                |          |  * invalid querystring chargeid                      |
+|                                |          | invalid-charge                                       |
+|                                |          |  * ineligible querystring charge is refunded         |
+|                                |          |  * ineligible querystring charge has refund request  |
+|                                |          | invalid-account                                      |
+|                                |          |  * ineligible accessing account                      |
+|--------------------------------|----------|------------------------------------------------------|
+
+|----------------------------------------------------------------------------------|
+| /api/user/subscriptions/create-setup-intent                                      |
+| RECEIVES-------------------------| RETURNS--| EXCEPTIONS-------------------------|
+| required posted paymentmethodid  | object   | invalid-customerid                 |
+| required querystring customerid  |          |  * missing querystring customerid  |
+|                                  |          |  * invalid querystring customerid  |
+|                                  |          | invalid-account                    |
+|                                  |          |  * ineligible accessing account    |
+|                                  |          | invalid-paymentmethodid            |
+|                                  |          |  * missing posted paymentmethodid  |
+|                                  |          |  * invalid posted paymentmethodid  |
+|----------------------------------|----------|------------------------------------|
+
+|-----------------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/create-subscription                                                               |
+| RECEIVES-------------------------| RETURNS--| EXCEPTIONS--------------------------------------------------|
+| required posted priceids         | object   | invalid-customerid                                          |
+| required querystring customerid  |          |  * missing querystring customerid                           |
+|                                  |          |  * invalid querystring customerid                           |
+|                                  |          | invalid-customer                                            |
+|                                  |          |  * ineligible querystring customer requires payment method  |
+|                                  |          | invalid-account                                             |
+|                                  |          |  * ineligible accessing account                             |
+|                                  |          | invalid-priceids                                            |
+|                                  |          |  * missing posted priceids                                  |
+|                                  |          | invalid-priceid                                             |
+|                                  |          |  * invalid posted priceids contains invalid price           |
+|                                  |          | invalid-price                                               |
+|                                  |          |  * invalid posted priceids contains not active price        |
+|                                  |          | invalid-taxrateid                                           |
+|                                  |          |  * invalid posted taxrateids contains invalid tax rate      |
+|                                  |          | invalid-tax-rate                                            |
+|                                  |          |  * invalid posted taxrateids contains inactive tax rate     |
+|----------------------------------|----------|-------------------------------------------------------------|
+
+|----------------------------------------------------------------------------------|
+| /api/user/subscriptions/create-tax-id                                            |
+| RECEIVES-------------------------| RETURNS--| EXCEPTIONS-------------------------|
+| required posted type             | object   | invalid-customerid                 |
+| required querystring customerid  |          |  * missing querystring customerid  |
+|                                  |          |  * invalid querystring customerid  |
+|                                  |          | invalid-account                    |
+|                                  |          |  * ineligible accessing account    |
+|                                  |          | invalid-type                       |
+|                                  |          |  * missing posted type             |
+|                                  |          |  * invalid posted type             |
+|                                  |          | invalid-value                      |
+|                                  |          |  * invalid posted value            |
+|----------------------------------|----------|------------------------------------|
+
+|---------------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/create-usage-record                                                             |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS--------------------------------------------|
+| required posted subscriptionitemid   | object   | invalid-subscriptionid                                |
+| required posted action               |          |  * missing querystring subscriptionid                 |
+| required querystring subscriptionid  |          |  * invalid querystring subscriptionid                 |
+| required posted quantity             |          | invalid-subscription                                  |
+| required posted action               |          |  * invalid querystring subscription is not "metered"  |
+| required posted subscriptionitemid   |          | invalid-account                                       |
+|                                      |          |  * ineligible accessing account                       |
+|                                      |          | invalid-quantity                                      |
+|                                      |          |  * invalid posted quantity is not integer             |
+|                                      |          |  * invalid posted quantity is negative                |
+|                                      |          | invalid-action                                        |
+|                                      |          |  * missing posted action                              |
+|                                      |          |  * invalid posted action                              |
+|                                      |          | invalid-subscriptionitemid                            |
+|                                      |          |  * missing posted subscriptionitemid                  |
+|                                      |          |  * invalid posted subscriptionitemid                  |
+|--------------------------------------|----------|-------------------------------------------------------|
+
+|----------------------------------------------------------------------------------|
+| /api/user/subscriptions/customer                                                 |
+| RECEIVES-------------------------| RETURNS--| EXCEPTIONS-------------------------|
+| required querystring customerid  | object   | invalid-customerid                 |
+|                                  |          |  * missing querystring customerid  |
+|                                  |          |  * invalid querystring customerid  |
+|                                  |          | invalid-account                    |
+|                                  |          |  * ineligible accessing account    |
+|----------------------------------|----------|------------------------------------|
+
+|----------------------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/customers                                                                              |
+| RECEIVES-------------------------------| RETURNS--| EXCEPTIONS------------------------| CONFIGURATION----------|
+| required querystring accountid         | array    | invalid-accountid                 | environment PAGE_SIZE  |
+| optional querystring offset (integer)  |          |  * missing querystring accountid  |                        |
+| optional querystring limit (integer)   |          |  * invalid querystring accountid  |                        |
+| optional querystring all (boolean)     |          | invalid-account                   |                        |
+|                                        |          |  * ineligible accessing account   |                        |
+|----------------------------------------|----------|-----------------------------------|------------------------|
+
+|------------------------------------------|
+| /api/user/subscriptions/customers-count  |
+| RETURNS----------------------------------|
+| integer                                  |
+|------------------------------------------|
+
+|----------------------------------------------------------------------------------|
+| /api/user/subscriptions/delete-customer                                          |
+| RECEIVES-------------------------| RETURNS--| EXCEPTIONS-------------------------|
+| required querystring customerid  | boolean  | invalid-customerid                 |
+|                                  |          |  * missing querystring customerid  |
+|                                  |          |  * invalid querystring customerid  |
+|                                  |          | invalid-account                    |
+|                                  |          |  * ineligible accessing account    |
+|----------------------------------|----------|------------------------------------|
+
+|---------------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/delete-subscription                                                             |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS--------------------------------------------|
+| required querystring subscriptionid  | boolean  | invalid-subscriptionid                                |
+|                                      |          |  * missing querystring subscriptionid                 |
+|                                      |          |  * invalid querystring subscriptionid                 |
+|                                      |          | invalid-account                                       |
+|                                      |          |  * ineligible accessing account                       |
+|                                      |          | invalid-subscription                                  |
+|                                      |          |  * ineligible querystring subscription is not active  |
+|--------------------------------------|----------|-------------------------------------------------------|
+
+|------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/delete-subscription-item                                         |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS-----------------------------|
+| required posted itemid               | object   | invalid-subscriptionid                 |
+| required querystring subscriptionid  |          |  * missing querystring subscriptionid  |
+|                                      |          |  * invalid querystring subscriptionid  |
+|                                      |          | invalid-account                        |
+|                                      |          |  * ineligible accessing account        |
+|                                      |          | invalid-itemid                         |
+|                                      |          |  * missing posted itemid               |
+|                                      |          |  * invalid posted itemid               |
+|                                      |          | only-item                              |
+|                                      |          |  * invalid posted itemid is only item  |
+|--------------------------------------|----------|----------------------------------------|
+
+|---------------------------------------------------------------------------|
+| /api/user/subscriptions/delete-tax-id                                     |
+| RECEIVES--------------------| RETURNS--| EXCEPTIONS-----------------------|
+| required querystring taxid  | boolean  | invalid-taxid                    |
+|                             |          |  * missing querystring taxid     |
+|                             |          |  * invalid querystring taxid     |
+|                             |          | invalid-account                  |
+|                             |          |  * ineligible accessing account  |
+|-----------------------------|----------|----------------------------------|
+
+|--------------------------------------------------------------------------------|
+| /api/user/subscriptions/invoice                                                |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS------------------------|
+| required querystring invoiceid  | object   | invalid-invoiceid                 |
+|                                 |          |  * missing querystring invoiceid  |
+|                                 |          |  * invalid querystring invoiceid  |
+|                                 |          | invalid-account                   |
+|                                 |          |  * ineligible accessing account   |
+|---------------------------------|----------|-----------------------------------|
+
+|----------------------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/invoices                                                                               |
+| RECEIVES-------------------------------| RETURNS--| EXCEPTIONS------------------------| CONFIGURATION----------|
+| required querystring accountid         | array    | invalid-accountid                 | environment PAGE_SIZE  |
+| optional querystring offset (integer)  |          |  * missing querystring accountid  |                        |
+| optional querystring limit (integer)   |          |  * invalid querystring accountid  |                        |
+| optional querystring all (boolean)     |          | invalid-account                   |                        |
+|                                        |          |  * ineligible accessing account   |                        |
+|----------------------------------------|----------|-----------------------------------|------------------------|
+
+|-----------------------------------------|
+| /api/user/subscriptions/invoices-count  |
+| RETURNS---------------------------------|
+| integer                                 |
+|-----------------------------------------|
+
+|-----------------------------------------------------------------------------|
+| /api/user/subscriptions/payment-intent                                      |
+| RECEIVES----------------------| RETURNS--| EXCEPTIONS-----------------------|
+| required querystring invalid  | object   | invalid-paymentintentid          |
+|                               |          |  * missing querystring invalid   |
+|                               |          |  * invalid querystring invalid   |
+|                               |          | invalid-account                  |
+|                               |          |  * ineligible accessing account  |
+|-------------------------------|----------|----------------------------------|
+
+|----------------------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/payment-intents                                                                        |
+| RECEIVES-------------------------------| RETURNS--| EXCEPTIONS------------------------| CONFIGURATION----------|
+| required querystring accountid         | array    | invalid-accountid                 | environment PAGE_SIZE  |
+| optional querystring offset (integer)  |          |  * missing querystring accountid  |                        |
+| optional querystring limit (integer)   |          |  * invalid querystring accountid  |                        |
+| optional querystring all (boolean)     |          | invalid-account                   |                        |
+|                                        |          |  * ineligible accessing account   |                        |
+|----------------------------------------|----------|-----------------------------------|------------------------|
+
+|------------------------------------------------|
+| /api/user/subscriptions/payment-intents-count  |
+| RETURNS----------------------------------------|
+| integer                                        |
+|------------------------------------------------|
+
+|--------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/payment-method                                                     |
+| RECEIVES------------------------------| RETURNS--| EXCEPTIONS------------------------------|
+| required querystring paymentmethodid  | object   | invalid-paymentmethodid                 |
+|                                       |          |  * missing querystring paymentmethodid  |
+|                                       |          |  * invalid querystring paymentmethodid  |
+|                                       |          | invalid-account                         |
+|                                       |          |  * ineligible accessing account         |
+|---------------------------------------|----------|-----------------------------------------|
+
+|----------------------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/payment-methods                                                                        |
+| RECEIVES-------------------------------| RETURNS--| EXCEPTIONS------------------------| CONFIGURATION----------|
+| required querystring accountid         | array    | invalid-accountid                 | environment PAGE_SIZE  |
+| optional querystring offset (integer)  |          |  * missing querystring accountid  |                        |
+| optional querystring limit (integer)   |          |  * invalid querystring accountid  |                        |
+| optional querystring all (boolean)     |          | invalid-account                   |                        |
+|                                        |          |  * ineligible accessing account   |                        |
+|----------------------------------------|----------|-----------------------------------|------------------------|
+
+|------------------------------------------------|
+| /api/user/subscriptions/payment-methods-count  |
+| RETURNS----------------------------------------|
+| integer                                        |
+|------------------------------------------------|
+
+|------------------------------------------------------------------------------|
+| /api/user/subscriptions/refund                                               |
+| RECEIVES-----------------------| RETURNS--| EXCEPTIONS-----------------------|
+| required querystring refundid  | object   | invalid-refundid                 |
+|                                |          |  * missing querystring refundid  |
+|                                |          |  * invalid querystring refundid  |
+|                                |          | invalid-account                  |
+|                                |          |  * ineligible accessing account  |
+|--------------------------------|----------|----------------------------------|
+
+|----------------------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/refunds                                                                                |
+| RECEIVES-------------------------------| RETURNS--| EXCEPTIONS------------------------| CONFIGURATION----------|
+| required querystring accountid         | array    | invalid-accountid                 | environment PAGE_SIZE  |
+| optional querystring offset (integer)  |          |  * missing querystring accountid  |                        |
+| optional querystring limit (integer)   |          |  * invalid querystring accountid  |                        |
+| optional querystring all (boolean)     |          | invalid-account                   |                        |
+|                                        |          |  * ineligible accessing account   |                        |
+|----------------------------------------|----------|-----------------------------------|------------------------|
+
+|----------------------------------------|
+| /api/user/subscriptions/refunds-count  |
+| RETURNS--------------------------------|
+| integer                                |
+|----------------------------------------|
+
+|--------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/reset-subscription-canceling                                             |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS-------------------------------------|
+| required querystring subscriptionid  | object   | invalid-subscriptionid                         |
+|                                      |          |  * missing querystring subscriptionid          |
+|                                      |          |  * invalid querystring subscriptionid          |
+|                                      |          | invalid-subscription                           |
+|                                      |          |  * invalid querystring subscription is active  |
+|                                      |          | invalid-account                                |
+|                                      |          |  * ineligible accessing account                |
+|--------------------------------------|----------|------------------------------------------------|
+
+|-------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/set-customer-coupon                                               |
+| RECEIVES-------------------------| RETURNS--| EXCEPTIONS----------------------------------|
+| required posted couponid         | object   | invalid-customerid                          |
+| required querystring customerid  |          |  * missing querystring customerid           |
+|                                  |          |  * invalid querystring customerid           |
+|                                  |          | invalid-customer                            |
+|                                  |          |  * invalid querystring customer has coupon  |
+|                                  |          | invalid-account                             |
+|                                  |          |  * ineligible accessing account             |
+|                                  |          | invalid-couponid                            |
+|                                  |          |  * missing posted couponid                  |
+|                                  |          |  * invalid posted couponid                  |
+|----------------------------------|----------|---------------------------------------------|
+
+|-------------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/set-invoice-paid                                                              |
+| RECEIVES-------------------------| RETURNS--| EXCEPTIONS----------------------------------------------|
+| required posted paymentmethodid  | object   | invalid-invoiceid                                       |
+| required querystring invoiceid   |          |  * missing querystring invoiceid                        |
+|                                  |          |  * invalid querystring invoiceid                        |
+|                                  |          | invalid-account                                         |
+|                                  |          |  * ineligible accessing account                         |
+|                                  |          |  * ineligible posted payment method                     |
+|                                  |          | invalid-invoice                                         |
+|                                  |          |  * invalid querystring invoice is paid                  |
+|                                  |          |  * invalid querystring invoice is marked uncollectable  |
+|                                  |          | invalid-paymentmethodid                                 |
+|                                  |          |  * missing posted paymentmethodid                       |
+|                                  |          |  * invalid posted paymentmethodid                       |
+|----------------------------------|----------|---------------------------------------------------------|
+
+|--------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/set-payment-intent-canceled                                        |
+| RECEIVES------------------------------| RETURNS--| EXCEPTIONS------------------------------|
+| required querystring paymentintentid  | object   | invalid-paymentintentid                 |
+|                                       |          |  * missing querystring paymentintentid  |
+|                                       |          |  * invalid querystring paymentintentid  |
+|                                       |          | invalid-account                         |
+|                                       |          |  * ineligible accessing account         |
+|---------------------------------------|----------|-----------------------------------------|
+
+|------------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/set-payment-method-detached                                                  |
+| RECEIVES------------------------------| RETURNS--| EXCEPTIONS----------------------------------------|
+| required querystring paymentmethodid  | object   | invalid-paymentmethodid                           |
+|                                       |          |  * missing querystring paymentmethodid            |
+|                                       |          |  * invalid querystring paymentmethodid            |
+|                                       |          | invalid-account                                   |
+|                                       |          |  * ineligible accessing account                   |
+|                                       |          | invalid-paymentmethod                             |
+|                                       |          |  * invalid querystring payment method is default  |
+|---------------------------------------|----------|---------------------------------------------------|
+
+|----------------------------------------------------------------------------------------|
+| /api/user/subscriptions/set-setup-intent-canceled                                      |
+| RECEIVES----------------------------| RETURNS--| EXCEPTIONS----------------------------|
+| required querystring setupintentid  | object   | invalid-setupintentid                 |
+|                                     |          |  * missing querystring setupintentid  |
+|                                     |          |  * invalid querystring setupintentid  |
+|                                     |          | invalid-account                       |
+|                                     |          |  * ineligible accessing account       |
+|-------------------------------------|----------|---------------------------------------|
+
+|---------------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/set-subscription-canceled                                                       |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS--------------------------------------------|
+| required querystring subscriptionid  | object   | invalid-subscriptionid                                |
+|                                      |          |  * missing querystring subscriptionid                 |
+|                                      |          |  * invalid querystring subscriptionid                 |
+|                                      |          | invalid-account                                       |
+|                                      |          |  * ineligible accessing account                       |
+|                                      |          | invalid-subscription                                  |
+|                                      |          |  * ineligible querystring subscription is not active  |
+|--------------------------------------|----------|-------------------------------------------------------|
+
+|-----------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/set-subscription-coupon                                                     |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS----------------------------------------|
+| required posted couponid             | object   | invalid-subscriptionid                            |
+| required querystring subscriptionid  |          |  * missing querystring subscriptionid             |
+|                                      |          |  * invalid querystring subscriptionid             |
+|                                      |          | invalid-subscription                              |
+|                                      |          |  * invalid querystring subscription has coupon    |
+|                                      |          |  * invalid querystring subscription is canceling  |
+|                                      |          | invalid-account                                   |
+|                                      |          |  * ineligible accessing account                   |
+|                                      |          | invalid-couponid                                  |
+|                                      |          |  * missing posted couponid                        |
+|                                      |          |  * invalid posted couponid                        |
+|                                      |          | invalid-coupon                                    |
+|                                      |          |  * invalid posted coupon is other currency        |
+|--------------------------------------|----------|---------------------------------------------------|
+
+|--------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/set-subscription-item-quantity                                           |
+| RECEIVES---------------------------------| RETURNS--| EXCEPTIONS---------------------------------|
+| required querystring subscriptionitemid  | object   | invalid-subscriptionitemid                 |
+|                                          |          |  * missing querystring subscriptionitemid  |
+|                                          |          |  * invalid querystring subscriptionitemid  |
+|                                          |          | invalid-account                            |
+|                                          |          |  * ineligible accessing account            |
+|                                          |          | invalid-quantity                           |
+|                                          |          |  * invalid posted quantity                 |
+|                                          |          |  * invalid posted quantity is unchanged    |
+|                                          |          |  * invalid posted quantity is negative     |
+|                                          |          |  * invalid posted quantity is zero         |
+|------------------------------------------|----------|--------------------------------------------|
+
+|----------------------------------------------------------------------------------------|
+| /api/user/subscriptions/setup-intent                                                   |
+| RECEIVES----------------------------| RETURNS--| EXCEPTIONS----------------------------|
+| required querystring setupintentid  | object   | invalid-setupintentid                 |
+|                                     |          |  * missing querystring setupintentid  |
+|                                     |          |  * invalid querystring setupintentid  |
+|                                     |          | invalid-account                       |
+|                                     |          |  * ineligible accessing account       |
+|-------------------------------------|----------|---------------------------------------|
+
+|-----------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/setup-intents                                                               |
+| RECEIVES-------------------------------| EXCEPTIONS------------------------| CONFIGURATION----------|
+| required querystring accountid         | invalid-accountid                 | environment PAGE_SIZE  |
+| optional querystring offset (integer)  |  * missing querystring accountid  |                        |
+| optional querystring limit (integer)   |  * invalid querystring accountid  |                        |
+| optional querystring all (boolean)     | invalid-account                   |                        |
+|                                        |  * ineligible accessing account   |                        |
+|----------------------------------------|-----------------------------------|------------------------|
+
+|----------------------------------------------|
+| /api/user/subscriptions/setup-intents-count  |
+| RETURNS--------------------------------------|
+| integer                                      |
+|----------------------------------------------|
+
+|------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/subscription                                                     |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS-----------------------------|
+| required querystring subscriptionid  | object   | invalid-subscriptionid                 |
+|                                      |          |  * missing querystring subscriptionid  |
+|                                      |          |  * invalid querystring subscriptionid  |
+|                                      |          | invalid-account                        |
+|                                      |          |  * ineligible accessing account        |
+|--------------------------------------|----------|----------------------------------------|
+
+|--------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/subscription-item                                                        |
+| RECEIVES---------------------------------| RETURNS--| EXCEPTIONS---------------------------------|
+| required querystring subscriptionitemid  | object   | invalid-subscriptionitemid                 |
+|                                          |          |  * missing querystring subscriptionitemid  |
+|                                          |          |  * invalid querystring subscriptionitemid  |
+|                                          |          | invalid-account                            |
+|                                          |          |  * ineligible accessing account            |
+|------------------------------------------|----------|--------------------------------------------|
+
+|----------------------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/subscriptions                                                                          |
+| RECEIVES-------------------------------| RETURNS--| EXCEPTIONS------------------------| CONFIGURATION----------|
+| required querystring accountid         | array    | invalid-accountid                 | environment PAGE_SIZE  |
+| optional querystring offset (integer)  |          |  * missing querystring accountid  |                        |
+| optional querystring limit (integer)   |          |  * invalid querystring accountid  |                        |
+| optional querystring all (boolean)     |          | invalid-account                   |                        |
+|                                        |          |  * ineligible accessing account   |                        |
+|----------------------------------------|----------|-----------------------------------|------------------------|
+
+|--------------------------------------------------------------------------------|
+| /api/user/subscriptions/subscriptions-count                                    |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS------------------------|
+| required querystring accountid  | integer  | invalid-accountid                 |
+|                                 |          |  * missing querystring accountid  |
+|                                 |          |  * invalid querystring accountid  |
+|                                 |          | invalid-account                   |
+|                                 |          |  * ineligible accessing account   |
+|---------------------------------|----------|-----------------------------------|
+
+|---------------------------------------------------------------------------|
+| /api/user/subscriptions/tax-id                                            |
+| RECEIVES--------------------| RETURNS--| EXCEPTIONS-----------------------|
+| required querystring taxid  | object   | invalid-taxid                    |
+|                             |          |  * missing querystring taxid     |
+|                             |          |  * invalid querystring taxid     |
+|                             |          | invalid-account                  |
+|                             |          |  * ineligible accessing account  |
+|-----------------------------|----------|----------------------------------|
+
+|-----------------------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/tax-ids                                                                                 |
+| RECEIVES-------------------------------| RETURNS--| EXCEPTIONS-------------------------| CONFIGURATION----------|
+| required querystring customerid        | array    | invalid-customerid                 | environment PAGE_SIZE  |
+| optional querystring offset (integer)  |          |  * missing querystring customerid  |                        |
+| optional querystring limit (integer)   |          |  * invalid querystring customerid  |                        |
+| optional querystring all (boolean)     |          | invalid-account                    |                        |
+|                                        |          |  * ineligible accessing account    |                        |
+|----------------------------------------|----------|------------------------------------|------------------------|
+
+|--------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/tax-rate                                                           |
+| RECEIVES------------------------| RETURNS--| EXCEPTIONS------------------------------------|
+| required querystring taxrateid  | object   | invalid-taxrateid                             |
+|                                 |          |  * missing querystring taxrateid              |
+|                                 |          |  * invalid querystring taxrateid              |
+|                                 |          | invalid-taxrate                               |
+|                                 |          |  * invalid querystring taxrate is not active  |
+|---------------------------------|----------|-----------------------------------------------|
+
+|-------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/upcoming-invoice                                                  |
+| RECEIVES-----------------------------| RETURNS--| EXCEPTIONS------------------------------|
+| required querystring subscriptionid  | object   | invalid-subscriptionid                  |
+|                                      |          |  * missing querystring subscriptionid   |
+|                                      |          |  * invalid querystring subscriptionid   |
+|                                      |          | invalid-account                         |
+|                                      |          |  * ineligible accessing account         |
+|                                      |          | invalid-subscription                    |
+|                                      |          |  * ineligible querystring subscription  |
+|--------------------------------------|----------|-----------------------------------------|
+
+|---------------------------------------------------------------------------------------------------------------------------------------------|
+| /api/user/subscriptions/usage-record-summaries                                                                                              |
+| RECEIVES--------------------------------------| RETURNS---------------| EXCEPTIONS---------------------------------| CONFIGURATION----------|
+| required querystring subscriptionitemid       | stripe list response  | invalid-subscriptionitemid                 | environment PAGE_SIZE  |
+| optional querystring starting_after (string)  |                       |  * missing querystring subscriptionitemid  |                        |
+| optional querystring ending_before (string)   |                       |  * invalid querystring subscriptionitemid  |                        |
+| optional querystring limit (integer)          |                       |                                            |                        |
+|-----------------------------------------------|-----------------------|--------------------------------------------|------------------------|
 
 
-2022-06-25T00:53:21.697Z
+2022-06-25T02:46:10.676Z

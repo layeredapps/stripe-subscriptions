@@ -1,1 +1,2845 @@
-{}
+{
+  "/api/administrator/subscriptions/add-subscription-item-tax-rate": {
+    "url": "/api/administrator/subscriptions/add-subscription-item-tax-rate",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionitemid": [
+        "missing querystring subscriptionitemid",
+        "invalid querystring subscriptionitemid"
+      ],
+      "invalid-taxrateid": [
+        "missing posted taxrateid",
+        "invalid posted taxrateid"
+      ],
+      "invalid-tax-rate": [
+        "invalid posted tax-rate"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/add-subscription-item": {
+    "url": "/api/administrator/subscriptions/add-subscription-item",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-quantity": [
+        "invalid posted quantity",
+        "invalid posted quantity is negative",
+        "invalid posted quantity is zero"
+      ],
+      "invalid-priceid": [
+        "missing posted priceid",
+        "invalid posted priceid"
+      ],
+      "invalid-price": [
+        "invalid price is not active"
+      ],
+      "duplicate-price": [
+        "invalid price is already on subscription"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/charge": {
+    "url": "/api/administrator/subscriptions/charge",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-chargeid": [
+        "missing querystring chargeid",
+        "invalid querystring chargeid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/charges-count": {
+    "url": "/api/administrator/subscriptions/charges-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/charges": {
+    "url": "/api/administrator/subscriptions/charges",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/administrator/subscriptions/coupon": {
+    "url": "/api/administrator/subscriptions/coupon",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-couponid": [
+        "missing querystring couponid",
+        "invalid querystring couponid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/coupons-count": {
+    "url": "/api/administrator/subscriptions/coupons-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/coupons": {
+    "url": "/api/administrator/subscriptions/coupons",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/administrator/subscriptions/create-cancelation-refund": {
+    "url": "/api/administrator/subscriptions/create-cancelation-refund",
+    "verb": "post",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-subscription": [
+        "ineligible querystring subscription is not active"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/create-coupon": {
+    "url": "/api/administrator/subscriptions/create-coupon",
+    "verb": "post",
+    "auth": false,
+    "receives": [
+      "required posted duration",
+      "optionally-required posted amount_off (integer, or percent_off)",
+      "optionally-required posted currency (string, if amount_off)",
+      "optionally-required posted percent_off (integer, or amount_off)",
+      "optionally-required posted redeem_by (date in future)",
+      "optionally-required posted duration_in_months"
+    ],
+    "exceptions": {
+      "invalid-couponid": [
+        "missing posted couponid",
+        "invalid posted couponid is not alphanumeric"
+      ],
+      "duplicate-couponid": [
+        "invalid posted couponid is already used"
+      ],
+      "invalid-name": [
+        "missing posted name"
+      ],
+      "invalid-amount_off": [
+        "missing posted amount_off",
+        "invalid posted amount_off"
+      ],
+      "invalid-currency": [
+        "missing posted currency",
+        "invalid posted currency"
+      ],
+      "invalid-percent_off": [
+        "invalid posted percent_off"
+      ],
+      "invalid-duration": [
+        "invalid posted duration"
+      ],
+      "invalid-duration_in_months": [
+        "missing posted duration_in_months",
+        "invalid posted duration_in_months"
+      ],
+      "invalid-redeem_by": [
+        "invalid posted redeem_by"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/create-price": {
+    "url": "/api/administrator/subscriptions/create-price",
+    "verb": "post",
+    "auth": false,
+    "receives": [
+      "required posted productid",
+      "required posted tax_behavior",
+      "required posted currency",
+      "optionally-required posted unit_amount",
+      "optional posted active (boolean)",
+      "optional posted billing_scheme (per_unit|tiered)",
+      "optional posted recurring_usage_type (licensed|metered)",
+      "optional posted recurring_interval (day|week|month|year)",
+      "optionally-required posted recurring_interval_count",
+      "optionally-required posted recurring_aggregate_usage (sum|max|last_ever|last_during_period)",
+      "optional posted transform_quantity_divide_by",
+      "optionally-required posted transform_quantity_round (up|down)",
+      "optionally-required posted tiers_mode (graduated|volume)",
+      "optional posted tier(1...)_up_to",
+      "optional posted tier(1...)_unit_amount",
+      "optional posted tier(1...)_flat_amount"
+    ],
+    "exceptions": {
+      "invalid-productid": [
+        "missing posted productid",
+        "invalid posted productid"
+      ],
+      "invalid-product": [
+        "ineligible posted product is not active"
+      ],
+      "invalid-tax_behavior": [
+        "invalid posted tax_behavior"
+      ],
+      "invalid-unit_amount": [
+        "invalid posted unit_amount"
+      ],
+      "invalid-currency": [
+        "missing posted currency",
+        "invalid posted currency"
+      ],
+      "invalid-recurring_interval": [
+        "invalid posted recurring_interval"
+      ],
+      "invalid-recurring_interval_count": [
+        "missing posted recurring_interval_count",
+        "invalid posted recurring_interval_count",
+        "invalid posted recurring_interval_count exceeds one year"
+      ],
+      "invalid-recurring_aggregate_usage": [
+        "invalid posted recurring_aggregate_usage"
+      ],
+      "invalid-recurring_usage_type": [
+        "invalid posted recurring_usage_type"
+      ],
+      "invalid-billing_scheme": [
+        "invalid posted billing_scheme"
+      ],
+      "invalid-transform_quantity_divide_by": [
+        "invalid posted transform_quantity_divide_by"
+      ],
+      "invalid-transform_quantity_round": [
+        "invalid posted transform_quantity_round"
+      ],
+      "invalid-tiers_mode": [
+        "invalid posted tiers_mode"
+      ],
+      "invalid-tier_up_to": [
+        "invalid posted tier_up_to"
+      ],
+      "invalid-tier_unit_amount": [
+        "invalid posted tier_unit_amount"
+      ],
+      "invalid-tier_flat_amount": [
+        "invalid posted tier_flat_amount"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/create-product": {
+    "url": "/api/administrator/subscriptions/create-product",
+    "verb": "post",
+    "auth": false,
+    "receives": [
+      "optional posted active (boolean)",
+      "required posted name (string)",
+      "required posted statement_descriptor (string)",
+      "required posted unit_label (string)",
+      "required posted tax_code (string)"
+    ],
+    "exceptions": {
+      "invalid-name": [
+        "missing posted name"
+      ],
+      "invalid-product-name-length": [
+        "posted name too short",
+        "posted name too long"
+      ],
+      "invalid-statement_descriptor": [
+        "missing posted statement_descriptor"
+      ],
+      "invalid-tax_code": [
+        "missing posted tax_code",
+        "invalid posted tax_code"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": [
+      "environment MINIMUM_PRODUCT_NAME_LENGTH",
+      "environment MAXIMUM_PRODUCT_NAME_LENGTH"
+    ]
+  },
+  "/api/administrator/subscriptions/create-refund": {
+    "url": "/api/administrator/subscriptions/create-refund",
+    "verb": "post",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-chargeid": [
+        "missing querystring chargeid",
+        "invalid querystring chargeid"
+      ],
+      "invalid-amount": [
+        "missing posted amount",
+        "invalid posted amount",
+        "invalid posted amount is negative",
+        "invalid posted amount exceeds charge"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/create-tax-rate": {
+    "url": "/api/administrator/subscriptions/create-tax-rate",
+    "verb": "post",
+    "auth": false,
+    "receives": [
+      "required posted display_name",
+      "required posted percentage",
+      "required posted inclusive",
+      "optional posted tax_type",
+      "optional posted description",
+      "optional posted jurisdiction",
+      "optional posted state",
+      "optional posted country"
+    ],
+    "exceptions": {
+      "invalid-percentage": [
+        "missing posted percentage",
+        "invalid posted percentage",
+        "invalid posted percentage is negative",
+        "invalid posted percentage exceeds 100"
+      ],
+      "invalid-display_name": [
+        "missing posted display_name"
+      ],
+      "invalid-inclusive": [
+        "missing posted inclusive",
+        "invalid posted inclusive"
+      ],
+      "invalid-country": [
+        "invalid posted country"
+      ],
+      "invalid-state": [
+        "invalid posted state"
+      ],
+      "invalid-tax_type": [
+        "invalid posted tax_type"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/customer": {
+    "url": "/api/administrator/subscriptions/customer",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-customerid": [
+        "missing querystring customerid",
+        "invalid querystring customerid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/customers-count": {
+    "url": "/api/administrator/subscriptions/customers-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/customers": {
+    "url": "/api/administrator/subscriptions/customers",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/administrator/subscriptions/delete-coupon": {
+    "url": "/api/administrator/subscriptions/delete-coupon",
+    "verb": "delete",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-couponid": [
+        "missing querystring couponid",
+        "invalid querystring couponid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "boolean"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/delete-price": {
+    "url": "/api/administrator/subscriptions/delete-price",
+    "verb": "delete",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-priceid": [
+        "missing querystring priceid",
+        "invalid querystring priceid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "boolean"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/delete-product": {
+    "url": "/api/administrator/subscriptions/delete-product",
+    "verb": "delete",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-productid": [
+        "missing querystring productid",
+        "invalid querystring productid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "boolean"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/delete-subscription-item": {
+    "url": "/api/administrator/subscriptions/delete-subscription-item",
+    "verb": "delete",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionitemid": [
+        "missing querystring subscriptionitemid",
+        "invalid querystring subscriptionitemid"
+      ],
+      "only-item": [
+        "invalid posted itemid is only item"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/delete-subscription": {
+    "url": "/api/administrator/subscriptions/delete-subscription",
+    "verb": "delete",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-subscription": [
+        "ineligible querystring subscription is not active"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "boolean"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/invoice": {
+    "url": "/api/administrator/subscriptions/invoice",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-invoiceid": [
+        "missing querystring invoiceid",
+        "invalid querystring invoiceid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/invoices-count": {
+    "url": "/api/administrator/subscriptions/invoices-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/invoices": {
+    "url": "/api/administrator/subscriptions/invoices",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/administrator/subscriptions/payment-intent": {
+    "url": "/api/administrator/subscriptions/payment-intent",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-paymentintentid": [
+        "missing querystring paymentintentid",
+        "invalid querystring paymentintentid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/payment-intents-count": {
+    "url": "/api/administrator/subscriptions/payment-intents-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/payment-intents": {
+    "url": "/api/administrator/subscriptions/payment-intents",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/administrator/subscriptions/payment-method": {
+    "url": "/api/administrator/subscriptions/payment-method",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-paymentmethodid": [
+        "missing querystring paymentmethodid",
+        "invalid querystring paymentmethodid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/payment-methods-count": {
+    "url": "/api/administrator/subscriptions/payment-methods-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/payment-methods": {
+    "url": "/api/administrator/subscriptions/payment-methods",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/administrator/subscriptions/price": {
+    "url": "/api/administrator/subscriptions/price",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-priceid": [
+        "missing querystring priceid",
+        "invalid querystring priceid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/prices-count": {
+    "url": "/api/administrator/subscriptions/prices-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/prices": {
+    "url": "/api/administrator/subscriptions/prices",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/administrator/subscriptions/product": {
+    "url": "/api/administrator/subscriptions/product",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-productid": [
+        "missing querystring productid",
+        "invalid querystring productid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/products-count": {
+    "url": "/api/administrator/subscriptions/products-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/products": {
+    "url": "/api/administrator/subscriptions/products",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/administrator/subscriptions/refund-requests-count": {
+    "url": "/api/administrator/subscriptions/refund-requests-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/refund-requests": {
+    "url": "/api/administrator/subscriptions/refund-requests",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/administrator/subscriptions/refund": {
+    "url": "/api/administrator/subscriptions/refund",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "undefined": [
+        "invalid querystring refundid",
+        "missing querystring refundid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/refunds-count": {
+    "url": "/api/administrator/subscriptions/refunds-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/refunds": {
+    "url": "/api/administrator/subscriptions/refunds",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/administrator/subscriptions/remove-subscription-item-tax-rate": {
+    "url": "/api/administrator/subscriptions/remove-subscription-item-tax-rate",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionitemid": [
+        "missing querystring subscriptionitemid",
+        "invalid querystring subscriptionitemid"
+      ],
+      "invalid-taxrateid": [
+        "missing posted taxrateid",
+        "invalid posted taxrateid"
+      ],
+      "invalid-tax-rate": [
+        "invalid posted tax-rate"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/reset-customer-coupon": {
+    "url": "/api/administrator/subscriptions/reset-customer-coupon",
+    "verb": "patch",
+    "auth": false,
+    "receives": [
+      "object"
+    ],
+    "exceptions": {
+      "invalid-customerid": [
+        "missing querystring customerid",
+        "invalid querystring customerid"
+      ],
+      "invalid-customer": [
+        "invalid querystring customer has no discount"
+      ]
+    },
+    "redacts": [],
+    "returns": [],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/reset-subscription-coupon": {
+    "url": "/api/administrator/subscriptions/reset-subscription-coupon",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-subscription": [
+        "ineligible querystring subscription has no discount"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/set-charge-flagged": {
+    "url": "/api/administrator/subscriptions/set-charge-flagged",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-chargeid": [
+        "missing querystring charge",
+        "invalid querystring charge"
+      ],
+      "invalid-charge": [
+        "ineligible querystring charge is already flagged"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/set-customer-coupon": {
+    "url": "/api/administrator/subscriptions/set-customer-coupon",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-customerid": [
+        "missing querystring customerid",
+        "invalid querystring customerid"
+      ],
+      "invalid-customer": [
+        "ineligible customer has coupon"
+      ],
+      "invalid-couponid": [
+        "missing posted couponid",
+        "invalid posted couponid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/set-price-active": {
+    "url": "/api/administrator/subscriptions/set-price-active",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-priceid": [
+        "missing querystring priceid",
+        "invalid querystring priceid"
+      ],
+      "invalid-price": [
+        "ineligible querystring price is active"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/set-price-inactive": {
+    "url": "/api/administrator/subscriptions/set-price-inactive",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-priceid": [
+        "missing querystring priceid",
+        "invalid querystring priceid"
+      ],
+      "invalid-price": [
+        "ineligible querystring price is not active",
+        "ineligible querystring price is already inactive"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/set-product-active": {
+    "url": "/api/administrator/subscriptions/set-product-active",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-productid": [
+        "missing querystring productid",
+        "invalid querystring productid"
+      ],
+      "invalid-product": [
+        "invalid querystring product is already active"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/set-product-inactive": {
+    "url": "/api/administrator/subscriptions/set-product-inactive",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-productid": [
+        "missing querystring productid",
+        "invalid querystring productid"
+      ],
+      "invalid-product": [
+        "ineligible querystring product is not active"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/set-refund-request-denied": {
+    "url": "/api/administrator/subscriptions/set-refund-request-denied",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-chargeid": [
+        "missing querystring chargeid",
+        "invalid querystring chargeid"
+      ],
+      "invalid-charge": [
+        "ineligible querystring charge has no refund request",
+        "ineligible querystring charge has denied request already"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/set-subscription-canceled": {
+    "url": "/api/administrator/subscriptions/set-subscription-canceled",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-subscription": [
+        "ineligible querystring subscription is not active"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/set-subscription-coupon": {
+    "url": "/api/administrator/subscriptions/set-subscription-coupon",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-subscription": [
+        "ineligible subscription is canceling",
+        "ineligible subscription has coupon"
+      ],
+      "invalid-couponid": [
+        "missing posted couponid",
+        "invalid posted couponid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/set-subscription-default-tax-rates": {
+    "url": "/api/administrator/subscriptions/set-subscription-default-tax-rates",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-taxrateids": [
+        "missing posted taxrateids"
+      ],
+      "invalid-taxrateid": [
+        "invalid posted taxrateid"
+      ],
+      "invalid-tax-rate": [
+        "invalid posted tax-rate"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/set-subscription-item-quantity": {
+    "url": "/api/administrator/subscriptions/set-subscription-item-quantity",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionitemid": [
+        "missing querystring subscriptionitemid",
+        "invalid querystring subscriptionitemid"
+      ],
+      "invalid-quantity": [
+        "invalid posted quantity",
+        "invalid posted quantity is unchanged",
+        "invalid posted quantity is negative",
+        "invalid posted quantity is zero"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/set-tax-rate-active": {
+    "url": "/api/administrator/subscriptions/set-tax-rate-active",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-taxrateid": [
+        "missing querystring taxrateid",
+        "invalid querystring taxrateid"
+      ],
+      "invalid-taxrate": [
+        "invalid taxrate is already active"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/set-tax-rate-inactive": {
+    "url": "/api/administrator/subscriptions/set-tax-rate-inactive",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-taxrateid": [
+        "missing querystring taxrateid",
+        "invalid querystring taxrateid"
+      ],
+      "invalid-taxrate": [
+        "invalid taxrate is already inactive"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/setup-intent": {
+    "url": "/api/administrator/subscriptions/setup-intent",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-setupintentid": [
+        "missing querystring setupintentid",
+        "invalid querystring setupintentid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/setup-intents-count": {
+    "url": "/api/administrator/subscriptions/setup-intents-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/setup-intents": {
+    "url": "/api/administrator/subscriptions/setup-intents",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/administrator/subscriptions/subscription-item": {
+    "url": "/api/administrator/subscriptions/subscription-item",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionitemid": [
+        "missing querystring subscriptionitemid",
+        "invalid querystring subscriptionitemid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/subscription": {
+    "url": "/api/administrator/subscriptions/subscription",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/subscriptions-count": {
+    "url": "/api/administrator/subscriptions/subscriptions-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/subscriptions": {
+    "url": "/api/administrator/subscriptions/subscriptions",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/administrator/subscriptions/tax-code": {
+    "url": "/api/administrator/subscriptions/tax-code",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-taxcodeid": [
+        "missing querystring taxcodeid",
+        "invalid querystring taxcodeid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/tax-codes": {
+    "url": "/api/administrator/subscriptions/tax-codes",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/administrator/subscriptions/tax-rate": {
+    "url": "/api/administrator/subscriptions/tax-rate",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-taxrateid": [
+        "missing querystring taxrateid",
+        "invalid querystring taxrateid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/tax-rates-count": {
+    "url": "/api/administrator/subscriptions/tax-rates-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/tax-rates": {
+    "url": "/api/administrator/subscriptions/tax-rates",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/administrator/subscriptions/update-coupon": {
+    "url": "/api/administrator/subscriptions/update-coupon",
+    "verb": "patch",
+    "auth": false,
+    "receives": [
+      "required posted name"
+    ],
+    "exceptions": {
+      "invalid-couponid": [
+        "missing querystring couponid",
+        "invalid querystring couponid"
+      ],
+      "invalid-name": [
+        "missing posted name",
+        "invalid posted name"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/update-price": {
+    "url": "/api/administrator/subscriptions/update-price",
+    "verb": "patch",
+    "auth": false,
+    "receives": [
+      "required posted nickname (string)"
+    ],
+    "exceptions": {
+      "invalid-priceid": [
+        "missing querystring priceid",
+        "invalid querystring priceid"
+      ],
+      "invalid-price": [
+        "ineligible querystring price is not active"
+      ],
+      "invalid-nickname": [
+        "missing posted nickname"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/update-product": {
+    "url": "/api/administrator/subscriptions/update-product",
+    "verb": "patch",
+    "auth": false,
+    "receives": [
+      "required posted name",
+      "required posted statement_descriptor",
+      "required posted unit_label",
+      "required posted tax_code"
+    ],
+    "exceptions": {
+      "invalid-productid": [
+        "missing querystring productid",
+        "invalid querystring productid"
+      ],
+      "invalid-product": [
+        "ineligible querystring product is not active"
+      ],
+      "invalid-name": [
+        "invalid posted name"
+      ],
+      "invalid-name-length": [
+        "posted name too short",
+        "posted name too long"
+      ],
+      "invalid-statement_descriptor": [
+        "invalid posted statement_descriptor"
+      ],
+      "invalid-statement_descriptor-length": [
+        "posted statement_descriptor too short",
+        "posted statement_descriptor too long"
+      ],
+      "invalid-unit_label": [
+        "missing posted unit_label"
+      ],
+      "invalid-tax_code": [
+        "missing posted tax_code",
+        "invalid posted tax_code"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": [
+      "environment MINIMUM_PRODUCT_NAME_LENGTH",
+      "environment MAXIMUM_PRODUCT_NAME_LENGTH"
+    ]
+  },
+  "/api/administrator/subscriptions/update-tax-rate": {
+    "url": "/api/administrator/subscriptions/update-tax-rate",
+    "verb": "patch",
+    "auth": false,
+    "receives": [
+      "required posted display_name",
+      "required posted inclusive",
+      "required posted description",
+      "required posted jurisdiction",
+      "optional posted country"
+    ],
+    "exceptions": {
+      "invalid-taxrateid": [
+        "missing querystring taxrateid",
+        "invalid querystring taxrateid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/usage-record": {
+    "url": "/api/administrator/subscriptions/usage-record",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-usagerecordid": [
+        "missing querystring usagerecordid",
+        "invalid querystring usagerecordid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/usage-records-count": {
+    "url": "/api/administrator/subscriptions/usage-records-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/administrator/subscriptions/usage-records": {
+    "url": "/api/administrator/subscriptions/usage-records",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)",
+      "optional querystring accountid",
+      "optional querystring customerid",
+      "optional querystring subscriptionid"
+    ],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/active-price": {
+    "url": "/api/user/subscriptions/active-price",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-priceid": [
+        "missing querystring priceid",
+        "invalid querystring priceid"
+      ],
+      "invalid-price": [
+        "ineligible querystring price is not active"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/active-product": {
+    "url": "/api/user/subscriptions/active-product",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-productid": [
+        "missing querystring productid",
+        "invalid querystring productid"
+      ],
+      "invalid-product": [
+        "ineligible querystring product is not active"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/add-subscription-item": {
+    "url": "/api/user/subscriptions/add-subscription-item",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-quantity": [
+        "invalid posted quantity",
+        "invalid posted quantity is negative",
+        "invalid posted quantity is zero"
+      ],
+      "invalid-priceid": [
+        "missing posted priceid",
+        "invalid posted priceid"
+      ],
+      "invalid-price": [
+        "invalid price is not active"
+      ],
+      "duplicate-price": [
+        "invalid price is already on subscription"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/charge": {
+    "url": "/api/user/subscriptions/charge",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-chargeid": [
+        "missing querystring chargeid",
+        "invalid querystring chargeid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/charges-count": {
+    "url": "/api/user/subscriptions/charges-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/charges": {
+    "url": "/api/user/subscriptions/charges",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {
+      "invalid-accountid": [
+        "missing querystring accountid",
+        "invalid querystring accountid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/coupon": {
+    "url": "/api/user/subscriptions/coupon",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-couponid": [
+        "missing querystring couponid",
+        "invalid querystring couponid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/create-cancelation-refund": {
+    "url": "/api/user/subscriptions/create-cancelation-refund",
+    "verb": "post",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-subscription": [
+        "ineligible querystring subscription is not active",
+        "ineligible querystring subscription is free"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/create-customer": {
+    "url": "/api/user/subscriptions/create-customer",
+    "verb": "post",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-accountid": [
+        "missing querystring accountid",
+        "invalid querystring accountid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/create-payment-intent": {
+    "url": "/api/user/subscriptions/create-payment-intent",
+    "verb": "post",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-customerid": [
+        "missing querystring customerid",
+        "invalid querystring customerid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account",
+        "ineligible posted payment method"
+      ],
+      "invalid-paymentmethodid": [
+        "missing posted paymentmethodid",
+        "invalid posted paymentmethodid"
+      ],
+      "object": []
+    },
+    "redacts": [],
+    "returns": [],
+    "configuration": []
+  },
+  "/api/user/subscriptions/create-payment-method": {
+    "url": "/api/user/subscriptions/create-payment-method",
+    "verb": "post",
+    "auth": false,
+    "receives": [
+      "optionally-required posted name",
+      "optionally-required posted cvc",
+      "optionally-required posted number",
+      "optionally-required posted exp_month",
+      "optionally-required posted exp_year",
+      "optionally-required posted token"
+    ],
+    "exceptions": {
+      "invalid-customerid": [
+        "missing querystring customerid",
+        "invalid querystring customerid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": [
+      "environment STRIPE_JS"
+    ]
+  },
+  "/api/user/subscriptions/create-refund-request": {
+    "url": "/api/user/subscriptions/create-refund-request",
+    "verb": "post",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-chargeid": [
+        "missing querystring chargeid",
+        "invalid querystring chargeid"
+      ],
+      "invalid-charge": [
+        "ineligible querystring charge is refunded",
+        "ineligible querystring charge has refund request"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/create-refund": {
+    "url": "/api/user/subscriptions/create-refund",
+    "verb": "post",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-chargeid": [
+        "missing querystring chargeid",
+        "invalid querystring chargeid"
+      ],
+      "invalid-charge": [
+        "ineligible querystring charge is refunded",
+        "ineligible querystring charge is out of refund period"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": [
+      "environment SUBSCRIPTION_REFUND_PERIOD"
+    ]
+  },
+  "/api/user/subscriptions/create-setup-intent": {
+    "url": "/api/user/subscriptions/create-setup-intent",
+    "verb": "post",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-customerid": [
+        "missing querystring customerid",
+        "invalid querystring customerid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-paymentmethodid": [
+        "missing posted paymentmethodid",
+        "invalid posted paymentmethodid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/create-subscription": {
+    "url": "/api/user/subscriptions/create-subscription",
+    "verb": "post",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-customerid": [
+        "missing querystring customerid",
+        "invalid querystring customerid"
+      ],
+      "invalid-customer": [
+        "ineligible querystring customer requires payment method"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-priceids": [
+        "missing posted priceids"
+      ],
+      "invalid-priceid": [
+        "invalid posted priceids contains invalid price"
+      ],
+      "invalid-price": [
+        "invalid posted priceids contains not active price"
+      ],
+      "invalid-taxrateid": [
+        "invalid posted taxrateids contains invalid tax rate"
+      ],
+      "invalid-tax-rate": [
+        "invalid posted taxrateids contains inactive tax rate"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/create-tax-id": {
+    "url": "/api/user/subscriptions/create-tax-id",
+    "verb": "post",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-customerid": [
+        "missing querystring customerid",
+        "invalid querystring customerid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-type": [
+        "missing posted type",
+        "invalid posted type"
+      ],
+      "invalid-value": [
+        "invalid posted value"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/create-usage-record": {
+    "url": "/api/user/subscriptions/create-usage-record",
+    "verb": "post",
+    "auth": false,
+    "receives": [
+      "required posted quantity",
+      "required posted action",
+      "required posted subscriptionitemid"
+    ],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-subscription": [
+        "invalid querystring subscription is not \"metered\""
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-quantity": [
+        "invalid posted quantity is not integer",
+        "invalid posted quantity is negative"
+      ],
+      "invalid-action": [
+        "missing posted action",
+        "invalid posted action"
+      ],
+      "invalid-subscriptionitemid": [
+        "missing posted subscriptionitemid",
+        "invalid posted subscriptionitemid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/customer": {
+    "url": "/api/user/subscriptions/customer",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-customerid": [
+        "missing querystring customerid",
+        "invalid querystring customerid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/customers-count": {
+    "url": "/api/user/subscriptions/customers-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/customers": {
+    "url": "/api/user/subscriptions/customers",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {
+      "invalid-accountid": [
+        "missing querystring accountid",
+        "invalid querystring accountid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/delete-customer": {
+    "url": "/api/user/subscriptions/delete-customer",
+    "verb": "delete",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-customerid": [
+        "missing querystring customerid",
+        "invalid querystring customerid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "boolean"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/delete-subscription-item": {
+    "url": "/api/user/subscriptions/delete-subscription-item",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-itemid": [
+        "missing posted itemid",
+        "invalid posted itemid"
+      ],
+      "only-item": [
+        "invalid posted itemid is only item"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/delete-subscription": {
+    "url": "/api/user/subscriptions/delete-subscription",
+    "verb": "delete",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-subscription": [
+        "ineligible querystring subscription is not active"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "boolean"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/delete-tax-id": {
+    "url": "/api/user/subscriptions/delete-tax-id",
+    "verb": "delete",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-taxid": [
+        "missing querystring taxid",
+        "invalid querystring taxid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "boolean"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/invoice": {
+    "url": "/api/user/subscriptions/invoice",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-invoiceid": [
+        "missing querystring invoiceid",
+        "invalid querystring invoiceid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/invoices-count": {
+    "url": "/api/user/subscriptions/invoices-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/invoices": {
+    "url": "/api/user/subscriptions/invoices",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {
+      "invalid-accountid": [
+        "missing querystring accountid",
+        "invalid querystring accountid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/payment-intent": {
+    "url": "/api/user/subscriptions/payment-intent",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-paymentintentid": [
+        "missing querystring invalid",
+        "invalid querystring invalid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/payment-intents-count": {
+    "url": "/api/user/subscriptions/payment-intents-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/payment-intents": {
+    "url": "/api/user/subscriptions/payment-intents",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {
+      "invalid-accountid": [
+        "missing querystring accountid",
+        "invalid querystring accountid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/payment-method": {
+    "url": "/api/user/subscriptions/payment-method",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-paymentmethodid": [
+        "missing querystring paymentmethodid",
+        "invalid querystring paymentmethodid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/payment-methods-count": {
+    "url": "/api/user/subscriptions/payment-methods-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/payment-methods": {
+    "url": "/api/user/subscriptions/payment-methods",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {
+      "invalid-accountid": [
+        "missing querystring accountid",
+        "invalid querystring accountid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/refund": {
+    "url": "/api/user/subscriptions/refund",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-refundid": [
+        "missing querystring refundid",
+        "invalid querystring refundid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/refunds-count": {
+    "url": "/api/user/subscriptions/refunds-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/refunds": {
+    "url": "/api/user/subscriptions/refunds",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {
+      "invalid-accountid": [
+        "missing querystring accountid",
+        "invalid querystring accountid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/reset-subscription-canceling": {
+    "url": "/api/user/subscriptions/reset-subscription-canceling",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-subscription": [
+        "invalid querystring subscription is active"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/set-customer-coupon": {
+    "url": "/api/user/subscriptions/set-customer-coupon",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-customerid": [
+        "missing querystring customerid",
+        "invalid querystring customerid"
+      ],
+      "invalid-customer": [
+        "invalid querystring customer has coupon"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-couponid": [
+        "missing posted couponid",
+        "invalid posted couponid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/set-invoice-paid": {
+    "url": "/api/user/subscriptions/set-invoice-paid",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-invoiceid": [
+        "missing querystring invoiceid",
+        "invalid querystring invoiceid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account",
+        "ineligible posted payment method"
+      ],
+      "invalid-invoice": [
+        "invalid querystring invoice is paid",
+        "invalid querystring invoice is marked uncollectable"
+      ],
+      "invalid-paymentmethodid": [
+        "missing posted paymentmethodid",
+        "invalid posted paymentmethodid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/set-payment-intent-canceled": {
+    "url": "/api/user/subscriptions/set-payment-intent-canceled",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-paymentintentid": [
+        "missing querystring paymentintentid",
+        "invalid querystring paymentintentid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/set-payment-method-detached": {
+    "url": "/api/user/subscriptions/set-payment-method-detached",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-paymentmethodid": [
+        "missing querystring paymentmethodid",
+        "invalid querystring paymentmethodid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-paymentmethod": [
+        "invalid querystring payment method is default"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/set-setup-intent-canceled": {
+    "url": "/api/user/subscriptions/set-setup-intent-canceled",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-setupintentid": [
+        "missing querystring setupintentid",
+        "invalid querystring setupintentid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/set-subscription-canceled": {
+    "url": "/api/user/subscriptions/set-subscription-canceled",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-subscription": [
+        "ineligible querystring subscription is not active"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/set-subscription-coupon": {
+    "url": "/api/user/subscriptions/set-subscription-coupon",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-subscription": [
+        "invalid querystring subscription has coupon",
+        "invalid querystring subscription is canceling"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-couponid": [
+        "missing posted couponid",
+        "invalid posted couponid"
+      ],
+      "invalid-coupon": [
+        "invalid posted coupon is other currency"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/set-subscription-item-quantity": {
+    "url": "/api/user/subscriptions/set-subscription-item-quantity",
+    "verb": "patch",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionitemid": [
+        "missing querystring subscriptionitemid",
+        "invalid querystring subscriptionitemid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-quantity": [
+        "invalid posted quantity",
+        "invalid posted quantity is unchanged",
+        "invalid posted quantity is negative",
+        "invalid posted quantity is zero"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/setup-intent": {
+    "url": "/api/user/subscriptions/setup-intent",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-setupintentid": [
+        "missing querystring setupintentid",
+        "invalid querystring setupintentid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/setup-intents-count": {
+    "url": "/api/user/subscriptions/setup-intents-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {},
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/setup-intents": {
+    "url": "/api/user/subscriptions/setup-intents",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {
+      "invalid-accountid": [
+        "missing querystring accountid",
+        "invalid querystring accountid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/subscription-item": {
+    "url": "/api/user/subscriptions/subscription-item",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionitemid": [
+        "missing querystring subscriptionitemid",
+        "invalid querystring subscriptionitemid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/subscription": {
+    "url": "/api/user/subscriptions/subscription",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/subscriptions-count": {
+    "url": "/api/user/subscriptions/subscriptions-count",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-accountid": [
+        "missing querystring accountid",
+        "invalid querystring accountid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "integer"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/subscriptions": {
+    "url": "/api/user/subscriptions/subscriptions",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {
+      "invalid-accountid": [
+        "missing querystring accountid",
+        "invalid querystring accountid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/tax-id": {
+    "url": "/api/user/subscriptions/tax-id",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-taxid": [
+        "missing querystring taxid",
+        "invalid querystring taxid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/tax-ids": {
+    "url": "/api/user/subscriptions/tax-ids",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring offset (integer)",
+      "optional querystring limit (integer)",
+      "optional querystring all (boolean)"
+    ],
+    "exceptions": {
+      "invalid-customerid": [
+        "missing querystring customerid",
+        "invalid querystring customerid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "array"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  },
+  "/api/user/subscriptions/tax-rate": {
+    "url": "/api/user/subscriptions/tax-rate",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-taxrateid": [
+        "missing querystring taxrateid",
+        "invalid querystring taxrateid"
+      ],
+      "invalid-taxrate": [
+        "invalid querystring taxrate is not active"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/upcoming-invoice": {
+    "url": "/api/user/subscriptions/upcoming-invoice",
+    "verb": "get",
+    "auth": false,
+    "receives": [],
+    "exceptions": {
+      "invalid-subscriptionid": [
+        "missing querystring subscriptionid",
+        "invalid querystring subscriptionid"
+      ],
+      "invalid-account": [
+        "ineligible accessing account"
+      ],
+      "invalid-subscription": [
+        "ineligible querystring subscription"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "object"
+    ],
+    "configuration": []
+  },
+  "/api/user/subscriptions/usage-record-summaries": {
+    "url": "/api/user/subscriptions/usage-record-summaries",
+    "verb": "get",
+    "auth": false,
+    "receives": [
+      "optional querystring starting_after (string)",
+      "optional querystring ending_before (string)",
+      "optional querystring limit (integer)"
+    ],
+    "exceptions": {
+      "invalid-subscriptionitemid": [
+        "missing querystring subscriptionitemid",
+        "invalid querystring subscriptionitemid"
+      ]
+    },
+    "redacts": [],
+    "returns": [
+      "stripe list response"
+    ],
+    "configuration": [
+      "environment PAGE_SIZE"
+    ]
+  }
+}
